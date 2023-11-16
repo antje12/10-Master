@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+
 using Confluent.Kafka;
 
 Console.WriteLine("Hello, World!");
@@ -13,11 +14,8 @@ _producerConfig = new ProducerConfig
 {
     BootstrapServers = KafkaServers,
     Acks = Acks.None,
-    LingerMs = 0, 
-    BatchSize = 1,
-    CompressionType = CompressionType.None,
-    BatchNumMessages = 1,
-    QueueBufferingMaxMessages = 1
+    LingerMs = 0,
+    BatchSize = 1
 };
 
 using var producer = new ProducerBuilder<Null, string>(_producerConfig).Build();

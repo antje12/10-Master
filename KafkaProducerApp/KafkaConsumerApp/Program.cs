@@ -19,14 +19,12 @@ _consumerConfig = new ConsumerConfig
     FetchWaitMaxMs = 100
 };
 
-using (var consumer = new ConsumerBuilder<string, string>(_consumerConfig).Build())
+using var consumer = new ConsumerBuilder<string, string>(_consumerConfig).Build();
+consumer.Subscribe("msg-topic");
+while (true)
 {
-    consumer.Subscribe("msg-topic");
-    while (true)
-    {
-        var consumeResult = consumer.Consume();
-        var result = consumeResult.Message.Value;
-        Console.WriteLine($"{result} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
-        //consumer.Close();
-    }
+    var consumeResult = consumer.Consume();
+    var result = consumeResult.Message.Value;
+    Console.WriteLine($"{result} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+    //consumer.Close();
 }

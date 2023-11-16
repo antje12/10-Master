@@ -20,13 +20,14 @@ _producerConfig = new ProducerConfig
     QueueBufferingMaxMessages = 1
 };
 
-using (var producer = new ProducerBuilder<Null, string>(_producerConfig).Build())
+using var producer = new ProducerBuilder<Null, string>(_producerConfig).Build();
+while (true)
 {
-    var message = Guid.NewGuid().ToString();
+    string message = Console.ReadLine();
     Console.WriteLine($"{message} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
     producer.Produce("msg-topic", new Message<Null, string>
-        {
-            Value = message
-        });
+    {
+        Value = message
+    });
     producer.Flush();
 }

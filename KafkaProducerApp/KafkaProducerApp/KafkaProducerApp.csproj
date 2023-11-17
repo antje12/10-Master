@@ -14,4 +14,8 @@
       <PackageReference Include="Confluent.SchemaRegistry.Serdes.Avro" Version="2.3.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
+    </ItemGroup>
+
 </Project>

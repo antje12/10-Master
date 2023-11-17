@@ -1,28 +1,37 @@
-﻿using Confluent.Kafka;
+﻿using ClassLibrary;
+using Confluent.Kafka;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
 
 class Program
 {
+    private const string _kafkaServers = "localhost:19092";
+    private const string _groupId = "msg-group";
+    private const string _schemaRegistry = "localhost:8081";
+    
     static void Main()
     {
-        Console.WriteLine("Hello, World!");
-
-        ConsumerConfig consumerConfig;
-
-        const string KafkaServers = "localhost:19092";
-        const string GroupId = "msg-group";
-
-        consumerConfig = new ConsumerConfig
+        var consumerConfig = new ConsumerConfig
         {
-            BootstrapServers = KafkaServers,
-            GroupId = GroupId,
+            BootstrapServers = _kafkaServers,
+            GroupId = _groupId,
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
+        var schemaRegistryConfig = new SchemaRegistryConfig
+        {
+            Url = _schemaRegistry
+        };
+        var avroSerializerConfig = new AvroSerializerConfig
+        {
+            BufferBytes = 100
+        };
 
-        var data = new Dictionary<string, Location>();
-
+        Console.WriteLine("Hello, World!");
+        
         using var consumer = new ConsumerBuilder<string, string>(consumerConfig).Build();
         consumer.Subscribe("msg-topic");
 
+        var data = new Dictionary<string, PlayerPos>();
         while (true)
         {
             var consumeResult = consumer.Consume();
@@ -31,37 +40,32 @@ class Program
 
             if (!data.ContainsKey(key))
             {
-                data.Add(key, new Location()
+                data.Add(key, new PlayerPos()
                 {
-                    x = 0,
-                    y = 0
+                    ID = "MyId",
+                    X = 0,
+                    Y = 0
                 });
             }
 
             switch (message)
             {
                 case "w":
-                    data[key].y++;
+                    data[key].Y++;
                     break;
                 case "a":
-                    data[key].x--;
+                    data[key].X--;
                     break;
                 case "s":
-                    data[key].y--;
+                    data[key].Y--;
                     break;
                 case "d":
-                    data[key].x++;
+                    data[key].X++;
                     break;
             }
 
             Console.Clear();
-            Console.Write($"{key}: {data[key].x},{data[key].y}");
+            Console.Write($"{key}: {data[key].X},{data[key].Y}");
         }
     }
-}
-
-public class Location
-{
-    public int x { get; set; }
-    public int y { get; set; }
 }

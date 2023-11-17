@@ -1,23 +1,31 @@
 ﻿using Confluent.Kafka;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
 
 class Program
 {
+    private const string _kafkaServers = "localhost:19092";
+    private const string _schemaRegistry = "localhost:8081";
+    
     static void Main()
     {
-        Console.WriteLine("Hello, World!");
-
-        ProducerConfig producerConfig;
-
-        const string KafkaServers = "localhost:19092";
-        
-        producerConfig = new ProducerConfig
+        var producerConfig = new ProducerConfig
         {
-            BootstrapServers = KafkaServers,
+            BootstrapServers = _kafkaServers,
             Acks = Acks.None,
             LingerMs = 0,
             BatchSize = 1
         };
-
+        var schemaRegistryConfig = new SchemaRegistryConfig
+        {
+            Url = _schemaRegistry
+        };
+        var avroSerializerConfig = new AvroSerializerConfig
+        {
+            BufferBytes = 100
+        };
+        
+        Console.WriteLine("Hello, World!");
         using var producer = new ProducerBuilder<string, string>(producerConfig).Build();
         
         while (true)

@@ -43,8 +43,7 @@ class Program
         while (true)
         {
             string message = Console.ReadLine();
-            var result = p.Produce(topic, player);
-            Console.WriteLine($"{result} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+            p.Produce(topic, player.ID, $"{player.X},{player.Y}");
         }
     }
 }

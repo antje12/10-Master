@@ -11,7 +11,7 @@ public class Producer
     private readonly AvroSerializerConfig _avroSerializerConfig;
 
     private readonly CachedSchemaRegistryClient _schemaRegistry;
-    private readonly IProducer<string, PlayerPos> _producer;
+    private readonly IProducer<string, string> _producer;
 
     public Producer(
         ProducerConfig producerConfig,
@@ -23,20 +23,20 @@ public class Producer
         _avroSerializerConfig = avroSerializerConfig;
 
         _schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig);
-        _producer = new ProducerBuilder<string, PlayerPos>(_producerConfig)
-            .SetValueSerializer(new AvroSerializer<PlayerPos>(_schemaRegistry, _avroSerializerConfig))
-            .Build();
+        //_producer = new ProducerBuilder<string, PlayerPos>(_producerConfig)
+        //    .SetValueSerializer(new AvroSerializer<PlayerPos>(_schemaRegistry, _avroSerializerConfig))
+        //    .Build();
+        _producer = new ProducerBuilder<string, string>(_producerConfig).Build();
     }
 
-    public string Produce(string topic, PlayerPos message)
+    public void Produce(string topic, string key, string message)
     {
-        var result = _producer.ProduceAsync(topic, new Message<string, PlayerPos>
+        Console.WriteLine($"{key} = {message} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+        _producer.Produce(topic, new Message<string, string>
         {
-            Key = message.ID,
+            Key = key,
             Value = message
-        }).Result.Value;
+        });
         _producer.Flush();
-
-        return result.ID;
     }
 }

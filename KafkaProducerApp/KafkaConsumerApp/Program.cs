@@ -31,7 +31,7 @@ class Program
         var c = new Consumer(consumerConfig,
             schemaRegistryConfig,
             cancellationTokenSource);
-        
+
         var topic = "msg-topic";
         await c.StartConsumer(topic);
     }

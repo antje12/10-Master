@@ -12,8 +12,8 @@ public class Consumer
     private readonly CancellationTokenSource _cancellationTokenSource;
 
     private readonly CachedSchemaRegistryClient _schemaRegistry;
-    private readonly IConsumer<string, PlayerPos> _consumer;
-    
+    private readonly IConsumer<string, string> _consumer;
+
     public Consumer(
         ConsumerConfig consumerConfig,
         SchemaRegistryConfig schemaRegistryConfig,
@@ -22,12 +22,13 @@ public class Consumer
         _consumerConfig = consumerConfig;
         _schemaRegistryConfig = schemaRegistryConfig;
         _cancellationTokenSource = cancellationTokenSource;
-        
+
         _schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig);
-        _consumer = new ConsumerBuilder<string, PlayerPos>(_consumerConfig)
-            .SetValueDeserializer(new AvroDeserializer<PlayerPos>(_schemaRegistry).AsSyncOverAsync())
-            .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
-            .Build();
+        //_consumer = new ConsumerBuilder<string, PlayerPos>(_consumerConfig)
+        //    .SetValueDeserializer(new AvroDeserializer<PlayerPos>(_schemaRegistry).AsSyncOverAsync())
+        //    .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
+        //    .Build();
+        _consumer = new ConsumerBuilder<string, string>(_consumerConfig).Build();
     }
 
     public Task StartConsumer(string topic)
@@ -35,15 +36,16 @@ public class Consumer
         return Task.Run(() => ConsumeLoop(topic), _cancellationTokenSource.Token);
     }
 
-    private Task ConsumeLoop(string topicName)
+    private Task ConsumeLoop(string topic)
     {
-        _consumer.Subscribe(topicName);
-        while (!_cancellationTokenSource.Token.IsCancellationRequested)
+        _consumer.Subscribe(topic);
+        while (true)
         {
-            var consumeResult = _consumer.Consume(_cancellationTokenSource.Token);
-            var result = consumeResult.Message.Value;
-            Console.Clear();
-            Console.Write($"{result.ID}: {result.X},{result.Y} - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+            var consumeResult = _consumer.Consume();
+            var result = consumeResult.Message;
+            Console.WriteLine(
+                $"{result.Key} = {result.Value} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+            //consumer.Close(); 
         }
 
         _consumer.Close();

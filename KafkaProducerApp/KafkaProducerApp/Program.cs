@@ -1,4 +1,5 @@
-﻿using Confluent.Kafka;
+﻿using ClassLibrary;
+using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 
@@ -6,7 +7,7 @@ class Program
 {
     private const string _kafkaServers = "localhost:19092";
     private const string _schemaRegistry = "localhost:8081";
-    
+
     static void Main()
     {
         var producerConfig = new ProducerConfig
@@ -24,22 +25,26 @@ class Program
         {
             BufferBytes = 100
         };
-        
+
         Console.WriteLine("Hello, World!");
-        using var producer = new ProducerBuilder<string, string>(producerConfig).Build();
-        
+
+        var p = new Producer(producerConfig,
+            schemaRegistryConfig,
+            avroSerializerConfig);
+
+        var topic = "msg-topic";
+        var player = new PlayerPos()
+        {
+            ID = "MyId",
+            X = 0,
+            Y = 0
+        };
+
         while (true)
         {
             string message = Console.ReadLine();
-            Console.WriteLine($"{message} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
-            
-            producer.Produce("msg-topic", new Message<string, string>
-            {
-                Key = "myPlayer",
-                Value = message
-            });
-            
-            producer.Flush();
+            var result = p.Produce(topic, player);
+            Console.WriteLine($"{result} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
         }
     }
 }

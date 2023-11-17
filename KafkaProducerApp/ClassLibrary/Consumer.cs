@@ -30,9 +30,9 @@ public class Consumer
             .Build();
     }
 
-    public void StartConsumer(string topic)
+    public Task StartConsumer(string topic)
     {
-        var consumeTask = Task.Run(() => ConsumeLoop(topic), _cancellationTokenSource.Token);
+        return Task.Run(() => ConsumeLoop(topic), _cancellationTokenSource.Token);
     }
 
     private Task ConsumeLoop(string topicName)
@@ -42,6 +42,8 @@ public class Consumer
         {
             var consumeResult = _consumer.Consume(_cancellationTokenSource.Token);
             var result = consumeResult.Message.Value;
+            Console.Clear();
+            Console.Write($"{result.ID}: {result.X},{result.Y} - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
         }
 
         _consumer.Close();

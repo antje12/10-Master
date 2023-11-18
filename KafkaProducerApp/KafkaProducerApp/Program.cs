@@ -6,16 +6,32 @@ using Confluent.SchemaRegistry.Serdes;
 class Program
 {
     private const string _kafkaServers = "localhost:19092";
+    private const string _groupId = "msg-group";
     private const string _schemaRegistry = "localhost:8081";
 
-    static void Main()
+    private static Administrator _a;
+    private static Producer _p;
+    private static Consumer _c;
+
+    static async Task Main()
     {
+        var adminConfig = new AdminClientConfig
+        {
+            BootstrapServers = _kafkaServers,
+            //AllowAutoCreateTopics = false
+        };
         var producerConfig = new ProducerConfig
         {
             BootstrapServers = _kafkaServers,
             Acks = Acks.None,
             LingerMs = 0,
             BatchSize = 1
+        };
+        var consumerConfig = new ConsumerConfig
+        {
+            BootstrapServers = _kafkaServers,
+            GroupId = _groupId,
+            AutoOffsetReset = AutoOffsetReset.Earliest
         };
         var schemaRegistryConfig = new SchemaRegistryConfig
         {
@@ -28,22 +44,25 @@ class Program
 
         Console.WriteLine("Hello, World!");
 
-        var p = new Producer(producerConfig,
+        _a = new Administrator(adminConfig);
+        await _a.Setup("input");
+        await _a.Setup("output");
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        _c = new Consumer(consumerConfig,
+            schemaRegistryConfig,
+            cancellationTokenSource);
+        
+        _c.StartConsumer("output", (key, message) => { });
+        
+        _p = new Producer(producerConfig,
             schemaRegistryConfig,
             avroSerializerConfig);
-
-        var topic = "msg-topic";
-        var player = new PlayerPos()
-        {
-            ID = "MyId",
-            X = 0,
-            Y = 0
-        };
-
+        
         while (true)
         {
             string message = Console.ReadLine();
-            p.Produce(topic, player.ID, $"{player.X},{player.Y}");
+            _p.Produce("input", "key", $"message");
         }
     }
 }

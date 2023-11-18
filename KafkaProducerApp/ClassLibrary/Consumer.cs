@@ -14,6 +14,8 @@ public class Consumer
     private readonly CachedSchemaRegistryClient _schemaRegistry;
     private readonly IConsumer<string, string> _consumer;
 
+    public delegate void OnMessage (string key, string message);
+
     public Consumer(
         ConsumerConfig consumerConfig,
         SchemaRegistryConfig schemaRegistryConfig,
@@ -31,12 +33,12 @@ public class Consumer
         _consumer = new ConsumerBuilder<string, string>(_consumerConfig).Build();
     }
 
-    public Task StartConsumer(string topic)
+    public Task StartConsumer(string topic, OnMessage action)
     {
-        return Task.Run(() => ConsumeLoop(topic), _cancellationTokenSource.Token);
+        return Task.Run(() => ConsumeLoop(topic, action), _cancellationTokenSource.Token);
     }
 
-    private Task ConsumeLoop(string topic)
+    private Task ConsumeLoop(string topic, OnMessage onMessage)
     {
         _consumer.Subscribe(topic);
         while (true)
@@ -45,6 +47,7 @@ public class Consumer
             var result = consumeResult.Message;
             Console.WriteLine(
                 $"{result.Key} = {result.Value} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+            onMessage(result.Key, result.Value);
             //consumer.Close(); 
         }
 

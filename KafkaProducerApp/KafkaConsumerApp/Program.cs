@@ -9,8 +9,27 @@ class Program
     private const string _groupId = "msg-group";
     private const string _schemaRegistry = "localhost:8081";
 
+    private static Administrator _a;
+    private static Producer _p;
+    private static Consumer _c;
+
+    private static void SendResponse(string key, string value) {
+        _p.Produce("output", "key", $"message");
+    }
+    
     static async Task Main()
     {
+        var adminConfig = new AdminClientConfig
+        {
+            BootstrapServers = _kafkaServers
+        };
+        var producerConfig = new ProducerConfig
+        {
+            BootstrapServers = _kafkaServers,
+            Acks = Acks.None,
+            LingerMs = 0,
+            BatchSize = 1
+        };
         var consumerConfig = new ConsumerConfig
         {
             BootstrapServers = _kafkaServers,
@@ -27,12 +46,21 @@ class Program
         };
 
         Console.WriteLine("Hello, World!");
+        
+        _a = new Administrator(adminConfig);
+        await _a.Setup("input");
+        await _a.Setup("output");
+        
+        _p = new Producer(producerConfig,
+            schemaRegistryConfig,
+            avroSerializerConfig);
+        
         var cancellationTokenSource = new CancellationTokenSource();
-        var c = new Consumer(consumerConfig,
+        _c = new Consumer(consumerConfig,
             schemaRegistryConfig,
             cancellationTokenSource);
 
-        var topic = "msg-topic";
-        await c.StartConsumer(topic);
+        Consumer.OnMessage action = SendResponse;
+        await _c.StartConsumer("input", action);
     }
 }

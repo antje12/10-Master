@@ -1,7 +1,7 @@
 using Avro;
 using Avro.Specific;
 
-namespace KafkaProducerApp.DTOs;
+namespace ProducerApp.DTOs;
 
 public partial class Message : ISpecificRecord
 {

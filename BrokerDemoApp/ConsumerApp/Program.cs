@@ -12,19 +12,27 @@ class Program
     private static KafkaAdministrator _a;
     private static KafkaProducer _p;
     private static KafkaConsumer _c;
-    
+
     private static RabbitProducer _rp;
     private static RabbitConsumer _rc;
 
-    private static void SendKafkaResponse(string key, string value) {
+    private static void SendKafkaResponse(string key, string value)
+    {
         _p.Produce("output", key, value);
     }
 
-    private static void SendRabbitResponse(string key, string value) {
+    private static void SendRabbitResponse(string key, string value)
+    {
         _rp.Produce("output", value);
     }
-    
+
     static async Task Main()
+    {
+        await KafkaRun();
+        //RabbitRun();
+    }
+
+    private static async Task KafkaRun()
     {
         var adminConfig = new AdminClientConfig
         {
@@ -54,21 +62,14 @@ class Program
 
         Console.WriteLine("Hello, World!");
 
-        //var cts = new CancellationTokenSource();
-        //_rp = new RabbitProducer();
-        //_rc = new RabbitConsumer();
-        //RabbitConsumer.OnMessage ac = SendRabbitResponse;
-        //_rc.StartConsumer("input", ac);
-        //return;
-        
         _a = new KafkaAdministrator(adminConfig);
         await _a.Setup("input");
         await _a.Setup("output");
-        
+
         _p = new KafkaProducer(producerConfig,
             schemaRegistryConfig,
             avroSerializerConfig);
-        
+
         var cancellationTokenSource = new CancellationTokenSource();
         _c = new KafkaConsumer(consumerConfig,
             schemaRegistryConfig,
@@ -76,5 +77,14 @@ class Program
 
         KafkaConsumer.OnMessage action = SendKafkaResponse;
         await _c.StartConsumer("input", action);
+    }
+
+    private static void RabbitRun()
+    {
+        var cts = new CancellationTokenSource();
+        _rp = new RabbitProducer();
+        _rc = new RabbitConsumer();
+        RabbitConsumer.OnMessage ac = SendRabbitResponse;
+        _rc.StartConsumer("input", ac);
     }
 }

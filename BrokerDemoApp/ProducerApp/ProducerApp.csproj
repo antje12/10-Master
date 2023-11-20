@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
-        <RootNamespace>KafkaProducerApp</RootNamespace>
+        <RootNamespace>ProducerApp</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

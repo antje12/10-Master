@@ -12,11 +12,17 @@ class Program
     private static KafkaAdministrator _a;
     private static KafkaProducer _p;
     private static KafkaConsumer _c;
-    
+
     private static RabbitProducer _rp;
     private static RabbitConsumer _rc;
 
     static async Task Main()
+    {
+        await KafkaRun();
+        //RabbitRun();
+    }
+
+    private static async Task KafkaRun()
     {
         var adminConfig = new AdminClientConfig
         {
@@ -46,18 +52,7 @@ class Program
         };
 
         Console.WriteLine("Hello, World!");
-        
-        //var cts = new CancellationTokenSource();
-        //_rp = new RabbitProducer();
-        //_rc = new RabbitConsumer();
-        //Task.Factory.StartNew(() => _rc.StartConsumer("output", (key, message) => { }));
-        //while (true)
-        //{
-        //    string message = Console.ReadLine();
-        //    _rp.Produce("input", "key");
-        //}
-        //return;
-        
+
         _a = new KafkaAdministrator(adminConfig);
         await _a.Setup("input");
         await _a.Setup("output");
@@ -66,17 +61,29 @@ class Program
         _c = new KafkaConsumer(consumerConfig,
             schemaRegistryConfig,
             cancellationTokenSource);
-        
+
         Task.Factory.StartNew(() => _c.StartConsumer("output", (key, message) => { }));
-        
+
         _p = new KafkaProducer(producerConfig,
             schemaRegistryConfig,
             avroSerializerConfig);
-        
+
         while (true)
         {
             string message = Console.ReadLine();
             _p.Produce("input", "key", "message");
+        }
+    }
+
+    private static void RabbitRun()
+    {
+        _rp = new RabbitProducer();
+        _rc = new RabbitConsumer();
+        Task.Factory.StartNew(() => _rc.StartConsumer("output", (key, message) => { }));
+        while (true)
+        {
+            string message = Console.ReadLine();
+            _rp.Produce("input", "key");
         }
     }
 }

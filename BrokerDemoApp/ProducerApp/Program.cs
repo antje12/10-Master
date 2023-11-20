@@ -47,17 +47,19 @@ class Program
         _c = new KafkaConsumer(consumerConfig, schemaRegistryConfig, _cts);
 
         _rp = new RabbitProducer("input");
-        _rc = new RabbitConsumer("output");
+        _rc = new RabbitConsumer("output", _cts);
     }
+
+    private static Dictionary<string, int> _results;
 
     static async Task Main()
     {
         Setup();
-        //await KafkaRun();
-        RabbitRun();
+        //await KafkaRun(1000);
+        await RabbitRun(1000);
     }
 
-    private static async Task KafkaRun()
+    private static async Task KafkaRun(int runs)
     {
         Console.WriteLine("Kafka Producer Started");
         await _a.CreateTopic("input");
@@ -71,7 +73,7 @@ class Program
         }
     }
 
-    private static void RabbitRun()
+    private static async Task RabbitRun(int runs)
     {
         Console.WriteLine("RabbitMQ Producer Started");
         

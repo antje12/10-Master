@@ -49,7 +49,7 @@ class Program
 
         _rp = new RabbitProducer("output");
         IConsumer.ProcessMessage action = SendKafkaResponse;
-        _rc = new RabbitConsumer("input");
+        _rc = new RabbitConsumer("input", _cts);
     }
 
     private static void SendKafkaResponse(string key, string value)
@@ -66,7 +66,7 @@ class Program
     {
         Setup();
         //await KafkaRun();
-        RabbitRun();
+        await RabbitRun();
     }
 
     private static async Task KafkaRun()
@@ -79,11 +79,11 @@ class Program
         await _c.StartConsumer("input", action);
     }
 
-    private static void RabbitRun()
+    private static async Task RabbitRun()
     {
         Console.WriteLine("RabbitMQ Consumer Started");
         
         IConsumer.ProcessMessage action = SendRabbitResponse;
-        _rc.StartConsumer("input", action);
+        await _rc.StartConsumer("input", action);
     }
 }

@@ -7,10 +7,12 @@ namespace ClassLibrary.RabbitMQ;
 
 public class RabbitConsumer : IConsumer
 {
+    private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly IChannel _channel;
     
-    public RabbitConsumer(string topic)
+    public RabbitConsumer(string topic, CancellationTokenSource cancellationTokenSource)
     {
+        _cancellationTokenSource = cancellationTokenSource;
         var factory = new ConnectionFactory { HostName = "localhost" };
         var connection = factory.CreateConnection();
         _channel = connection.CreateChannel();
@@ -21,7 +23,12 @@ public class RabbitConsumer : IConsumer
             arguments: null);
     }
 
-    public Task StartConsumer(string topic, IConsumer.ProcessMessage onMessage)
+    public Task StartConsumer(string topic, IConsumer.ProcessMessage action)
+    {
+        return Task.Run(() => ConsumeLoop(topic, action), _cancellationTokenSource.Token);
+    }
+
+    private Task ConsumeLoop(string topic, IConsumer.ProcessMessage onMessage)
     {
         var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += (model, ea) =>

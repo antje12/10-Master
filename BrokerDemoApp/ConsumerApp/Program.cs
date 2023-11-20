@@ -65,8 +65,8 @@ class Program
     static async Task Main()
     {
         Setup();
-        //await KafkaRun();
-        await RabbitRun();
+        await KafkaRun();
+        //await RabbitRun();
     }
 
     private static async Task KafkaRun()

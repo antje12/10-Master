@@ -45,5 +45,7 @@ public class RabbitConsumer : IConsumer
         while (true)
         {
         }
+        
+        return Task.CompletedTask;
     }
 }

@@ -1,20 +1,19 @@
-﻿using Confluent.Kafka;
+﻿using ClassLibrary.Interfaces;
+using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 
-namespace ClassLibrary;
+namespace ClassLibrary.Kafka;
 
-public class KafkaAdministrator
+public class KafkaAdministrator : IAdministrator
 {
-    private readonly AdminClientConfig _adminClientConfig;
     private readonly IAdminClient _adminClient;
     
     public KafkaAdministrator(AdminClientConfig adminClientConfig)
     {
-        _adminClientConfig = adminClientConfig;
-        _adminClient = new AdminClientBuilder(_adminClientConfig).Build();
+        _adminClient = new AdminClientBuilder(adminClientConfig).Build();
     }
 
-    public async Task Setup(string topic)
+    public async Task CreateTopic(string topic)
     {
         try
         {

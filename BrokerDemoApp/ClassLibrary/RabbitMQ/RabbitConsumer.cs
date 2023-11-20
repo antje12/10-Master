@@ -1,28 +1,29 @@
 ﻿using System.Text;
+using ClassLibrary.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace ClassLibrary;
+namespace ClassLibrary.RabbitMQ;
 
-public class RabbitConsumer
+public class RabbitConsumer : IConsumer
 {
-    public delegate void OnMessage (string key, string message);
-
-    public void StartConsumer(string topic, OnMessage onMessage)
+    private readonly IChannel _channel;
+    
+    public RabbitConsumer(string topic)
     {
         var factory = new ConnectionFactory { HostName = "localhost" };
-        using var connection = factory.CreateConnection();
-        using var channel = connection.CreateChannel();
-
-        channel.QueueDeclare(queue: topic,
+        var connection = factory.CreateConnection();
+        _channel = connection.CreateChannel();
+        _channel.QueueDeclare(queue: topic,
             durable: false,
             exclusive: false,
             autoDelete: false,
             arguments: null);
+    }
 
-        Console.WriteLine(" [*] Waiting for messages.");
-
-        var consumer = new EventingBasicConsumer(channel);
+    public Task StartConsumer(string topic, IConsumer.ProcessMessage onMessage)
+    {
+        var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += (model, ea) =>
         {
             var body = ea.Body.ToArray();
@@ -30,7 +31,7 @@ public class RabbitConsumer
                 $"{topic} = {message} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
             onMessage(topic, message);
         };
-        channel.BasicConsume(queue: topic,
+        _channel.BasicConsume(queue: topic,
             autoAck: true,
             consumer: consumer);
 

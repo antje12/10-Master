@@ -1,26 +1,30 @@
 ﻿using System.Text;
+using ClassLibrary.Interfaces;
 using RabbitMQ.Client;
 
-namespace ClassLibrary;
+namespace ClassLibrary.RabbitMQ;
 
-public class RabbitProducer
+public class RabbitProducer : IProducer
 {
-    public void Produce(string topic, string message)
-    {
-        var factory = new ConnectionFactory { HostName = "localhost" };
-        using var connection = factory.CreateConnection();
-        using var channel = connection.CreateChannel();
+    private readonly IChannel _channel;
 
-        channel.QueueDeclare(queue: topic,
+    public RabbitProducer(string topic)
+    {
+        var factory = new ConnectionFactory {HostName = "localhost"};
+        var connection = factory.CreateConnection();
+        _channel = connection.CreateChannel();
+        _channel.QueueDeclare(queue: topic,
             durable: false,
             exclusive: false,
             autoDelete: false,
             arguments: null);
+    }
 
-        var body = Encoding.UTF8.GetBytes(message);
-
-        Console.WriteLine($"{topic} = {message} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
-        channel.BasicPublishAsync(
+    public void Produce(string topic, string key, string value)
+    {
+        var body = Encoding.UTF8.GetBytes(value);
+        Console.WriteLine($"{topic} = {value} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+        _channel.BasicPublish(
             exchange: string.Empty,
             routingKey: topic,
             body: body);

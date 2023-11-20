@@ -1,13 +1,19 @@
-﻿using ClassLibrary;
+﻿using ClassLibrary.Interfaces;
+using ClassLibrary.Kafka;
+using ClassLibrary.RabbitMQ;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
+
+namespace ConsumerApp;
 
 class Program
 {
     private const string _kafkaServers = "localhost:19092";
     private const string _groupId = "msg-group";
     private const string _schemaRegistry = "localhost:8081";
+
+    private static CancellationTokenSource _cts;
 
     private static KafkaAdministrator _a;
     private static KafkaProducer _p;
@@ -16,28 +22,11 @@ class Program
     private static RabbitProducer _rp;
     private static RabbitConsumer _rc;
 
-    private static void SendKafkaResponse(string key, string value)
+    private static void Setup()
     {
-        _p.Produce("output", key, value);
-    }
-
-    private static void SendRabbitResponse(string key, string value)
-    {
-        _rp.Produce("output", value);
-    }
-
-    static async Task Main()
-    {
-        await KafkaRun();
-        //RabbitRun();
-    }
-
-    private static async Task KafkaRun()
-    {
-        var adminConfig = new AdminClientConfig
-        {
-            BootstrapServers = _kafkaServers
-        };
+        var adminConfig = new AdminClientConfig {BootstrapServers = _kafkaServers};
+        var schemaRegistryConfig = new SchemaRegistryConfig {Url = _schemaRegistry};
+        var avroSerializerConfig = new AvroSerializerConfig {BufferBytes = 100};
         var producerConfig = new ProducerConfig
         {
             BootstrapServers = _kafkaServers,
@@ -51,40 +40,50 @@ class Program
             GroupId = _groupId,
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
-        var schemaRegistryConfig = new SchemaRegistryConfig
-        {
-            Url = _schemaRegistry
-        };
-        var avroSerializerConfig = new AvroSerializerConfig
-        {
-            BufferBytes = 100
-        };
 
-        Console.WriteLine("Hello, World!");
+        _cts = new CancellationTokenSource();
 
         _a = new KafkaAdministrator(adminConfig);
-        await _a.Setup("input");
-        await _a.Setup("output");
+        _p = new KafkaProducer(producerConfig, schemaRegistryConfig, avroSerializerConfig);
+        _c = new KafkaConsumer(consumerConfig, schemaRegistryConfig, _cts);
 
-        _p = new KafkaProducer(producerConfig,
-            schemaRegistryConfig,
-            avroSerializerConfig);
+        _rp = new RabbitProducer("output");
+        IConsumer.ProcessMessage action = SendKafkaResponse;
+        _rc = new RabbitConsumer("input");
+    }
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        _c = new KafkaConsumer(consumerConfig,
-            schemaRegistryConfig,
-            cancellationTokenSource);
+    private static void SendKafkaResponse(string key, string value)
+    {
+        _p.Produce("output", key, value);
+    }
 
-        KafkaConsumer.OnMessage action = SendKafkaResponse;
+    private static void SendRabbitResponse(string key, string value)
+    {
+        _rp.Produce("output", key, value);
+    }
+
+    static async Task Main()
+    {
+        Setup();
+        //await KafkaRun();
+        RabbitRun();
+    }
+
+    private static async Task KafkaRun()
+    {
+        Console.WriteLine("Kafka Consumer Started");
+        await _a.CreateTopic("input");
+        await _a.CreateTopic("output");
+        
+        IConsumer.ProcessMessage action = SendKafkaResponse;
         await _c.StartConsumer("input", action);
     }
 
     private static void RabbitRun()
     {
-        var cts = new CancellationTokenSource();
-        _rp = new RabbitProducer();
-        _rc = new RabbitConsumer();
-        RabbitConsumer.OnMessage ac = SendRabbitResponse;
-        _rc.StartConsumer("input", ac);
+        Console.WriteLine("RabbitMQ Consumer Started");
+        
+        IConsumer.ProcessMessage action = SendRabbitResponse;
+        _rc.StartConsumer("input", action);
     }
 }

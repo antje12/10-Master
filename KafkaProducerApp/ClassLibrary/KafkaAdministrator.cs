@@ -3,12 +3,12 @@ using Confluent.Kafka.Admin;
 
 namespace ClassLibrary;
 
-public class Administrator
+public class KafkaAdministrator
 {
     private readonly AdminClientConfig _adminClientConfig;
     private readonly IAdminClient _adminClient;
     
-    public Administrator(AdminClientConfig adminClientConfig)
+    public KafkaAdministrator(AdminClientConfig adminClientConfig)
     {
         _adminClientConfig = adminClientConfig;
         _adminClient = new AdminClientBuilder(_adminClientConfig).Build();

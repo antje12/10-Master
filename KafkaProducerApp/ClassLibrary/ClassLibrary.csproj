@@ -10,6 +10,7 @@
       <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
       <PackageReference Include="Confluent.SchemaRegistry" Version="2.3.0" />
       <PackageReference Include="Confluent.SchemaRegistry.Serdes.Avro" Version="2.3.0" />
+      <PackageReference Include="RabbitMQ.Client" Version="7.0.0-alpha.0" />
     </ItemGroup>
 
 </Project>

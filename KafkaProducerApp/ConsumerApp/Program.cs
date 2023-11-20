@@ -9,12 +9,19 @@ class Program
     private const string _groupId = "msg-group";
     private const string _schemaRegistry = "localhost:8081";
 
-    private static Administrator _a;
-    private static Producer _p;
-    private static Consumer _c;
+    private static KafkaAdministrator _a;
+    private static KafkaProducer _p;
+    private static KafkaConsumer _c;
+    
+    private static RabbitProducer _rp;
+    private static RabbitConsumer _rc;
 
-    private static void SendResponse(string key, string value) {
-        _p.Produce("output", "key", $"message");
+    private static void SendKafkaResponse(string key, string value) {
+        _p.Produce("output", key, value);
+    }
+
+    private static void SendRabbitResponse(string key, string value) {
+        _rp.Produce("output", value);
     }
     
     static async Task Main()
@@ -46,21 +53,28 @@ class Program
         };
 
         Console.WriteLine("Hello, World!");
+
+        //var cts = new CancellationTokenSource();
+        //_rp = new RabbitProducer();
+        //_rc = new RabbitConsumer();
+        //RabbitConsumer.OnMessage ac = SendRabbitResponse;
+        //_rc.StartConsumer("input", ac);
+        //return;
         
-        _a = new Administrator(adminConfig);
+        _a = new KafkaAdministrator(adminConfig);
         await _a.Setup("input");
         await _a.Setup("output");
         
-        _p = new Producer(producerConfig,
+        _p = new KafkaProducer(producerConfig,
             schemaRegistryConfig,
             avroSerializerConfig);
         
         var cancellationTokenSource = new CancellationTokenSource();
-        _c = new Consumer(consumerConfig,
+        _c = new KafkaConsumer(consumerConfig,
             schemaRegistryConfig,
             cancellationTokenSource);
 
-        Consumer.OnMessage action = SendResponse;
+        KafkaConsumer.OnMessage action = SendKafkaResponse;
         await _c.StartConsumer("input", action);
     }
 }

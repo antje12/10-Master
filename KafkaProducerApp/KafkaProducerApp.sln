@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaProducerApp", "KafkaProducerApp\KafkaProducerApp.csproj", "{F923E171-CEB6-4986-A326-BE8B9A48F6E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProducerApp", "ProducerApp\ProducerApp.csproj", "{F923E171-CEB6-4986-A326-BE8B9A48F6E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaConsumerApp", "KafkaConsumerApp\KafkaConsumerApp.csproj", "{B053B509-923B-4CD8-81AA-F328F468D156}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsumerApp", "ConsumerApp\ConsumerApp.csproj", "{B053B509-923B-4CD8-81AA-F328F468D156}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{9669598A-5D1D-4F33-AC11-9912E7A684FD}"
 EndProject

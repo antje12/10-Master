@@ -4,7 +4,7 @@ using Confluent.SchemaRegistry.Serdes;
 
 namespace ClassLibrary;
 
-public class Producer
+public class KafkaProducer
 {
     private readonly ProducerConfig _producerConfig;
     private readonly SchemaRegistryConfig _schemaRegistryConfig;
@@ -13,7 +13,7 @@ public class Producer
     private readonly CachedSchemaRegistryClient _schemaRegistry;
     private readonly IProducer<string, string> _producer;
 
-    public Producer(
+    public KafkaProducer(
         ProducerConfig producerConfig,
         SchemaRegistryConfig schemaRegistryConfig,
         AvroSerializerConfig avroSerializerConfig)

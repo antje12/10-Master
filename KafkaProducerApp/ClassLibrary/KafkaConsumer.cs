@@ -5,7 +5,7 @@ using Confluent.SchemaRegistry.Serdes;
 
 namespace ClassLibrary;
 
-public class Consumer
+public class KafkaConsumer
 {
     private readonly ConsumerConfig _consumerConfig;
     private readonly SchemaRegistryConfig _schemaRegistryConfig;
@@ -16,7 +16,7 @@ public class Consumer
 
     public delegate void OnMessage (string key, string message);
 
-    public Consumer(
+    public KafkaConsumer(
         ConsumerConfig consumerConfig,
         SchemaRegistryConfig schemaRegistryConfig,
         CancellationTokenSource cancellationTokenSource)

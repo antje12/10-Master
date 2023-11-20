@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+        <RootNamespace>KafkaConsumerApp</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,7 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
-      <ProjectReference Include="..\KafkaProducerApp\KafkaProducerApp.csproj" />
+      <ProjectReference Include="..\ProducerApp\ProducerApp.csproj" />
     </ItemGroup>
 
 </Project>

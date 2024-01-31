@@ -22,6 +22,14 @@ class Program
     //private static RabbitProducer _rp;
     //private static RabbitConsumer _rc;
 
+    private class coord
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+    }
+
+    private static Dictionary<string, coord> _state;
+
     private static void Setup()
     {
         var adminConfig = new AdminClientConfig {BootstrapServers = _kafkaServers};
@@ -50,10 +58,32 @@ class Program
         //_rp = new RabbitProducer("output");
         IConsumer.ProcessMessage action = SendKafkaResponse;
         //_rc = new RabbitConsumer("input", _cts);
+
+        _state = new Dictionary<string, coord>();
     }
 
     private static void SendKafkaResponse(string key, string value)
     {
+        if (!_state.ContainsKey(key))
+        {
+            _state.Add(key, new coord{X = 0, Y = 0});
+        }
+        switch (value)
+        {
+            case "up":
+                _state[key].Y += 1;
+                break;
+            case "down":
+                _state[key].Y -= 1;
+                break;
+            case "left":
+                _state[key].X -= 1;
+                break;
+            case "right":
+                _state[key].X += 1;
+                break;
+        }
+        value = $"{_state[key].X}.{_state[key].Y}";
         _p.Produce("output", key, value);
     }
 

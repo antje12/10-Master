@@ -69,11 +69,11 @@ services:
     depends_on:
       - kowl
 
-  producer-service:
-    container_name: producer-service
-    build:
-      context: ./Demo Projects/BrokerDemoApp
-      dockerfile: ProducerApp/Dockerfile
-    restart: unless-stopped
-    depends_on:
-      - consumer-service
+  #producer-service:
+  #  container_name: producer-service
+  #  build:
+  #    context: ./Demo Projects/BrokerDemoApp
+  #    dockerfile: ProducerApp/Dockerfile
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - consumer-service

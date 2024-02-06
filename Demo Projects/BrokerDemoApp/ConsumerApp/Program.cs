@@ -30,6 +30,13 @@ class Program
 
     private static Dictionary<string, coord> _state;
 
+    static async Task Main()
+    {
+        Setup();
+        await KafkaRun();
+        //await RabbitRun();
+    }
+    
     private static void Setup()
     {
         var adminConfig = new AdminClientConfig {BootstrapServers = _kafkaServers};
@@ -56,7 +63,6 @@ class Program
         _c = new KafkaConsumer(consumerConfig, schemaRegistryConfig, _cts);
 
         //_rp = new RabbitProducer("output");
-        IConsumer.ProcessMessage action = SendKafkaResponse;
         //_rc = new RabbitConsumer("input", _cts);
 
         _state = new Dictionary<string, coord>();
@@ -87,18 +93,6 @@ class Program
         _p.Produce("output", key, value);
     }
 
-    private static void SendRabbitResponse(string key, string value)
-    {
-        //_rp.Produce("output", key, value);
-    }
-
-    static async Task Main()
-    {
-        Setup();
-        await KafkaRun();
-        //await RabbitRun();
-    }
-
     private static async Task KafkaRun()
     {
         Console.WriteLine("Kafka Consumer Started");
@@ -109,11 +103,15 @@ class Program
         await _c.StartConsumer("input", action);
     }
 
-    private static async Task RabbitRun()
-    {
-        //Console.WriteLine("RabbitMQ Consumer Started");
-        //
-        //IConsumer.ProcessMessage action = SendRabbitResponse;
-        //await _rc.StartConsumer("input", action);
-    }
+    //private static void SendRabbitResponse(string key, string value)
+    //{
+    //    _rp.Produce("output", key, value);
+    //}
+
+    //private static async Task RabbitRun()
+    //{
+    //    Console.WriteLine("RabbitMQ Consumer Started");
+    //    IConsumer.ProcessMessage action = SendRabbitResponse;
+    //    await _rc.StartConsumer("input", action);
+    //}
 }

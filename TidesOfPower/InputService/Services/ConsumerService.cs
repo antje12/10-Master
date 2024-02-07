@@ -1,4 +1,7 @@
-﻿using Confluent.Kafka;
+﻿using ClassLibrary.Interfaces;
+using ClassLibrary.Kafka;
+using Confluent.Kafka;
+using Confluent.SchemaRegistry;
 using InputService.Interfaces;
 
 namespace InputService.Services;
@@ -7,56 +10,63 @@ namespace InputService.Services;
 //https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class ConsumerService : BackgroundService, IConsumerService
 {
-    private readonly IConsumer<Ignore, string> _consumer;
-    private bool _isRunning;
-    public bool IsRunning => _isRunning;
-    
+    private const string Topic = "input";
+    private const string GroupId = "msg-group";
+    private const string KafkaServers = "localhost:19092";
+    private const string SchemaRegistry = "localhost:8081";
+
+    private readonly SchemaRegistryConfig _schemaRegistryConfig = new()
+    {
+        Url = SchemaRegistry
+    };
+
+    private readonly AdminClientConfig _adminConfig = new()
+    {
+        BootstrapServers = KafkaServers
+    };
+
+    private readonly ProducerConfig _producerConfig = new()
+    {
+        BootstrapServers = KafkaServers,
+        Acks = Acks.None,
+        LingerMs = 0,
+        BatchSize = 1
+    };
+
+    private readonly ConsumerConfig _consumerConfig = new()
+    {
+        BootstrapServers = KafkaServers,
+        GroupId = GroupId,
+        AutoOffsetReset = AutoOffsetReset.Earliest
+    };
+
+    private readonly KafkaAdministrator _admin;
+    private readonly KafkaProducer _producer;
+    private readonly KafkaConsumer _consumer;
+
+    public bool IsRunning { get; private set; }
+
     public ConsumerService()
     {
-        Console.WriteLine($"ConsumerService");
-        var consumerConfig = new ConsumerConfig
-        {
-            BootstrapServers = "localhost:19092",
-            GroupId = "msg-group",
-            AutoOffsetReset = AutoOffsetReset.Earliest
-        };
-
-        _consumer = new ConsumerBuilder<Ignore, string>(consumerConfig).Build();
+        Console.WriteLine($"ConsumerService created");
+        _admin = new KafkaAdministrator(_adminConfig);
+        _producer = new KafkaProducer(_producerConfig, _schemaRegistryConfig);
+        _consumer = new KafkaConsumer(_consumerConfig, _schemaRegistryConfig);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken ct)
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
-        _isRunning = true;
-        Console.WriteLine($"ExecuteAsync");
-        _consumer.Subscribe("InventoryUpdates");
 
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            ProcessKafkaMessage(stoppingToken);
+        IsRunning = true;
+        Console.WriteLine($"ConsumerService started");
 
-            Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-        }
+        await _admin.CreateTopic(Topic);
+        IConsumer.ProcessMessage action = null;
+        await _consumer.Consume(Topic, action, ct);
 
-        Console.WriteLine($"Done");
-        _consumer.Close();
-        _isRunning = false;
-    }
-
-    private void ProcessKafkaMessage(CancellationToken stoppingToken)
-    {
-        try
-        {
-            var consumeResult = _consumer.Consume(stoppingToken);
-
-            var message = consumeResult.Message.Value;
-
-            Console.WriteLine($"Received inventory update: {message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error processing Kafka message: {ex.Message}");
-        }
+        IsRunning = false;
+        Console.WriteLine($"ConsumerService stopped");
     }
 }

@@ -2,10 +2,11 @@ using InputService.Interfaces;
 using InputService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-//builder.Services.AddHostedService<ConsumerService>();
 
+//https://github.com/dotnet/runtime/issues/36063
 builder.Services.AddSingleton<IConsumerService, ConsumerService>();
 builder.Services.AddHostedService<IConsumerService>(provider => provider.GetService<IConsumerService>() ?? new ConsumerService());
+//builder.Services.AddHostedService<ConsumerService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

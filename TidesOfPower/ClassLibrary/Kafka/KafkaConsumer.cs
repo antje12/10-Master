@@ -21,14 +21,8 @@ public class KafkaConsumer : IConsumer
         _consumer = new ConsumerBuilder<string, string>(consumerConfig).Build();
     }
 
-    public Task Consume(string topic, IConsumer.ProcessMessage action, CancellationTokenSource cts)
+    public Task Consume(string topic, IConsumer.ProcessMessage action, CancellationToken ct)
     {
-        return Task.Run(() => ConsumeLoop(topic, action, cts.Token), cts.Token);
-    }
-
-    private Task ConsumeLoop(string topic, IConsumer.ProcessMessage onMessage, CancellationToken ct)
-    {
-        Console.WriteLine($"Starting consumption loop");
         _consumer.Subscribe(topic);
         while (!ct.IsCancellationRequested)
         {
@@ -36,11 +30,10 @@ public class KafkaConsumer : IConsumer
             var result = consumeResult.Message;
             Console.WriteLine(
                 $"{result.Key} = {result.Value} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
-            //onMessage(result.Key, result.Value);
+            //action(result.Key, result.Value);
         }
 
         _consumer.Close();
-        Console.WriteLine($"Ended consumption loop");
         return Task.CompletedTask;
     }
 }

@@ -1,8 +1,9 @@
-﻿using ClassLibrary.Interfaces;
+using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using Microsoft.AspNetCore.Mvc;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
+using InputService.Interfaces;
 
 namespace InputService.Controllers;
 
@@ -27,12 +28,15 @@ public class InputServiceController : ControllerBase
     private static KafkaConsumer _consumer;
     
     private static CancellationTokenSource? _cancellationTokenSource;
+    private readonly  IConsumerService _consumerService;
     private static Task? _task;
     
     private static int test = 0;
 
-    public InputServiceController()
+    public InputServiceController(IConsumerService consumerService)
     {
+        Console.WriteLine($"InputServiceController");
+        _consumerService = consumerService;
         var schemaRegistryConfig = new SchemaRegistryConfig
         {
             Url = _schemaRegistry
@@ -77,7 +81,7 @@ public class InputServiceController : ControllerBase
     [HttpGet("Status")]
     public object Status()
     {
-        return $"Service running = {!_cancellationTokenSource?.IsCancellationRequested ?? false}, Task status = {_task?.Status.ToString() ?? "Not Running"}";
+        return $"Service running = {!_cancellationTokenSource?.IsCancellationRequested ?? false}, alt = {_consumerService.IsRunning}";
     }
 
     [HttpGet("Start")]

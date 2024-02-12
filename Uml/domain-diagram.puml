@@ -31,6 +31,7 @@ class Treasure{
 class Weapon{
     damage
     range
+    type
 }
 class Projectile{
     coordinates

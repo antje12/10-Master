@@ -5,7 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 //https://github.com/dotnet/runtime/issues/36063
 builder.Services.AddSingleton<IConsumerService, ConsumerService>();
-builder.Services.AddHostedService<IConsumerService>(provider => provider.GetService<IConsumerService>() ?? new ConsumerService());
+builder.Services.AddHostedService<IConsumerService>(provider =>
+    provider.GetService<IConsumerService>() ?? new ConsumerService());
 //builder.Services.AddHostedService<ConsumerService>();
 
 builder.Services.AddControllers();

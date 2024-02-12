@@ -63,10 +63,14 @@ public class ConsumerService : BackgroundService, IConsumerService
         Console.WriteLine($"ConsumerService started");
 
         await _admin.CreateTopic(Topic);
-        IConsumer.ProcessMessage action = null;
+        IConsumer.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(Topic, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"ConsumerService stopped");
+    }
+
+    private void ProcessMessage(string key, string value)
+    {
     }
 }

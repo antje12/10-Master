@@ -1,0 +1,72 @@
+@startuml
+skinparam shadowing false
+'left to right direction
+'skinparam nodesep 5
+'skinparam ranksep 5
+
+'class Admin
+'class Game_World
+class Ocean{
+    wind direction
+}
+class Island{
+    shoreline
+}
+class Ship{
+    coordinates
+    lifepool
+}
+'class Obstacle
+class Player{
+    profile
+    coordinates
+    walk speed
+    lifepool
+    name
+}
+class Treasure{
+    coordinates
+    value
+}
+class Weapon{
+    damage
+    range
+}
+class Projectile{
+    coordinates
+    direction
+    timer
+}
+class Enemy{
+    agent policy
+    coordinates
+    walk speed
+    lifepool
+}
+
+'Admin "1..*" -- "*" Enemy : starts
+
+'Game_World "1" -- "1" Ocean : consists of >
+
+Ocean "1" -- "*" Ship : sailed by >
+Ocean "1" -- "1..*" Island : contains >
+'Ocean "1" -- "*" Obstacle : contains >
+
+'Island "1" -- "*" Obstacle : contains >
+Island "1" -- "*" Player : roamed by >
+Island "1" -- "*" Treasure : hides >
+Island "1" -- "*" Enemy : roamed by >
+
+Ship "1" -- "1" Weapon : attacks with >
+
+Player "1" -- "1" Ship : sails >
+Player "1" -- "2" Weapon : attacks with >
+Player "1" -- "*" Treasure : collects >
+
+Enemy "1" -- "2" Weapon : attacks with >
+Enemy "1" -- "*" Treasure : collects >
+Enemy "*" -- "*" Player : Chases >
+
+Weapon "1" -- "1" Projectile : fires >
+
+@enduml

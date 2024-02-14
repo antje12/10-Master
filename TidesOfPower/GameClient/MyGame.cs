@@ -24,8 +24,6 @@ public class MyGame : Game
     private const string KafkaServers = "localhost:19092";
     private const string SchemaRegistry = "localhost:8081";
 
-    private readonly Guid PlayerId = Guid.NewGuid();
-
     private readonly SchemaRegistryConfig _schemaRegistryConfig = new()
     {
         Url = SchemaRegistry
@@ -60,10 +58,12 @@ public class MyGame : Game
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<Input> _producer;
     private readonly KafkaConsumer<Output> _consumer;
-
-    Texture2D playerTexture;
+    
+    Guid playerId = Guid.NewGuid();
     Vector2 playerPosition;
     Vector2 enemyPosition;
+    
+    Texture2D playerTexture;
     Texture2D islandTexture;
     Texture2D oceanTexture;
 
@@ -90,15 +90,20 @@ public class MyGame : Game
         Console.WriteLine($"Got location: {value.Location.X}:{value.Location.Y}");
         playerPosition.X = value.Location.X;
         playerPosition.Y = value.Location.Y;
-
-        CorrectPosition(ref playerPosition);
-        CorrectPosition(ref enemyPosition);
     }
 
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-
+        int screenWidth = GraphicsDevice.Viewport.Width;
+        int screenHeight = GraphicsDevice.Viewport.Height;
+        
+        playerPosition.X = screenWidth / 2;
+        playerPosition.Y = screenHeight / 2;
+        
+        enemyPosition.X = screenWidth / 4;
+        enemyPosition.Y = screenHeight / 4;
+        
         base.Initialize();
     }
 
@@ -140,7 +145,7 @@ public class MyGame : Game
         {
             _producer.Produce(InputTopic, key, new Input()
             {
-                PlayerId = PlayerId,
+                PlayerId = playerId,
                 Location = new Coordinates()
                 {
                     X = playerPosition.X,
@@ -182,11 +187,11 @@ public class MyGame : Game
         _spriteBatch.Draw(oceanTexture, background, Color.White);
         _spriteBatch.Draw(islandTexture, island, Color.White);
 
-        _spriteBatch.Draw(playerTexture, playerPosition, null, Color.Green, 0f,
+        _spriteBatch.Draw(playerTexture, enemyPosition, null, Color.Red, 0f,
             new Vector2(playerTexture.Width / 2, playerTexture.Height / 2), Vector2.One,
             SpriteEffects.None,
             0f);
-        _spriteBatch.Draw(playerTexture, enemyPosition, null, Color.Red, 0f,
+        _spriteBatch.Draw(playerTexture, playerPosition, null, Color.Green, 0f,
             new Vector2(playerTexture.Width / 2, playerTexture.Height / 2), Vector2.One,
             SpriteEffects.None,
             0f);

@@ -1,7 +1,7 @@
 ﻿using Avro;
 using Avro.Specific;
 
-namespace ClassLibrary.Classes;
+namespace ClassLibrary.Classes.Client;
 
 public class Output : ISpecificRecord
 {

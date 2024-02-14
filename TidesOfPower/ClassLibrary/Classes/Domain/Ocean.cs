@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary.Classes;
+﻿namespace ClassLibrary.Classes.Domain;
 
 public class Ocean
 {

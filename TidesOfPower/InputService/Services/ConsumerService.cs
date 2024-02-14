@@ -1,4 +1,5 @@
 ﻿using ClassLibrary.Classes;
+using ClassLibrary.Classes.Client;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using Confluent.Kafka;

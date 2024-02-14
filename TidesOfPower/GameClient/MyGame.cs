@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.Classes;
+using ClassLibrary.Classes.Client;
 using ClassLibrary.Kafka;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.Classes;
@@ -18,6 +19,7 @@ public class MyGame : Game
 {
     private const string InputTopic = "input";
     private const string OutputTopic = "output";
+    private const string key = "temp";
     private const string GroupId = "msg-group";
     private const string KafkaServers = "localhost:19092";
     private const string SchemaRegistry = "localhost:8081";
@@ -88,6 +90,9 @@ public class MyGame : Game
         Console.WriteLine($"Got location: {value.Location.X}:{value.Location.Y}");
         playerPosition.X = value.Location.X;
         playerPosition.Y = value.Location.Y;
+
+        CorrectPosition(ref playerPosition);
+        CorrectPosition(ref enemyPosition);
     }
 
     protected override void Initialize()
@@ -116,20 +121,24 @@ public class MyGame : Game
         // TODO: Add your update logic here
         var kstate = Keyboard.GetState();
 
-        Direction? dir = null;
+        var keyInput = new List<GameKey>();
 
         if (kstate.IsKeyDown(Keys.W))
-            dir = Direction.North;
-        else if (kstate.IsKeyDown(Keys.S))
-            dir = Direction.South;
-        else if (kstate.IsKeyDown(Keys.A))
-            dir = Direction.East;
-        else if (kstate.IsKeyDown(Keys.D))
-            dir = Direction.West;
+            keyInput.Add(GameKey.Up);
+        if (kstate.IsKeyDown(Keys.S))
+            keyInput.Add(GameKey.Down);
+        if (kstate.IsKeyDown(Keys.A))
+            keyInput.Add(GameKey.Left);
+        if (kstate.IsKeyDown(Keys.D))
+            keyInput.Add(GameKey.Right);
+        if (kstate.IsKeyDown(Keys.Space))
+            keyInput.Add(GameKey.Attack);
+        if (kstate.IsKeyDown(Keys.E))
+            keyInput.Add(GameKey.Interact);
 
-        if (dir != null)
+        if (keyInput.Count > 0)
         {
-            _producer.Produce(InputTopic, "me", new Input()
+            _producer.Produce(InputTopic, key, new Input()
             {
                 PlayerId = PlayerId,
                 Location = new Coordinates()
@@ -137,13 +146,10 @@ public class MyGame : Game
                     X = playerPosition.X,
                     Y = playerPosition.Y
                 },
-                DirectionalInput = (Direction) dir,
+                KeyInput = keyInput,
                 Timer = gameTime.ElapsedGameTime.TotalSeconds
             });
         }
-
-        CorrectPosition(ref playerPosition);
-        CorrectPosition(ref enemyPosition);
 
         base.Update(gameTime);
     }

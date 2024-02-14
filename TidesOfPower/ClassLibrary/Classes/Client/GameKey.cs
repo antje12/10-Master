@@ -1,12 +1,11 @@
 ﻿namespace ClassLibrary.Classes.Client;
 
-public enum GameKeys
+public enum GameKey
 {
     Up,
     Down,
     Left,
     Right,
-    
     Attack,
-    Collect
+    Interact
 }

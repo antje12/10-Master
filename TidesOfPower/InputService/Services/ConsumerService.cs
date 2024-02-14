@@ -86,24 +86,29 @@ public class ConsumerService : BackgroundService, IConsumerService
             PlayerId = value.PlayerId,
             Location = value.Location
         };
-        switch (value.DirectionalInput)
+        foreach (var input in value.KeyInput)
         {
-            case Direction.North:
-                output.Location.Y -= 100 * (float) value.Timer;
-                break;
-            case Direction.South:
-                output.Location.Y += 100 * (float) value.Timer;
-                break;
-            case Direction.East:
-                output.Location.X -= 100 * (float) value.Timer;
-                break;
-            case Direction.West:
-                output.Location.X += 100 * (float) value.Timer;
-                break;
-            default:
-                break;
+            switch (input)
+            {
+                case GameKey.Up:
+                    output.Location.Y -= 100 * (float) value.Timer;
+                    break;
+                case GameKey.Down:
+                    output.Location.Y += 100 * (float) value.Timer;
+                    break;
+                case GameKey.Left:
+                    output.Location.X -= 100 * (float) value.Timer;
+                    break;
+                case GameKey.Right:
+                    output.Location.X += 100 * (float) value.Timer;
+                    break;
+                case GameKey.Attack:
+                case GameKey.Interact:
+                default:
+                    break;
+            }
         }
 
-        _producer.Produce(OutputTopic, "me", output);
+        _producer.Produce(OutputTopic, key, output);
     }
 }

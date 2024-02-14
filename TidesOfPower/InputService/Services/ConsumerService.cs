@@ -1,7 +1,9 @@
-﻿using ClassLibrary.Interfaces;
+﻿using ClassLibrary.Classes;
+using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
 using InputService.Interfaces;
 
 namespace InputService.Services;
@@ -10,7 +12,8 @@ namespace InputService.Services;
 //https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class ConsumerService : BackgroundService, IConsumerService
 {
-    private const string Topic = "input";
+    private const string InputTopic = "input";
+    private const string OutputTopic = "output";
     private const string GroupId = "msg-group";
     private const string KafkaServers = "localhost:19092";
     private const string SchemaRegistry = "localhost:8081";
@@ -18,6 +21,11 @@ public class ConsumerService : BackgroundService, IConsumerService
     private readonly SchemaRegistryConfig _schemaRegistryConfig = new()
     {
         Url = SchemaRegistry
+    };
+    
+    private readonly AvroSerializerConfig _avroSerializerConfig = new()
+    {
+        BufferBytes = 100
     };
 
     private readonly AdminClientConfig _adminConfig = new()
@@ -41,8 +49,8 @@ public class ConsumerService : BackgroundService, IConsumerService
     };
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer _producer;
-    private readonly KafkaConsumer _consumer;
+    private readonly KafkaProducer<Output> _producer;
+    private readonly KafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
 
@@ -50,8 +58,8 @@ public class ConsumerService : BackgroundService, IConsumerService
     {
         Console.WriteLine($"ConsumerService created");
         _admin = new KafkaAdministrator(_adminConfig);
-        _producer = new KafkaProducer(_producerConfig, _schemaRegistryConfig);
-        _consumer = new KafkaConsumer(_consumerConfig, _schemaRegistryConfig);
+        _producer = new KafkaProducer<Output>(_producerConfig, _schemaRegistryConfig, _avroSerializerConfig);
+        _consumer = new KafkaConsumer<Input>(_consumerConfig, _schemaRegistryConfig);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -62,15 +70,39 @@ public class ConsumerService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine($"ConsumerService started");
 
-        await _admin.CreateTopic(Topic);
-        IConsumer.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(Topic, action, ct);
+        await _admin.CreateTopic(InputTopic);
+        IConsumer<Input>.ProcessMessage action = ProcessMessage;
+        await _consumer.Consume(InputTopic, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"ConsumerService stopped");
     }
 
-    private void ProcessMessage(string key, string value)
+    private void ProcessMessage(string key, Input value)
     {
+        var output = new Output()
+        {
+            PlayerId = value.PlayerId,
+            Location = value.Location
+        };
+        switch (value.DirectionalInput)
+        {
+            case Direction.North:
+                output.Location.Y -= 100 * (float) value.Timer;
+                break;
+            case Direction.South:
+                output.Location.Y += 100 * (float) value.Timer;
+                break;
+            case Direction.East:
+                output.Location.X -= 100 * (float) value.Timer;
+                break;
+            case Direction.West:
+                output.Location.X += 100 * (float) value.Timer;
+                break;
+            default:
+                break;
+        }
+
+        _producer.Produce(OutputTopic, "me", output);
     }
 }

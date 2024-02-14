@@ -1,6 +1,8 @@
-﻿namespace ClassLibrary.Interfaces;
+﻿using Avro.Specific;
 
-public interface IProducer
+namespace ClassLibrary.Interfaces;
+
+public interface IProducer<T> where T : ISpecificRecord
 {
-    void Produce(string topic, string key, string value);
+    void Produce(string topic, string key, T value);
 }

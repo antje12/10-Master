@@ -2,6 +2,8 @@
 
 public enum Direction
 {
+    Stay,
+    
     North, 
     South, 
     East, 

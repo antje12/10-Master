@@ -1,8 +1,10 @@
-﻿namespace ClassLibrary.Interfaces;
+﻿using Avro.Specific;
 
-public interface IConsumer
+namespace ClassLibrary.Interfaces;
+
+public interface IConsumer<T> where T : ISpecificRecord
 {
-    delegate void ProcessMessage(string key, string value);
+    delegate void ProcessMessage(string key, T value);
 
     Task Consume(string topic, ProcessMessage action, CancellationToken ct);
 }

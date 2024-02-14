@@ -1,23 +1,36 @@
-﻿using ClassLibrary.Classes;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using ClassLibrary.Classes;
 using ClassLibrary.Kafka;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ClassLibrary.Interfaces;
+using Confluent.SchemaRegistry.Serdes;
 
 namespace GameClient;
 
 public class MyGame : Game
 {
-    private const string Topic = "input";
+    private const string InputTopic = "input";
+    private const string OutputTopic = "output";
     private const string GroupId = "msg-group";
     private const string KafkaServers = "localhost:19092";
     private const string SchemaRegistry = "localhost:8081";
 
+    private readonly Guid PlayerId = Guid.NewGuid();
+
     private readonly SchemaRegistryConfig _schemaRegistryConfig = new()
     {
         Url = SchemaRegistry
+    };
+
+    private readonly AvroSerializerConfig _avroSerializerConfig = new()
+    {
+        BufferBytes = 100
     };
 
     private readonly AdminClientConfig _adminConfig = new()
@@ -40,10 +53,11 @@ public class MyGame : Game
         AutoOffsetReset = AutoOffsetReset.Earliest
     };
 
+    private static CancellationTokenSource _cts;
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer _producer;
-    private readonly KafkaConsumer _consumer;
-    
+    private readonly KafkaProducer<Input> _producer;
+    private readonly KafkaConsumer<Output> _consumer;
+
     Texture2D playerTexture;
     Vector2 playerPosition;
     Vector2 enemyPosition;
@@ -58,10 +72,21 @@ public class MyGame : Game
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        
+
         _admin = new KafkaAdministrator(_adminConfig);
-        _producer = new KafkaProducer(_producerConfig, _schemaRegistryConfig);
-        _consumer = new KafkaConsumer(_consumerConfig, _schemaRegistryConfig);
+        _producer = new KafkaProducer<Input>(_producerConfig, _schemaRegistryConfig, _avroSerializerConfig);
+        _consumer = new KafkaConsumer<Output>(_consumerConfig, _schemaRegistryConfig);
+
+        _cts = new CancellationTokenSource();
+        IConsumer<Output>.ProcessMessage action = ProcessMessage;
+        Task.Run(() => _consumer.Consume(OutputTopic, action, _cts.Token), _cts.Token);
+    }
+
+    private void ProcessMessage(string key, Output value)
+    {
+        Console.WriteLine($"Got location: {value.Location.X}:{value.Location.Y}");
+        playerPosition.X = value.Location.X;
+        playerPosition.Y = value.Location.Y;
     }
 
     protected override void Initialize()
@@ -86,41 +111,36 @@ public class MyGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-        
+
         // TODO: Add your update logic here
         var kstate = Keyboard.GetState();
 
         Direction? dir = null;
 
         if (kstate.IsKeyDown(Keys.W))
-        {
-            playerPosition.Y -= 100 * (float) gameTime.ElapsedGameTime.TotalSeconds;
             dir = Direction.North;
-        }
-
-        if (kstate.IsKeyDown(Keys.S))
-        {
-            playerPosition.Y += 100 * (float) gameTime.ElapsedGameTime.TotalSeconds;
+        else if (kstate.IsKeyDown(Keys.S))
             dir = Direction.South;
-        }
-
-        if (kstate.IsKeyDown(Keys.A))
-        {
-            playerPosition.X -= 100 * (float) gameTime.ElapsedGameTime.TotalSeconds;
+        else if (kstate.IsKeyDown(Keys.A))
             dir = Direction.East;
-        }
-
-        if (kstate.IsKeyDown(Keys.D))
-        {
-            playerPosition.X += 100 * (float) gameTime.ElapsedGameTime.TotalSeconds;
+        else if (kstate.IsKeyDown(Keys.D))
             dir = Direction.West;
-        }
 
         if (dir != null)
         {
-            _producer.Produce(Topic, "me", dir.ToString() ?? string.Empty);
+            _producer.Produce(InputTopic, "me", new Input()
+            {
+                PlayerId = PlayerId,
+                Location = new Coordinates()
+                {
+                    X = playerPosition.X,
+                    Y = playerPosition.Y
+                },
+                DirectionalInput = (Direction) dir,
+                Timer = gameTime.ElapsedGameTime.TotalSeconds
+            });
         }
-        
+
         CorrectPosition(ref playerPosition);
         CorrectPosition(ref enemyPosition);
 
@@ -147,7 +167,7 @@ public class MyGame : Game
         int screenWidth = GraphicsDevice.Viewport.Width;
         int screenHeight = GraphicsDevice.Viewport.Height;
         Rectangle background = new Rectangle(0, 0, screenWidth, screenHeight);
-        Rectangle island = new Rectangle(screenWidth/2, screenHeight/2, 100, 100);
+        Rectangle island = new Rectangle(screenWidth / 2, screenHeight / 2, 100, 100);
 
         // TODO: Add your drawing code here
         _spriteBatch.Begin();

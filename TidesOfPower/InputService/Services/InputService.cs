@@ -74,6 +74,7 @@ public class InputService : BackgroundService, IConsumerService
             }
         }
 
-        _producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
+        //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
+        _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);
     }
 }

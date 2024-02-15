@@ -61,9 +61,11 @@ public class Player : Base
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(Texture, Position, null, Color.Green, 0f,
-            new Vector2(Texture.Width / 2, Texture.Height / 2), Vector2.One,
-            SpriteEffects.None,
-            0f);
+        var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
+        spriteBatch.Draw(Texture, offset, Color.Green);
+        //spriteBatch.Draw(Texture, Position, null, Color.Green, 0f,
+        //    new Vector2(Texture.Width / 2, Texture.Height / 2), Vector2.One,
+        //    SpriteEffects.None,
+        //    0f);
     }
 }

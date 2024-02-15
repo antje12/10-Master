@@ -8,15 +8,17 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ClassLibrary.Interfaces;
 using GameClient.Core;
-using GameClient.Entities;
 
 namespace GameClient;
 
 public class MyGame : Game
 {
     private const string GroupId = "output-group";
+
     private static Guid playerId = Guid.NewGuid();
-    private string Output = $"{KafkaTopic.LocalState}_{playerId.ToString()}";
+
+    //private string Output = $"{KafkaTopic.LocalState}_{playerId.ToString()}";
+    private string Output = KafkaTopic.LocalState.ToString();
 
     private static CancellationTokenSource _cts;
     private readonly KafkaConfig _config;
@@ -24,12 +26,12 @@ public class MyGame : Game
     private readonly KafkaProducer<Input> _producer;
     private readonly KafkaConsumer<Output> _consumer;
 
-    Texture2D avatarTexture;
-    Texture2D islandTexture;
-    Texture2D oceanTexture;
+    Texture2D avatarTexture; //50x50
+    Texture2D islandTexture; //64x64
+    Texture2D oceanTexture; //64x64
 
-    private Player player;
-    private Enemy enemy;
+    private Entities.Player player;
+    private Entities.Enemy enemy;
 
     private Camera _camera;
     private GraphicsDeviceManager _graphics;
@@ -66,7 +68,7 @@ public class MyGame : Game
         // TODO: Add your initialization logic here
         screenWidth = GraphicsDevice.Viewport.Width;
         screenHeight = GraphicsDevice.Viewport.Height;
-        
+
         base.Initialize();
     }
 
@@ -81,9 +83,9 @@ public class MyGame : Game
 
         _camera = new Camera();
         var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
-        var enemyPosition = new Vector2(screenWidth / 4, screenHeight / 4);
-        player = new Player(playerPosition, avatarTexture, _camera, playerId, _producer);
-        enemy = new Enemy(enemyPosition, avatarTexture);
+        var enemyPosition = new Vector2(0, 0);
+        player = new Entities.Player(playerPosition, avatarTexture, _camera, playerId, _producer);
+        enemy = new Entities.Enemy(enemyPosition, avatarTexture);
     }
 
     protected override void Update(GameTime gameTime)
@@ -103,12 +105,28 @@ public class MyGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        Rectangle background = new Rectangle(0, 0, screenWidth * 5, screenHeight * 5);
-        Rectangle island = new Rectangle(screenWidth / 2, screenHeight / 2, 100, 100);
 
         // TODO: Add your drawing code here
         _spriteBatch.Begin(transformMatrix: _camera.Transform);
+        //_spriteBatch.Begin();
 
+        var testX = player.Position.X - 64;
+        //var offsetX = testX % 64;
+        //testX -= offsetX;
+
+        var testY = player.Position.Y - 64;
+        //var offsetY = testY % 64;
+        //testY -= offsetY;
+
+        var bgStartX = 0;
+        var bgStartY = 0;
+
+        Console.WriteLine($"{testX}:{testY}");
+
+        var bgWidth = screenWidth;
+        var bgHeight = screenHeight;
+
+        Rectangle background = new Rectangle((int) testX, (int) testY, 128, 128);
         //_spriteBatch.Draw(oceanTexture, background, Color.White);
         // Draw the repeating texture using a loop to cover the entire destination rectangle
         for (int y = background.Top; y < background.Bottom; y += oceanTexture.Height)
@@ -119,7 +137,11 @@ public class MyGame : Game
             }
         }
 
-        _spriteBatch.Draw(islandTexture, island, Color.White);
+        //Rectangle island = new Rectangle(screenWidth / 2, screenHeight / 2, 64, 64);
+        //_spriteBatch.Draw(islandTexture, island, Color.White);
+        
+        _spriteBatch.Draw(islandTexture, new Vector2(0, 0), Color.White);
+
         enemy.Draw(gameTime, _spriteBatch);
         player.Draw(gameTime, _spriteBatch);
 

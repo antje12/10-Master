@@ -4,9 +4,9 @@ using InputService.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 //https://github.com/dotnet/runtime/issues/36063
-builder.Services.AddSingleton<IConsumerService, ConsumerService>();
+builder.Services.AddSingleton<IConsumerService, InputService.Services.InputService>();
 builder.Services.AddHostedService<IConsumerService>(provider =>
-    provider.GetService<IConsumerService>() ?? new ConsumerService());
+    provider.GetService<IConsumerService>() ?? new InputService.Services.InputService());
 //builder.Services.AddHostedService<ConsumerService>();
 
 builder.Services.AddControllers();

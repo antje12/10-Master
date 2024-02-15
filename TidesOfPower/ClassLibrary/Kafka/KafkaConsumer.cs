@@ -12,21 +12,24 @@ public class KafkaConsumer<T> : IConsumer<T> where T : ISpecificRecord
     private readonly CachedSchemaRegistryClient _schemaRegistry;
     private readonly IConsumer<string, T> _consumer;
 
-    public KafkaConsumer(
-        ConsumerConfig consumerConfig,
-        SchemaRegistryConfig schemaRegistryConfig)
+    public KafkaConsumer(KafkaConfig config)
     {
-        _schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
-        _consumer = new ConsumerBuilder<string, T>(consumerConfig)
+        _schemaRegistry = new CachedSchemaRegistryClient(config.SchemaRegistryConfig);
+        _consumer = new ConsumerBuilder<string, T>(config.ConsumerConfig)
             .SetValueDeserializer(new AvroDeserializer<T>(_schemaRegistry).AsSyncOverAsync())
             .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
             .Build();
         //_consumer = new ConsumerBuilder<string, T>(consumerConfig).Build();
     }
 
+    public async Task Consume(KafkaTopic topic, IConsumer<T>.ProcessMessage action, CancellationToken ct)
+    {
+        await Consume(topic.ToString(), action, ct);
+    }
+
     public Task Consume(string topic, IConsumer<T>.ProcessMessage action, CancellationToken ct)
     {
-        _consumer.Subscribe(topic);
+        _consumer.Subscribe(topic.ToString());
         while (!ct.IsCancellationRequested)
         {
             var consumeResult = _consumer.Consume(ct);

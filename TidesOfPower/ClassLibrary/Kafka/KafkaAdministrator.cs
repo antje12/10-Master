@@ -8,9 +8,14 @@ public class KafkaAdministrator : IAdministrator
 {
     private readonly IAdminClient _adminClient;
 
-    public KafkaAdministrator(AdminClientConfig adminClientConfig)
+    public KafkaAdministrator(KafkaConfig config)
     {
-        _adminClient = new AdminClientBuilder(adminClientConfig).Build();
+        _adminClient = new AdminClientBuilder(config.AdminConfig).Build();
+    }
+
+    public async Task CreateTopic(KafkaTopic topic)
+    {
+        await CreateTopic(topic.ToString());
     }
 
     public async Task CreateTopic(string topic)
@@ -18,11 +23,11 @@ public class KafkaAdministrator : IAdministrator
         try
         {
             var metadata = _adminClient.GetMetadata(TimeSpan.FromSeconds(1));
-            if (metadata.Topics.All(x => x.Topic != topic))
+            if (metadata.Topics.All(x => x.Topic != topic.ToString()))
             {
                 await _adminClient.CreateTopicsAsync(new TopicSpecification[]
                 {
-                    new TopicSpecification {Name = topic, ReplicationFactor = 1, NumPartitions = 1}
+                    new() {Name = topic.ToString(), ReplicationFactor = 1, NumPartitions = 1}
                 });
             }
         }

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameClient.Entities;
 
-public class Enemy : Base
+public class Enemy : Sprite
 {
     public Enemy(Vector2 position, Texture2D texture) : base(position, texture)
     {

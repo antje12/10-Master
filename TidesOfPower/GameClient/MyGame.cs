@@ -52,24 +52,20 @@ public class MyGame : Game
         _admin.CreateTopic(Output);
         _producer = new KafkaProducer<Input>(_config);
         _consumer = new KafkaConsumer<Output>(_config);
-
-        _cts = new CancellationTokenSource();
-        IConsumer<Output>.ProcessMessage action = ProcessMessage;
-        Task.Run(() => _consumer.Consume(Output, action, _cts.Token), _cts.Token);
     }
 
-    private void ProcessMessage(string key, Output value)
-    {
-        player.Position = new Vector2(value.Location.X, value.Location.Y);
-    }
-
-    protected override void Initialize()
+    protected override async void Initialize()
     {
         // TODO: Add your initialization logic here
         screenWidth = GraphicsDevice.Viewport.Width;
         screenHeight = GraphicsDevice.Viewport.Height;
+        _camera = new Camera();
 
         base.Initialize();
+
+        _cts = new CancellationTokenSource();
+        IConsumer<Output>.ProcessMessage action = ProcessMessage;
+        await Task.Run(() => _consumer.Consume(Output, action, _cts.Token), _cts.Token);
     }
 
     protected override void LoadContent()
@@ -81,11 +77,15 @@ public class MyGame : Game
         islandTexture = Content.Load<Texture2D>("island");
         oceanTexture = Content.Load<Texture2D>("ocean");
 
-        _camera = new Camera();
         var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
         var enemyPosition = new Vector2(0, 0);
         player = new Entities.Player(playerPosition, avatarTexture, _camera, playerId, _producer);
         enemy = new Entities.Enemy(enemyPosition, avatarTexture);
+    }
+
+    private void ProcessMessage(string key, Output value)
+    {
+        player.Position = new Vector2(value.Location.X, value.Location.Y);
     }
 
     protected override void Update(GameTime gameTime)
@@ -104,29 +104,39 @@ public class MyGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
-
-
+        
         // TODO: Add your drawing code here
         _spriteBatch.Begin(transformMatrix: _camera.Transform);
         //_spriteBatch.Begin();
 
-        var testX = player.Position.X - 64;
-        //var offsetX = testX % 64;
-        //testX -= offsetX;
+        DrawBackground(gameTime, oceanTexture);
 
-        var testY = player.Position.Y - 64;
-        //var offsetY = testY % 64;
-        //testY -= offsetY;
+        //Rectangle island = new Rectangle(screenWidth / 2, screenHeight / 2, 64, 64);
+        //_spriteBatch.Draw(islandTexture, island, Color.White);
+        _spriteBatch.Draw(islandTexture, new Vector2(0, 0), Color.White);
 
-        var bgStartX = 0;
-        var bgStartY = 0;
+        enemy.Draw(gameTime, _spriteBatch);
+        player.Draw(gameTime, _spriteBatch);
 
-        Console.WriteLine($"{testX}:{testY}");
+        _spriteBatch.End();
 
-        var bgWidth = screenWidth;
-        var bgHeight = screenHeight;
+        base.Draw(gameTime);
+    }
 
-        Rectangle background = new Rectangle((int) testX, (int) testY, 128, 128);
+    private void DrawBackground(GameTime gameTime, Texture2D texture)
+    {
+        var startX = player.Position.X - screenWidth / 2 - texture.Width;
+        var offsetX = startX % texture.Width;
+        startX -= offsetX;
+
+        var startY = player.Position.Y - screenHeight / 2 - texture.Height;
+        var offsetY = startY % texture.Height;
+        startY -= offsetY;
+
+        var bgWidth = screenWidth + texture.Width * 2;
+        var bgHeight = screenHeight + texture.Height * 2;
+
+        Rectangle background = new Rectangle((int) startX, (int) startY, bgWidth, bgHeight);
         //_spriteBatch.Draw(oceanTexture, background, Color.White);
         // Draw the repeating texture using a loop to cover the entire destination rectangle
         for (int y = background.Top; y < background.Bottom; y += oceanTexture.Height)
@@ -136,17 +146,5 @@ public class MyGame : Game
                 _spriteBatch.Draw(oceanTexture, new Vector2(x, y), Color.White);
             }
         }
-
-        //Rectangle island = new Rectangle(screenWidth / 2, screenHeight / 2, 64, 64);
-        //_spriteBatch.Draw(islandTexture, island, Color.White);
-        
-        _spriteBatch.Draw(islandTexture, new Vector2(0, 0), Color.White);
-
-        enemy.Draw(gameTime, _spriteBatch);
-        player.Draw(gameTime, _spriteBatch);
-
-        _spriteBatch.End();
-
-        base.Draw(gameTime);
     }
 }

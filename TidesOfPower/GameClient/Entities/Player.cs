@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameClient.Entities;
 
-public class Player : Base
+public class Player : Sprite
 {
     private Guid _playerId;
     private Camera _camera;

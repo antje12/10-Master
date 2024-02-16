@@ -11,7 +11,6 @@ public class InputService : BackgroundService, IConsumerService
 {
     private const string GroupId = "input-group";
 
-    private readonly KafkaConfig _config;
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<Output> _producer;
     private readonly KafkaConsumer<Input> _consumer;
@@ -20,12 +19,12 @@ public class InputService : BackgroundService, IConsumerService
 
     public InputService()
     {
-        Console.WriteLine($"ConsumerService created");
-        _config = new KafkaConfig(GroupId);
-        _admin = new KafkaAdministrator(_config);
+        Console.WriteLine($"InputService created");
+        var config = new KafkaConfig(GroupId);
+        _admin = new KafkaAdministrator(config);
         _admin.CreateTopic(KafkaTopic.Input);
-        _producer = new KafkaProducer<Output>(_config);
-        _consumer = new KafkaConsumer<Input>(_config);
+        _producer = new KafkaProducer<Output>(config);
+        _consumer = new KafkaConsumer<Input>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -34,14 +33,14 @@ public class InputService : BackgroundService, IConsumerService
         await Task.Yield();
 
         IsRunning = true;
-        Console.WriteLine($"ConsumerService started");
+        Console.WriteLine($"InputService started");
 
         await _admin.CreateTopic(KafkaTopic.Input);
         IConsumer<Input>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(KafkaTopic.Input, action, ct);
 
         IsRunning = false;
-        Console.WriteLine($"ConsumerService stopped");
+        Console.WriteLine($"InputService stopped");
     }
 
     private void ProcessMessage(string key, Input value)

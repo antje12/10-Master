@@ -1,5 +1,4 @@
 using InputService.Interfaces;
-using InputService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IConsumerService, InputService.Services.InputService>();
 builder.Services.AddHostedService<IConsumerService>(provider =>
     provider.GetService<IConsumerService>() ?? new InputService.Services.InputService());
-//builder.Services.AddHostedService<ConsumerService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

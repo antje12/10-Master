@@ -40,7 +40,9 @@ public class KafkaConfig
         {
             BootstrapServers = KafkaServers,
             GroupId = groupId,
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            AutoOffsetReset = AutoOffsetReset.Earliest,
+            SessionTimeoutMs = 6000,
+            ConsumeResultFields = "none"
         };
     }
 }

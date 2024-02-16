@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIService", "AIService\AISe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameClient", "GameClient\GameClient.csproj", "{0E617549-2A94-4243-B6F9-881D75CA665C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{0966B427-6CF9-4342-8BBF-8FDAF3D8A436}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{0E617549-2A94-4243-B6F9-881D75CA665C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E617549-2A94-4243-B6F9-881D75CA665C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E617549-2A94-4243-B6F9-881D75CA665C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0966B427-6CF9-4342-8BBF-8FDAF3D8A436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0966B427-6CF9-4342-8BBF-8FDAF3D8A436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0966B427-6CF9-4342-8BBF-8FDAF3D8A436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0966B427-6CF9-4342-8BBF-8FDAF3D8A436}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

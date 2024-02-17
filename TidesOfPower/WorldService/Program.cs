@@ -1,19 +1,21 @@
 using WorldService.Interfaces;
-using WorldService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IConsumerService, ConsumerService>();
+//https://github.com/dotnet/runtime/issues/36063
+builder.Services.AddSingleton<IConsumerService, WorldService.Services.WorldService>();
 builder.Services.AddHostedService<IConsumerService>(provider =>
-    provider.GetService<IConsumerService>() ?? new ConsumerService());
+    provider.GetService<IConsumerService>() ?? new WorldService.Services.WorldService());
 
 builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

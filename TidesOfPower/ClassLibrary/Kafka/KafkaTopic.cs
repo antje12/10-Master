@@ -3,5 +3,9 @@
 public enum KafkaTopic
 {
     Input,
-    LocalState
+    LocalState,
+    Collision,
+    Physics,
+    World,
+    AI
 }

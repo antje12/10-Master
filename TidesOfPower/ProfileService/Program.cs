@@ -1,11 +1,4 @@
-using ProfileService.Interfaces;
-using ProfileService.Services;
-
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddSingleton<IConsumerService, ConsumerService>();
-builder.Services.AddHostedService<IConsumerService>(provider =>
-    provider.GetService<IConsumerService>() ?? new ConsumerService());
 
 builder.Services.AddControllers();
 

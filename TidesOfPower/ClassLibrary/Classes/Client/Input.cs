@@ -28,12 +28,15 @@ namespace ClassLibrary.Classes.Client
                     ""type"": ""string""
                 },
                 {
-                    ""name"": ""X"",
-                    ""type"": ""float""
-                },
-                {
-                    ""name"": ""Y"",
-                    ""type"": ""float""
+                  ""name"": ""Location"",
+                        ""type"": {
+                        ""type"": ""record"",
+                        ""name"": ""Coordinates"",
+                        ""fields"": [
+                        { ""name"": ""X"", ""type"": ""float"" },
+                        { ""name"": ""Y"", ""type"": ""float"" }
+                        ]
+                    }
                 },
                 {
                     ""name"": ""KeyInput"",
@@ -65,10 +68,9 @@ namespace ClassLibrary.Classes.Client
             switch (fieldPos)
             {
                 case 0: return PlayerId.ToString();
-                case 1: return Location.X;
-                case 2: return Location.Y;
-                case 3: return KeyInput;
-                case 4: return GameTime;
+                case 1: return Location;
+                case 2: return KeyInput;
+                case 3: return GameTime;
                 default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
             }
         }
@@ -81,15 +83,12 @@ namespace ClassLibrary.Classes.Client
                     PlayerId = Guid.Parse((string)fieldValue);
                     break;
                 case 1:
-                    Location.X = (float)fieldValue;
+                    Location = (Coordinates)fieldValue;
                     break;
                 case 2:
-                    Location.Y = (float)fieldValue;
-                    break;
-                case 3:
                     KeyInput = (List<GameKey>)fieldValue;
                     break;
-                case 4:
+                case 3:
                     GameTime = (double)fieldValue;
                     break;
                 default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using ClassLibrary.Classes;
 using ClassLibrary.Classes.Client;
+using ClassLibrary.Classes.Data;
 using ClassLibrary.Kafka;
 using GameClient.Core;
 using Microsoft.Xna.Framework;
@@ -12,8 +12,8 @@ namespace GameClient.Entities;
 
 public class Player : Sprite
 {
-    private Guid _playerId;
-    private Camera _camera;
+    private readonly Guid _playerId;
+    private readonly Camera _camera;
     private readonly KafkaProducer<Input> _producer;
 
     public Player(Vector2 position, Texture2D texture, Camera camera, Guid playerId, KafkaProducer<Input> producer)
@@ -27,18 +27,18 @@ public class Player : Sprite
     public override void Update(GameTime gameTime)
     {
         var keyInput = new List<GameKey>();
-        var kstate = Keyboard.GetState();
-        if (kstate.IsKeyDown(Keys.W))
+        var kState = Keyboard.GetState();
+        if (kState.IsKeyDown(Keys.W))
             keyInput.Add(GameKey.Up);
-        if (kstate.IsKeyDown(Keys.S))
+        if (kState.IsKeyDown(Keys.S))
             keyInput.Add(GameKey.Down);
-        if (kstate.IsKeyDown(Keys.A))
+        if (kState.IsKeyDown(Keys.A))
             keyInput.Add(GameKey.Left);
-        if (kstate.IsKeyDown(Keys.D))
+        if (kState.IsKeyDown(Keys.D))
             keyInput.Add(GameKey.Right);
-        if (kstate.IsKeyDown(Keys.Space))
+        if (kState.IsKeyDown(Keys.Space))
             keyInput.Add(GameKey.Attack);
-        if (kstate.IsKeyDown(Keys.E))
+        if (kState.IsKeyDown(Keys.E))
             keyInput.Add(GameKey.Interact);
 
         if (keyInput.Count > 0)
@@ -52,7 +52,7 @@ public class Player : Sprite
                     Y = Position.Y
                 },
                 KeyInput = keyInput,
-                Timer = gameTime.ElapsedGameTime.TotalSeconds
+                GameTime = gameTime.ElapsedGameTime.TotalSeconds
             });
         }
 

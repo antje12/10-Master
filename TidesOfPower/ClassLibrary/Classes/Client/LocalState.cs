@@ -1,14 +1,15 @@
 ﻿using Avro;
 using Avro.Specific;
+using ClassLibrary.Classes.Data;
 
 namespace ClassLibrary.Classes.Client;
 
-public class Output : ISpecificRecord
+public class LocalState : ISpecificRecord
 {
     public Guid PlayerId { get; set; }
     public Coordinates Location { get; set; }
     
-    public Output()
+    public LocalState()
     {
         Location = new Coordinates();
     }

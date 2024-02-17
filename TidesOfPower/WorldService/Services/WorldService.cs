@@ -12,7 +12,7 @@ public class WorldService : BackgroundService, IConsumerService
     private const string GroupId = "world-group";
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<Output> _producer;
+    private readonly KafkaProducer<LocalState> _producer;
     private readonly KafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
@@ -23,7 +23,7 @@ public class WorldService : BackgroundService, IConsumerService
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
         _admin.CreateTopic(KafkaTopic.World);
-        _producer = new KafkaProducer<Output>(config);
+        _producer = new KafkaProducer<LocalState>(config);
         _consumer = new KafkaConsumer<Input>(config);
     }
 
@@ -45,7 +45,7 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, Input value)
     {
-        var output = new Output()
+        var output = new LocalState()
         {
             PlayerId = value.PlayerId,
             Location = value.Location

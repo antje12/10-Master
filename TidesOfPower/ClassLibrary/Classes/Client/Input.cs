@@ -1,5 +1,6 @@
 ﻿using Avro;
 using Avro.Specific;
+using ClassLibrary.Classes.Data;
 
 namespace ClassLibrary.Classes.Client
 {
@@ -8,7 +9,7 @@ namespace ClassLibrary.Classes.Client
         public Guid PlayerId { get; set; }
         public Coordinates Location { get; set; }
         public List<GameKey> KeyInput { get; set; }
-        public double Timer { get; set; }
+        public double GameTime { get; set; }
 
         public Input()
         {
@@ -67,7 +68,7 @@ namespace ClassLibrary.Classes.Client
                 case 1: return Location.X;
                 case 2: return Location.Y;
                 case 3: return KeyInput;
-                case 4: return Timer;
+                case 4: return GameTime;
                 default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
             }
         }
@@ -89,7 +90,7 @@ namespace ClassLibrary.Classes.Client
                     KeyInput = (List<GameKey>)fieldValue;
                     break;
                 case 4:
-                    Timer = (double)fieldValue;
+                    GameTime = (double)fieldValue;
                     break;
                 default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
             }

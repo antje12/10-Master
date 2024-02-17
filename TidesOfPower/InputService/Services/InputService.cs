@@ -12,7 +12,7 @@ public class InputService : BackgroundService, IConsumerService
     private const string GroupId = "input-group";
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<Output> _producer;
+    private readonly KafkaProducer<LocalState> _producer;
     private readonly KafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
@@ -23,7 +23,7 @@ public class InputService : BackgroundService, IConsumerService
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
         _admin.CreateTopic(KafkaTopic.Input);
-        _producer = new KafkaProducer<Output>(config);
+        _producer = new KafkaProducer<LocalState>(config);
         _consumer = new KafkaConsumer<Input>(config);
     }
 
@@ -45,7 +45,7 @@ public class InputService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, Input value)
     {
-        var output = new Output()
+        var output = new LocalState()
         {
             PlayerId = value.PlayerId,
             Location = value.Location
@@ -55,16 +55,16 @@ public class InputService : BackgroundService, IConsumerService
             switch (input)
             {
                 case GameKey.Up:
-                    output.Location.Y -= 100 * (float) value.Timer;
+                    output.Location.Y -= 100 * (float) value.GameTime;
                     break;
                 case GameKey.Down:
-                    output.Location.Y += 100 * (float) value.Timer;
+                    output.Location.Y += 100 * (float) value.GameTime;
                     break;
                 case GameKey.Left:
-                    output.Location.X -= 100 * (float) value.Timer;
+                    output.Location.X -= 100 * (float) value.GameTime;
                     break;
                 case GameKey.Right:
-                    output.Location.X += 100 * (float) value.Timer;
+                    output.Location.X += 100 * (float) value.GameTime;
                     break;
                 case GameKey.Attack:
                 case GameKey.Interact:

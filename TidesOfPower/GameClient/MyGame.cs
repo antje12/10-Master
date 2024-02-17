@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.Classes.Client;
@@ -8,37 +10,37 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ClassLibrary.Interfaces;
 using GameClient.Core;
+using GameClient.Entities;
 
 namespace GameClient;
 
 public class MyGame : Game
 {
-    private const string GroupId = "output-group";
+    const string GroupId = "output-group";
 
-    private static Guid playerId = Guid.NewGuid();
+    static Guid playerId = Guid.NewGuid();
 
     //private string Output = $"{KafkaTopic.LocalState}_{playerId.ToString()}";
-    private string Output = KafkaTopic.LocalState.ToString();
+    string Output = KafkaTopic.LocalState.ToString();
 
-    private static CancellationTokenSource _cts;
-    private readonly KafkaConfig _config;
-    private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<Input> _producer;
-    private readonly KafkaConsumer<Output> _consumer;
+    static CancellationTokenSource _cts;
+    readonly KafkaConfig _config;
+    readonly KafkaAdministrator _admin;
+    readonly KafkaProducer<Input> _producer;
+    readonly KafkaConsumer<LocalState> _consumer;
 
-    Texture2D avatarTexture; //50x50
-    Texture2D islandTexture; //64x64
     Texture2D oceanTexture; //64x64
+    Texture2D islandTexture; //64x64
+    Texture2D avatarTexture; //50x50
 
-    private Entities.Player player;
-    private Entities.Enemy enemy;
-
-    private Camera _camera;
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+    Camera _camera;
+    GraphicsDeviceManager _graphics;
+    SpriteBatch _spriteBatch;
 
     public static int screenHeight; //480
     public static int screenWidth; //800
+
+    private List<Sprite> LocalState;
 
     public MyGame()
     {
@@ -46,12 +48,14 @@ public class MyGame : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
+        LocalState = new List<Sprite>();
+        
         _config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(_config);
         _admin.CreateTopic(KafkaTopic.Input);
         _admin.CreateTopic(Output);
         _producer = new KafkaProducer<Input>(_config);
-        _consumer = new KafkaConsumer<Output>(_config);
+        _consumer = new KafkaConsumer<LocalState>(_config);
     }
 
     protected override async void Initialize()
@@ -64,7 +68,7 @@ public class MyGame : Game
         base.Initialize();
 
         _cts = new CancellationTokenSource();
-        IConsumer<Output>.ProcessMessage action = ProcessMessage;
+        IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
         await Task.Run(() => _consumer.Consume(Output, action, _cts.Token), _cts.Token);
     }
 
@@ -77,14 +81,27 @@ public class MyGame : Game
         islandTexture = Content.Load<Texture2D>("island");
         oceanTexture = Content.Load<Texture2D>("ocean");
 
-        var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
+        var islandPosition = new Vector2(screenWidth / 2, screenHeight / 2);
+        var island = new Entities.Island(islandPosition, islandTexture);
+        
         var enemyPosition = new Vector2(0, 0);
-        player = new Entities.Player(playerPosition, avatarTexture, _camera, playerId, _producer);
-        enemy = new Entities.Enemy(enemyPosition, avatarTexture);
+        var enemy = new Entities.Enemy(enemyPosition, avatarTexture);
+        
+        var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
+        var player = new Entities.Player(playerPosition, avatarTexture, _camera, playerId, _producer);
+        
+        var oceanPosition = new Vector2(0, 0);
+        var ocean = new Entities.Ocean(oceanPosition, oceanTexture, player);
+        
+        LocalState.Add(ocean);
+        LocalState.Add(island);
+        LocalState.Add(enemy);
+        LocalState.Add(player);
     }
 
-    private void ProcessMessage(string key, Output value)
+    private void ProcessMessage(string key, LocalState value)
     {
+        var player = LocalState.First(x => x is Player);
         player.Position = new Vector2(value.Location.X, value.Location.Y);
     }
 
@@ -95,8 +112,10 @@ public class MyGame : Game
             Exit();
 
         // TODO: Add your update logic here
-        enemy.Update(gameTime);
-        player.Update(gameTime);
+        foreach (var sprite in LocalState)
+        {
+            sprite.Update(gameTime);
+        }
 
         base.Update(gameTime);
     }
@@ -104,47 +123,18 @@ public class MyGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
-        
         // TODO: Add your drawing code here
         _spriteBatch.Begin(transformMatrix: _camera.Transform);
         //_spriteBatch.Begin();
 
-        DrawBackground(gameTime, oceanTexture);
-
-        //Rectangle island = new Rectangle(screenWidth / 2, screenHeight / 2, 64, 64);
-        //_spriteBatch.Draw(islandTexture, island, Color.White);
-        _spriteBatch.Draw(islandTexture, new Vector2(0, 0), Color.White);
-
-        enemy.Draw(gameTime, _spriteBatch);
-        player.Draw(gameTime, _spriteBatch);
+        foreach (var sprite in LocalState)
+        {
+            sprite.Draw(gameTime, _spriteBatch);
+        }
+        //enemy.Draw(gameTime, _spriteBatch);
+        //player.Draw(gameTime, _spriteBatch);
 
         _spriteBatch.End();
-
         base.Draw(gameTime);
-    }
-
-    private void DrawBackground(GameTime gameTime, Texture2D texture)
-    {
-        var startX = player.Position.X - screenWidth / 2 - texture.Width;
-        var offsetX = startX % texture.Width;
-        startX -= offsetX;
-
-        var startY = player.Position.Y - screenHeight / 2 - texture.Height;
-        var offsetY = startY % texture.Height;
-        startY -= offsetY;
-
-        var bgWidth = screenWidth + texture.Width * 2;
-        var bgHeight = screenHeight + texture.Height * 2;
-
-        Rectangle background = new Rectangle((int) startX, (int) startY, bgWidth, bgHeight);
-        //_spriteBatch.Draw(oceanTexture, background, Color.White);
-        // Draw the repeating texture using a loop to cover the entire destination rectangle
-        for (int y = background.Top; y < background.Bottom; y += oceanTexture.Height)
-        {
-            for (int x = background.Left; x < background.Right; x += oceanTexture.Width)
-            {
-                _spriteBatch.Draw(oceanTexture, new Vector2(x, y), Color.White);
-            }
-        }
     }
 }

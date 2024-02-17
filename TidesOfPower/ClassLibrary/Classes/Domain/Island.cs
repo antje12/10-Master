@@ -1,4 +1,6 @@
-﻿namespace ClassLibrary.Classes.Domain;
+﻿using ClassLibrary.Classes.Data;
+
+namespace ClassLibrary.Classes.Domain;
 
 public class Island
 {

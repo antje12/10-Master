@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Diagnostics;
-using ClassLibrary.Classes;
 using ClassLibrary.Classes.Client;
+using ClassLibrary.Classes.Data;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 
@@ -38,11 +38,11 @@ admin.CreateTopic(KafkaTopic.Input);
 admin.CreateTopic(KafkaTopic.LocalState);
 
 var producer= new KafkaProducer<Input>(config);
-var consumer= new KafkaConsumer<Output>(config);
+var consumer= new KafkaConsumer<LocalState>(config);
 
 var first = true;
 
-void ProcessMessage(string key, Output value)
+void ProcessMessage(string key, LocalState value)
 {
     stopwatch.Stop();
     var elapsedTime = stopwatch.ElapsedMilliseconds;
@@ -62,7 +62,7 @@ void ProcessMessage(string key, Output value)
             Y = 0
         },
         KeyInput = new List<GameKey>() {GameKey.Right},
-        Timer = 0.5
+        GameTime = 0.5
     });
 }
 
@@ -76,8 +76,8 @@ producer.Produce(KafkaTopic.Input, "tester", new Input()
         Y = 0
     },
     KeyInput = new List<GameKey>() {GameKey.Right},
-    Timer = 0.5
+    GameTime = 0.5
 });
 
-IConsumer<Output>.ProcessMessage action = ProcessMessage;
+IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
 await Task.Run(() => consumer.Consume(KafkaTopic.LocalState, action, cts.Token), cts.Token);

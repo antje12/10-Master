@@ -12,7 +12,7 @@ public class InputService : BackgroundService, IConsumerService
     private const string GroupId = "input-group";
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<LocalState> _producer;
+    private readonly KafkaProducer<Collision> _producer;
     private readonly KafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
@@ -23,7 +23,7 @@ public class InputService : BackgroundService, IConsumerService
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
         _admin.CreateTopic(KafkaTopic.Input);
-        _producer = new KafkaProducer<LocalState>(config);
+        _producer = new KafkaProducer<Collision>(config);
         _consumer = new KafkaConsumer<Input>(config);
     }
 
@@ -45,26 +45,27 @@ public class InputService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, Input value)
     {
-        var output = new LocalState()
+        var output = new Collision()
         {
             PlayerId = value.PlayerId,
-            Location = value.Location
+            FromLocation = value.Location,
+            ToLocation = value.Location
         };
         foreach (var input in value.KeyInput)
         {
             switch (input)
             {
                 case GameKey.Up:
-                    output.Location.Y -= 100 * (float) value.GameTime;
+                    output.ToLocation.Y -= 100 * (float) value.GameTime;
                     break;
                 case GameKey.Down:
-                    output.Location.Y += 100 * (float) value.GameTime;
+                    output.ToLocation.Y += 100 * (float) value.GameTime;
                     break;
                 case GameKey.Left:
-                    output.Location.X -= 100 * (float) value.GameTime;
+                    output.ToLocation.X -= 100 * (float) value.GameTime;
                     break;
                 case GameKey.Right:
-                    output.Location.X += 100 * (float) value.GameTime;
+                    output.ToLocation.X += 100 * (float) value.GameTime;
                     break;
                 case GameKey.Attack:
                 case GameKey.Interact:
@@ -73,7 +74,6 @@ public class InputService : BackgroundService, IConsumerService
             }
         }
 
-        //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
-        _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);
+        _producer.Produce(KafkaTopic.Collision, key, output);
     }
 }

@@ -28,14 +28,14 @@ namespace ClassLibrary.Classes.Client
                     ""type"": ""string""
                 },
                 {
-                  ""name"": ""Location"",
-                        ""type"": {
-                        ""type"": ""record"",
-                        ""name"": ""Coordinates"",
-                        ""fields"": [
-                        { ""name"": ""X"", ""type"": ""float"" },
-                        { ""name"": ""Y"", ""type"": ""float"" }
-                        ]
+                    ""name"": ""Location"",
+                    ""type"": {
+                          ""type"": ""record"",
+                          ""name"": ""Coordinates"",
+                          ""fields"": [
+                          { ""name"": ""X"", ""type"": ""float"" },
+                          { ""name"": ""Y"", ""type"": ""float"" }
+                          ]
                     }
                 },
                 {
@@ -80,16 +80,16 @@ namespace ClassLibrary.Classes.Client
             switch (fieldPos)
             {
                 case 0:
-                    PlayerId = Guid.Parse((string)fieldValue);
+                    PlayerId = Guid.Parse((string) fieldValue);
                     break;
                 case 1:
-                    Location = (Coordinates)fieldValue;
+                    Location = (Coordinates) fieldValue;
                     break;
                 case 2:
-                    KeyInput = (List<GameKey>)fieldValue;
+                    KeyInput = (List<GameKey>) fieldValue;
                     break;
                 case 3:
-                    GameTime = (double)fieldValue;
+                    GameTime = (double) fieldValue;
                     break;
                 default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
             }

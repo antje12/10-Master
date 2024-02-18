@@ -1,4 +1,5 @@
 ﻿using ClassLibrary.Classes.Client;
+using ClassLibrary.Classes.Data;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using CollisionService.Interfaces;
@@ -13,7 +14,7 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<LocalState> _producer;
-    private readonly KafkaConsumer<Input> _consumer;
+    private readonly KafkaConsumer<Collision> _consumer;
 
     public bool IsRunning { get; private set; }
 
@@ -24,7 +25,7 @@ public class CollisionService : BackgroundService, IConsumerService
         _admin = new KafkaAdministrator(config);
         _admin.CreateTopic(KafkaTopic.Collision);
         _producer = new KafkaProducer<LocalState>(config);
-        _consumer = new KafkaConsumer<Input>(config);
+        _consumer = new KafkaConsumer<Collision>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -36,22 +37,36 @@ public class CollisionService : BackgroundService, IConsumerService
         Console.WriteLine($"CollisionService started");
 
         await _admin.CreateTopic(KafkaTopic.Collision);
-        IConsumer<Input>.ProcessMessage action = ProcessMessage;
+        IConsumer<Collision>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(KafkaTopic.Collision, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"CollisionService stopped");
     }
 
-    private void ProcessMessage(string key, Input value)
+    private void ProcessMessage(string key, Collision value)
     {
         var output = new LocalState()
         {
             PlayerId = value.PlayerId,
-            Location = value.Location
+            Location = IsFree(value.ToLocation) ? value.ToLocation : value.FromLocation
         };
 
         //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
         _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);
+    }
+
+    private bool IsFree(Coordinates location)
+    {
+        float deadZoneStartX = 100;
+        float deadZoneStopX = 200;
+        float deadZoneStartY = 100;
+        float deadZoneStopY = 200;
+
+        if (deadZoneStartX <= location.X && location.X <= deadZoneStopX && deadZoneStartY <= location.Y && location.Y <= deadZoneStopY) {
+            return false;
+        }
+
+        return true;
     }
 }

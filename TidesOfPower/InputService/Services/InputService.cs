@@ -1,4 +1,5 @@
-﻿using ClassLibrary.Classes.Client;
+﻿using ClassLibrary.Classes.Data;
+using ClassLibrary.Classes.Messages;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using InputService.Interfaces;
@@ -12,7 +13,7 @@ public class InputService : BackgroundService, IConsumerService
     private const string GroupId = "input-group";
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<Collision> _producer;
+    private readonly KafkaProducer<CollisionCheck> _producer;
     private readonly KafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
@@ -23,7 +24,7 @@ public class InputService : BackgroundService, IConsumerService
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
         _admin.CreateTopic(KafkaTopic.Input);
-        _producer = new KafkaProducer<Collision>(config);
+        _producer = new KafkaProducer<CollisionCheck>(config);
         _consumer = new KafkaConsumer<Input>(config);
     }
 
@@ -45,35 +46,63 @@ public class InputService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, Input value)
     {
-        var output = new Collision()
+        var output = new CollisionCheck()
         {
             PlayerId = value.PlayerId,
             FromLocation = value.Location,
-            ToLocation = value.Location
+            ToLocation = new Coordinates()
+            {
+                X = value.Location.X,
+                Y = value.Location.Y
+            }
         };
+        
+        var moving = false;
+        var attacking = false;
+        var interacting = false;
+        
         foreach (var input in value.KeyInput)
         {
             switch (input)
             {
                 case GameKey.Up:
                     output.ToLocation.Y -= 100 * (float) value.GameTime;
+                    moving = true;
                     break;
                 case GameKey.Down:
                     output.ToLocation.Y += 100 * (float) value.GameTime;
+                    moving = true;
                     break;
                 case GameKey.Left:
                     output.ToLocation.X -= 100 * (float) value.GameTime;
+                    moving = true;
                     break;
                 case GameKey.Right:
                     output.ToLocation.X += 100 * (float) value.GameTime;
+                    moving = true;
                     break;
                 case GameKey.Attack:
+                    attacking = true;
+                    break;
                 case GameKey.Interact:
+                    interacting = true;
+                    break;
                 default:
                     break;
             }
         }
 
-        _producer.Produce(KafkaTopic.Collision, key, output);
+        if (moving)
+        {
+            _producer.Produce(KafkaTopic.Collision, key, output);
+        }
+        if (attacking)
+        {
+            
+        }
+        if (interacting)
+        {
+            
+        }
     }
 }

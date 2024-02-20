@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  mongodb-1:
+    container_name: mongodb-1
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    volumes:
+      - mongodb-1.vol:/data/db
+
+volumes:
+  mongodb-1.vol:
+    name: "mongodb-1.vol"

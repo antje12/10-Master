@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary.Classes.Client;
+﻿namespace ClassLibrary.Classes.Data;
 
 public enum GameKey
 {

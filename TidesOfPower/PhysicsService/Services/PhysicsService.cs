@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Classes.Client;
+﻿using ClassLibrary.Classes.Messages;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using PhysicsService.Interfaces;

@@ -1,12 +1,13 @@
 ﻿using Avro;
 using Avro.Specific;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace ClassLibrary.Classes.Data;
 
 public class Coordinates : ISpecificRecord
 {
-    public float X { get; set; }
-    public float Y { get; set; }
+    [BsonElement("x")] public float X { get; set; }
+    [BsonElement("y")] public float Y { get; set; }
 
     public Schema Schema => Schema.Parse(@"
         {

@@ -2,22 +2,22 @@
 using Avro.Specific;
 using ClassLibrary.Classes.Data;
 
-namespace ClassLibrary.Classes.Client
+namespace ClassLibrary.Classes.Messages;
+
+public class Input : ISpecificRecord
 {
-    public class Input : ISpecificRecord
+    public Guid PlayerId { get; set; }
+    public Coordinates Location { get; set; }
+    public List<GameKey> KeyInput { get; set; }
+    public double GameTime { get; set; }
+
+    public Input()
     {
-        public Guid PlayerId { get; set; }
-        public Coordinates Location { get; set; }
-        public List<GameKey> KeyInput { get; set; }
-        public double GameTime { get; set; }
+        Location = new Coordinates();
+        KeyInput = new List<GameKey>();
+    }
 
-        public Input()
-        {
-            Location = new Coordinates();
-            KeyInput = new List<GameKey>();
-        }
-
-        public Schema Schema => Schema.Parse(@"
+    public Schema Schema => Schema.Parse(@"
         {
             ""namespace"": ""git.avro"",
             ""type"": ""record"",
@@ -63,36 +63,35 @@ namespace ClassLibrary.Classes.Client
             ]
         }");
 
-        public object Get(int fieldPos)
+    public object Get(int fieldPos)
+    {
+        switch (fieldPos)
         {
-            switch (fieldPos)
-            {
-                case 0: return PlayerId.ToString();
-                case 1: return Location;
-                case 2: return KeyInput;
-                case 3: return GameTime;
-                default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
-            }
+            case 0: return PlayerId.ToString();
+            case 1: return Location;
+            case 2: return KeyInput;
+            case 3: return GameTime;
+            default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
+    }
 
-        public void Put(int fieldPos, object fieldValue)
+    public void Put(int fieldPos, object fieldValue)
+    {
+        switch (fieldPos)
         {
-            switch (fieldPos)
-            {
-                case 0:
-                    PlayerId = Guid.Parse((string) fieldValue);
-                    break;
-                case 1:
-                    Location = (Coordinates) fieldValue;
-                    break;
-                case 2:
-                    KeyInput = (List<GameKey>) fieldValue;
-                    break;
-                case 3:
-                    GameTime = (double) fieldValue;
-                    break;
-                default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
-            }
+            case 0:
+                PlayerId = Guid.Parse((string) fieldValue);
+                break;
+            case 1:
+                Location = (Coordinates) fieldValue;
+                break;
+            case 2:
+                KeyInput = (List<GameKey>) fieldValue;
+                break;
+            case 3:
+                GameTime = (double) fieldValue;
+                break;
+            default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }
     }
 }

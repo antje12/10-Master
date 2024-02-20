@@ -1,6 +1,4 @@
-﻿using ClassLibrary.Classes.Client;
-
-namespace ClassLibrary.Classes.Domain;
+﻿namespace ClassLibrary.Classes.Domain;
 
 public class Player : Avatar
 {

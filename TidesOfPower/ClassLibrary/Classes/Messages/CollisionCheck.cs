@@ -2,15 +2,15 @@
 using Avro.Specific;
 using ClassLibrary.Classes.Data;
 
-namespace ClassLibrary.Classes.Client;
+namespace ClassLibrary.Classes.Messages;
 
-public class Collision : ISpecificRecord
+public class CollisionCheck : ISpecificRecord
 {
     public Guid PlayerId { get; set; }
     public Coordinates FromLocation { get; set; }
     public Coordinates ToLocation { get; set; }
 
-    public Collision()
+    public CollisionCheck()
     {
         FromLocation = new Coordinates();
         ToLocation = new Coordinates();
@@ -30,7 +30,7 @@ public class Collision : ISpecificRecord
                 ""name"": ""FromLocation"",
                 ""type"": {
                       ""type"": ""record"",
-                      ""name"": ""Coordinates"",
+                      ""name"": ""Coordinates.From"",
                       ""fields"": [
                       { ""name"": ""X"", ""type"": ""float"" },
                       { ""name"": ""Y"", ""type"": ""float"" }
@@ -41,7 +41,7 @@ public class Collision : ISpecificRecord
                 ""name"": ""ToLocation"",
                 ""type"": {
                       ""type"": ""record"",
-                      ""name"": ""Coordinates"",
+                      ""name"": ""Coordinates.To"",
                       ""fields"": [
                       { ""name"": ""X"", ""type"": ""float"" },
                       { ""name"": ""Y"", ""type"": ""float"" }

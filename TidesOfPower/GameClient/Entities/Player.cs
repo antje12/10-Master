@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using ClassLibrary.Classes.Client;
+using System.Linq;
 using ClassLibrary.Classes.Data;
+using ClassLibrary.Classes.Messages;
 using ClassLibrary.Kafka;
 using GameClient.Core;
 using Microsoft.Xna.Framework;
@@ -16,12 +17,19 @@ public class Player : Sprite
     private readonly Camera _camera;
     private readonly KafkaProducer<Input> _producer;
 
+    private Coordinates _lastLocation;
+    private List<GameKey> _lastKeyInput;
+
+    private bool attacking = false;
+    
     public Player(Vector2 position, Texture2D texture, Camera camera, Guid playerId, KafkaProducer<Input> producer)
         : base(position, texture)
     {
         _camera = camera;
         _playerId = playerId;
         _producer = producer;
+        _lastLocation = new Coordinates();
+        _lastKeyInput = new List<GameKey>();
     }
 
     public override void Update(GameTime gameTime)
@@ -37,13 +45,24 @@ public class Player : Sprite
         if (kState.IsKeyDown(Keys.D))
             keyInput.Add(GameKey.Right);
         if (kState.IsKeyDown(Keys.Space))
-            keyInput.Add(GameKey.Attack);
+        {
+            if (!attacking)
+            {
+                attacking = true;
+                keyInput.Add(GameKey.Attack);
+            }
+        }
+        else
+        {
+            attacking = false;
+            _lastKeyInput.Remove(GameKey.Attack);
+        }
         if (kState.IsKeyDown(Keys.E))
             keyInput.Add(GameKey.Interact);
-
+        
         if (keyInput.Count > 0)
         {
-            _producer.Produce(KafkaTopic.Input, _playerId.ToString(), new Input()
+            var input = new Input()
             {
                 PlayerId = _playerId,
                 Location = new Coordinates()
@@ -53,7 +72,17 @@ public class Player : Sprite
                 },
                 KeyInput = keyInput,
                 GameTime = gameTime.ElapsedGameTime.TotalSeconds
-            });
+            };
+            
+            var newLocation = _lastLocation.X != input.Location.X || _lastLocation.Y != input.Location.Y;
+            var newInput = !_lastKeyInput.OrderBy(x => x).SequenceEqual(keyInput.OrderBy(x => x));
+
+            if (newLocation || newInput)
+            {
+                _producer.Produce(KafkaTopic.Input, _playerId.ToString(), input);
+                _lastLocation = input.Location;
+                _lastKeyInput = input.KeyInput;
+            }
         }
 
         _camera.Follow(Position, Texture, MyGame.screenWidth, MyGame.screenHeight);

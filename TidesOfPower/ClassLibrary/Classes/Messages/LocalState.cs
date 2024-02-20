@@ -2,18 +2,18 @@
 using Avro.Specific;
 using ClassLibrary.Classes.Data;
 
-namespace ClassLibrary.Classes.Client;
+namespace ClassLibrary.Classes.Messages;
 
 public class LocalState : ISpecificRecord
 {
     public Guid PlayerId { get; set; }
     public Coordinates Location { get; set; }
-    
+
     public LocalState()
     {
         Location = new Coordinates();
     }
-    
+
     public Schema Schema => Schema.Parse(@"
     {
         ""namespace"": ""git.avro"",
@@ -50,9 +50,15 @@ public class LocalState : ISpecificRecord
     {
         switch (fieldPos)
         {
-            case 0: PlayerId = Guid.Parse((string)fieldValue); break;
-            case 1: Location.X = (float)fieldValue; break;
-            case 2: Location.Y = (float)fieldValue; break;
+            case 0:
+                PlayerId = Guid.Parse((string) fieldValue);
+                break;
+            case 1:
+                Location.X = (float) fieldValue;
+                break;
+            case 2:
+                Location.Y = (float) fieldValue;
+                break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }
     }

@@ -1,6 +1,9 @@
-﻿using ClassLibrary.Classes.Client;
+﻿using ClassLibrary.Classes.Data;
+using ClassLibrary.Classes.Domain;
+using ClassLibrary.Classes.Messages;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
+using ClassLibrary.MongoDB;
 using WorldService.Interfaces;
 
 namespace WorldService.Services;
@@ -13,7 +16,9 @@ public class WorldService : BackgroundService, IConsumerService
 
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<LocalState> _producer;
-    private readonly KafkaConsumer<Input> _consumer;
+    private readonly KafkaConsumer<WorldChange> _consumer;
+    
+    private readonly MongoDbBroker _mongoBroker;
 
     public bool IsRunning { get; private set; }
 
@@ -24,7 +29,8 @@ public class WorldService : BackgroundService, IConsumerService
         _admin = new KafkaAdministrator(config);
         _admin.CreateTopic(KafkaTopic.World);
         _producer = new KafkaProducer<LocalState>(config);
-        _consumer = new KafkaConsumer<Input>(config);
+        _consumer = new KafkaConsumer<WorldChange>(config);
+        _mongoBroker = new MongoDbBroker();
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -36,20 +42,43 @@ public class WorldService : BackgroundService, IConsumerService
         Console.WriteLine($"WorldService started");
 
         await _admin.CreateTopic(KafkaTopic.World);
-        IConsumer<Input>.ProcessMessage action = ProcessMessage;
+        IConsumer<WorldChange>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(KafkaTopic.World, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"WorldService stopped");
     }
 
-    private void ProcessMessage(string key, Input value)
+    private void ProcessMessage(string key, WorldChange value)
     {
         var output = new LocalState()
         {
             PlayerId = value.PlayerId,
-            Location = value.Location
+            Location = value.NewLocation
         };
+
+        _mongoBroker.UpsertAvatarLocation(new Avatar()
+        {
+            Id = output.PlayerId,
+            Location = output.Location
+        });
+        //var avatar = _mongoBroker.ReadAvatar(value.PlayerId);
+        //if (avatar != null)
+        //{
+        //    Console.WriteLine("Avatar found");
+        //    avatar.Location = output.Location;
+        //    _mongoBroker.UpdateAvatarLocation(avatar);
+        //}
+        //else
+        //{
+        //    Console.WriteLine("No avatar found");
+        //    _mongoBroker.CreateAvatar(new Avatar()
+        //    {
+        //        Id = output.PlayerId,
+        //        Name = "test",
+        //        Location = output.Location
+        //    });
+        //}
 
         //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
         _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);

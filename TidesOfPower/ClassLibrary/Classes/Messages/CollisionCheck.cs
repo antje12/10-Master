@@ -30,7 +30,7 @@ public class CollisionCheck : ISpecificRecord
                 ""name"": ""FromLocation"",
                 ""type"": {
                       ""type"": ""record"",
-                      ""name"": ""Coordinates.From"",
+                      ""name"": ""Coordinates"",
                       ""fields"": [
                       { ""name"": ""X"", ""type"": ""float"" },
                       { ""name"": ""Y"", ""type"": ""float"" }
@@ -39,14 +39,7 @@ public class CollisionCheck : ISpecificRecord
             },
             {
                 ""name"": ""ToLocation"",
-                ""type"": {
-                      ""type"": ""record"",
-                      ""name"": ""Coordinates.To"",
-                      ""fields"": [
-                      { ""name"": ""X"", ""type"": ""float"" },
-                      { ""name"": ""Y"", ""type"": ""float"" }
-                      ]
-                }
+                ""type"": ""git.avro.Coordinates""
             }
         ]
     }");

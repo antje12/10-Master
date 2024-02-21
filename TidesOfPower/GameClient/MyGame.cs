@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.Classes.Data;
+using ClassLibrary.Classes.Domain;
 using ClassLibrary.Classes.Messages;
 using ClassLibrary.Kafka;
 using Microsoft.Xna.Framework;
@@ -13,6 +14,8 @@ using ClassLibrary.Interfaces;
 using ClassLibrary.MongoDB;
 using GameClient.Core;
 using GameClient.Entities;
+using Enemy = GameClient.Entities.Enemy;
+using Player = GameClient.Entities.Player;
 
 namespace GameClient;
 
@@ -29,7 +32,7 @@ public class MyGame : Game
     readonly KafkaConfig _config;
     readonly KafkaAdministrator _admin;
     readonly KafkaProducer<Input> _producer;
-    readonly KafkaConsumer<LocalState> _consumer;
+    readonly KafkaConsumer<Avatar> _consumer;
 
     Texture2D oceanTexture; //64x64
     Texture2D islandTexture; //64x64
@@ -59,7 +62,7 @@ public class MyGame : Game
         _admin.CreateTopic(KafkaTopic.Input);
         _admin.CreateTopic(Output);
         _producer = new KafkaProducer<Input>(_config);
-        _consumer = new KafkaConsumer<LocalState>(_config);
+        _consumer = new KafkaConsumer<Avatar>(_config);
 
         _mongoBroker = new MongoDbBroker(); // ToDo: Delete this
     }
@@ -74,7 +77,7 @@ public class MyGame : Game
         base.Initialize();
 
         _cts = new CancellationTokenSource();
-        IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
+        IConsumer<Avatar>.ProcessMessage action = ProcessMessage;
         await Task.Run(() => _consumer.Consume(Output, action, _cts.Token), _cts.Token);
     }
 
@@ -105,7 +108,7 @@ public class MyGame : Game
         LocalState.Add(player);
     }
 
-    private void ProcessMessage(string key, LocalState value)
+    private void ProcessMessage(string key, Avatar value)
     {
         var player = LocalState.First(x => x is Player);
         player.Position = new Vector2(value.Location.X, value.Location.Y);

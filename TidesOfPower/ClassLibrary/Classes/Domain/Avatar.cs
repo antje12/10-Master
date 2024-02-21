@@ -1,13 +1,71 @@
-﻿using ClassLibrary.Classes.Data;
+﻿using Avro;
+using Avro.Specific;
+using ClassLibrary.Classes.Data;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace ClassLibrary.Classes.Domain;
 
-public class Avatar
+public class Avatar : ISpecificRecord
 {
     public Avatar()
     {
         Location = new Coordinates();
+    }
+
+    public Schema Schema => Schema.Parse(@"
+        {
+            ""namespace"": ""git.avro"",
+            ""type"": ""record"",
+            ""name"": ""Avatar"",
+            ""fields"": [
+                {
+                    ""name"": ""Id"",
+                    ""type"": ""string""
+                },
+                {
+                    ""name"": ""Name"",
+                    ""type"": ""string""
+                },
+                {
+                    ""name"": ""Location"",
+                    ""type"": {
+                          ""type"": ""record"",
+                          ""name"": ""Coordinates"",
+                          ""fields"": [
+                          { ""name"": ""X"", ""type"": ""float"" },
+                          { ""name"": ""Y"", ""type"": ""float"" }
+                          ]
+                    }
+                }
+            ]
+        }");
+
+    public object Get(int fieldPos)
+    {
+        switch (fieldPos)
+        {
+            case 0: return Id.ToString();
+            case 1: return Name;
+            case 2: return Location;
+            default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
+        }
+    }
+
+    public void Put(int fieldPos, object fieldValue)
+    {
+        switch (fieldPos)
+        {
+            case 0:
+                Id = Guid.Parse((string) fieldValue);
+                break;
+            case 1:
+                Name = (string) fieldValue;
+                break;
+            case 2:
+                Location = (Coordinates) fieldValue;
+                break;
+            default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
+        }
     }
     
     [BsonId]

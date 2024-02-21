@@ -15,7 +15,7 @@ public class WorldService : BackgroundService, IConsumerService
     private const string GroupId = "world-group";
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<Avatar> _producer;
+    private readonly KafkaProducer<LocalState> _producer;
     private readonly KafkaConsumer<WorldChange> _consumer;
     
     private readonly MongoDbBroker _mongoBroker;
@@ -28,7 +28,7 @@ public class WorldService : BackgroundService, IConsumerService
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
         _admin.CreateTopic(KafkaTopic.World);
-        _producer = new KafkaProducer<Avatar>(config);
+        _producer = new KafkaProducer<LocalState>(config);
         _consumer = new KafkaConsumer<WorldChange>(config);
         _mongoBroker = new MongoDbBroker();
     }
@@ -54,17 +54,16 @@ public class WorldService : BackgroundService, IConsumerService
         var output = new LocalState()
         {
             PlayerId = value.PlayerId,
-            Location = value.NewLocation
+            Location = value.NewLocation,
+            Avatar = new Avatar()
+            {
+                Id = value.PlayerId,
+                Name = "test",
+                Location = value.NewLocation
+            }
         };
 
-        var avatar = new Avatar()
-        {
-            Id = output.PlayerId,
-            Name = "test",
-            Location = output.Location
-        };
-
-        _mongoBroker.UpsertAvatarLocation(avatar);
+        _mongoBroker.UpsertAvatarLocation(output.Avatar);
         
         //var avatar = _mongoBroker.ReadAvatar(value.PlayerId);
         //if (avatar != null)
@@ -85,6 +84,6 @@ public class WorldService : BackgroundService, IConsumerService
         //}
 
         //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
-        _producer.Produce(KafkaTopic.LocalState.ToString(), key, avatar);
+        _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);
     }
 }

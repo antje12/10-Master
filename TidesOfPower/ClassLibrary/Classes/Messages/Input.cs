@@ -30,12 +30,12 @@ public class Input : ISpecificRecord
                 {
                     ""name"": ""Location"",
                     ""type"": {
-                          ""type"": ""record"",
-                          ""name"": ""Coordinates"",
-                          ""fields"": [
-                          { ""name"": ""X"", ""type"": ""float"" },
-                          { ""name"": ""Y"", ""type"": ""float"" }
-                          ]
+                        ""type"": ""record"",
+                        ""name"": ""Coordinates"",
+                        ""fields"": [
+                            { ""name"": ""X"", ""type"": ""float"" },
+                            { ""name"": ""Y"", ""type"": ""float"" }
+                        ]
                     }
                 },
                 {

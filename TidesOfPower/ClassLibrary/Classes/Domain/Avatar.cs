@@ -11,30 +11,24 @@ public class Avatar : ISpecificRecord
     {
         Location = new Coordinates();
     }
-
+    
     public Schema Schema => Schema.Parse(@"
         {
             ""namespace"": ""git.avro"",
             ""type"": ""record"",
             ""name"": ""Avatar"",
             ""fields"": [
-                {
-                    ""name"": ""Id"",
-                    ""type"": ""string""
-                },
-                {
-                    ""name"": ""Name"",
-                    ""type"": ""string""
-                },
+                { ""name"": ""Id"", ""type"": ""string"" },
+                { ""name"": ""Name"", ""type"": ""string"" },
                 {
                     ""name"": ""Location"",
                     ""type"": {
-                          ""type"": ""record"",
-                          ""name"": ""Coordinates"",
-                          ""fields"": [
-                          { ""name"": ""X"", ""type"": ""float"" },
-                          { ""name"": ""Y"", ""type"": ""float"" }
-                          ]
+                        ""type"": ""record"",
+                        ""name"": ""Coordinates"",
+                        ""fields"": [
+                            { ""name"": ""X"", ""type"": ""float"" },
+                            { ""name"": ""Y"", ""type"": ""float"" }
+                        ]
                     }
                 }
             ]
@@ -75,6 +69,7 @@ public class Avatar : ISpecificRecord
     public string Name { get; set; }
     [BsonElement("location")]
     public Coordinates Location { get; set; }
+    
     [BsonElement("walking-speed")]
     public int WalkingSpeed { get; set; }
     [BsonElement("life-pool")]

@@ -1,6 +1,7 @@
 ﻿using Avro;
 using Avro.Specific;
 using ClassLibrary.Classes.Data;
+using ClassLibrary.Classes.Domain;
 
 namespace ClassLibrary.Classes.Messages;
 
@@ -8,12 +9,15 @@ public class LocalState : ISpecificRecord
 {
     public Guid PlayerId { get; set; }
     public Coordinates Location { get; set; }
+    
+    public Avatar Avatar { get; set; }
 
     public LocalState()
     {
         Location = new Coordinates();
+        Avatar = new Avatar();
     }
-
+    
     public Schema Schema => Schema.Parse(@"
     {
         ""namespace"": ""git.avro"",
@@ -31,6 +35,28 @@ public class LocalState : ISpecificRecord
             {
                 ""name"": ""Y"",
                 ""type"": ""float""
+            },
+            {
+                ""name"": ""Avatar"",
+                ""type"": {
+                    ""type"": ""record"",
+                    ""name"": ""Avatar"",
+                    ""fields"": [
+                        { ""name"": ""Id"", ""type"": ""string"" },
+                        { ""name"": ""Name"", ""type"": ""string"" },
+                        {
+                            ""name"": ""Location"",
+                            ""type"": {
+                                ""type"": ""record"",
+                                ""name"": ""Coordinates"",
+                                ""fields"": [
+                                    { ""name"": ""X"", ""type"": ""float"" },
+                                    { ""name"": ""Y"", ""type"": ""float"" }
+                                ]
+                            }
+                        }
+                    ]
+                }
             }
         ]
     }");
@@ -42,6 +68,7 @@ public class LocalState : ISpecificRecord
             case 0: return PlayerId.ToString();
             case 1: return Location.X;
             case 2: return Location.Y;
+            case 3: return Avatar;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
     }
@@ -58,6 +85,9 @@ public class LocalState : ISpecificRecord
                 break;
             case 2:
                 Location.Y = (float) fieldValue;
+                break;
+            case 3:
+                Avatar = (Avatar) fieldValue;
                 break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }

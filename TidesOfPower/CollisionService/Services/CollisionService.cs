@@ -16,7 +16,7 @@ public class CollisionService : BackgroundService, IConsumerService
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<WorldChange> _producer;
     private readonly KafkaConsumer<CollisionCheck> _consumer;
-    
+
     private readonly MongoDbBroker _mongoBroker;
 
     public bool IsRunning { get; private set; }
@@ -50,9 +50,9 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, CollisionCheck value)
     {
-        if (!IsLocationFree(value.ToLocation)) 
+        if (!IsLocationFree(value.ToLocation))
             return;
-        
+
         var output = new WorldChange()
         {
             PlayerId = value.PlayerId,
@@ -70,7 +70,16 @@ public class CollisionService : BackgroundService, IConsumerService
         float deadZoneStartY = 100;
         float deadZoneStopY = 200;
 
-        if (deadZoneStartX <= location.X && location.X <= deadZoneStopX && deadZoneStartY <= location.Y && location.Y <= deadZoneStopY) {
+        if (deadZoneStartX <= location.X && location.X <= deadZoneStopX &&
+            deadZoneStartY <= location.Y && location.Y <= deadZoneStopY)
+        {
+            return false;
+        }
+
+        var locationContent = _mongoBroker.ReadAvatar(location);
+
+        if (locationContent != null)
+        {
             return false;
         }
 

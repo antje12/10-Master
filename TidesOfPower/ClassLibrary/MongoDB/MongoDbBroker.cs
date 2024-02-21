@@ -1,4 +1,5 @@
-﻿using ClassLibrary.Classes.Domain;
+﻿using ClassLibrary.Classes.Data;
+using ClassLibrary.Classes.Domain;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -36,9 +37,38 @@ public class MongoDbBroker
     {
         var filterBuilder = Builders<Avatar>.Filter;
         var filter = filterBuilder.Eq(x => x.Id, avatarId);
-        var profiles = _mongoDbContext.Avatars.Find(filter).ToListAsync().GetAwaiter().GetResult();
-        var profile = profiles.FirstOrDefault();
-        return profile;
+        var avatars = _mongoDbContext.Avatars.Find(filter).ToListAsync().GetAwaiter().GetResult();
+        var avatar = avatars.FirstOrDefault();
+        return avatar;
+    }
+
+    public Avatar? ReadAvatar(Coordinates location)
+    {
+        var filterBuilder = Builders<Avatar>.Filter;
+        var filterX = filterBuilder.Eq(x => x.Location.X, location.X);
+        var filterY = filterBuilder.Eq(x => x.Location.Y, location.Y);
+        var avatars = _mongoDbContext.Avatars.Find(filterX & filterY).ToListAsync().GetAwaiter().GetResult();
+        var avatar = avatars.FirstOrDefault();
+        return avatar;
+    }
+
+    public List<Avatar> ReadScreen(Coordinates location)
+    {
+        var xFrom = location.X - 400;
+        var xTo = location.X + 400;
+        var yFrom = location.Y - 240;
+        var yTo = location.Y + 240;
+        
+        var filterBuilder = Builders<Avatar>.Filter;
+        var filterX = 
+            filterBuilder.Gte(x => x.Location.X, xFrom) & 
+            filterBuilder.Lte(x => x.Location.X, xTo);
+        var filterY  = 
+            filterBuilder.Gte(x => x.Location.Y, yFrom) & 
+            filterBuilder.Lte(x => x.Location.Y, yTo);
+        
+        var avatars = _mongoDbContext.Avatars.Find(filterX & filterY).ToListAsync().GetAwaiter().GetResult();
+        return avatars;
     }
 
     public void UpdateAvatarLocation(Avatar avatar)
@@ -83,5 +113,4 @@ public class MongoDbBroker
             Console.WriteLine("Avatar upsert operation failed!");
         }
     }
-
 }

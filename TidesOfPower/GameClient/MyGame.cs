@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Messages;
 using ClassLibrary.Kafka;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ClassLibrary.Interfaces;
+using ClassLibrary.MongoDB;
 using GameClient.Core;
 using GameClient.Entities;
 
@@ -42,6 +44,8 @@ public class MyGame : Game
 
     private List<Sprite> LocalState;
 
+    private readonly MongoDbBroker _mongoBroker; // ToDo: Delete this
+
     public MyGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -49,13 +53,15 @@ public class MyGame : Game
         IsMouseVisible = true;
 
         LocalState = new List<Sprite>();
-        
+
         _config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(_config);
         _admin.CreateTopic(KafkaTopic.Input);
         _admin.CreateTopic(Output);
         _producer = new KafkaProducer<Input>(_config);
         _consumer = new KafkaConsumer<LocalState>(_config);
+
+        _mongoBroker = new MongoDbBroker(); // ToDo: Delete this
     }
 
     protected override async void Initialize()
@@ -83,16 +89,16 @@ public class MyGame : Game
 
         var islandPosition = new Vector2(screenWidth / 2, screenHeight / 2);
         var island = new Entities.Island(islandPosition, islandTexture);
-        
+
         var enemyPosition = new Vector2(0, 0);
-        var enemy = new Entities.Enemy(enemyPosition, avatarTexture);
-        
+        var enemy = new Entities.Enemy(Guid.NewGuid(), enemyPosition, avatarTexture);
+
         var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
-        var player = new Entities.Player(playerPosition, avatarTexture, _camera, playerId, _producer);
-        
+        var player = new Entities.Player(playerId, playerPosition, avatarTexture, _camera, _producer);
+
         var oceanPosition = new Vector2(0, 0);
         var ocean = new Entities.Ocean(oceanPosition, oceanTexture, player);
-        
+
         LocalState.Add(ocean);
         LocalState.Add(island);
         LocalState.Add(enemy);
@@ -111,6 +117,36 @@ public class MyGame : Game
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
+        var player = LocalState.First(x => x is Player);
+        Console.WriteLine($"Player location; {player.Position.X}:{player.Position.Y}");
+        var temp = _mongoBroker.ReadScreen(new Coordinates()
+        {
+            X = player.Position.X,
+            Y = player.Position.Y
+        }); // ToDo: Delete this
+
+        var enemies = temp.Where(x => x.Id != playerId).ToList();
+        Console.WriteLine($"Enemise from server: {enemies.Count}");
+        var localEnemies = LocalState.Where(x => x is Enemy).Select(x => (Agent)x).ToList();
+        Console.WriteLine($"Enemise from local: {localEnemies.Count}");
+        foreach (var enemy in enemies)
+        {
+            if (localEnemies.All(x => x._agentId != enemy.Id))
+            {
+                var enemyPosition = new Vector2(enemy.Location.X, enemy.Location.Y);
+                var newEnemy = new Entities.Enemy(enemy.Id, enemyPosition, avatarTexture);
+                LocalState.Add(newEnemy);
+            }
+        }
+
+        foreach (var enemy in localEnemies)
+        {
+            if (enemies.All(x => x.Id != enemy._agentId))
+            {
+                LocalState.RemoveAll(x => x is Enemy && ((Enemy)x)._agentId == enemy._agentId);
+            }
+        }
+        
         // TODO: Add your update logic here
         foreach (var sprite in LocalState)
         {

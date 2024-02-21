@@ -11,9 +11,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameClient.Entities;
 
-public class Player : Sprite
+public class Player : Agent
 {
-    private readonly Guid _playerId;
     private readonly Camera _camera;
     private readonly KafkaProducer<Input> _producer;
 
@@ -22,11 +21,10 @@ public class Player : Sprite
 
     private bool attacking = false;
     
-    public Player(Vector2 position, Texture2D texture, Camera camera, Guid playerId, KafkaProducer<Input> producer)
-        : base(position, texture)
+    public Player(Guid agentId, Vector2 position, Texture2D texture, Camera camera, KafkaProducer<Input> producer)
+        : base(agentId, position, texture)
     {
         _camera = camera;
-        _playerId = playerId;
         _producer = producer;
         _lastLocation = new Coordinates();
         _lastKeyInput = new List<GameKey>();
@@ -64,7 +62,7 @@ public class Player : Sprite
         {
             var input = new Input()
             {
-                PlayerId = _playerId,
+                PlayerId = _agentId,
                 Location = new Coordinates()
                 {
                     X = Position.X,
@@ -79,7 +77,7 @@ public class Player : Sprite
 
             if (newLocation || newInput)
             {
-                _producer.Produce(KafkaTopic.Input, _playerId.ToString(), input);
+                _producer.Produce(KafkaTopic.Input, _agentId.ToString(), input);
                 _lastLocation = input.Location;
                 _lastKeyInput = input.KeyInput;
             }

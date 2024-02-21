@@ -62,6 +62,7 @@ public class WorldService : BackgroundService, IConsumerService
             Id = output.PlayerId,
             Location = output.Location
         });
+        
         //var avatar = _mongoBroker.ReadAvatar(value.PlayerId);
         //if (avatar != null)
         //{

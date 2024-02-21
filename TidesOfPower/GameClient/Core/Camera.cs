@@ -10,8 +10,8 @@ public class Camera
     public void Follow(Vector2 playerPosition, Texture2D playerTexture, int screenWidth, int screenHeight)
     {
         var position = Matrix.CreateTranslation(
-            -playerPosition.X - (playerTexture.Width / 2),
-            -playerPosition.Y - (playerTexture.Height / 2),
+            -playerPosition.X, //- (playerTexture.Width / 2),
+            -playerPosition.Y, //- (playerTexture.Height / 2),
             0);
 
         var offset = Matrix.CreateTranslation(

@@ -106,10 +106,11 @@ public class MyGame : Game
 
     private void ProcessMessage(string key, LocalState value)
     {
-        var player = LocalState.First(x => x is Entities.Player);
-        player.Position = new Vector2(value.Location.X, value.Location.Y);
+        var player = value.Avatars.Where(x => x.Id == playerId).FirstOrDefault();
+        var localPlayer = LocalState.First(x => x is Entities.Player);
+        localPlayer.Position = new Vector2(player.Location.X, player.Location.Y);
 
-        Console.WriteLine($"Player location; {player.Position.X}:{player.Position.Y}");
+        Console.WriteLine($"Player location; {localPlayer.Position.X}:{localPlayer.Position.Y}");
         var enemies = value.Avatars.Where(x => x.Id != playerId).ToList();
         Console.WriteLine($"Enemise from server: {enemies.Count}");
         var localEnemies = LocalState.Where(x => x is Entities.Enemy).Select(x => (Entities.Agent) x).ToList();

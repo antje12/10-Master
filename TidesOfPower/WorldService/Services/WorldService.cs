@@ -61,7 +61,6 @@ public class WorldService : BackgroundService, IConsumerService
         var output = new LocalState()
         {
             PlayerId = value.PlayerId,
-            Location = value.NewLocation,
             Avatars = new List<Avatar>()
         };
 
@@ -87,8 +86,8 @@ public class WorldService : BackgroundService, IConsumerService
 
         var avatars = _mongoBroker.ReadScreen(new Coordinates()
         {
-            X = output.Location.X,
-            Y = output.Location.Y
+            X = avatar.Location.X,
+            Y = avatar.Location.Y
         });
 
         foreach (var a in avatars)

@@ -8,12 +8,10 @@ namespace ClassLibrary.Classes.Messages;
 public class LocalState : ISpecificRecord
 {
     public Guid PlayerId { get; set; }
-    public Coordinates Location { get; set; }
     public List<Avatar> Avatars { get; set; }
 
     public LocalState()
     {
-        Location = new Coordinates();
         Avatars = new List<Avatar>();
     }
 
@@ -25,8 +23,13 @@ public class LocalState : ISpecificRecord
         ""name"": ""LocalState"",
         ""fields"": [
             {{ ""name"": ""PlayerId"", ""type"": ""string"" }},
-            {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema} }},
-            {{ ""name"": ""Avatars"", ""type"": {Avatar.StatSchema} }}
+            {{ 
+                ""name"": ""Avatars"", 
+                ""type"": {{ 
+                    ""type"": ""array"", 
+                    ""items"": {Avatar.StatSchema} 
+                }} 
+            }}
         ]
     }}");
 
@@ -35,8 +38,7 @@ public class LocalState : ISpecificRecord
         switch (fieldPos)
         {
             case 0: return PlayerId.ToString();
-            case 1: return Location;
-            case 2: return Avatars;
+            case 1: return Avatars;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
     }
@@ -49,9 +51,6 @@ public class LocalState : ISpecificRecord
                 PlayerId = Guid.Parse((string) fieldValue);
                 break;
             case 1:
-                Location = (Coordinates) fieldValue;
-                break;
-            case 2:
                 Avatars = (List<Avatar>) fieldValue;
                 break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");

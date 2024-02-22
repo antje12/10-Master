@@ -47,8 +47,7 @@ public class AIService : BackgroundService, IConsumerService
     {
         var output = new LocalState()
         {
-            PlayerId = value.PlayerId,
-            Location = value.Location
+            PlayerId = value.PlayerId
         };
 
         //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);

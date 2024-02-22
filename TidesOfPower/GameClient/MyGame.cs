@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ClassLibrary.Classes.Data;
-using ClassLibrary.Classes.Domain;
 using ClassLibrary.Classes.Messages;
 using ClassLibrary.Kafka;
 using Microsoft.Xna.Framework;
@@ -14,8 +12,6 @@ using ClassLibrary.Interfaces;
 using ClassLibrary.MongoDB;
 using GameClient.Core;
 using GameClient.Entities;
-using Enemy = GameClient.Entities.Enemy;
-using Player = GameClient.Entities.Player;
 
 namespace GameClient;
 
@@ -108,12 +104,33 @@ public class MyGame : Game
         LocalState.Add(player);
     }
 
-    private void ProcessMessage(string key, LocalState value)
-    {
-        Avatar a = value.Avatars.FirstOrDefault();
-        var player = LocalState.First(x => x is Player);
-        player.Position = new Vector2(value.Location.X, value.Location.Y);
-    }
+    private void ProcessMessage(string key, LocalState value) 
+    { 
+        var player = LocalState.First(x => x is Entities.Player); 
+        player.Position = new Vector2(value.Location.X, value.Location.Y); 
+        
+        Console.WriteLine($"Player location; {player.Position.X}:{player.Position.Y}"); 
+        var enemies = value.Avatars.Where(x => x.Id != playerId).ToList(); 
+        Console.WriteLine($"Enemise from server: {enemies.Count}"); 
+        var localEnemies = LocalState.Where(x => x is Entities.Enemy).Select(x => (Entities.Agent)x).ToList(); 
+        Console.WriteLine($"Enemise from local: {localEnemies.Count}"); 
+        foreach (var enemy in enemies) 
+        { 
+            if (localEnemies.All(x => x._agentId != enemy.Id)) 
+            { 
+                var enemyPosition = new Vector2(enemy.Location.X, enemy.Location.Y); 
+                var newEnemy = new Entities.Enemy(enemy.Id, enemyPosition, avatarTexture); 
+                LocalState.Add(newEnemy); 
+            } 
+        } 
+        foreach (var enemy in localEnemies) 
+        { 
+            if (enemies.All(x => x.Id != enemy._agentId)) 
+            { 
+                LocalState.RemoveAll(x => x is Entities.Enemy && ((Entities.Enemy)x)._agentId == enemy._agentId); 
+            } 
+        } 
+    } 
 
     protected override void Update(GameTime gameTime)
     {
@@ -121,36 +138,6 @@ public class MyGame : Game
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        var player = LocalState.First(x => x is Player);
-        //Console.WriteLine($"Player location; {player.Position.X}:{player.Position.Y}");
-        var temp = _mongoBroker.ReadScreen(new Coordinates()
-        {
-            X = player.Position.X,
-            Y = player.Position.Y
-        }); // ToDo: Delete this
-
-        var enemies = temp.Where(x => x.Id != playerId).ToList();
-        //Console.WriteLine($"Enemise from server: {enemies.Count}");
-        var localEnemies = LocalState.Where(x => x is Enemy).Select(x => (Agent)x).ToList();
-        //Console.WriteLine($"Enemise from local: {localEnemies.Count}");
-        foreach (var enemy in enemies)
-        {
-            if (localEnemies.All(x => x._agentId != enemy.Id))
-            {
-                var enemyPosition = new Vector2(enemy.Location.X, enemy.Location.Y);
-                var newEnemy = new Entities.Enemy(enemy.Id, enemyPosition, avatarTexture);
-                LocalState.Add(newEnemy);
-            }
-        }
-
-        foreach (var enemy in localEnemies)
-        {
-            if (enemies.All(x => x.Id != enemy._agentId))
-            {
-                LocalState.RemoveAll(x => x is Enemy && ((Enemy)x)._agentId == enemy._agentId);
-            }
-        }
-        
         // TODO: Add your update logic here
         foreach (var sprite in LocalState)
         {

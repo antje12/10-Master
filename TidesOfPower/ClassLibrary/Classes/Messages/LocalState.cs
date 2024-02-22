@@ -19,7 +19,7 @@ public class LocalState : ISpecificRecord
     
     public Schema Schema => Schema.Parse(@"
     {
-        ""namespace"": ""git.avro"",
+        ""namespace"": ""ClassLibrary.Classes.Messages"",
         ""type"": ""record"",
         ""name"": ""LocalState"",
         ""fields"": [
@@ -40,6 +40,7 @@ public class LocalState : ISpecificRecord
                 ""type"": {
                     ""type"": ""array"",
                     ""items"": {
+                        ""namespace"": ""ClassLibrary.Classes.Messages"",
                         ""type"": ""record"",
                         ""name"": ""Avatar"",
                         ""fields"": [
@@ -48,6 +49,7 @@ public class LocalState : ISpecificRecord
                             {
                                 ""name"": ""Location"",
                                 ""type"": {
+                                    ""namespace"": ""ClassLibrary.Classes.Messages"",
                                     ""type"": ""record"",
                                     ""name"": ""Coordinates"",
                                     ""fields"": [

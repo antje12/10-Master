@@ -1,9 +1,10 @@
 ﻿using Avro;
 using Avro.Specific;
 using ClassLibrary.Classes.Data;
+using ClassLibrary.Classes.Domain;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ClassLibrary.Classes.Domain;
+namespace ClassLibrary.Classes.Messages;
 
 public class Avatar : ISpecificRecord
 {
@@ -14,7 +15,7 @@ public class Avatar : ISpecificRecord
     
     public Schema Schema => Schema.Parse(@"
         {
-            ""namespace"": ""git.avro"",
+            ""namespace"": ""ClassLibrary.Classes.Messages"",
             ""type"": ""record"",
             ""name"": ""Avatar"",
             ""fields"": [
@@ -23,6 +24,7 @@ public class Avatar : ISpecificRecord
                 {
                     ""name"": ""Location"",
                     ""type"": {
+                        ""namespace"": ""ClassLibrary.Classes.Messages"",
                         ""type"": ""record"",
                         ""name"": ""Coordinates"",
                         ""fields"": [

@@ -1,5 +1,6 @@
 ﻿using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
+using ClassLibrary.Classes.Messages;
 using MongoDB.Bson;
 using MongoDB.Driver;
 

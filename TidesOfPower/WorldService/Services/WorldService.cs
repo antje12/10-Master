@@ -62,7 +62,7 @@ public class WorldService : BackgroundService, IConsumerService
         {
             PlayerId = value.PlayerId,
             Location = value.NewLocation,
-            Avatars = new List<Avatar>(){avatar}
+            Avatars = new List<Avatar>()
         };
         
         _mongoBroker.UpsertAvatarLocation(avatar);
@@ -84,7 +84,24 @@ public class WorldService : BackgroundService, IConsumerService
         //        Location = output.Location
         //    });
         //}
-
+        
+        var avatars = _mongoBroker.ReadScreen(new Coordinates() 
+        { 
+            X = output.Location.X, 
+            Y = output.Location.Y 
+        }); 
+ 
+        foreach (var a in avatars) 
+        { 
+            var na = new Avatar() 
+            { 
+                Id = a.Id, 
+                Name = "test", 
+                Location = a.Location 
+            }; 
+            output.Avatars.Add(na); 
+        } 
+        
         //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
         _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);
     }

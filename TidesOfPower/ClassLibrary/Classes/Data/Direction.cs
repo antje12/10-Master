@@ -3,14 +3,14 @@
 public enum Direction
 {
     Stay,
-    
-    North, 
-    South, 
-    East, 
+
+    North,
+    South,
+    East,
     West,
-    
+
     NorthEast,
-    SouthEast, 
+    SouthEast,
     SouthWest,
     NorthWest
 }

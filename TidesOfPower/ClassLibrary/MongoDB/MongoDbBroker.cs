@@ -1,7 +1,5 @@
 ﻿using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
-using ClassLibrary.Classes.Messages;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ClassLibrary.MongoDB;
@@ -59,15 +57,15 @@ public class MongoDbBroker
         var xTo = location.X + 400;
         var yFrom = location.Y - 240;
         var yTo = location.Y + 240;
-        
+
         var filterBuilder = Builders<Avatar>.Filter;
-        var filterX = 
-            filterBuilder.Gte(x => x.Location.X, xFrom) & 
+        var filterX =
+            filterBuilder.Gte(x => x.Location.X, xFrom) &
             filterBuilder.Lte(x => x.Location.X, xTo);
-        var filterY  = 
-            filterBuilder.Gte(x => x.Location.Y, yFrom) & 
+        var filterY =
+            filterBuilder.Gte(x => x.Location.Y, yFrom) &
             filterBuilder.Lte(x => x.Location.Y, yTo);
-        
+
         var avatars = _mongoDbContext.Avatars.Find(filterX & filterY).ToListAsync().GetAwaiter().GetResult();
         return avatars;
     }
@@ -88,14 +86,14 @@ public class MongoDbBroker
             Console.WriteLine("Avatar update succeeded!");
         }
     }
-    
+
     public void UpsertAvatarLocation(Avatar avatar)
     {
         var filter = Builders<Avatar>.Filter.Eq(x => x.Id, avatar.Id);
         var update = Builders<Avatar>.Update
-                .Set(x => x.Id, avatar.Id)
-                .Set(x => x.Location, avatar.Location);
-        var options = new UpdateOptions { IsUpsert = true };
+            .Set(x => x.Id, avatar.Id)
+            .Set(x => x.Location, avatar.Location);
+        var options = new UpdateOptions {IsUpsert = true};
         var result = _mongoDbContext.Avatars.UpdateOneAsync(filter, update, options).GetAwaiter().GetResult();
 
         if (result.IsAcknowledged && result.ModifiedCount != 0)

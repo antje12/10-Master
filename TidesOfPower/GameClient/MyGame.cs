@@ -104,33 +104,34 @@ public class MyGame : Game
         LocalState.Add(player);
     }
 
-    private void ProcessMessage(string key, LocalState value) 
-    { 
-        var player = LocalState.First(x => x is Entities.Player); 
-        player.Position = new Vector2(value.Location.X, value.Location.Y); 
-        
-        Console.WriteLine($"Player location; {player.Position.X}:{player.Position.Y}"); 
-        var enemies = value.Avatars.Where(x => x.Id != playerId).ToList(); 
-        Console.WriteLine($"Enemise from server: {enemies.Count}"); 
-        var localEnemies = LocalState.Where(x => x is Entities.Enemy).Select(x => (Entities.Agent)x).ToList(); 
-        Console.WriteLine($"Enemise from local: {localEnemies.Count}"); 
-        foreach (var enemy in enemies) 
-        { 
-            if (localEnemies.All(x => x._agentId != enemy.Id)) 
-            { 
-                var enemyPosition = new Vector2(enemy.Location.X, enemy.Location.Y); 
-                var newEnemy = new Entities.Enemy(enemy.Id, enemyPosition, avatarTexture); 
-                LocalState.Add(newEnemy); 
-            } 
-        } 
-        foreach (var enemy in localEnemies) 
-        { 
-            if (enemies.All(x => x.Id != enemy._agentId)) 
-            { 
-                LocalState.RemoveAll(x => x is Entities.Enemy && ((Entities.Enemy)x)._agentId == enemy._agentId); 
-            } 
-        } 
-    } 
+    private void ProcessMessage(string key, LocalState value)
+    {
+        var player = LocalState.First(x => x is Entities.Player);
+        player.Position = new Vector2(value.Location.X, value.Location.Y);
+
+        Console.WriteLine($"Player location; {player.Position.X}:{player.Position.Y}");
+        var enemies = value.Avatars.Where(x => x.Id != playerId).ToList();
+        Console.WriteLine($"Enemise from server: {enemies.Count}");
+        var localEnemies = LocalState.Where(x => x is Entities.Enemy).Select(x => (Entities.Agent) x).ToList();
+        Console.WriteLine($"Enemise from local: {localEnemies.Count}");
+        foreach (var enemy in enemies)
+        {
+            if (localEnemies.All(x => x._agentId != enemy.Id))
+            {
+                var enemyPosition = new Vector2(enemy.Location.X, enemy.Location.Y);
+                var newEnemy = new Entities.Enemy(enemy.Id, enemyPosition, avatarTexture);
+                LocalState.Add(newEnemy);
+            }
+        }
+
+        foreach (var enemy in localEnemies)
+        {
+            if (enemies.All(x => x.Id != enemy._agentId))
+            {
+                LocalState.RemoveAll(x => x is Entities.Enemy && ((Entities.Enemy) x)._agentId == enemy._agentId);
+            }
+        }
+    }
 
     protected override void Update(GameTime gameTime)
     {

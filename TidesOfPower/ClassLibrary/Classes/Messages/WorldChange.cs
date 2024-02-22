@@ -14,29 +14,17 @@ public class WorldChange : ISpecificRecord
         NewLocation = new Coordinates();
     }
 
-    public Schema Schema => Schema.Parse(@"
-    {
-        ""namespace"": ""git.avro"",
+    public Schema Schema => StatSchema;
+    public static Schema StatSchema => Schema.Parse($@"
+    {{
+        ""namespace"": ""ClassLibrary.Classes.Messages"",
         ""type"": ""record"",
         ""name"": ""WorldChange"",
         ""fields"": [
-            {
-                ""name"": ""PlayerId"",
-                ""type"": ""string""
-            },
-            {
-                ""name"": ""NewLocation"",
-                ""type"": {
-                      ""type"": ""record"",
-                      ""name"": ""Coordinates"",
-                      ""fields"": [
-                      { ""name"": ""X"", ""type"": ""float"" },
-                      { ""name"": ""Y"", ""type"": ""float"" }
-                      ]
-                }
-            }
+            {{ ""name"": ""PlayerId"", ""type"": ""string"" }},
+            {{ ""name"": ""NewLocation"", ""type"": {Coordinates.StatSchema} }}
         ]
-    }");
+    }}");
 
     public object Get(int fieldPos)
     {

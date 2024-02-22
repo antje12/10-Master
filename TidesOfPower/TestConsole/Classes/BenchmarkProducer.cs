@@ -16,17 +16,16 @@
 
 using Confluent.Kafka;
 
-
 namespace TestConsole.Classes
 {
     public static class BenchmarkProducer
     {
         private static long BenchmarkProducerImpl(
-            string bootstrapServers, 
-            string topic, 
+            string bootstrapServers,
+            string topic,
             int nMessages,
             int msgSize,
-            int nTests, 
+            int nTests,
             int nHeaders,
             bool useDeliveryHandler,
             string username,
@@ -38,7 +37,7 @@ namespace TestConsole.Classes
                 BootstrapServers = bootstrapServers,
                 QueueBufferingMaxMessages = 2000000,
                 MessageSendMaxRetries = 3,
-                RetryBackoffMs = 500 ,
+                RetryBackoffMs = 500,
                 LingerMs = 100,
                 DeliveryReportFields = "none"
             };
@@ -49,23 +48,26 @@ namespace TestConsole.Classes
             if (nHeaders > 0)
             {
                 headers = new Headers();
-                for (int i=0; i<nHeaders; ++i)
+                for (int i = 0; i < nHeaders; ++i)
                 {
-                    headers.Add($"header-{i+1}", new byte[] { (byte)i, (byte)(i+1), (byte)(i+2), (byte)(i+3) });
+                    headers.Add($"header-{i + 1}",
+                        new byte[] {(byte) i, (byte) (i + 1), (byte) (i + 2), (byte) (i + 3)});
                 }
             }
 
             using (var producer = new ProducerBuilder<Null, byte[]>(config).Build())
             {
-                for (var j=0; j<nTests; j += 1)
+                for (var j = 0; j < nTests; j += 1)
                 {
-                    Console.WriteLine($"{producer.Name} producing on {topic} " + (useDeliveryHandler ? "[Action<Message>]" : "[Task]"));
+                    Console.WriteLine($"{producer.Name} producing on {topic} " +
+                                      (useDeliveryHandler ? "[Action<Message>]" : "[Task]"));
 
                     byte cnt = 0;
                     var val = new byte[msgSize].Select(a => ++cnt).ToArray();
 
                     // this avoids including connection setup, topic creation time, etc.. in result.
-                    firstDeliveryReport = producer.ProduceAsync(topic, new Message<Null, byte[]> { Value = val, Headers = headers }).Result;
+                    firstDeliveryReport = producer
+                        .ProduceAsync(topic, new Message<Null, byte[]> {Value = val, Headers = headers}).Result;
 
                     var startTime = DateTime.Now.Ticks;
 
@@ -73,26 +75,30 @@ namespace TestConsole.Classes
                     {
                         var autoEvent = new AutoResetEvent(false);
                         var msgCount = nMessages;
-                        Action<DeliveryReport<Null, byte[]>> deliveryHandler = (DeliveryReport<Null, byte[]> deliveryReport) => 
-                        {
-                            if (deliveryReport.Error.IsError)
+                        Action<DeliveryReport<Null, byte[]>> deliveryHandler =
+                            (DeliveryReport<Null, byte[]> deliveryReport) =>
                             {
-                                // Not interested in benchmark results in the (unlikely) event there is an error.
-                                Console.WriteLine($"A error occured producing a message: {deliveryReport.Error.Reason}");
-                                Environment.Exit(1); // note: exceptions do not currently propagate to calling code from a deliveryHandler method.
-                            }
+                                if (deliveryReport.Error.IsError)
+                                {
+                                    // Not interested in benchmark results in the (unlikely) event there is an error.
+                                    Console.WriteLine(
+                                        $"A error occured producing a message: {deliveryReport.Error.Reason}");
+                                    Environment.Exit(
+                                        1); // note: exceptions do not currently propagate to calling code from a deliveryHandler method.
+                                }
 
-                            if (--msgCount == 0)
-                            {
-                                autoEvent.Set();
-                            }
-                        };
+                                if (--msgCount == 0)
+                                {
+                                    autoEvent.Set();
+                                }
+                            };
 
                         for (int i = 0; i < nMessages; i += 1)
                         {
                             try
                             {
-                                producer.Produce(topic, new Message<Null, byte[]> { Value = val, Headers = headers }, deliveryHandler);
+                                producer.Produce(topic, new Message<Null, byte[]> {Value = val, Headers = headers},
+                                    deliveryHandler);
                             }
                             catch (ProduceException<Null, byte[]> ex)
                             {
@@ -114,6 +120,7 @@ namespace TestConsole.Classes
                             {
                                 break;
                             }
+
                             Console.WriteLine(msgCount);
                         }
                     }
@@ -124,10 +131,12 @@ namespace TestConsole.Classes
                             var tasks = new Task[nMessages];
                             for (int i = 0; i < nMessages; i += 1)
                             {
-                                tasks[i] = producer.ProduceAsync(topic, new Message<Null, byte[]> { Value = val, Headers = headers });
+                                tasks[i] = producer.ProduceAsync(topic,
+                                    new Message<Null, byte[]> {Value = val, Headers = headers});
                                 if (tasks[i].IsFaulted)
                                 {
-                                    if (((ProduceException<Null, byte[]>)tasks[i].Exception.InnerException).Error.Code == ErrorCode.Local_QueueFull)
+                                    if (((ProduceException<Null, byte[]>) tasks[i].Exception.InnerException).Error
+                                        .Code == ErrorCode.Local_QueueFull)
                                     {
                                         producer.Poll(TimeSpan.FromSeconds(1));
                                         i -= 1;
@@ -150,8 +159,8 @@ namespace TestConsole.Classes
 
                     var duration = DateTime.Now.Ticks - startTime;
 
-                    Console.WriteLine($"Produced {nMessages} messages in {duration/10000.0:F0}ms");
-                    Console.WriteLine($"{nMessages / (duration/10000.0):F0}k msg/s");
+                    Console.WriteLine($"Produced {nMessages} messages in {duration / 10000.0:F0}ms");
+                    Console.WriteLine($"{nMessages / (duration / 10000.0):F0}k msg/s");
                 }
 
                 producer.Flush(TimeSpan.FromSeconds(10));
@@ -164,14 +173,18 @@ namespace TestConsole.Classes
         ///     Producer benchmark masquerading as an integration test.
         ///     Uses Task based produce method.
         /// </summary>
-        public static long TaskProduce(string bootstrapServers, string topic, int nMessages, int msgSize, int nHeaders, int nTests, string username, string password)
-            => BenchmarkProducerImpl(bootstrapServers, topic, nMessages, msgSize, nTests, nHeaders, false, username, password);
+        public static long TaskProduce(string bootstrapServers, string topic, int nMessages, int msgSize, int nHeaders,
+            int nTests, string username, string password)
+            => BenchmarkProducerImpl(bootstrapServers, topic, nMessages, msgSize, nTests, nHeaders, false, username,
+                password);
 
         /// <summary>
         ///     Producer benchmark (with custom delivery handler) masquerading
         ///     as an integration test. Uses Task based produce method.
         /// </summary>
-        public static long DeliveryHandlerProduce(string bootstrapServers, string topic, int nMessages, int msgSize, int nHeaders, int nTests, string username, string password)
-            => BenchmarkProducerImpl(bootstrapServers, topic, nMessages, msgSize, nTests, nHeaders, true, username, password);
+        public static long DeliveryHandlerProduce(string bootstrapServers, string topic, int nMessages, int msgSize,
+            int nHeaders, int nTests, string username, string password)
+            => BenchmarkProducerImpl(bootstrapServers, topic, nMessages, msgSize, nTests, nHeaders, true, username,
+                password);
     }
 }

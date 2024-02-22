@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+
 using System.Diagnostics;
 using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
@@ -98,6 +99,7 @@ async Task TestKafka()
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
+
     void ProcessMessage(string key, LocalState value)
     {
         stopwatch.Stop();

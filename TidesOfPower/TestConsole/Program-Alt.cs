@@ -24,8 +24,8 @@ namespace TestConsole
 {
     public class Program
     {
-
-        private static void CreateTopic(string bootstrapServers, string username, string password, string topicName, int partitionCount, short replicationFactor)
+        private static void CreateTopic(string bootstrapServers, string username, string password, string topicName,
+            int partitionCount, short replicationFactor)
         {
             var config = new AdminClientConfig
             {
@@ -36,12 +36,13 @@ namespace TestConsole
             {
                 try
                 {
-                    adminClient.DeleteTopicsAsync(new List<string> { topicName }).Wait();
+                    adminClient.DeleteTopicsAsync(new List<string> {topicName}).Wait();
                 }
                 catch (AggregateException ae)
                 {
                     if (!(ae.InnerException is DeleteTopicsException) ||
-                        (((DeleteTopicsException)ae.InnerException).Results.Select(r => r.Error.Code).Where(el => el != ErrorCode.UnknownTopicOrPart).Count() > 0))
+                        (((DeleteTopicsException) ae.InnerException).Results.Select(r => r.Error.Code)
+                            .Where(el => el != ErrorCode.UnknownTopicOrPart).Count() > 0))
                     {
                         throw new Exception($"Unable to delete topic {topicName}", ae);
                     }
@@ -52,7 +53,11 @@ namespace TestConsole
 
                 try
                 {
-                    adminClient.CreateTopicsAsync(new List<TopicSpecification> { new TopicSpecification { Name = topicName, NumPartitions = partitionCount, ReplicationFactor = replicationFactor } }).Wait();
+                    adminClient.CreateTopicsAsync(new List<TopicSpecification>
+                    {
+                        new TopicSpecification
+                            {Name = topicName, NumPartitions = partitionCount, ReplicationFactor = replicationFactor}
+                    }).Wait();
                 }
                 catch (AggregateException e)
                 {
@@ -80,10 +85,13 @@ namespace TestConsole
 
             OptionSet p = new OptionSet
             {
-                { "m|mode=", "throughput|latency", m => mode = m },
-                { "r=", "rate - messages per second (latency mode only). must be > 1000", (int r) => messagesPerSecond = r }
+                {"m|mode=", "throughput|latency", m => mode = m},
+                {
+                    "r=", "rate - messages per second (latency mode only). must be > 1000",
+                    (int r) => messagesPerSecond = r
+                }
             };
-            
+
             if (partitionCount != null)
             {
                 CreateTopic(bootstrapServers, username, password, topicName, partitionCount.Value, replicationFactor);
@@ -92,13 +100,17 @@ namespace TestConsole
             if (mode == "throughput")
             {
                 const int NUMBER_OF_TESTS = 1;
-                BenchmarkProducer.TaskProduce(bootstrapServers, topicName, numberOfMessages, messageSize, headerCount, NUMBER_OF_TESTS, username, password);
-                var firstMessageOffset = BenchmarkProducer.DeliveryHandlerProduce(bootstrapServers, topicName, numberOfMessages, messageSize, headerCount, NUMBER_OF_TESTS, username, password);
-                BenchmarkConsumer.Consume(bootstrapServers, topicName, group, firstMessageOffset, numberOfMessages, headerCount, NUMBER_OF_TESTS, username, password);
+                BenchmarkProducer.TaskProduce(bootstrapServers, topicName, numberOfMessages, messageSize, headerCount,
+                    NUMBER_OF_TESTS, username, password);
+                var firstMessageOffset = BenchmarkProducer.DeliveryHandlerProduce(bootstrapServers, topicName,
+                    numberOfMessages, messageSize, headerCount, NUMBER_OF_TESTS, username, password);
+                BenchmarkConsumer.Consume(bootstrapServers, topicName, group, firstMessageOffset, numberOfMessages,
+                    headerCount, NUMBER_OF_TESTS, username, password);
             }
             else if (mode == "latency")
             {
-                Latency.Run(bootstrapServers, topicName, group, headerCount, messageSize, messagesPerSecond.Value, numberOfMessages, username, password);
+                Latency.Run(bootstrapServers, topicName, group, headerCount, messageSize, messagesPerSecond.Value,
+                    numberOfMessages, username, password);
             }
         }
     }

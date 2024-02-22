@@ -22,7 +22,7 @@ public class KafkaProducer<T> : IProducer<T> where T : ISpecificRecord
 
     public void Produce(KafkaTopic topic, string key, T value)
     {
-        Produce(topic.ToString(), key, value); 
+        Produce(topic.ToString(), key, value);
     }
 
     public void Produce(string topic, string key, T value)

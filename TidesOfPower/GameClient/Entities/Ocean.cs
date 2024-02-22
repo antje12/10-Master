@@ -6,7 +6,7 @@ namespace GameClient.Entities;
 public class Ocean : Sprite
 {
     private readonly Player _player;
-    
+
     public Ocean(Vector2 position, Texture2D texture, Player player) : base(position, texture)
     {
         _player = player;
@@ -20,7 +20,7 @@ public class Ocean : Sprite
     {
         int screenWidth = MyGame.screenWidth;
         int screenHeight = MyGame.screenHeight;
-        
+
         var startX = _player.Position.X - screenWidth / 2 - Texture.Width;
         var offsetX = startX % Texture.Width;
         startX -= offsetX;

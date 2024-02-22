@@ -6,7 +6,6 @@ namespace GameClient.Entities;
 
 public class Enemy : Agent
 {
-
     public Enemy(Guid agentId, Vector2 position, Texture2D texture) : base(agentId, position, texture)
     {
     }

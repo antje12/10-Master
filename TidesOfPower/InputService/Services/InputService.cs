@@ -56,11 +56,11 @@ public class InputService : BackgroundService, IConsumerService
                 Y = value.Location.Y
             }
         };
-        
+
         var moving = false;
         var attacking = false;
         var interacting = false;
-        
+
         foreach (var input in value.KeyInput)
         {
             switch (input)
@@ -96,13 +96,13 @@ public class InputService : BackgroundService, IConsumerService
         {
             _producer.Produce(KafkaTopic.Collision, key, output);
         }
+
         if (attacking)
         {
-            
         }
+
         if (interacting)
         {
-            
         }
     }
 }

@@ -20,7 +20,7 @@ public class Player : Agent
     private List<GameKey> _lastKeyInput;
 
     private bool attacking = false;
-    
+
     public Player(Guid agentId, Vector2 position, Texture2D texture, Camera camera, KafkaProducer<Input> producer)
         : base(agentId, position, texture)
     {
@@ -55,9 +55,10 @@ public class Player : Agent
             attacking = false;
             _lastKeyInput.Remove(GameKey.Attack);
         }
+
         if (kState.IsKeyDown(Keys.E))
             keyInput.Add(GameKey.Interact);
-        
+
         if (keyInput.Count > 0)
         {
             var input = new Input()
@@ -71,7 +72,7 @@ public class Player : Agent
                 KeyInput = keyInput,
                 GameTime = gameTime.ElapsedGameTime.TotalSeconds
             };
-            
+
             var newLocation = _lastLocation.X != input.Location.X || _lastLocation.Y != input.Location.Y;
             var newInput = !_lastKeyInput.OrderBy(x => x).SequenceEqual(keyInput.OrderBy(x => x));
 

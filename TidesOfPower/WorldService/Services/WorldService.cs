@@ -17,7 +17,7 @@ public class WorldService : BackgroundService, IConsumerService
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<LocalState> _producer;
     private readonly KafkaConsumer<WorldChange> _consumer;
-    
+
     private readonly MongoDbBroker _mongoBroker;
 
     public bool IsRunning { get; private set; }
@@ -57,16 +57,16 @@ public class WorldService : BackgroundService, IConsumerService
             Name = "test",
             Location = value.NewLocation
         };
-        
+
         var output = new LocalState()
         {
             PlayerId = value.PlayerId,
             Location = value.NewLocation,
             Avatars = new List<Avatar>()
         };
-        
+
         _mongoBroker.UpsertAvatarLocation(avatar);
-        
+
         //var avatar = _mongoBroker.ReadAvatar(value.PlayerId);
         //if (avatar != null)
         //{
@@ -84,24 +84,24 @@ public class WorldService : BackgroundService, IConsumerService
         //        Location = output.Location
         //    });
         //}
-        
-        var avatars = _mongoBroker.ReadScreen(new Coordinates() 
-        { 
-            X = output.Location.X, 
-            Y = output.Location.Y 
-        }); 
- 
-        foreach (var a in avatars) 
-        { 
-            var na = new Avatar() 
-            { 
-                Id = a.Id, 
-                Name = "test", 
-                Location = a.Location 
-            }; 
-            output.Avatars.Add(na); 
-        } 
-        
+
+        var avatars = _mongoBroker.ReadScreen(new Coordinates()
+        {
+            X = output.Location.X,
+            Y = output.Location.Y
+        });
+
+        foreach (var a in avatars)
+        {
+            var na = new Avatar()
+            {
+                Id = a.Id,
+                Name = "test",
+                Location = a.Location
+            };
+            output.Avatars.Add(na);
+        }
+
         //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
         _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);
     }

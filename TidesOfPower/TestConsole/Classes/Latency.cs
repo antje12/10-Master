@@ -17,12 +17,12 @@
 using System.Diagnostics;
 using Confluent.Kafka;
 
-
 namespace TestConsole.Classes
 {
     public class Latency
     {
-        public static void Run(string bootstrapServers, string topicName, string group, int headerCount, int messageSize, int messagesPerSecond, int numberOfMessages, string username, string password)
+        public static void Run(string bootstrapServers, string topicName, string group, int headerCount,
+            int messageSize, int messagesPerSecond, int numberOfMessages, string username, string password)
         {
             if (!Stopwatch.IsHighResolution)
             {
@@ -39,10 +39,11 @@ namespace TestConsole.Classes
 
             var monitorObj = new Object();
 
-            var consumerTask = Task.Run(() => {
+            var consumerTask = Task.Run(() =>
+            {
                 // Use middle results only to better estimate steady state performance.
-                var trimStart = (long)(numberOfMessages * 0.05);
-                var trimEnd = (long)(numberOfMessages * 0.95);
+                var trimStart = (long) (numberOfMessages * 0.05);
+                var trimEnd = (long) (numberOfMessages * 0.95);
                 var results = new long[trimEnd - trimStart];
 
                 var config = new ConsumerConfig
@@ -57,17 +58,27 @@ namespace TestConsole.Classes
                 };
 
                 using (var consumer = new ConsumerBuilder<Null, byte[]>(config)
-                    .SetPartitionsAssignedHandler((c, partitions) => {
-                        // Ensure there is no race between consumer determining start offsets and production starting.
-                        var initialAssignment = partitions.Select(p => new TopicPartitionOffset(p, c.QueryWatermarkOffsets(p, TimeSpan.FromSeconds(5)).High)).ToList();
-                        if (initialAssignment.Where(p => p.Offset != 0).Count() > 0)
-                        {
-                            Console.WriteLine("Start offsets: [" + String.Join(", ", initialAssignment.OrderBy(a => (int)a.Partition).Select(a => a.Offset.ToString())) + "]");
-                        }
-                        lock (monitorObj) { Monitor.Pulse(monitorObj); }
-                        return initialAssignment;
-                    })
-                    .Build())
+                           .SetPartitionsAssignedHandler((c, partitions) =>
+                           {
+                               // Ensure there is no race between consumer determining start offsets and production starting.
+                               var initialAssignment = partitions.Select(p =>
+                                   new TopicPartitionOffset(p,
+                                       c.QueryWatermarkOffsets(p, TimeSpan.FromSeconds(5)).High)).ToList();
+                               if (initialAssignment.Where(p => p.Offset != 0).Count() > 0)
+                               {
+                                   Console.WriteLine("Start offsets: [" + String.Join(", ",
+                                       initialAssignment.OrderBy(a => (int) a.Partition)
+                                           .Select(a => a.Offset.ToString())) + "]");
+                               }
+
+                               lock (monitorObj)
+                               {
+                                   Monitor.Pulse(monitorObj);
+                               }
+
+                               return initialAssignment;
+                           })
+                           .Build())
                 {
                     consumer.Subscribe(topicName);
 
@@ -77,10 +88,19 @@ namespace TestConsole.Classes
                         var cr = consumer.Consume(1000);
                         if (cr == null)
                         {
-                            if (count > 0) { Console.WriteLine($"No message consumed after {count} consumed"); }
+                            if (count > 0)
+                            {
+                                Console.WriteLine($"No message consumed after {count} consumed");
+                            }
+
                             continue;
                         }
-                        if (count < trimStart || count >= trimEnd) { count += 1; continue; }
+
+                        if (count < trimStart || count >= trimEnd)
+                        {
+                            count += 1;
+                            continue;
+                        }
 
                         long writeMilliseconds;
                         using (var s = new MemoryStream(cr.Message.Value))
@@ -88,14 +108,19 @@ namespace TestConsole.Classes
                         {
                             writeMilliseconds = br.ReadInt64();
                         }
+
                         long elapsedMilliSeconds;
-                        lock (sw) { elapsedMilliSeconds = sw.ElapsedMilliseconds; }
+                        lock (sw)
+                        {
+                            elapsedMilliSeconds = sw.ElapsedMilliseconds;
+                        }
+
                         long latencyMilliSeconds = elapsedMilliSeconds - writeMilliseconds;
 
                         results[count++ - trimStart] = latencyMilliSeconds;
                         if (count % (numberOfMessages / 10) == 0)
                         {
-                            Console.WriteLine($"...{(count / (numberOfMessages/10))}0% complete");
+                            Console.WriteLine($"...{(count / (numberOfMessages / 10))}0% complete");
                         }
                     }
 
@@ -107,24 +132,27 @@ namespace TestConsole.Classes
 
                 Console.WriteLine(
                     "Latency percentiles (ms) [p50: {0}, p75: {1}, p90: {2}, p95: {3}, p99: {4}]",
-                    results[(int)(results.Length * 50.0/100.0)],
-                    results[(int)(results.Length * 75.0/100.0)],
-                    results[(int)(results.Length * 90.0/100.0)],
-                    results[(int)(results.Length * 95.0/100.0)],
-                    results[(int)(results.Length * 99.0/100.0)]);
+                    results[(int) (results.Length * 50.0 / 100.0)],
+                    results[(int) (results.Length * 75.0 / 100.0)],
+                    results[(int) (results.Length * 90.0 / 100.0)],
+                    results[(int) (results.Length * 95.0 / 100.0)],
+                    results[(int) (results.Length * 99.0 / 100.0)]);
             });
 
 
-            var producerTask = Task.Run(() => {
-
-                lock (monitorObj) { Monitor.Wait(monitorObj); }
+            var producerTask = Task.Run(() =>
+            {
+                lock (monitorObj)
+                {
+                    Monitor.Wait(monitorObj);
+                }
 
                 var config = new ProducerConfig
                 {
                     BootstrapServers = bootstrapServers,
                     QueueBufferingMaxMessages = 2000000,
                     MessageSendMaxRetries = 3,
-                    RetryBackoffMs = 500 ,
+                    RetryBackoffMs = 500,
                     LingerMs = 5,
                     DeliveryReportFields = "none",
                     EnableIdempotence = true
@@ -134,31 +162,42 @@ namespace TestConsole.Classes
                 if (headerCount > 0)
                 {
                     headers = new Headers();
-                    for (int i=0; i<headerCount; ++i)
+                    for (int i = 0; i < headerCount; ++i)
                     {
-                        headers.Add($"header-{i+1}", new byte[] { (byte)i, (byte)(i+1), (byte)(i+2), (byte)(i+3) });
+                        headers.Add($"header-{i + 1}",
+                            new byte[] {(byte) i, (byte) (i + 1), (byte) (i + 2), (byte) (i + 3)});
                     }
                 }
-                
+
                 using (var producer = new ProducerBuilder<Null, byte[]>(config).Build())
                 {
                     var startMilliseconds = sw.ElapsedMilliseconds;
 
-                    for (int i=0; i<numberOfMessages; ++i)
+                    for (int i = 0; i < numberOfMessages; ++i)
                     {
                         var payload = new byte[messageSize];
 
                         long elapsedMilliseconds;
-                        lock (sw) { elapsedMilliseconds = sw.ElapsedMilliseconds; }
+                        lock (sw)
+                        {
+                            elapsedMilliseconds = sw.ElapsedMilliseconds;
+                        }
+
                         using (var s = new MemoryStream(payload))
                         using (var bw = new BinaryWriter(s))
                         {
                             bw.Write(elapsedMilliseconds);
                         }
-                        producer.Produce(topicName, new Message<Null, byte[]> { Value = payload, Headers = headers },
-                            dr => { if (dr.Error.Code != ErrorCode.NoError) Console.WriteLine("Message delivery failed: " + dr.Error.Reason); });
 
-                        var desiredProduceCount = (elapsedMilliseconds - startMilliseconds)/1000.0 * messagesPerSecond;
+                        producer.Produce(topicName, new Message<Null, byte[]> {Value = payload, Headers = headers},
+                            dr =>
+                            {
+                                if (dr.Error.Code != ErrorCode.NoError)
+                                    Console.WriteLine("Message delivery failed: " + dr.Error.Reason);
+                            });
+
+                        var desiredProduceCount =
+                            (elapsedMilliseconds - startMilliseconds) / 1000.0 * messagesPerSecond;
 
                         // Simple, but about as good as we can do assuming a fast enough rate, and a poor Thread.Sleep precision.
                         if (i > desiredProduceCount)
@@ -167,15 +206,22 @@ namespace TestConsole.Classes
                         }
                     }
 
-                    while (producer.Flush(TimeSpan.FromSeconds(1)) > 0);
+                    while (producer.Flush(TimeSpan.FromSeconds(1)) > 0) ;
 
                     long elapsedMilliSeconds;
-                    lock (sw) {elapsedMilliSeconds = sw.ElapsedMilliseconds; }
-                    Console.WriteLine("Actual throughput: " + (int)Math.Round((numberOfMessages / ((double)(elapsedMilliSeconds - startMilliseconds) / 1000.0))) + " msg/s");
+                    lock (sw)
+                    {
+                        elapsedMilliSeconds = sw.ElapsedMilliseconds;
+                    }
+
+                    Console.WriteLine("Actual throughput: " +
+                                      (int) Math.Round((numberOfMessages /
+                                                        ((double) (elapsedMilliSeconds - startMilliseconds) /
+                                                         1000.0))) + " msg/s");
                 }
             });
 
-            Task.WaitAll(new [] { producerTask, consumerTask });
+            Task.WaitAll(new[] {producerTask, consumerTask});
         }
     }
 }

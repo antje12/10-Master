@@ -16,33 +16,18 @@ public class CollisionCheck : ISpecificRecord
         ToLocation = new Coordinates();
     }
 
-    public Schema Schema => Schema.Parse(@"
-    {
-        ""namespace"": ""git.avro"",
+    public Schema Schema => StatSchema;
+    public static Schema StatSchema => Schema.Parse($@"
+    {{
+        ""namespace"": ""ClassLibrary.Classes.Messages"",
         ""type"": ""record"",
         ""name"": ""CollisionCheck"",
         ""fields"": [
-            {
-                ""name"": ""PlayerId"",
-                ""type"": ""string""
-            },
-            {
-                ""name"": ""FromLocation"",
-                ""type"": {
-                      ""type"": ""record"",
-                      ""name"": ""Coordinates"",
-                      ""fields"": [
-                      { ""name"": ""X"", ""type"": ""float"" },
-                      { ""name"": ""Y"", ""type"": ""float"" }
-                      ]
-                }
-            },
-            {
-                ""name"": ""ToLocation"",
-                ""type"": ""git.avro.Coordinates""
-            }
+            {{ ""name"": ""PlayerId"", ""type"": ""string"" }},
+            {{ ""name"": ""FromLocation"", ""type"": {Coordinates.StatSchema} }},
+            {{ ""name"": ""ToLocation"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }}
         ]
-    }");
+    }}");
 
     public object Get(int fieldPos)
     {

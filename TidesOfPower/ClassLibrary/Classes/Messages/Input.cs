@@ -17,51 +17,36 @@ public class Input : ISpecificRecord
         KeyInput = new List<GameKey>();
     }
 
-    public Schema Schema => Schema.Parse(@"
-        {
-            ""namespace"": ""git.avro"",
-            ""type"": ""record"",
-            ""name"": ""Input"",
-            ""fields"": [
-                {
-                    ""name"": ""PlayerId"",
-                    ""type"": ""string""
-                },
-                {
-                    ""name"": ""Location"",
-                    ""type"": {
-                        ""type"": ""record"",
-                        ""name"": ""Coordinates"",
-                        ""fields"": [
-                            { ""name"": ""X"", ""type"": ""float"" },
-                            { ""name"": ""Y"", ""type"": ""float"" }
+    public Schema Schema => StatSchema;
+    public static Schema StatSchema => Schema.Parse($@"
+    {{
+        ""namespace"": ""ClassLibrary.Classes.Messages"",
+        ""type"": ""record"",
+        ""name"": ""Input"",
+        ""fields"": [
+            {{ ""name"": ""PlayerId"", ""type"": ""string"" }},
+            {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema} }},
+            {{
+                ""name"": ""KeyInput"",
+                ""type"": {{
+                    ""type"": ""array"",
+                    ""items"": {{
+                        ""type"": ""enum"",
+                        ""name"": ""GameKey"",
+                        ""symbols"": [
+                            ""Up"",
+                            ""Down"",
+                            ""Left"",
+                            ""Right"",
+                            ""Attack"",
+                            ""Interact""
                         ]
-                    }
-                },
-                {
-                    ""name"": ""KeyInput"",
-                    ""type"": {
-                        ""type"": ""array"",
-                        ""items"": {
-                            ""type"": ""enum"",
-                            ""name"": ""GameKey"",
-                            ""symbols"": [
-                                ""Up"",
-                                ""Down"",
-                                ""Left"",
-                                ""Right"",
-                                ""Attack"",
-                                ""Interact""
-                            ]
-                        }
-                    }
-                },
-                {
-                    ""name"": ""Timer"",
-                    ""type"": ""double""
-                }
-            ]
-        }");
+                    }}
+                }}
+            }},
+            {{ ""name"": ""Timer"", ""type"": ""double"" }}
+        ]
+    }}");
 
     public object Get(int fieldPos)
     {

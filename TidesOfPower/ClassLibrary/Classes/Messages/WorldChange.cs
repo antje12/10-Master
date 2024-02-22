@@ -18,7 +18,7 @@ public class WorldChange : ISpecificRecord
     {
         ""namespace"": ""git.avro"",
         ""type"": ""record"",
-        ""name"": ""Collision"",
+        ""name"": ""WorldChange"",
         ""fields"": [
             {
                 ""name"": ""PlayerId"",

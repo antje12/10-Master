@@ -110,6 +110,7 @@ public class MyGame : Game
 
     private void ProcessMessage(string key, LocalState value)
     {
+        Avatar a = value.Avatars.FirstOrDefault();
         var player = LocalState.First(x => x is Player);
         player.Position = new Vector2(value.Location.X, value.Location.Y);
     }
@@ -121,7 +122,7 @@ public class MyGame : Game
             Exit();
 
         var player = LocalState.First(x => x is Player);
-        Console.WriteLine($"Player location; {player.Position.X}:{player.Position.Y}");
+        //Console.WriteLine($"Player location; {player.Position.X}:{player.Position.Y}");
         var temp = _mongoBroker.ReadScreen(new Coordinates()
         {
             X = player.Position.X,
@@ -129,9 +130,9 @@ public class MyGame : Game
         }); // ToDo: Delete this
 
         var enemies = temp.Where(x => x.Id != playerId).ToList();
-        Console.WriteLine($"Enemise from server: {enemies.Count}");
+        //Console.WriteLine($"Enemise from server: {enemies.Count}");
         var localEnemies = LocalState.Where(x => x is Enemy).Select(x => (Agent)x).ToList();
-        Console.WriteLine($"Enemise from local: {localEnemies.Count}");
+        //Console.WriteLine($"Enemise from local: {localEnemies.Count}");
         foreach (var enemy in enemies)
         {
             if (localEnemies.All(x => x._agentId != enemy.Id))

@@ -1,4 +1,4 @@
-﻿using Avro;
+using Avro;
 using Avro.Specific;
 using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
@@ -9,20 +9,19 @@ public class LocalState : ISpecificRecord
 {
     public Guid PlayerId { get; set; }
     public Coordinates Location { get; set; }
-    
-    public Avatar Avatar { get; set; }
+    public List<Avatar> Avatars { get; set; }
 
     public LocalState()
     {
         Location = new Coordinates();
-        Avatar = new Avatar();
+        Avatars = new List<Avatar>();
     }
     
     public Schema Schema => Schema.Parse(@"
     {
         ""namespace"": ""git.avro"",
         ""type"": ""record"",
-        ""name"": ""Input"",
+        ""name"": ""LocalState"",
         ""fields"": [
             {
                 ""name"": ""PlayerId"",
@@ -37,25 +36,28 @@ public class LocalState : ISpecificRecord
                 ""type"": ""float""
             },
             {
-                ""name"": ""Avatar"",
+                ""name"": ""Avatars"",
                 ""type"": {
-                    ""type"": ""record"",
-                    ""name"": ""Avatar"",
-                    ""fields"": [
-                        { ""name"": ""Id"", ""type"": ""string"" },
-                        { ""name"": ""Name"", ""type"": ""string"" },
-                        {
-                            ""name"": ""Location"",
-                            ""type"": {
-                                ""type"": ""record"",
-                                ""name"": ""Coordinates"",
-                                ""fields"": [
-                                    { ""name"": ""X"", ""type"": ""float"" },
-                                    { ""name"": ""Y"", ""type"": ""float"" }
-                                ]
+                    ""type"": ""array"",
+                    ""items"": {
+                        ""type"": ""record"",
+                        ""name"": ""Avatar"",
+                        ""fields"": [
+                            { ""name"": ""Id"", ""type"": ""string"" },
+                            { ""name"": ""Name"", ""type"": ""string"" },
+                            {
+                                ""name"": ""Location"",
+                                ""type"": {
+                                    ""type"": ""record"",
+                                    ""name"": ""Coordinates"",
+                                    ""fields"": [
+                                        { ""name"": ""X"", ""type"": ""float"" },
+                                        { ""name"": ""Y"", ""type"": ""float"" }
+                                    ]
+                                }
                             }
-                        }
-                    ]
+                        ]
+                    }
                 }
             }
         ]
@@ -68,7 +70,7 @@ public class LocalState : ISpecificRecord
             case 0: return PlayerId.ToString();
             case 1: return Location.X;
             case 2: return Location.Y;
-            case 3: return Avatar;
+            case 3: return Avatars;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
     }
@@ -87,7 +89,7 @@ public class LocalState : ISpecificRecord
                 Location.Y = (float) fieldValue;
                 break;
             case 3:
-                Avatar = (Avatar) fieldValue;
+                Avatars = (List<Avatar>) fieldValue;
                 break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }

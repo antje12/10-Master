@@ -20,7 +20,7 @@ public class CollisionCheck : ISpecificRecord
     {
         ""namespace"": ""git.avro"",
         ""type"": ""record"",
-        ""name"": ""Collision"",
+        ""name"": ""CollisionCheck"",
         ""fields"": [
             {
                 ""name"": ""PlayerId"",

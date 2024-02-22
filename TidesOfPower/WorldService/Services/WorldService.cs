@@ -51,19 +51,21 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, WorldChange value)
     {
+        var avatar = new Avatar()
+        {
+            Id = value.PlayerId,
+            Name = "test",
+            Location = value.NewLocation
+        };
+        
         var output = new LocalState()
         {
             PlayerId = value.PlayerId,
             Location = value.NewLocation,
-            Avatar = new Avatar()
-            {
-                Id = value.PlayerId,
-                Name = "test",
-                Location = value.NewLocation
-            }
+            Avatars = new List<Avatar>(){avatar}
         };
-
-        _mongoBroker.UpsertAvatarLocation(output.Avatar);
+        
+        _mongoBroker.UpsertAvatarLocation(avatar);
         
         //var avatar = _mongoBroker.ReadAvatar(value.PlayerId);
         //if (avatar != null)

@@ -109,7 +109,7 @@ public class MongoDbBroker
         }
         else
         {
-            Console.WriteLine("Avatar upsert operation failed!");
+            Console.WriteLine("Avatar upsert failed!");
         }
     }
 }

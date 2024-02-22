@@ -10,6 +10,8 @@ namespace AIService.Services;
 public class AIService : BackgroundService, IConsumerService
 {
     private const string GroupId = "ai-group";
+    private KafkaTopic InputTopic = KafkaTopic.AI;
+    private KafkaTopic OutputTopic = KafkaTopic.Input;
 
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<LocalState> _producer;
@@ -22,7 +24,6 @@ public class AIService : BackgroundService, IConsumerService
         Console.WriteLine($"AIService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _admin.CreateTopic(KafkaTopic.AI);
         _producer = new KafkaProducer<LocalState>(config);
         _consumer = new KafkaConsumer<Input>(config);
     }
@@ -35,9 +36,9 @@ public class AIService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine($"AIService started");
 
-        await _admin.CreateTopic(KafkaTopic.AI);
+        await _admin.CreateTopic(InputTopic);
         IConsumer<Input>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(KafkaTopic.AI, action, ct);
+        await _consumer.Consume(InputTopic, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"AIService stopped");
@@ -49,8 +50,7 @@ public class AIService : BackgroundService, IConsumerService
         {
             PlayerId = value.PlayerId
         };
-
-        //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
-        _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);
+        
+        _producer.Produce(OutputTopic, key, output);
     }
 }

@@ -10,6 +10,8 @@ namespace PhysicsService.Services;
 public class PhysicsService : BackgroundService, IConsumerService
 {
     private const string GroupId = "physics-group";
+    private KafkaTopic InputTopic = KafkaTopic.Physics;
+    private KafkaTopic OutputTopic = KafkaTopic.Collision;
 
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<LocalState> _producer;
@@ -22,7 +24,6 @@ public class PhysicsService : BackgroundService, IConsumerService
         Console.WriteLine($"PhysicsService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _admin.CreateTopic(KafkaTopic.Physics);
         _producer = new KafkaProducer<LocalState>(config);
         _consumer = new KafkaConsumer<Input>(config);
     }
@@ -35,9 +36,9 @@ public class PhysicsService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine($"PhysicsService started");
 
-        await _admin.CreateTopic(KafkaTopic.Physics);
+        await _admin.CreateTopic(InputTopic);
         IConsumer<Input>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(KafkaTopic.Physics, action, ct);
+        await _consumer.Consume(InputTopic, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"PhysicsService stopped");
@@ -50,7 +51,6 @@ public class PhysicsService : BackgroundService, IConsumerService
             PlayerId = value.PlayerId
         };
 
-        //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
-        _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);
+        _producer.Produce(OutputTopic, key, output);
     }
 }

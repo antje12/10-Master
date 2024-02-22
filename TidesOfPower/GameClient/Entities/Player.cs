@@ -78,7 +78,7 @@ public class Player : Agent
 
             if (newLocation || newInput)
             {
-                _producer.Produce(KafkaTopic.Input, _agentId.ToString(), input);
+                _producer.Produce(MyGame.OutputTopic, _agentId.ToString(), input);
                 _lastLocation = input.Location;
                 _lastKeyInput = input.KeyInput;
             }

@@ -12,6 +12,8 @@ namespace CollisionService.Services;
 public class CollisionService : BackgroundService, IConsumerService
 {
     private const string GroupId = "collision-group";
+    private KafkaTopic InputTopic = KafkaTopic.Collision;
+    private KafkaTopic OutputTopic = KafkaTopic.World;
 
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<WorldChange> _producer;
@@ -26,7 +28,6 @@ public class CollisionService : BackgroundService, IConsumerService
         Console.WriteLine($"CollisionService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _admin.CreateTopic(KafkaTopic.Collision);
         _producer = new KafkaProducer<WorldChange>(config);
         _consumer = new KafkaConsumer<CollisionCheck>(config);
         _mongoBroker = new MongoDbBroker();
@@ -40,9 +41,9 @@ public class CollisionService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine($"CollisionService started");
 
-        await _admin.CreateTopic(KafkaTopic.Collision);
+        await _admin.CreateTopic(InputTopic);
         IConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(KafkaTopic.Collision, action, ct);
+        await _consumer.Consume(InputTopic, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"CollisionService stopped");
@@ -59,8 +60,7 @@ public class CollisionService : BackgroundService, IConsumerService
             NewLocation = value.ToLocation
         };
 
-        //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
-        _producer.Produce(KafkaTopic.World.ToString(), key, output);
+        _producer.Produce(OutputTopic, key, output);
     }
 
     private bool IsLocationFree(Coordinates location)

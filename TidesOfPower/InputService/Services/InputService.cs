@@ -11,6 +11,8 @@ namespace InputService.Services;
 public class InputService : BackgroundService, IConsumerService
 {
     private const string GroupId = "input-group";
+    private KafkaTopic InputTopic = KafkaTopic.Input;
+    private KafkaTopic OutputTopic = KafkaTopic.Collision;
 
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<CollisionCheck> _producer;
@@ -23,7 +25,6 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine($"InputService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _admin.CreateTopic(KafkaTopic.Input);
         _producer = new KafkaProducer<CollisionCheck>(config);
         _consumer = new KafkaConsumer<Input>(config);
     }
@@ -36,9 +37,9 @@ public class InputService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine($"InputService started");
 
-        await _admin.CreateTopic(KafkaTopic.Input);
+        await _admin.CreateTopic(InputTopic);
         IConsumer<Input>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(KafkaTopic.Input, action, ct);
+        await _consumer.Consume(InputTopic, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"InputService stopped");
@@ -94,7 +95,7 @@ public class InputService : BackgroundService, IConsumerService
 
         if (moving)
         {
-            _producer.Produce(KafkaTopic.Collision, key, output);
+            _producer.Produce(OutputTopic, key, output);
         }
 
         if (attacking)

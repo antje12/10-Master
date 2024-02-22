@@ -13,6 +13,8 @@ namespace WorldService.Services;
 public class WorldService : BackgroundService, IConsumerService
 {
     private const string GroupId = "world-group";
+    private KafkaTopic InputTopic = KafkaTopic.World;
+    private KafkaTopic OutputTopic = KafkaTopic.LocalState;
 
     private readonly KafkaAdministrator _admin;
     private readonly KafkaProducer<LocalState> _producer;
@@ -27,7 +29,6 @@ public class WorldService : BackgroundService, IConsumerService
         Console.WriteLine($"WorldService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _admin.CreateTopic(KafkaTopic.World);
         _producer = new KafkaProducer<LocalState>(config);
         _consumer = new KafkaConsumer<WorldChange>(config);
         _mongoBroker = new MongoDbBroker();
@@ -41,9 +42,9 @@ public class WorldService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine($"WorldService started");
 
-        await _admin.CreateTopic(KafkaTopic.World);
+        await _admin.CreateTopic(InputTopic);
         IConsumer<WorldChange>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(KafkaTopic.World, action, ct);
+        await _consumer.Consume(InputTopic, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"WorldService stopped");
@@ -66,24 +67,6 @@ public class WorldService : BackgroundService, IConsumerService
 
         _mongoBroker.UpsertAvatarLocation(avatar);
 
-        //var avatar = _mongoBroker.ReadAvatar(value.PlayerId);
-        //if (avatar != null)
-        //{
-        //    Console.WriteLine("Avatar found");
-        //    avatar.Location = output.Location;
-        //    _mongoBroker.UpdateAvatarLocation(avatar);
-        //}
-        //else
-        //{
-        //    Console.WriteLine("No avatar found");
-        //    _mongoBroker.CreateAvatar(new Avatar()
-        //    {
-        //        Id = output.PlayerId,
-        //        Name = "test",
-        //        Location = output.Location
-        //    });
-        //}
-
         var avatars = _mongoBroker.ReadScreen(new Coordinates()
         {
             X = avatar.Location.X,
@@ -101,7 +84,6 @@ public class WorldService : BackgroundService, IConsumerService
             output.Avatars.Add(na);
         }
 
-        //_producer.Produce($"{KafkaTopic.LocalState}_{output.PlayerId.ToString()}", key, output);
-        _producer.Produce(KafkaTopic.LocalState.ToString(), key, output);
+        _producer.Produce($"{OutputTopic}_{output.PlayerId}", key, output);
     }
 }

@@ -20,7 +20,6 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
-        <PackageReference Include="Confluent.SchemaRegistry" Version="2.3.0" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
         <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
     </ItemGroup>

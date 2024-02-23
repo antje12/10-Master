@@ -27,7 +27,8 @@ public class KafkaProducer<T> : IProducer<T> where T : ISpecificRecord
 
     public void Produce(string topic, string key, T value)
     {
-        Console.WriteLine($"{key} = {value.Get(0)} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+        //Console.WriteLine(
+        //    $"{key} = {value.Get(0)} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
         var result = _producer.ProduceAsync(topic, new Message<string, T>
         {
             Key = key,

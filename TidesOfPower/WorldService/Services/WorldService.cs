@@ -52,37 +52,37 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, WorldChange value)
     {
-        var avatar = new Avatar()
+        var player = new Avatar()
         {
             Id = value.PlayerId,
             Location = value.NewLocation
         };
 
+        _mongoBroker.UpsertAvatarLocation(player);
+        var avatars = _mongoBroker.ReadScreen(player.Location);
+
         var output = new LocalState()
         {
-            PlayerId = value.PlayerId,
-            Avatars = new List<Avatar>()
-        };
-
-        _mongoBroker.UpsertAvatarLocation(avatar);
-
-        var avatars = _mongoBroker.ReadScreen(new Coordinates()
-        {
-            X = avatar.Location.X,
-            Y = avatar.Location.Y
-        });
-
-        foreach (var a in avatars)
-        {
-            var na = new Avatar()
+            PlayerId = player.Id,
+            Sync = SyncType.Full,
+            Avatars = avatars.Select(a => new Avatar()
             {
                 Id = a.Id,
-                Name = "test",
                 Location = a.Location
-            };
-            output.Avatars.Add(na);
-        }
+            }).ToList()
+        };
+        _producer.Produce($"{OutputTopic}_{player.Id}", key, output);
 
-        _producer.Produce($"{OutputTopic}_{output.PlayerId}", key, output);
+        var enemies = output.Avatars.Where(x => x.Id != output.PlayerId);
+        foreach (var enemy in enemies)
+        {
+            var deltaOutput = new LocalState()
+            {
+                PlayerId = enemy.Id,
+                Sync = SyncType.Delta,
+                Avatars = new List<Avatar>(){player}
+            };
+            _producer.Produce($"{OutputTopic}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
+        }
     }
 }

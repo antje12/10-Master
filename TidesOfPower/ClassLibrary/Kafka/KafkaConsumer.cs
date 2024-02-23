@@ -35,8 +35,8 @@ public class KafkaConsumer<T> : IConsumer<T> where T : ISpecificRecord
         {
             var consumeResult = _consumer.Consume(ct);
             var result = consumeResult.Message;
-            Console.WriteLine(
-                $"{result.Key} = {result.Value.Get(0)} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+            //Console.WriteLine(
+            //    $"{result.Key} = {result.Value.Get(0)} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
             action(result.Key, result.Value);
         }
 

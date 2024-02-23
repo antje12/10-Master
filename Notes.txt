@@ -1,3 +1,4 @@
 mongosh
 use TidesOfPower
 db.Avatars.find()
+db.Avatars.deleteMany({})

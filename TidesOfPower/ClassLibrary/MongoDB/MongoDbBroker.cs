@@ -32,6 +32,12 @@ public class MongoDbBroker
         _mongoDbContext.Avatars.InsertOneAsync(avatar).GetAwaiter().GetResult();
     }
 
+    public List<Avatar> ReadAvatars()
+    {
+        var avatars = _mongoDbContext.Avatars.AsQueryable().ToListAsync().GetAwaiter().GetResult();
+        return avatars;
+    }
+
     public Avatar? ReadAvatar(Guid avatarId)
     {
         var filterBuilder = Builders<Avatar>.Filter;

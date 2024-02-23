@@ -1,5 +1,6 @@
 using Avro;
 using Avro.Specific;
+using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
 
 namespace ClassLibrary.Classes.Messages;
@@ -7,6 +8,7 @@ namespace ClassLibrary.Classes.Messages;
 public class LocalState : ISpecificRecord
 {
     public Guid PlayerId { get; set; }
+    public SyncType Sync { get; set; }
     public List<Avatar> Avatars { get; set; }
 
     public LocalState()
@@ -22,6 +24,14 @@ public class LocalState : ISpecificRecord
         ""name"": ""LocalState"",
         ""fields"": [
             {{ ""name"": ""PlayerId"", ""type"": ""string"" }},
+            {{
+                ""name"": ""Sync"", 
+                ""type"": {{
+                    ""type"": ""enum"",
+                    ""name"": ""SyncType"",
+                    ""symbols"": [""Full"", ""Delta""]
+                }}
+            }},
             {{ 
                 ""name"": ""Avatars"", 
                 ""type"": {{ 
@@ -37,7 +47,8 @@ public class LocalState : ISpecificRecord
         switch (fieldPos)
         {
             case 0: return PlayerId.ToString();
-            case 1: return Avatars;
+            case 1: return Sync;
+            case 2: return Avatars;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
     }
@@ -50,6 +61,9 @@ public class LocalState : ISpecificRecord
                 PlayerId = Guid.Parse((string) fieldValue);
                 break;
             case 1:
+                Sync = (SyncType) fieldValue;
+                break;
+            case 2:
                 Avatars = (List<Avatar>) fieldValue;
                 break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");

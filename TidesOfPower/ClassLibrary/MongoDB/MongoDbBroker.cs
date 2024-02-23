@@ -41,7 +41,7 @@ public class MongoDbBroker
         return avatar;
     }
 
-    public Avatar? ReadAvatar(Coordinates location)
+    public Avatar? ReadLocation(Coordinates location)
     {
         var filterBuilder = Builders<Avatar>.Filter;
         var filterX = filterBuilder.Eq(x => x.Location.X, location.X);
@@ -51,13 +51,26 @@ public class MongoDbBroker
         return avatar;
     }
 
+    public List<Avatar> ReadCloseScreen(Coordinates location)
+    {
+        var xFrom = location.X - 50;
+        var xTo = location.X + 50;
+        var yFrom = location.Y - 50;
+        var yTo = location.Y + 50;
+        return ReadState(xFrom, xTo, yFrom, yTo);
+    }
+
     public List<Avatar> ReadScreen(Coordinates location)
     {
         var xFrom = location.X - 400;
         var xTo = location.X + 400;
         var yFrom = location.Y - 240;
         var yTo = location.Y + 240;
+        return ReadState(xFrom, xTo, yFrom, yTo);
+    }
 
+    private List<Avatar> ReadState(float xFrom, float xTo, float yFrom, float yTo)
+    {
         var filterBuilder = Builders<Avatar>.Filter;
         var filterX =
             filterBuilder.Gte(x => x.Location.X, xFrom) &
@@ -65,7 +78,6 @@ public class MongoDbBroker
         var filterY =
             filterBuilder.Gte(x => x.Location.Y, yFrom) &
             filterBuilder.Lte(x => x.Location.Y, yTo);
-
         var avatars = _mongoDbContext.Avatars.Find(filterX & filterY).ToListAsync().GetAwaiter().GetResult();
         return avatars;
     }

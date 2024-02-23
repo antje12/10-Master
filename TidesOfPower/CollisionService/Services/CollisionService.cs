@@ -51,8 +51,22 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, CollisionCheck value)
     {
-        if (!IsLocationFree(value.ToLocation))
-            return;
+        var avatars = _mongoBroker.ReadCloseScreen(value.ToLocation);
+        foreach (var avatar in avatars)
+        {
+            if (value.PlayerId == avatar.Id)
+            {
+                continue;
+            }
+
+            if (circleCollision(value.ToLocation, avatar.Location))
+            {
+                return;
+            }
+        }
+        
+        //if (!IsLocationFree(value.ToLocation))
+        //    return;
 
         var output = new WorldChange()
         {
@@ -63,6 +77,24 @@ public class CollisionService : BackgroundService, IConsumerService
         _producer.Produce(OutputTopic, key, output);
     }
 
+    private bool circleCollision(Coordinates location1, Coordinates location2) {
+
+        float dx = location1.X - location2.X;
+        float dy = location1.Y - location2.Y;
+
+        // a^2 + b^2 = c^2
+        // c = sqrt(a^2 + b^2)
+        double distance = Math.Sqrt(dx * dx + dy * dy);
+
+        // if radius overlap
+        if (distance < 25 + 25) {
+            // Collision!
+            return true;
+        }
+
+        return false;
+    }
+    
     private bool IsLocationFree(Coordinates location)
     {
         float deadZoneStartX = 100;
@@ -76,7 +108,7 @@ public class CollisionService : BackgroundService, IConsumerService
             return false;
         }
 
-        var locationContent = _mongoBroker.ReadAvatar(location);
+        var locationContent = _mongoBroker.ReadLocation(location);
 
         if (locationContent != null)
         {

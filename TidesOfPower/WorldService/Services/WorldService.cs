@@ -55,7 +55,6 @@ public class WorldService : BackgroundService, IConsumerService
         var avatar = new Avatar()
         {
             Id = value.PlayerId,
-            Name = "test",
             Location = value.NewLocation
         };
 

@@ -85,17 +85,21 @@ async Task TestHTTP()
 
 async Task TestKafka()
 {
+    var testId = Guid.NewGuid();
+    var testTopic = $"{KafkaTopic.LocalState}_{testId}";
+
     var cts = new CancellationTokenSource();
     var config = new KafkaConfig("test");
     var admin = new KafkaAdministrator(config);
 
     admin.CreateTopic(KafkaTopic.Input);
-    admin.CreateTopic(KafkaTopic.LocalState);
+    await admin.CreateTopic(testTopic);
 
     var producer = new KafkaProducer<Input>(config);
     var consumer = new KafkaConsumer<LocalState>(config);
 
-    var first = true;
+    var count = 0;
+    var testCount = 10;
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
@@ -106,14 +110,14 @@ async Task TestKafka()
         var elapsedTime = stopwatch.ElapsedMilliseconds;
         Console.WriteLine($"Kafka result in {elapsedTime} ms");
 
-        if (!first)
+        if (count >= testCount)
             return;
 
-        first = false;
+        count +=1;
         stopwatch.Restart();
         producer.Produce(KafkaTopic.Input, "a", new Input()
         {
-            PlayerId = Guid.NewGuid(),
+            PlayerId = testId,
             Location = new Coordinates()
             {
                 X = 0,
@@ -127,7 +131,7 @@ async Task TestKafka()
     stopwatch.Restart();
     producer.Produce(KafkaTopic.Input, "tester", new Input()
     {
-        PlayerId = Guid.NewGuid(),
+        PlayerId = testId,
         Location = new Coordinates()
         {
             X = 0,
@@ -138,5 +142,5 @@ async Task TestKafka()
     });
 
     IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
-    await Task.Run(() => consumer.Consume(KafkaTopic.LocalState, action, cts.Token), cts.Token);
+    await Task.Run(() => consumer.Consume(testTopic, action, cts.Token), cts.Token);
 }

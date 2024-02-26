@@ -70,15 +70,20 @@ public class WorldService : BackgroundService, IConsumerService
             Id = value.EntityId,
             Location = value.Location
         };
-
+        //_mongoBroker.CreateEntity(player);
         _mongoBroker.UpsertAvatarLocation(player);
-        var avatars = _mongoBroker.ReadScreen(player.Location);
+        var entities = _mongoBroker.ReadScreen(player.Location);
 
         var output = new LocalState()
         {
             PlayerId = player.Id,
             Sync = SyncType.Full,
-            Avatars = avatars.Select(a => new Avatar()
+            Avatars = entities.Where(x => x is Avatar).Select(a => new Avatar()
+            {
+                Id = a.Id,
+                Location = a.Location
+            }).ToList(),
+            Projectiles = entities.Where(x => x is Projectile).Select(a => new Projectile()
             {
                 Id = a.Id,
                 Location = a.Location
@@ -102,5 +107,24 @@ public class WorldService : BackgroundService, IConsumerService
     private void SpawnBullet(string key, WorldChange value)
     {
         //var avatars = _mongoBroker.ReadScreen(value.Location);
+        var projectile = new Projectile()
+        {
+            Id = value.EntityId,
+            Location = value.Location,
+            Direction = value.Direction
+        };
+        _mongoBroker.CreateEntity(projectile);
+
+        var avatars = _mongoBroker.ReadScreen(value.Location).Where(x => x is Avatar);
+        foreach (var avatar in avatars)
+        {
+            var deltaOutput = new LocalState()
+            {
+                PlayerId = avatar.Id,
+                Sync = SyncType.Delta,
+                Projectiles = new List<Projectile>() {projectile}
+            };
+            _producer.Produce($"{OutputTopic}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
+        }
     }
 }

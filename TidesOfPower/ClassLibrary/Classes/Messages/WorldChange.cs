@@ -33,7 +33,7 @@ public class WorldChange : ISpecificRecord
                     ""symbols"": [""MovePlayer"", ""SpawnBullet"", ""MoveBullet""]
                 }}
             }},
-            {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema} }},
+            {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema()} }},
             {{ ""name"": ""Direction"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }}
         ]
     }}");

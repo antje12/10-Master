@@ -1,4 +1,5 @@
 ﻿using ClassLibrary.Classes.Data;
+using ClassLibrary.Classes.Domain;
 using ClassLibrary.Classes.Messages;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
@@ -51,15 +52,18 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, CollisionCheck value)
     {
-        var avatars = _mongoBroker.ReadCloseScreen(value.ToLocation);
-        foreach (var avatar in avatars)
+        var entities = _mongoBroker.ReadCloseScreen(value.ToLocation);
+        foreach (var entity in entities)
         {
-            if (value.PlayerId == avatar.Id)
+            if (value.PlayerId == entity.Id)
             {
                 continue;
             }
 
-            if (circleCollision(value.ToLocation, avatar.Location))
+            var w1 = 25;
+            var w2 = entity is Projectile ? 5 : entity is Avatar ? 25 : 0;
+            
+            if (circleCollision(value.ToLocation, w1, entity.Location, w2))
             {
                 return;
             }
@@ -78,17 +82,18 @@ public class CollisionService : BackgroundService, IConsumerService
         _producer.Produce(OutputTopic, key, output);
     }
 
-    private bool circleCollision(Coordinates location1, Coordinates location2) {
+    private bool circleCollision(Coordinates e1, int w1, Coordinates e2, int w2)
+    {
 
-        float dx = location1.X - location2.X;
-        float dy = location1.Y - location2.Y;
+        float dx = e1.X - e2.X;
+        float dy = e1.Y - e2.Y;
 
         // a^2 + b^2 = c^2
         // c = sqrt(a^2 + b^2)
         double distance = Math.Sqrt(dx * dx + dy * dy);
 
         // if radius overlap
-        if (distance < 25 + 25) {
+        if (distance < w1 + w2) {
             // Collision!
             return true;
         }

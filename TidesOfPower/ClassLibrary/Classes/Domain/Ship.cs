@@ -2,9 +2,8 @@
 
 namespace ClassLibrary.Classes.Domain;
 
-public class Ship
+public class Ship : Entity
 {
     public string Name { get; set; }
-    public Coordinates Location { get; set; }
     public int LifePool { get; set; }
 }

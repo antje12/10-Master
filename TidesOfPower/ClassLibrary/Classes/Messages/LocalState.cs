@@ -10,10 +10,12 @@ public class LocalState : ISpecificRecord
     public Guid PlayerId { get; set; }
     public SyncType Sync { get; set; }
     public List<Avatar> Avatars { get; set; }
+    public List<Projectile> Projectiles { get; set; }
 
     public LocalState()
     {
         Avatars = new List<Avatar>();
+        Projectiles = new List<Projectile>();
     }
 
     public Schema Schema => StatSchema;
@@ -38,6 +40,13 @@ public class LocalState : ISpecificRecord
                     ""type"": ""array"", 
                     ""items"": {Avatar.StatSchema} 
                 }} 
+            }},
+            {{ 
+                ""name"": ""Projectiles"", 
+                ""type"": {{ 
+                    ""type"": ""array"", 
+                    ""items"": {Projectile.StatSchema} 
+                }} 
             }}
         ]
     }}");
@@ -49,6 +58,7 @@ public class LocalState : ISpecificRecord
             case 0: return PlayerId.ToString();
             case 1: return Sync;
             case 2: return Avatars;
+            case 3: return Projectiles;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
     }
@@ -65,6 +75,9 @@ public class LocalState : ISpecificRecord
                 break;
             case 2:
                 Avatars = (List<Avatar>) fieldValue;
+                break;
+            case 3:
+                Projectiles = (List<Projectile>) fieldValue;
                 break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }

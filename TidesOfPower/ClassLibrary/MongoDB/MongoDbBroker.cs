@@ -27,37 +27,37 @@ public class MongoDbBroker
         return profile;
     }
 
-    public void CreateAvatar(Avatar avatar)
+    public void CreateEntity(Entity entity)
     {
-        _mongoDbContext.Avatars.InsertOneAsync(avatar).GetAwaiter().GetResult();
+        _mongoDbContext.Entities.InsertOneAsync(entity).GetAwaiter().GetResult();
     }
 
-    public List<Avatar> ReadAvatars()
+    public List<Entity> ReadEntities()
     {
-        var avatars = _mongoDbContext.Avatars.AsQueryable().ToListAsync().GetAwaiter().GetResult();
-        return avatars;
+        var entities = _mongoDbContext.Entities.AsQueryable().ToListAsync().GetAwaiter().GetResult();
+        return entities;
     }
 
     public Avatar? ReadAvatar(Guid avatarId)
     {
         var filterBuilder = Builders<Avatar>.Filter;
         var filter = filterBuilder.Eq(x => x.Id, avatarId);
-        var avatars = _mongoDbContext.Avatars.Find(filter).ToListAsync().GetAwaiter().GetResult();
+        var avatars = _mongoDbContext.Entities.OfType<Avatar>().Find(filter).ToListAsync().GetAwaiter().GetResult();
         var avatar = avatars.FirstOrDefault();
         return avatar;
     }
 
-    public Avatar? ReadLocation(Coordinates location)
+    public Entity? ReadLocation(Coordinates location)
     {
-        var filterBuilder = Builders<Avatar>.Filter;
+        var filterBuilder = Builders<Entity>.Filter;
         var filterX = filterBuilder.Eq(x => x.Location.X, location.X);
         var filterY = filterBuilder.Eq(x => x.Location.Y, location.Y);
-        var avatars = _mongoDbContext.Avatars.Find(filterX & filterY).ToListAsync().GetAwaiter().GetResult();
-        var avatar = avatars.FirstOrDefault();
-        return avatar;
+        var entities = _mongoDbContext.Entities.Find(filterX & filterY).ToListAsync().GetAwaiter().GetResult();
+        var entity = entities.FirstOrDefault();
+        return entity;
     }
 
-    public List<Avatar> ReadCloseScreen(Coordinates location)
+    public List<Entity> ReadCloseScreen(Coordinates location)
     {
         var xFrom = location.X - 50;
         var xTo = location.X + 50;
@@ -66,7 +66,7 @@ public class MongoDbBroker
         return ReadState(xFrom, xTo, yFrom, yTo);
     }
 
-    public List<Avatar> ReadScreen(Coordinates location)
+    public List<Entity> ReadScreen(Coordinates location)
     {
         var xFrom = location.X - 400;
         var xTo = location.X + 400;
@@ -75,26 +75,26 @@ public class MongoDbBroker
         return ReadState(xFrom, xTo, yFrom, yTo);
     }
 
-    private List<Avatar> ReadState(float xFrom, float xTo, float yFrom, float yTo)
+    private List<Entity> ReadState(float xFrom, float xTo, float yFrom, float yTo)
     {
-        var filterBuilder = Builders<Avatar>.Filter;
+        var filterBuilder = Builders<Entity>.Filter;
         var filterX =
             filterBuilder.Gte(x => x.Location.X, xFrom) &
             filterBuilder.Lte(x => x.Location.X, xTo);
         var filterY =
             filterBuilder.Gte(x => x.Location.Y, yFrom) &
             filterBuilder.Lte(x => x.Location.Y, yTo);
-        var avatars = _mongoDbContext.Avatars.Find(filterX & filterY).ToListAsync().GetAwaiter().GetResult();
-        return avatars;
+        var entities = _mongoDbContext.Entities.Find(filterX & filterY).ToListAsync().GetAwaiter().GetResult();
+        return entities;
     }
 
     public void UpdateAvatarLocation(Avatar avatar)
     {
-        var filter = Builders<Avatar>.Filter.Eq(x => x.Id, avatar.Id);
-        var update = Builders<Avatar>.Update
+        var filter = Builders<Entity>.Filter.Eq(x => x.Id, avatar.Id);
+        var update = Builders<Entity>.Update
             .Set(x => x.Location.X, avatar.Location.X)
             .Set(x => x.Location.Y, avatar.Location.Y);
-        var result = _mongoDbContext.Avatars.UpdateOneAsync(filter, update).GetAwaiter().GetResult();
+        var result = _mongoDbContext.Entities.UpdateOneAsync(filter, update).GetAwaiter().GetResult();
         if (!result.IsAcknowledged || result.ModifiedCount == 0)
         {
             Console.WriteLine("Avatar update failed!");
@@ -107,12 +107,13 @@ public class MongoDbBroker
 
     public void UpsertAvatarLocation(Avatar avatar)
     {
-        var filter = Builders<Avatar>.Filter.Eq(x => x.Id, avatar.Id);
-        var update = Builders<Avatar>.Update
+        var filter = Builders<Entity>.Filter.Eq(x => x.Id, avatar.Id);
+        var update = Builders<Entity>.Update
             .Set(x => x.Id, avatar.Id)
-            .Set(x => x.Location, avatar.Location);
+            .Set(x => x.Location, avatar.Location)
+            .SetOnInsert("_t", new[] { "Entity", "Avatar" }); // Specify both base and derived types
         var options = new UpdateOptions {IsUpsert = true};
-        var result = _mongoDbContext.Avatars.UpdateOneAsync(filter, update, options).GetAwaiter().GetResult();
+        var result = _mongoDbContext.Entities.UpdateOneAsync(filter, update, options).GetAwaiter().GetResult();
 
         if (result.IsAcknowledged)
         {

@@ -27,7 +27,7 @@ public class Input : ISpecificRecord
         ""name"": ""Input"",
         ""fields"": [
             {{ ""name"": ""PlayerId"", ""type"": ""string"" }},
-            {{ ""name"": ""PlayerLocation"", ""type"": {Coordinates.StatSchema} }},
+            {{ ""name"": ""PlayerLocation"", ""type"": {Coordinates.StatSchema()} }},
             {{ ""name"": ""MouseLocation"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }},
             {{
                 ""name"": ""KeyInput"",

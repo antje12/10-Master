@@ -24,7 +24,7 @@ public class CollisionCheck : ISpecificRecord
         ""name"": ""CollisionCheck"",
         ""fields"": [
             {{ ""name"": ""PlayerId"", ""type"": ""string"" }},
-            {{ ""name"": ""FromLocation"", ""type"": {Coordinates.StatSchema} }},
+            {{ ""name"": ""FromLocation"", ""type"": {Coordinates.StatSchema()} }},
             {{ ""name"": ""ToLocation"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }}
         ]
     }}");

@@ -9,17 +9,21 @@ public class Coordinates : ISpecificRecord
     [BsonElement("x")] public float X { get; set; }
     [BsonElement("y")] public float Y { get; set; }
     
-    public Schema Schema => StatSchema;
-    public static Schema StatSchema => Schema.Parse($@"
-    {{
-        ""namespace"": ""ClassLibrary.Classes.Data"",
-        ""type"": ""record"",
-        ""name"": ""Coordinates"",
-        ""fields"": [
-            {{ ""name"": ""X"", ""type"": ""float"" }},
-            {{ ""name"": ""Y"", ""type"": ""float"" }}
-        ]
-    }}");
+    public Schema Schema => StatSchema();
+
+    public static Schema StatSchema(string nameSpace = "ClassLibrary.Classes.Data")
+    {
+        return Schema.Parse($@"
+        {{
+            ""namespace"": ""{nameSpace}"",
+            ""type"": ""record"",
+            ""name"": ""Coordinates"",
+            ""fields"": [
+                {{ ""name"": ""X"", ""type"": ""float"" }},
+                {{ ""name"": ""Y"", ""type"": ""float"" }}
+            ]
+        }}");
+    }
 
     public object Get(int fieldPos)
     {

@@ -5,21 +5,14 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ClassLibrary.Classes.Domain;
 
-public class Avatar : ISpecificRecord
+public class Avatar : Entity, ISpecificRecord
 {
-    [BsonId] public Guid Id { get; set; }
-    [BsonElement("location")] public Coordinates Location { get; set; }
     [BsonElement("name")] public string Name { get; set; }
     [BsonElement("walking-speed")] public int WalkingSpeed { get; set; }
     [BsonElement("life-pool")] public int LifePool { get; set; }
     [BsonElement("inventory")] public int Inventory { get; set; }
     public List<Weapon> Weapons { get; set; }
     public Ship Ship { get; set; }
-    
-    public Avatar()
-    {
-        Location = new Coordinates();
-    }
 
     public Schema Schema => StatSchema;
     public static Schema StatSchema => Schema.Parse($@"
@@ -29,7 +22,7 @@ public class Avatar : ISpecificRecord
         ""name"": ""Avatar"",
         ""fields"": [
             {{ ""name"": ""Id"", ""type"": ""string"" }},
-            {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema} }}
+            {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema("Avatar")} }}
         ]
     }}");
 

@@ -106,8 +106,8 @@ public class InputService : BackgroundService, IConsumerService
             y /= length;
         }
         
-        var spawnX = value.PlayerLocation.X + x * (25 + 5);
-        var spawnY = value.PlayerLocation.Y + y * (25 + 5);
+        var spawnX = value.PlayerLocation.X + x * (25 + 5 + 1);
+        var spawnY = value.PlayerLocation.Y + y * (25 + 5 + 1);
         
         var output = new WorldChange()
         {

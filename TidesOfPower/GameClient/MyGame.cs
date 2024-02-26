@@ -31,7 +31,7 @@ public class MyGame : Game
     Texture2D oceanTexture; //64x64
     Texture2D islandTexture; //64x64
     Texture2D avatarTexture; //50x50
-    Texture2D bulletTexture; //10x10
+    Texture2D projectileTexture; //10x10
 
     Camera _camera;
     GraphicsDeviceManager _graphics;
@@ -76,7 +76,7 @@ public class MyGame : Game
         avatarTexture = Content.Load<Texture2D>("square");
         islandTexture = Content.Load<Texture2D>("island");
         oceanTexture = Content.Load<Texture2D>("ocean");
-        bulletTexture = Content.Load<Texture2D>("small-square");
+        projectileTexture = Content.Load<Texture2D>("small-square");
 
         //var enemyPosition = new Vector2(0, 0);
         //var enemy = new Enemy(Guid.NewGuid(), enemyPosition, avatarTexture);
@@ -136,6 +136,19 @@ public class MyGame : Game
             else
             {
                 var newAvatar = new Enemy(avatar.Id, new Vector2(avatar.Location.X, avatar.Location.Y), avatarTexture);
+                LocalState.Add(newAvatar);
+            }
+        }
+        foreach (var projectile in value.Projectiles)
+        {
+            var localAvatar = LocalState.FirstOrDefault(x => x is Projectile y && y._id == projectile.Id);
+            if (localAvatar != null)
+            {
+                localAvatar.Position = new Vector2(projectile.Location.X, projectile.Location.Y);
+            }
+            else
+            {
+                var newAvatar = new Projectile(projectile.Id, new Vector2(projectile.Location.X, projectile.Location.Y), projectileTexture);
                 LocalState.Add(newAvatar);
             }
         }

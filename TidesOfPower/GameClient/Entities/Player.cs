@@ -36,14 +36,13 @@ public class Player : Agent
         var keyInput = new List<GameKey>();
         
         var mState = Mouse.GetState();
-        MousePosition = mState.Position.ToVector2();
-        
-        if (mState.LeftButton == ButtonState.Pressed && MouseOnScreen())
+        if (mState.RightButton == ButtonState.Pressed && MouseOnScreen(mState.Position.ToVector2()))
         {
             if (!attacking)
             {
                 attacking = true;
                 keyInput.Add(GameKey.Attack);
+                MousePosition = MouseInWorld(mState.Position.ToVector2(), _camera);
                 Console.WriteLine($"Mouse clicked at {MousePosition.X}:{MousePosition.Y}");
             }
         }
@@ -111,10 +110,18 @@ public class Player : Agent
         _camera.Follow(Position, Texture, MyGame.screenWidth, MyGame.screenHeight);
     }
 
-    private bool MouseOnScreen()
+    private bool MouseOnScreen(Vector2 mouse)
     {
-        return 0 <= MousePosition.X && MousePosition.X <= MyGame.screenWidth &&
-               0 <= MousePosition.Y && MousePosition.Y <= MyGame.screenHeight;
+        return 0 <= mouse.X && mouse.X <= MyGame.screenWidth &&
+               0 <= mouse.Y && mouse.Y <= MyGame.screenHeight;
+    }
+    
+    public Vector2 MouseInWorld(Vector2 screenPosition, Camera camera)
+    {
+        Matrix inverseTransform = Matrix.Invert(camera.Transform);
+        Vector3 screenPosition3 = new Vector3(screenPosition, 0);
+        Vector3 worldPosition = Vector3.Transform(screenPosition3, inverseTransform);
+        return new Vector2(worldPosition.X, worldPosition.Y);
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

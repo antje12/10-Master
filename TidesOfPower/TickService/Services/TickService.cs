@@ -37,10 +37,10 @@ public class TickService : BackgroundService, IConsumerService
 
         while (!ct.IsCancellationRequested)
         {
-            var avatars = _mongoBroker.ReadAvatars();
+            var avatars = _mongoBroker.ReadEntities();
             foreach (var avatar in avatars)
             {
-                SendState(avatar);
+                //SendState(avatar);
             }
             
             Thread.Sleep(33);

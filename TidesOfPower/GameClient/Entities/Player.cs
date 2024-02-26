@@ -13,6 +13,7 @@ namespace GameClient.Entities;
 
 public class Player : Agent
 {
+    public Vector2 MousePosition { get; set; }
     private readonly Camera _camera;
     private readonly KafkaProducer<Input> _producer;
 
@@ -33,6 +34,25 @@ public class Player : Agent
     public override void Update(GameTime gameTime)
     {
         var keyInput = new List<GameKey>();
+        
+        var mState = Mouse.GetState();
+        MousePosition = mState.Position.ToVector2();
+        
+        if (mState.LeftButton == ButtonState.Pressed)
+        {
+            if (!attacking)
+            {
+                attacking = true;
+                keyInput.Add(GameKey.Attack);
+                Console.WriteLine($"Mouse clicked at {MousePosition.X}:{MousePosition.Y}");
+            }
+        }
+        else
+        {
+            attacking = false;
+            _lastKeyInput.Remove(GameKey.Attack);
+        }
+        
         var kState = Keyboard.GetState();
         if (kState.IsKeyDown(Keys.W))
             keyInput.Add(GameKey.Up);
@@ -42,21 +62,20 @@ public class Player : Agent
             keyInput.Add(GameKey.Left);
         if (kState.IsKeyDown(Keys.D))
             keyInput.Add(GameKey.Right);
+        //if (kState.IsKeyDown(Keys.Space))
+        //{
+        //    if (!attacking)
+        //    {
+        //        attacking = true;
+        //        keyInput.Add(GameKey.Attack);
+        //    }
+        //}
+        //else
+        //{
+        //    attacking = false;
+        //    _lastKeyInput.Remove(GameKey.Attack);
+        //}
         if (kState.IsKeyDown(Keys.Space))
-        {
-            if (!attacking)
-            {
-                attacking = true;
-                keyInput.Add(GameKey.Attack);
-            }
-        }
-        else
-        {
-            attacking = false;
-            _lastKeyInput.Remove(GameKey.Attack);
-        }
-
-        if (kState.IsKeyDown(Keys.E))
             keyInput.Add(GameKey.Interact);
 
         if (keyInput.Count > 0)
@@ -64,22 +83,27 @@ public class Player : Agent
             var input = new Input()
             {
                 PlayerId = _agentId,
-                Location = new Coordinates()
+                PlayerLocation = new Coordinates()
                 {
                     X = Position.X,
                     Y = Position.Y
                 },
                 KeyInput = keyInput,
+                MouseLocation = new Coordinates()
+                {
+                    X = MousePosition.X,
+                    Y = MousePosition.Y
+                },
                 GameTime = gameTime.ElapsedGameTime.TotalSeconds
             };
 
-            var newLocation = _lastLocation.X != input.Location.X || _lastLocation.Y != input.Location.Y;
+            var newLocation = _lastLocation.X != input.PlayerLocation.X || _lastLocation.Y != input.PlayerLocation.Y;
             var newInput = !_lastKeyInput.OrderBy(x => x).SequenceEqual(keyInput.OrderBy(x => x));
 
-            if (newLocation || newInput)
+            if (keyInput.Any() && (newLocation || newInput))
             {
                 _producer.Produce(MyGame.OutputTopic, _agentId.ToString(), input);
-                _lastLocation = input.Location;
+                _lastLocation = input.PlayerLocation;
                 _lastKeyInput = input.KeyInput;
             }
         }

@@ -118,7 +118,7 @@ async Task TestKafka()
         producer.Produce(KafkaTopic.Input, "a", new Input()
         {
             PlayerId = testId,
-            Location = new Coordinates()
+            PlayerLocation = new Coordinates()
             {
                 X = 0,
                 Y = 0
@@ -132,7 +132,7 @@ async Task TestKafka()
     producer.Produce(KafkaTopic.Input, "tester", new Input()
     {
         PlayerId = testId,
-        Location = new Coordinates()
+        PlayerLocation = new Coordinates()
         {
             X = 0,
             Y = 0

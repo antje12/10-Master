@@ -12,10 +12,12 @@ public class InputService : BackgroundService, IConsumerService
 {
     private const string GroupId = "input-group";
     private KafkaTopic InputTopic = KafkaTopic.Input;
-    private KafkaTopic OutputTopic = KafkaTopic.Collision;
+    private KafkaTopic OutputTopic1 = KafkaTopic.Collision;
+    private KafkaTopic OutputTopic2 = KafkaTopic.World;
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<CollisionCheck> _producer;
+    private readonly KafkaProducer<CollisionCheck> _producer1;
+    private readonly KafkaProducer<WorldChange> _producer2;
     private readonly KafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
@@ -25,7 +27,8 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine($"InputService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _producer = new KafkaProducer<CollisionCheck>(config);
+        _producer1 = new KafkaProducer<CollisionCheck>(config);
+        _producer2 = new KafkaProducer<WorldChange>(config);
         _consumer = new KafkaConsumer<Input>(config);
     }
 
@@ -47,20 +50,28 @@ public class InputService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, Input value)
     {
+        if (value.KeyInput.Any(x => x is GameKey.Up or GameKey.Down or GameKey.Left or GameKey.Right))
+            Move(key, value);
+
+        if (value.KeyInput.Any(x => x is GameKey.Attack))
+            Attack(key, value);
+
+        if (value.KeyInput.Any(x => x is GameKey.Interact))
+            Interact(key, value);
+    }
+
+    private void Move(string key, Input value)
+    {
         var output = new CollisionCheck()
         {
             PlayerId = value.PlayerId,
-            FromLocation = value.Location,
+            FromLocation = value.PlayerLocation,
             ToLocation = new Coordinates()
             {
-                X = value.Location.X,
-                Y = value.Location.Y
+                X = value.PlayerLocation.X,
+                Y = value.PlayerLocation.Y
             }
         };
-
-        var moving = false;
-        var attacking = false;
-        var interacting = false;
 
         foreach (var input in value.KeyInput)
         {
@@ -68,42 +79,41 @@ public class InputService : BackgroundService, IConsumerService
             {
                 case GameKey.Up:
                     output.ToLocation.Y -= 100 * (float) value.GameTime;
-                    moving = true;
                     break;
                 case GameKey.Down:
                     output.ToLocation.Y += 100 * (float) value.GameTime;
-                    moving = true;
                     break;
                 case GameKey.Left:
                     output.ToLocation.X -= 100 * (float) value.GameTime;
-                    moving = true;
                     break;
                 case GameKey.Right:
                     output.ToLocation.X += 100 * (float) value.GameTime;
-                    moving = true;
-                    break;
-                case GameKey.Attack:
-                    attacking = true;
-                    break;
-                case GameKey.Interact:
-                    interacting = true;
-                    break;
-                default:
                     break;
             }
         }
 
-        if (moving)
-        {
-            _producer.Produce(OutputTopic, key, output);
-        }
+        _producer1.Produce(OutputTopic1, key, output);
+    }
 
-        if (attacking)
+    private void Attack(string key, Input value)
+    {
+        var output = new WorldChange()
         {
-        }
+            PlayerId = value.PlayerId,
+            NewLocation = value.PlayerLocation
+        };
+        
+        var x = value.MouseLocation.X - value.PlayerLocation.X;
+        var y = value.MouseLocation.Y - value.PlayerLocation.Y;
+        var length = (float) Math.Sqrt(x * x + y * y);
+        x /= length;
+        y /= length;
+        
+        //_producer2.Produce(OutputTopic2, key, output);
+    }
 
-        if (interacting)
-        {
-        }
+    private void Interact(string key, Input value)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -7,6 +7,15 @@ namespace ClassLibrary.Classes.Domain;
 
 public class Avatar : ISpecificRecord
 {
+    [BsonId] public Guid Id { get; set; }
+    [BsonElement("location")] public Coordinates Location { get; set; }
+    [BsonElement("name")] public string Name { get; set; }
+    [BsonElement("walking-speed")] public int WalkingSpeed { get; set; }
+    [BsonElement("life-pool")] public int LifePool { get; set; }
+    [BsonElement("inventory")] public int Inventory { get; set; }
+    public List<Weapon> Weapons { get; set; }
+    public Ship Ship { get; set; }
+    
     public Avatar()
     {
         Location = new Coordinates();
@@ -47,15 +56,4 @@ public class Avatar : ISpecificRecord
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }
     }
-
-    [BsonId] public Guid Id { get; set; }
-    [BsonElement("location")] public Coordinates Location { get; set; }
-
-    [BsonElement("name")] public string Name { get; set; }
-
-    [BsonElement("walking-speed")] public int WalkingSpeed { get; set; }
-    [BsonElement("life-pool")] public int LifePool { get; set; }
-    [BsonElement("inventory")] public int Inventory { get; set; }
-    public List<Weapon> Weapons { get; set; }
-    public Ship Ship { get; set; }
 }

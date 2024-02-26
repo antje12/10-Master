@@ -70,8 +70,9 @@ public class CollisionService : BackgroundService, IConsumerService
 
         var output = new WorldChange()
         {
-            PlayerId = value.PlayerId,
-            NewLocation = value.ToLocation
+            EntityId = value.PlayerId,
+            Change = ChangeType.MovePlayer,
+            Location = value.ToLocation
         };
 
         _producer.Produce(OutputTopic, key, output);

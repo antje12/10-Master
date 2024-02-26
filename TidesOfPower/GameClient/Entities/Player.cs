@@ -38,7 +38,7 @@ public class Player : Agent
         var mState = Mouse.GetState();
         MousePosition = mState.Position.ToVector2();
         
-        if (mState.LeftButton == ButtonState.Pressed)
+        if (mState.LeftButton == ButtonState.Pressed && MouseOnScreen())
         {
             if (!attacking)
             {
@@ -109,6 +109,12 @@ public class Player : Agent
         }
 
         _camera.Follow(Position, Texture, MyGame.screenWidth, MyGame.screenHeight);
+    }
+
+    private bool MouseOnScreen()
+    {
+        return 0 <= MousePosition.X && MousePosition.X <= MyGame.screenWidth &&
+               0 <= MousePosition.Y && MousePosition.Y <= MyGame.screenHeight;
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

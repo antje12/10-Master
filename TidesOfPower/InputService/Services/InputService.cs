@@ -12,12 +12,12 @@ public class InputService : BackgroundService, IConsumerService
 {
     private const string GroupId = "input-group";
     private KafkaTopic InputTopic = KafkaTopic.Input;
-    private KafkaTopic OutputTopic1 = KafkaTopic.Collision;
-    private KafkaTopic OutputTopic2 = KafkaTopic.World;
+    private KafkaTopic OutputTopicC = KafkaTopic.Collision;
+    private KafkaTopic OutputTopicW = KafkaTopic.World;
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<CollisionCheck> _producer1;
-    private readonly KafkaProducer<WorldChange> _producer2;
+    private readonly KafkaProducer<CollisionCheck> _producerC;
+    private readonly KafkaProducer<WorldChange> _producerW;
     private readonly KafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
@@ -27,8 +27,8 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine($"InputService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _producer1 = new KafkaProducer<CollisionCheck>(config);
-        _producer2 = new KafkaProducer<WorldChange>(config);
+        _producerC = new KafkaProducer<CollisionCheck>(config);
+        _producerW = new KafkaProducer<WorldChange>(config);
         _consumer = new KafkaConsumer<Input>(config);
     }
 
@@ -92,28 +92,35 @@ public class InputService : BackgroundService, IConsumerService
             }
         }
 
-        _producer1.Produce(OutputTopic1, key, output);
+        _producerC.Produce(OutputTopicC, key, output);
     }
 
     private void Attack(string key, Input value)
     {
-        var output = new WorldChange()
-        {
-            PlayerId = value.PlayerId,
-            NewLocation = value.PlayerLocation
-        };
-        
         var x = value.MouseLocation.X - value.PlayerLocation.X;
         var y = value.MouseLocation.Y - value.PlayerLocation.Y;
         var length = (float) Math.Sqrt(x * x + y * y);
-        x /= length;
-        y /= length;
+        if (length > 0)
+        {
+            x /= length;
+            y /= length;
+        }
         
-        //_producer2.Produce(OutputTopic2, key, output);
+        var spawnX = value.PlayerLocation.X + x * (25 + 5);
+        var spawnY = value.PlayerLocation.Y + y * (25 + 5);
+        
+        var output = new WorldChange()
+        {
+            EntityId = Guid.NewGuid(),
+            Change = ChangeType.SpawnBullet,
+            Location = new Coordinates() { X = spawnX, Y = spawnY },
+            Direction = new Coordinates() {X = x, Y = y}
+        };
+
+        _producerW.Produce(OutputTopicW, key, output);
     }
 
     private void Interact(string key, Input value)
     {
-        throw new NotImplementedException();
     }
 }

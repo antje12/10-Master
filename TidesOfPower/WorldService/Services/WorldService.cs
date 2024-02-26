@@ -52,10 +52,23 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, WorldChange value)
     {
+        switch (value.Change)
+        {
+            case ChangeType.MovePlayer:
+                MovePlayer(key, value);
+                break;
+            case ChangeType.SpawnBullet:
+                SpawnBullet(key, value);
+                break;
+        }
+    }
+
+    private void MovePlayer(string key, WorldChange value)
+    {
         var player = new Avatar()
         {
-            Id = value.PlayerId,
-            Location = value.NewLocation
+            Id = value.EntityId,
+            Location = value.Location
         };
 
         _mongoBroker.UpsertAvatarLocation(player);
@@ -80,9 +93,14 @@ public class WorldService : BackgroundService, IConsumerService
             {
                 PlayerId = enemy.Id,
                 Sync = SyncType.Delta,
-                Avatars = new List<Avatar>(){player}
+                Avatars = new List<Avatar>() {player}
             };
             _producer.Produce($"{OutputTopic}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
         }
+    }
+
+    private void SpawnBullet(string key, WorldChange value)
+    {
+        //var avatars = _mongoBroker.ReadScreen(value.Location);
     }
 }

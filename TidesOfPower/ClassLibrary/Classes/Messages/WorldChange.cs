@@ -6,12 +6,15 @@ namespace ClassLibrary.Classes.Messages;
 
 public class WorldChange : ISpecificRecord
 {
-    public Guid PlayerId { get; set; }
-    public Coordinates NewLocation { get; set; }
+    public Guid EntityId { get; set; }
+    public ChangeType Change { get; set; }
+    public Coordinates Location { get; set; }
+    public Coordinates Direction { get; set; }
 
     public WorldChange()
     {
-        NewLocation = new Coordinates();
+        Location = new Coordinates();
+        Direction = new Coordinates();
     }
 
     public Schema Schema => StatSchema;
@@ -21,8 +24,17 @@ public class WorldChange : ISpecificRecord
         ""type"": ""record"",
         ""name"": ""WorldChange"",
         ""fields"": [
-            {{ ""name"": ""PlayerId"", ""type"": ""string"" }},
-            {{ ""name"": ""NewLocation"", ""type"": {Coordinates.StatSchema} }}
+            {{ ""name"": ""EntityId"", ""type"": ""string"" }},
+            {{
+                ""name"": ""Change"", 
+                ""type"": {{
+                    ""type"": ""enum"",
+                    ""name"": ""ChangeType"",
+                    ""symbols"": [""MovePlayer"", ""SpawnBullet"", ""MoveBullet""]
+                }}
+            }},
+            {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema} }},
+            {{ ""name"": ""Direction"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }}
         ]
     }}");
 
@@ -30,8 +42,10 @@ public class WorldChange : ISpecificRecord
     {
         switch (fieldPos)
         {
-            case 0: return PlayerId.ToString();
-            case 1: return NewLocation;
+            case 0: return EntityId.ToString();
+            case 1: return Change;
+            case 2: return Location;
+            case 3: return Direction;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
     }
@@ -41,10 +55,16 @@ public class WorldChange : ISpecificRecord
         switch (fieldPos)
         {
             case 0:
-                PlayerId = Guid.Parse((string) fieldValue);
+                EntityId = Guid.Parse((string) fieldValue);
                 break;
             case 1:
-                NewLocation = (Coordinates) fieldValue;
+                Change = (ChangeType) fieldValue;
+                break;
+            case 2:
+                Location = (Coordinates) fieldValue;
+                break;
+            case 3:
+                Direction = (Coordinates) fieldValue;
                 break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }

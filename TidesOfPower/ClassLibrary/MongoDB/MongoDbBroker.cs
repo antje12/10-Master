@@ -114,16 +114,11 @@ public class MongoDbBroker
         var options = new UpdateOptions {IsUpsert = true};
         var result = _mongoDbContext.Avatars.UpdateOneAsync(filter, update, options).GetAwaiter().GetResult();
 
-        if (result.IsAcknowledged && result.ModifiedCount != 0)
+        if (result.IsAcknowledged)
         {
-            if (result.UpsertedId != null)
-            {
-                Console.WriteLine($"Avatar upserted with ID: {result.UpsertedId}");
-            }
-            else
-            {
-                Console.WriteLine("Avatar updated successfully!");
-            }
+            Console.WriteLine(result.UpsertedId != null
+                ? $"Avatar upserted with ID: {result.UpsertedId}"
+                : "Avatar updated successfully!");
         }
         else
         {

@@ -31,6 +31,7 @@ public class MyGame : Game
     Texture2D oceanTexture; //64x64
     Texture2D islandTexture; //64x64
     Texture2D avatarTexture; //50x50
+    Texture2D bulletTexture; //10x10
 
     Camera _camera;
     GraphicsDeviceManager _graphics;
@@ -75,6 +76,7 @@ public class MyGame : Game
         avatarTexture = Content.Load<Texture2D>("square");
         islandTexture = Content.Load<Texture2D>("island");
         oceanTexture = Content.Load<Texture2D>("ocean");
+        bulletTexture = Content.Load<Texture2D>("small-square");
 
         //var enemyPosition = new Vector2(0, 0);
         //var enemy = new Enemy(Guid.NewGuid(), enemyPosition, avatarTexture);

@@ -111,24 +111,12 @@ public class MyGame : Game
     private void FullSync(LocalState value)
     {
         DeltaSync(value);
+
         var onlineAvatarIds = value.Avatars.Select(x => x.Id).ToList();
-        var localAvatarIds = LocalState.Where(x => x is Agent).Select(x => ((Agent) x)._agentId).ToList();
-        foreach (var localAvatarId in localAvatarIds)
-        {
-            if (!onlineAvatarIds.Contains(localAvatarId))
-            {
-                LocalState.RemoveAll(x => x is Agent y && y._agentId == localAvatarId);
-            }
-        }
+        LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y._agentId));
+
         var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
-        var localProjectileIds = LocalState.Where(x => x is Projectile).Select(x => ((Projectile) x)._id).ToList();
-        foreach (var localProjectileId in localProjectileIds)
-        {
-            if (!onlineProjectileIds.Contains(localProjectileId))
-            {
-                LocalState.RemoveAll(x => x is Projectile y && y._id == localProjectileId);
-            }
-        }
+        LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id));
     }
 
     private void DeltaSync(LocalState value)
@@ -136,28 +124,22 @@ public class MyGame : Game
         foreach (var avatar in value.Avatars)
         {
             var localAvatar = LocalState.FirstOrDefault(x => x is Agent y && y._agentId == avatar.Id);
-            if (localAvatar != null)
-            {
-                localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
-            }
+            if (localAvatar == null)
+                LocalState.Add(
+                    new Enemy(avatar.Id, new Vector2(avatar.Location.X, avatar.Location.Y), avatarTexture));
             else
-            {
-                var newAvatar = new Enemy(avatar.Id, new Vector2(avatar.Location.X, avatar.Location.Y), avatarTexture);
-                LocalState.Add(newAvatar);
-            }
+                localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
         }
+
         foreach (var projectile in value.Projectiles)
         {
             var localAvatar = LocalState.FirstOrDefault(x => x is Projectile y && y._id == projectile.Id);
-            if (localAvatar != null)
-            {
-                localAvatar.Position = new Vector2(projectile.Location.X, projectile.Location.Y);
-            }
+            if (localAvatar == null)
+                LocalState.Add(
+                    new Projectile(projectile.Id, new Vector2(projectile.Location.X, projectile.Location.Y),
+                        projectileTexture));
             else
-            {
-                var newAvatar = new Projectile(projectile.Id, new Vector2(projectile.Location.X, projectile.Location.Y), projectileTexture);
-                LocalState.Add(newAvatar);
-            }
+                localAvatar.Position = new Vector2(projectile.Location.X, projectile.Location.Y);
         }
     }
 
@@ -165,7 +147,7 @@ public class MyGame : Game
     {
         var deleteAvatarIds = value.Avatars.Select(x => x.Id).ToList();
         LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y._agentId));
-        
+
         var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
         LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y._id));
     }
@@ -180,6 +162,7 @@ public class MyGame : Game
             var sprite = LocalState[i];
             sprite.Update(gameTime);
         }
+
         base.Update(gameTime);
     }
 
@@ -192,6 +175,7 @@ public class MyGame : Game
             var sprite = LocalState[i];
             sprite.Draw(gameTime, _spriteBatch);
         }
+
         _spriteBatch.End();
         base.Draw(gameTime);
     }

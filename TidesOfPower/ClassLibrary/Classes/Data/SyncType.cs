@@ -3,5 +3,6 @@
 public enum SyncType
 {
     Full,
-    Delta
+    Delta,
+    Delete
 }

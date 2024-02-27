@@ -8,7 +8,7 @@ namespace ClassLibrary.Classes.Domain;
 public class Projectile : Entity, ISpecificRecord
 {
     [BsonElement("direction")] public Coordinates Direction { get; set; }
-    [BsonElement("timer")] public int Timer { get; set; }
+    [BsonElement("timer")] public double Timer { get; set; }
 
     public Schema Schema => StatSchema;
     public static Schema StatSchema => Schema.Parse($@"

@@ -10,6 +10,7 @@ public class WorldChange : ISpecificRecord
     public ChangeType Change { get; set; }
     public Coordinates Location { get; set; }
     public Coordinates Direction { get; set; }
+    public double Timer { get; set; }
 
     public WorldChange()
     {
@@ -34,7 +35,8 @@ public class WorldChange : ISpecificRecord
                 }}
             }},
             {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema()} }},
-            {{ ""name"": ""Direction"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }}
+            {{ ""name"": ""Direction"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }},
+            {{ ""name"": ""Timer"", ""type"": ""double"" }}
         ]
     }}");
 
@@ -46,6 +48,7 @@ public class WorldChange : ISpecificRecord
             case 1: return Change;
             case 2: return Location;
             case 3: return Direction;
+            case 4: return Timer;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
     }
@@ -65,6 +68,9 @@ public class WorldChange : ISpecificRecord
                 break;
             case 3:
                 Direction = (Coordinates) fieldValue;
+                break;
+            case 4:
+                Timer = (double) fieldValue;
                 break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }

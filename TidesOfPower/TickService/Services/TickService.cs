@@ -42,7 +42,7 @@ public class TickService : BackgroundService, IConsumerService
             {
                 SendState(projectile);
             }
-            Thread.Sleep(33);
+            Thread.Sleep(50);
         }
 
         IsRunning = false;
@@ -55,11 +55,12 @@ public class TickService : BackgroundService, IConsumerService
         {
             EntityId = projectile.Id,
             Change = ChangeType.MoveBullet,
-            Location = projectile.Location
+            Location = projectile.Location,
+            Timer = projectile.Timer - 1
         };
 
         var speed = 50;
-        var deltaTime = 0.033f;
+        var deltaTime = 0.05f;
         
         output.Location.X += projectile.Direction.X * speed * deltaTime;
         output.Location.Y += projectile.Direction.Y * speed * deltaTime;

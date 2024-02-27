@@ -32,6 +32,21 @@ public class MongoDbBroker
         _mongoDbContext.Entities.InsertOneAsync(entity).GetAwaiter().GetResult();
     }
 
+    public void Delete(Entity entity)
+    {
+        var filterBuilder = Builders<Entity>.Filter;
+        var filter = filterBuilder.Eq(x => x.Id, entity.Id);
+        var result = _mongoDbContext.Entities.DeleteOneAsync(filter).GetAwaiter().GetResult();
+        if (!result.IsAcknowledged || result.DeletedCount == 0)
+        {
+            Console.WriteLine("Entity delete failed!");
+        }
+        else
+        {
+            Console.WriteLine("Entity delete succeeded!");
+        }
+    }
+
     public List<Entity> GetEntities()
     {
         var entities = _mongoDbContext.Entities.AsQueryable().ToListAsync().GetAwaiter().GetResult();

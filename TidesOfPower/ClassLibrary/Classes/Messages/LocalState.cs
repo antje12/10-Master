@@ -31,7 +31,7 @@ public class LocalState : ISpecificRecord
                 ""type"": {{
                     ""type"": ""enum"",
                     ""name"": ""SyncType"",
-                    ""symbols"": [""Full"", ""Delta""]
+                    ""symbols"": [""Full"", ""Delta"", ""Delete""]
                 }}
             }},
             {{ 

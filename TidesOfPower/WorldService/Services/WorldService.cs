@@ -115,7 +115,7 @@ public class WorldService : BackgroundService, IConsumerService
             Id = value.EntityId,
             Location = value.Location,
             Direction = value.Direction,
-            Timer = 5
+            Timer = 10
         };
         _mongoBroker.Insert(projectile);
 
@@ -137,9 +137,22 @@ public class WorldService : BackgroundService, IConsumerService
         var bullet = new Projectile()
         {
             Id = value.EntityId,
-            Location = value.Location
+            Location = value.Location,
+            Timer = value.Timer
         };
-        _mongoBroker.UpdateProjectile(bullet);
+
+        SyncType sync;
+        
+        if (bullet.Timer <= 0)
+        {
+            _mongoBroker.Delete(bullet);
+            sync = SyncType.Delete;
+        }
+        else
+        {
+            _mongoBroker.UpdateProjectile(bullet);
+            sync = SyncType.Delta;
+        }
         
         var entities = _mongoBroker.GetEntities(bullet.Location).OfType<Avatar>().ToList();
         foreach (var entity in entities)
@@ -147,7 +160,7 @@ public class WorldService : BackgroundService, IConsumerService
             var deltaOutput = new LocalState()
             {
                 PlayerId = entity.Id,
-                Sync = SyncType.Delta,
+                Sync = sync,
                 Projectiles = new List<Projectile>() {bullet}
             };
             _producer.Produce($"{OutputTopic}_{entity.Id}", entity.Id.ToString(), deltaOutput);

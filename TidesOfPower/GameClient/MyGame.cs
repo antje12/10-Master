@@ -102,6 +102,9 @@ public class MyGame : Game
             case SyncType.Delta:
                 DeltaSync(value);
                 break;
+            case SyncType.Delete:
+                DeleteSync(value);
+                break;
         }
     }
 
@@ -115,6 +118,15 @@ public class MyGame : Game
             if (!onlineAvatarIds.Contains(localAvatarId))
             {
                 LocalState.RemoveAll(x => x is Agent y && y._agentId == localAvatarId);
+            }
+        }
+        var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
+        var localProjectileIds = LocalState.Where(x => x is Projectile).Select(x => ((Projectile) x)._id).ToList();
+        foreach (var localProjectileId in localProjectileIds)
+        {
+            if (!onlineProjectileIds.Contains(localProjectileId))
+            {
+                LocalState.RemoveAll(x => x is Projectile y && y._id == localProjectileId);
             }
         }
     }
@@ -147,6 +159,15 @@ public class MyGame : Game
                 LocalState.Add(newAvatar);
             }
         }
+    }
+
+    private void DeleteSync(LocalState value)
+    {
+        var deleteAvatarIds = value.Avatars.Select(x => x.Id).ToList();
+        LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y._agentId));
+        
+        var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
+        LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y._id));
     }
 
     protected override void Update(GameTime gameTime)

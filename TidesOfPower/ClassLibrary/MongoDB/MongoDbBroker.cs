@@ -43,7 +43,7 @@ public class MongoDbBroker
         }
         else
         {
-            Console.WriteLine("Entity delete succeeded!");
+            //Console.WriteLine("Entity delete succeeded!");
         }
     }
 
@@ -108,7 +108,7 @@ public class MongoDbBroker
         }
         else
         {
-            Console.WriteLine("Entity update succeeded!");
+            //Console.WriteLine("Entity update succeeded!");
         }
     }
 
@@ -134,7 +134,7 @@ public class MongoDbBroker
         }
         else
         {
-            Console.WriteLine("Avatar update succeeded!");
+            //Console.WriteLine("Avatar update succeeded!");
         }
     }
 
@@ -149,9 +149,9 @@ public class MongoDbBroker
         var result = _mongoDbContext.Entities.UpdateOneAsync(filter, update, options).GetAwaiter().GetResult();
         if (result.IsAcknowledged)
         {
-            Console.WriteLine(result.UpsertedId != null
-                ? $"Avatar upserted with ID: {result.UpsertedId}"
-                : "Avatar updated successfully!");
+            //Console.WriteLine(result.UpsertedId != null
+            //    ? $"Avatar upserted with ID: {result.UpsertedId}"
+            //    : "Avatar updated successfully!");
         }
         else
         {

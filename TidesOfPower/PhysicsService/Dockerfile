@@ -6,6 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["PhysicsService/PhysicsService.csproj", "PhysicsService/"]
+COPY ["ClassLibrary/ClassLibrary.csproj", "ClassLibrary/"]
 RUN dotnet restore "PhysicsService/PhysicsService.csproj"
 COPY . .
 WORKDIR "/src/PhysicsService"

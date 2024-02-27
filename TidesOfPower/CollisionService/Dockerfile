@@ -6,6 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["CollisionService/CollisionService.csproj", "CollisionService/"]
+COPY ["ClassLibrary/ClassLibrary.csproj", "ClassLibrary/"]
 RUN dotnet restore "CollisionService/CollisionService.csproj"
 COPY . .
 WORKDIR "/src/CollisionService"

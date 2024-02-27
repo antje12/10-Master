@@ -43,7 +43,7 @@ public class Player : Agent
                 attacking = true;
                 keyInput.Add(GameKey.Attack);
                 MousePosition = MouseInWorld(mState.Position.ToVector2(), _camera);
-                Console.WriteLine($"Mouse clicked at {MousePosition.X}:{MousePosition.Y}");
+                //Console.WriteLine($"Mouse clicked at {MousePosition.X}:{MousePosition.Y}");
             }
         }
         else

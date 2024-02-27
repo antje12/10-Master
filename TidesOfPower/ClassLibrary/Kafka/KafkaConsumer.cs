@@ -17,7 +17,7 @@ public class KafkaConsumer<T> : IConsumer<T> where T : ISpecificRecord
         _schemaRegistry = new CachedSchemaRegistryClient(config.SchemaRegistryConfig);
         _consumer = new ConsumerBuilder<string, T>(config.ConsumerConfig)
             .SetValueDeserializer(new AvroDeserializer<T>(_schemaRegistry).AsSyncOverAsync())
-            .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
+            .SetErrorHandler((_, e) => Console.WriteLine($"Error consuming topic: {e.Reason}"))
             .Build();
         //_consumer = new ConsumerBuilder<string, T>(consumerConfig).Build();
     }

@@ -6,6 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["ProfileService/ProfileService.csproj", "ProfileService/"]
+COPY ["ClassLibrary/ClassLibrary.csproj", "ClassLibrary/"]
 RUN dotnet restore "ProfileService/ProfileService.csproj"
 COPY . .
 WORKDIR "/src/ProfileService"

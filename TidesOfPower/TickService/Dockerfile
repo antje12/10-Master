@@ -5,17 +5,17 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["WorldService/WorldService.csproj", "WorldService/"]
+COPY ["TickService/TickService.csproj", "TickService/"]
 COPY ["ClassLibrary/ClassLibrary.csproj", "ClassLibrary/"]
-RUN dotnet restore "WorldService/WorldService.csproj"
+RUN dotnet restore "TickService/TickService.csproj"
 COPY . .
-WORKDIR "/src/WorldService"
-RUN dotnet build "WorldService.csproj" -c Release -o /app/build
+WORKDIR "/src/TickService"
+RUN dotnet build "TickService.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "WorldService.csproj" -c Release -o /app/publish
+RUN dotnet publish "TickService.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "WorldService.dll"]
+ENTRYPOINT ["dotnet", "TickService.dll"]

@@ -4,8 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //https://github.com/dotnet/runtime/issues/36063
 builder.Services.AddSingleton<IConsumerService, TickService.Services.TickService>();
-builder.Services.AddHostedService<IConsumerService>(provider =>
-    provider.GetService<IConsumerService>() ?? new TickService.Services.TickService());
+builder.Services.AddHostedService(provider => provider.GetRequiredService<IConsumerService>());
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

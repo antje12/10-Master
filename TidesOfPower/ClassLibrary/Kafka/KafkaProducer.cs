@@ -16,6 +16,7 @@ public class KafkaProducer<T> : IProducer<T> where T : ISpecificRecord
         _schemaRegistry = new CachedSchemaRegistryClient(config.SchemaRegistryConfig);
         _producer = new ProducerBuilder<string, T>(config.ProducerConfig)
             .SetValueSerializer(new AvroSerializer<T>(_schemaRegistry, config.AvroSerializerConfig))
+            .SetErrorHandler((_, e) => Console.WriteLine($"Error producing to topic: {e.Reason}"))
             .Build();
         //_producer = new ProducerBuilder<string, T>(producerConfig).Build();
     }

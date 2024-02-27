@@ -10,7 +10,9 @@ public class KafkaAdministrator : IAdministrator
 
     public KafkaAdministrator(KafkaConfig config)
     {
-        _adminClient = new AdminClientBuilder(config.AdminConfig).Build();
+        _adminClient = new AdminClientBuilder(config.AdminConfig)
+            .SetErrorHandler((_, e) => Console.WriteLine($"Error administering topic: {e.Reason}"))
+            .Build();
     }
 
     public async Task CreateTopic(KafkaTopic topic)
@@ -33,7 +35,7 @@ public class KafkaAdministrator : IAdministrator
         }
         catch (CreateTopicsException e)
         {
-            Console.WriteLine($"An error occured creating topic {e.Results[0].Topic}: {e.Results[0].Error.Reason}");
+            Console.WriteLine($"Error creating topic {e.Results[0].Topic}: {e.Results[0].Error.Reason}");
         }
     }
 }

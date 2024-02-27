@@ -6,6 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["AIService/AIService.csproj", "AIService/"]
+COPY ["ClassLibrary/ClassLibrary.csproj", "ClassLibrary/"]
 RUN dotnet restore "AIService/AIService.csproj"
 COPY . .
 WORKDIR "/src/AIService"

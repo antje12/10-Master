@@ -27,13 +27,13 @@ void TestMongoDB()
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
-    mongoBroker.Create(profile);
+    mongoBroker.Insert(profile);
     stopwatch.Stop();
     var elapsed_time = stopwatch.ElapsedMilliseconds;
     Console.WriteLine($"Create called in {elapsed_time} ms");
 
     stopwatch.Restart();
-    var test = mongoBroker.Read(profile.Id);
+    var test = mongoBroker.GetProfile(profile.Id);
     stopwatch.Stop();
     elapsed_time = stopwatch.ElapsedMilliseconds;
     Console.WriteLine($"Read called in {elapsed_time} ms");
@@ -41,13 +41,13 @@ void TestMongoDB()
     profile.Id = Guid.NewGuid();
 
     stopwatch.Restart();
-    mongoBroker.Create(profile);
+    mongoBroker.Insert(profile);
     stopwatch.Stop();
     elapsed_time = stopwatch.ElapsedMilliseconds;
     Console.WriteLine($"Create called in {elapsed_time} ms");
 
     stopwatch.Restart();
-    test = mongoBroker.Read(profile.Id);
+    test = mongoBroker.GetProfile(profile.Id);
     stopwatch.Stop();
     elapsed_time = stopwatch.ElapsedMilliseconds;
     Console.WriteLine($"Read called in {elapsed_time} ms");

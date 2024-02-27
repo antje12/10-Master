@@ -78,9 +78,6 @@ public class MyGame : Game
         oceanTexture = Content.Load<Texture2D>("ocean");
         projectileTexture = Content.Load<Texture2D>("small-square");
 
-        //var enemyPosition = new Vector2(0, 0);
-        //var enemy = new Enemy(Guid.NewGuid(), enemyPosition, avatarTexture);
-
         var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
         var player = new Player(PlayerId, playerPosition, avatarTexture, _camera, _producer);
 
@@ -92,7 +89,6 @@ public class MyGame : Game
 
         LocalState.Add(ocean);
         LocalState.Add(island);
-        //LocalState.Add(enemy);
         LocalState.Add(player);
     }
 
@@ -112,7 +108,6 @@ public class MyGame : Game
     private void FullSync(LocalState value)
     {
         DeltaSync(value);
-        
         var onlineAvatarIds = value.Avatars.Select(x => x.Id).ToList();
         var localAvatarIds = LocalState.Where(x => x is Agent).Select(x => ((Agent) x)._agentId).ToList();
         foreach (var localAvatarId in localAvatarIds)
@@ -159,8 +154,9 @@ public class MyGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-        foreach (var sprite in LocalState)
+        for (var i = 0; i < LocalState.Count; i++)
         {
+            var sprite = LocalState[i];
             sprite.Update(gameTime);
         }
         base.Update(gameTime);
@@ -170,8 +166,9 @@ public class MyGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
         _spriteBatch.Begin(transformMatrix: _camera.Transform);
-        foreach (var sprite in LocalState)
+        for (var i = 0; i < LocalState.Count; i++)
         {
+            var sprite = LocalState[i];
             sprite.Draw(gameTime, _spriteBatch);
         }
         _spriteBatch.End();

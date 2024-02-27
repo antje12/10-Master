@@ -60,6 +60,9 @@ public class WorldService : BackgroundService, IConsumerService
             case ChangeType.SpawnBullet:
                 SpawnBullet(key, value);
                 break;
+            case ChangeType.MoveBullet:
+                MoveBullet(key, value);
+                break;
         }
     }
 
@@ -72,8 +75,8 @@ public class WorldService : BackgroundService, IConsumerService
         };
         //_mongoBroker.CreateEntity(player);
         _mongoBroker.UpsertAvatarLocation(player);
-        var entities = _mongoBroker.ReadScreen(player.Location);
-
+        
+        var entities = _mongoBroker.GetEntities(player.Location);
         var output = new LocalState()
         {
             PlayerId = player.Id,
@@ -111,11 +114,12 @@ public class WorldService : BackgroundService, IConsumerService
         {
             Id = value.EntityId,
             Location = value.Location,
-            Direction = value.Direction
+            Direction = value.Direction,
+            Timer = 5
         };
-        _mongoBroker.CreateEntity(projectile);
+        _mongoBroker.Insert(projectile);
 
-        var avatars = _mongoBroker.ReadScreen(value.Location).Where(x => x is Avatar);
+        var avatars = _mongoBroker.GetEntities(value.Location).Where(x => x is Avatar);
         foreach (var avatar in avatars)
         {
             var deltaOutput = new LocalState()
@@ -125,6 +129,28 @@ public class WorldService : BackgroundService, IConsumerService
                 Projectiles = new List<Projectile>() {projectile}
             };
             _producer.Produce($"{OutputTopic}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
+        }
+    }
+
+    private void MoveBullet(string key, WorldChange value)
+    {
+        var bullet = new Projectile()
+        {
+            Id = value.EntityId,
+            Location = value.Location
+        };
+        _mongoBroker.UpdateProjectile(bullet);
+        
+        var entities = _mongoBroker.GetEntities(bullet.Location).OfType<Avatar>().ToList();
+        foreach (var entity in entities)
+        {
+            var deltaOutput = new LocalState()
+            {
+                PlayerId = entity.Id,
+                Sync = SyncType.Delta,
+                Projectiles = new List<Projectile>() {bullet}
+            };
+            _producer.Produce($"{OutputTopic}_{entity.Id}", entity.Id.ToString(), deltaOutput);
         }
     }
 }

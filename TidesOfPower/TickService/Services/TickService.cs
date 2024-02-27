@@ -11,9 +11,9 @@ namespace TickService.Services;
 //https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class TickService : BackgroundService, IConsumerService
 {
-    private KafkaTopic OutputTopic = KafkaTopic.LocalState;
+    private KafkaTopic OutputTopic = KafkaTopic.World;
     
-    private readonly KafkaProducer<LocalState> _producer;
+    private readonly KafkaProducer<WorldChange> _producer;
 
     private readonly MongoDbBroker _mongoBroker;
 
@@ -23,7 +23,7 @@ public class TickService : BackgroundService, IConsumerService
     {
         Console.WriteLine($"TickService created");
         var config = new KafkaConfig("");
-        _producer = new KafkaProducer<LocalState>(config);
+        _producer = new KafkaProducer<WorldChange>(config);
         _mongoBroker = new MongoDbBroker();
     }
 
@@ -37,12 +37,11 @@ public class TickService : BackgroundService, IConsumerService
 
         while (!ct.IsCancellationRequested)
         {
-            var avatars = _mongoBroker.ReadEntities();
-            foreach (var avatar in avatars)
+            var projectiles = _mongoBroker.GetEntities().OfType<Projectile>().ToList();
+            foreach (var projectile in projectiles)
             {
-                //SendState(avatar);
+                SendState(projectile);
             }
-            
             Thread.Sleep(33);
         }
 
@@ -50,26 +49,21 @@ public class TickService : BackgroundService, IConsumerService
         Console.WriteLine($"TickService stopped");
     }
 
-    private void SendState(Avatar avatar)
+    private void SendState(Projectile projectile)
     {
-        var state = _mongoBroker.ReadScreen(avatar.Location);
-        var output = new LocalState()
+        var output = new WorldChange()
         {
-            PlayerId = avatar.Id,
-            Sync = SyncType.Full,
-            Avatars = new List<Avatar>()
+            EntityId = projectile.Id,
+            Change = ChangeType.MoveBullet,
+            Location = projectile.Location
         };
 
-        foreach (var a in state)
-        {
-            var na = new Avatar()
-            {
-                Id = a.Id,
-                Location = a.Location
-            };
-            output.Avatars.Add(na);
-        }
+        var speed = 50;
+        var deltaTime = 0.033f;
+        
+        output.Location.X += projectile.Direction.X * speed * deltaTime;
+        output.Location.Y += projectile.Direction.Y * speed * deltaTime;
 
-        _producer.Produce($"{OutputTopic}_{output.PlayerId}", output.PlayerId.ToString(), output);
+        _producer.Produce(OutputTopic, output.EntityId.ToString(), output);
     }
 }

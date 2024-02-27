@@ -52,7 +52,7 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, CollisionCheck value)
     {
-        var entities = _mongoBroker.ReadCloseScreen(value.ToLocation);
+        var entities = _mongoBroker.GetCloseEntities(value.ToLocation);
         foreach (var entity in entities)
         {
             if (value.PlayerId == entity.Id)
@@ -114,7 +114,7 @@ public class CollisionService : BackgroundService, IConsumerService
             return false;
         }
 
-        var locationContent = _mongoBroker.ReadLocation(location);
+        var locationContent = _mongoBroker.GetEntity(location);
 
         if (locationContent != null)
         {

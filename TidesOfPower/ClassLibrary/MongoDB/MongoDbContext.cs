@@ -25,12 +25,12 @@ public class MongoDbContext
                 ReadPreference = ReadPreference.SecondaryPreferred
             }); // Always read from a secondary, read from the primary if no secondary is available (https://severalnines.com/blog/become-mongodb-dba-how-scale-reads)
 
-    //public IMongoCollection<Avatar> Avatars =>
-    //    _database.GetCollection<Avatar>("Avatars",
-    //        new MongoCollectionSettings
-    //        {
-    //            ReadPreference = ReadPreference.SecondaryPreferred
-    //        });
+    public IMongoCollection<Avatar> Avatars =>
+        _database.GetCollection<Avatar>("Avatars",
+            new MongoCollectionSettings
+            {
+                ReadPreference = ReadPreference.SecondaryPreferred
+            });
 
     public IMongoCollection<Entity> Entities =>
         _database.GetCollection<Entity>("Entities",

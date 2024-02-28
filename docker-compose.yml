@@ -79,57 +79,57 @@ services:
     networks:
       sharednetwork:
   
-  #input-service:
-  #  container_name: input-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: InputService/Dockerfile
-  #  ports:
-  #    - 81:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - mongodb-1
-  #  networks:
-  #    sharednetwork:
-  #
-  #collision-service:
-  #  container_name: collision-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: CollisionService/Dockerfile
-  #  ports:
-  #    - 82:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - mongodb-1
-  #  networks:
-  #    sharednetwork:
-  #
-  #world-service:
-  #  container_name: world-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: WorldService/Dockerfile
-  #  ports:
-  #    - 83:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - mongodb-1
-  #  networks:
-  #    sharednetwork:
-  #
-  #tick-service:
-  #  container_name: tick-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: TickService/Dockerfile
-  #  ports:
-  #    - 84:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - mongodb-1
-  #  networks:
-  #    sharednetwork:
+  input-service:
+    container_name: input-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: InputService/Dockerfile
+    ports:
+      - 81:80
+    restart: unless-stopped
+    depends_on:
+      - mongodb-1
+    networks:
+      sharednetwork:
+  
+  collision-service:
+    container_name: collision-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: CollisionService/Dockerfile
+    ports:
+      - 82:80
+    restart: unless-stopped
+    depends_on:
+      - mongodb-1
+    networks:
+      sharednetwork:
+  
+  world-service:
+    container_name: world-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: WorldService/Dockerfile
+    ports:
+      - 83:80
+    restart: unless-stopped
+    depends_on:
+      - mongodb-1
+    networks:
+      sharednetwork:
+  
+  tick-service:
+    container_name: tick-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: TickService/Dockerfile
+    ports:
+      - 84:80
+    restart: unless-stopped
+    depends_on:
+      - mongodb-1
+    networks:
+      sharednetwork:
 
 volumes:
   mongodb-1.vol:

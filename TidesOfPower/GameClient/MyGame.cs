@@ -86,10 +86,10 @@ public class MyGame : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        avatarTexture = Content.Load<Texture2D>("square");
+        avatarTexture = Content.Load<Texture2D>("circle");
         islandTexture = Content.Load<Texture2D>("island");
         oceanTexture = Content.Load<Texture2D>("ocean");
-        projectileTexture = Content.Load<Texture2D>("small-square");
+        projectileTexture = Content.Load<Texture2D>("small-circle");
     }
 
     private void ProcessMessage(string key, LocalState value)

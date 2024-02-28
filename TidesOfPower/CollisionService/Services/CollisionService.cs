@@ -55,36 +55,65 @@ public class CollisionService : BackgroundService, IConsumerService
         var entities = _mongoBroker.GetCloseEntities(value.ToLocation);
         foreach (var entity in entities)
         {
-            if (value.PlayerId == entity.Id)
+            if (value.EntityId == entity.Id)
             {
                 continue;
             }
 
-            var w1 = 25;
-            var w2 = entity is Projectile ? 5 : entity is Avatar ? 25 : 0;
-            
+            var w1 =
+                value.Entity is EntityType.Projectile ? 5 :
+                value.Entity is EntityType.Avatar ? 25 : 0;
+            var w2 =
+                entity is Projectile ? 5 :
+                entity is Avatar ? 25 : 0;
+
             if (circleCollision(value.ToLocation, w1, entity.Location, w2))
             {
-                return;
+                if (value.Entity is EntityType.Avatar && entity is Avatar)
+                {
+                    return;
+                }
+
+                if (value.Entity is EntityType.Avatar && entity is Projectile)
+                {
+                    Damage(value.EntityId, value.ToLocation);
+                    return;
+                }
+
+                if (value.Entity is EntityType.Projectile && entity is Avatar)
+                {
+                    Damage(entity.Id, entity.Location);
+                }
             }
         }
-        
-        //if (!IsLocationFree(value.ToLocation))
-        //    return;
 
-        var output = new WorldChange()
+        if (value.Entity is EntityType.Avatar)
         {
-            EntityId = value.PlayerId,
-            Change = ChangeType.MovePlayer,
-            Location = value.ToLocation
-        };
+            var output = new WorldChange()
+            {
+                EntityId = value.EntityId,
+                Change = ChangeType.MovePlayer,
+                Location = value.ToLocation
+            };
 
-        _producer.Produce(OutputTopic, key, output);
+            _producer.Produce(OutputTopic, key, output);
+        }
+        else
+        {
+            var output = new WorldChange()
+            {
+                EntityId = value.EntityId,
+                Change = ChangeType.MoveBullet,
+                Location = value.ToLocation,
+                Timer = value.Timer
+            };
+
+            _producer.Produce(OutputTopic, key, output);
+        }
     }
 
     private bool circleCollision(Coordinates e1, int w1, Coordinates e2, int w2)
     {
-
         float dx = e1.X - e2.X;
         float dy = e1.Y - e2.Y;
 
@@ -93,34 +122,24 @@ public class CollisionService : BackgroundService, IConsumerService
         double distance = Math.Sqrt(dx * dx + dy * dy);
 
         // if radius overlap
-        if (distance < w1 + w2) {
+        if (distance < w1 + w2)
+        {
             // Collision!
             return true;
         }
 
         return false;
     }
-    
-    private bool IsLocationFree(Coordinates location)
+
+    private void Damage(Guid entityId, Coordinates entityLocation)
     {
-        float deadZoneStartX = 100;
-        float deadZoneStopX = 200;
-        float deadZoneStartY = 100;
-        float deadZoneStopY = 200;
-
-        if (deadZoneStartX <= location.X && location.X <= deadZoneStopX &&
-            deadZoneStartY <= location.Y && location.Y <= deadZoneStopY)
+        var output = new WorldChange()
         {
-            return false;
-        }
+            EntityId = entityId,
+            Change = ChangeType.DamagePlayer,
+            Location = entityLocation
+        };
 
-        var locationContent = _mongoBroker.GetEntity(location);
-
-        if (locationContent != null)
-        {
-            return false;
-        }
-
-        return true;
+        _producer.Produce(OutputTopic, entityId.ToString(), output);
     }
 }

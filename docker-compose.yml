@@ -79,19 +79,19 @@ services:
     networks:
       sharednetwork:
   
-  input-service:
-    container_name: input-service
-    build:
-      context: ./TidesOfPower
-      dockerfile: InputService/Dockerfile
-    ports:
-      - 81:80
-    restart: unless-stopped
-    depends_on:
-      - mongodb-1
-    networks:
-      sharednetwork:
-  
+  #input-service:
+  #  container_name: input-service
+  #  build:
+  #    context: ./TidesOfPower
+  #    dockerfile: InputService/Dockerfile
+  #  ports:
+  #    - 81:80
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - mongodb-1
+  #  networks:
+  #    sharednetwork:
+  #
   #collision-service:
   #  container_name: collision-service
   #  build:

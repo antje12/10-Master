@@ -8,10 +8,10 @@ public class KafkaConfig
 {
     //"localhost:19092"
     //"kafka-1:9092"
-    private const string KafkaServers = "kafka-1:9092";
+    private const string KafkaServers = "localhost:19092";
     //"localhost:8081"
     //"schema-registry:8081"
-    private const string SchemaRegistry = "schema-registry:8081";
+    private const string SchemaRegistry = "localhost:8081";
 
     public readonly SchemaRegistryConfig SchemaRegistryConfig;
     public readonly AvroSerializerConfig AvroSerializerConfig;

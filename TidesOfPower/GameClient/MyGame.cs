@@ -17,9 +17,8 @@ namespace GameClient;
 
 public class MyGame : Game
 {
-    static Guid PlayerId = Guid.NewGuid();
     const string GroupId = "output-group";
-    static string InputTopic = $"{KafkaTopic.LocalState}_{PlayerId}";
+    private KafkaTopic InputTopic = KafkaTopic.LocalState;
     public static KafkaTopic OutputTopic = KafkaTopic.Input;
 
     static CancellationTokenSource _cts;
@@ -40,6 +39,7 @@ public class MyGame : Game
     public static int screenHeight; //480
     public static int screenWidth; //800
 
+    private Player Player;
     private List<Sprite> LocalState;
 
     public MyGame()
@@ -47,8 +47,6 @@ public class MyGame : Game
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-
-        LocalState = new List<Sprite>();
 
         _config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(_config);
@@ -63,10 +61,25 @@ public class MyGame : Game
         _camera = new Camera();
         base.Initialize();
 
+        LocalState = new List<Sprite>();
+        
+        var PlayerId = Guid.NewGuid();
+        var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
+        Player = new Player(PlayerId, playerPosition, avatarTexture, _camera, _producer);
+
+        var oceanPosition = new Vector2(0, 0);
+        var ocean = new Ocean(oceanPosition, oceanTexture, Player);
+
+        var islandPosition = new Vector2(screenWidth / 2, screenHeight / 2);
+        var island = new Island(islandPosition, islandTexture);
+
+        LocalState.Add(ocean);
+        LocalState.Add(island);
+
         _cts = new CancellationTokenSource();
-        await _admin.CreateTopic(InputTopic);
+        await _admin.CreateTopic($"{InputTopic}_{Player._agentId}");
         IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
-        await Task.Run(() => _consumer.Consume(InputTopic, action, _cts.Token), _cts.Token);
+        await Task.Run(() => _consumer.Consume($"{InputTopic}_{Player._agentId}", action, _cts.Token), _cts.Token);
     }
 
     protected override void LoadContent()
@@ -77,19 +90,6 @@ public class MyGame : Game
         islandTexture = Content.Load<Texture2D>("island");
         oceanTexture = Content.Load<Texture2D>("ocean");
         projectileTexture = Content.Load<Texture2D>("small-square");
-
-        var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
-        var player = new Player(PlayerId, playerPosition, avatarTexture, _camera, _producer);
-
-        var oceanPosition = new Vector2(0, 0);
-        var ocean = new Ocean(oceanPosition, oceanTexture, player);
-
-        var islandPosition = new Vector2(screenWidth / 2, screenHeight / 2);
-        var island = new Island(islandPosition, islandTexture);
-
-        LocalState.Add(ocean);
-        LocalState.Add(island);
-        LocalState.Add(player);
     }
 
     private void ProcessMessage(string key, LocalState value)
@@ -123,6 +123,12 @@ public class MyGame : Game
     {
         foreach (var avatar in value.Avatars)
         {
+            if (avatar.Id == Player._agentId)
+            {
+                Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
+                continue;
+            }
+            
             var localAvatar = LocalState.FirstOrDefault(x => x is Agent y && y._agentId == avatar.Id);
             if (localAvatar == null)
                 LocalState.Add(
@@ -148,6 +154,11 @@ public class MyGame : Game
         var deleteAvatarIds = value.Avatars.Select(x => x.Id).ToList();
         LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y._agentId));
 
+        if (deleteAvatarIds.Contains(Player._agentId))
+        {
+            Console.WriteLine("Died!");
+        }
+        
         var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
         LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y._id));
     }
@@ -162,7 +173,7 @@ public class MyGame : Game
             var sprite = LocalState[i];
             sprite.Update(gameTime);
         }
-
+        Player.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -175,7 +186,7 @@ public class MyGame : Game
             var sprite = LocalState[i];
             sprite.Draw(gameTime, _spriteBatch);
         }
-
+        Player.Draw(gameTime, _spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

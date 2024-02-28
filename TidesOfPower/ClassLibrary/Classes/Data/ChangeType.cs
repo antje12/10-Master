@@ -4,5 +4,6 @@ public enum ChangeType
 {
     MovePlayer,
     SpawnBullet,
-    MoveBullet
+    MoveBullet,
+    DamagePlayer
 }

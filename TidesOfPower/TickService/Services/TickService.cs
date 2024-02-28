@@ -11,9 +11,9 @@ namespace TickService.Services;
 //https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class TickService : BackgroundService, IConsumerService
 {
-    private KafkaTopic OutputTopic = KafkaTopic.World;
+    private KafkaTopic OutputTopic = KafkaTopic.Collision;
     
-    private readonly KafkaProducer<WorldChange> _producer;
+    private readonly KafkaProducer<CollisionCheck> _producer;
 
     private readonly MongoDbBroker _mongoBroker;
 
@@ -23,7 +23,7 @@ public class TickService : BackgroundService, IConsumerService
     {
         Console.WriteLine($"TickService created");
         var config = new KafkaConfig("");
-        _producer = new KafkaProducer<WorldChange>(config);
+        _producer = new KafkaProducer<CollisionCheck>(config);
         _mongoBroker = new MongoDbBroker();
     }
 
@@ -51,19 +51,24 @@ public class TickService : BackgroundService, IConsumerService
 
     private void SendState(Projectile projectile)
     {
-        var output = new WorldChange()
+        var output = new CollisionCheck()
         {
             EntityId = projectile.Id,
-            Change = ChangeType.MoveBullet,
-            Location = projectile.Location,
+            Entity = EntityType.Projectile,
+            FromLocation = projectile.Location,
+            ToLocation = new Coordinates()
+            {
+                X=projectile.Location.X,
+                Y=projectile.Location.Y
+            },
             Timer = projectile.Timer - 1
         };
 
         var speed = 50;
         var deltaTime = 0.05f;
         
-        output.Location.X += projectile.Direction.X * speed * deltaTime;
-        output.Location.Y += projectile.Direction.Y * speed * deltaTime;
+        output.ToLocation.X += projectile.Direction.X * speed * deltaTime;
+        output.ToLocation.Y += projectile.Direction.Y * speed * deltaTime;
 
         _producer.Produce(OutputTopic, output.EntityId.ToString(), output);
     }

@@ -63,6 +63,9 @@ public class WorldService : BackgroundService, IConsumerService
             case ChangeType.MoveBullet:
                 MoveBullet(key, value);
                 break;
+            case ChangeType.DamagePlayer:
+                DamagePlayer(key, value);
+                break;
         }
     }
 
@@ -164,6 +167,27 @@ public class WorldService : BackgroundService, IConsumerService
                 Projectiles = new List<Projectile>() {bullet}
             };
             _producer.Produce($"{OutputTopic}_{entity.Id}", entity.Id.ToString(), deltaOutput);
+        }
+    }
+
+    private void DamagePlayer(string key, WorldChange value)
+    {
+        var player = new Avatar()
+        {
+            Id = value.EntityId
+        };
+        var avatars = _mongoBroker.GetEntities(value.Location).Where(x => x is Avatar).ToList();
+        
+        _mongoBroker.Delete(player);
+        foreach (var avatar in avatars)
+        {
+            var deltaOutput = new LocalState()
+            {
+                PlayerId = avatar.Id,
+                Sync = SyncType.Delete,
+                Avatars = new List<Avatar>() {player}
+            };
+            _producer.Produce($"{OutputTopic}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
         }
     }
 }

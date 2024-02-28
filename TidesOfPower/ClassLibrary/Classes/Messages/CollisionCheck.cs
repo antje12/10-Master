@@ -6,9 +6,11 @@ namespace ClassLibrary.Classes.Messages;
 
 public class CollisionCheck : ISpecificRecord
 {
-    public Guid PlayerId { get; set; }
+    public Guid EntityId { get; set; }
+    public EntityType Entity { get; set; }
     public Coordinates FromLocation { get; set; }
     public Coordinates ToLocation { get; set; }
+    public double Timer { get; set; }
 
     public CollisionCheck()
     {
@@ -23,9 +25,18 @@ public class CollisionCheck : ISpecificRecord
         ""type"": ""record"",
         ""name"": ""CollisionCheck"",
         ""fields"": [
-            {{ ""name"": ""PlayerId"", ""type"": ""string"" }},
+            {{ ""name"": ""EntityId"", ""type"": ""string"" }},
+            {{
+                ""name"": ""Entity"", 
+                ""type"": {{
+                    ""type"": ""enum"",
+                    ""name"": ""EntityType"",
+                    ""symbols"": [""Avatar"", ""Projectile""]
+                }}
+            }},
             {{ ""name"": ""FromLocation"", ""type"": {Coordinates.StatSchema()} }},
-            {{ ""name"": ""ToLocation"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }}
+            {{ ""name"": ""ToLocation"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }},
+            {{ ""name"": ""Timer"", ""type"": ""double"" }}
         ]
     }}");
 
@@ -33,9 +44,11 @@ public class CollisionCheck : ISpecificRecord
     {
         switch (fieldPos)
         {
-            case 0: return PlayerId.ToString();
-            case 1: return FromLocation;
-            case 2: return ToLocation;
+            case 0: return EntityId.ToString();
+            case 1: return Entity;
+            case 2: return FromLocation;
+            case 3: return ToLocation;
+            case 4: return Timer;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
     }
@@ -45,13 +58,19 @@ public class CollisionCheck : ISpecificRecord
         switch (fieldPos)
         {
             case 0:
-                PlayerId = Guid.Parse((string) fieldValue);
+                EntityId = Guid.Parse((string) fieldValue);
                 break;
             case 1:
-                FromLocation = (Coordinates) fieldValue;
+                Entity = (EntityType) fieldValue;
                 break;
             case 2:
+                FromLocation = (Coordinates) fieldValue;
+                break;
+            case 3:
                 ToLocation = (Coordinates) fieldValue;
+                break;
+            case 4:
+                Timer = (double) fieldValue;
                 break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }

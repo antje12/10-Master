@@ -64,7 +64,8 @@ public class InputService : BackgroundService, IConsumerService
     {
         var output = new CollisionCheck()
         {
-            PlayerId = value.PlayerId,
+            EntityId = value.PlayerId,
+            Entity = EntityType.Avatar,
             FromLocation = value.PlayerLocation,
             ToLocation = new Coordinates()
             {

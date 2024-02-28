@@ -31,7 +31,7 @@ public class WorldChange : ISpecificRecord
                 ""type"": {{
                     ""type"": ""enum"",
                     ""name"": ""ChangeType"",
-                    ""symbols"": [""MovePlayer"", ""SpawnBullet"", ""MoveBullet""]
+                    ""symbols"": [""MovePlayer"", ""SpawnBullet"", ""MoveBullet"", ""DamagePlayer""]
                 }}
             }},
             {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema()} }},

@@ -8,9 +8,10 @@ namespace ClassLibrary.MongoDB;
 
 public class MongoDbContext
 {
-    //"mongodb://localhost:27017/"
-    //"mongodb://mongodb-1:27017/"
-    private const string _mongos = "mongodb://localhost:27017/"; // Routers
+    //client:           "mongodb://localhost:27017/"
+    //docker compose:   "mongodb://mongodb-1:27017/"
+    //kubernetes:       "mongodb://mongodb-service:27017/"
+    private const string _mongos = "mongodb://mongodb-1:27017/"; // Routers
     private readonly IMongoDatabase _database;
 
     public MongoDbContext()

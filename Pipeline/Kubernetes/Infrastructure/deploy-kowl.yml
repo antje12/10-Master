@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kowl-service
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: kowl-service
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kowl-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kowl-service
+  template:
+    metadata:
+      labels:
+        app: kowl-service
+    spec:
+      containers:
+        - name: kowl-service
+          image: quay.io/cloudhut/kowl:master
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KAFKA_BROKERS
+              value: "kafka-service:9092"
+            - name: KAFKA_SCHEMAREGISTRY_ENABLED
+              value: "true"
+            - name: KAFKA_SCHEMAREGISTRY_URLS
+              value: "http://schema-registry-service:8081"

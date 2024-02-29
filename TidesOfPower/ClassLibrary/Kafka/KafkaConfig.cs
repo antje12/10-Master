@@ -6,12 +6,14 @@ namespace ClassLibrary.Kafka;
 
 public class KafkaConfig
 {
-    //"localhost:19092"
-    //"kafka-1:9092"
-    private const string KafkaServers = "localhost:19092";
-    //"localhost:8081"
-    //"schema-registry:8081"
-    private const string SchemaRegistry = "localhost:8081";
+    //client:           "localhost:19092"
+    //docker compose:   "kafka-1:9092"
+    //kubernetes:       "kafka-service:9092"
+    private string KafkaServers = "kafka-1:9092";
+    //client:           "localhost:8081"
+    //docker compose:   "schema-registry:8081"
+    //kubernetes:       "schema-registry-service:8081"
+    private string SchemaRegistry = "schema-registry:8081";
 
     public readonly SchemaRegistryConfig SchemaRegistryConfig;
     public readonly AvroSerializerConfig AvroSerializerConfig;
@@ -19,8 +21,13 @@ public class KafkaConfig
     public readonly ProducerConfig ProducerConfig;
     public readonly ConsumerConfig ConsumerConfig;
 
-    public KafkaConfig(string groupId)
+    public KafkaConfig(string groupId, bool client = false)
     {
+        if (client)
+        {
+            KafkaServers = "localhost:19092";
+            SchemaRegistry = "localhost:8081";
+        }
         SchemaRegistryConfig = new()
         {
             Url = SchemaRegistry

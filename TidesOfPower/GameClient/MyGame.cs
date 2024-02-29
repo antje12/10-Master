@@ -48,7 +48,7 @@ public class MyGame : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        _config = new KafkaConfig(GroupId);
+        _config = new KafkaConfig(GroupId, true);
         _admin = new KafkaAdministrator(_config);
         _producer = new KafkaProducer<Input>(_config);
         _consumer = new KafkaConsumer<LocalState>(_config);

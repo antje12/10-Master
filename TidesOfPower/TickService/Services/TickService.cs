@@ -64,7 +64,7 @@ public class TickService : BackgroundService, IConsumerService
             Timer = projectile.Timer - 1
         };
 
-        var speed = 50;
+        var speed = 100;
         var deltaTime = 0.05f;
         
         output.ToLocation.X += projectile.Direction.X * speed * deltaTime;

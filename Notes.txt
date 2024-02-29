@@ -1,3 +1,5 @@
+kubectl exec -it <pod-name> -- /bin/bash
+
 mongosh
 use TidesOfPower
 db.Entities.find()

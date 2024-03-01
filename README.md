@@ -23,10 +23,15 @@ Install Docker Desktop + Kind + Helm
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 helm install my-mongodb-sharded bitnami/mongodb-sharded -f mongodb-values.yml
+...
+```
 
-
-
-
+```
+kubectl port-forward services/my-mongodb-sharded 27017:27017
+mongosh -u root -p password
+sh.status()
+sh.enableSharding("TidesOfPower")
+sh.shardCollection("TidesOfPower.Entities", { location.x : 1, location.y : 1} )
 ```
 
 
@@ -56,9 +61,6 @@ kubectl apply -f Pipeline/Kubernetes/Services/deploy-tick-service.yml
 kubectl port-forward services/kowl-service 8080:8080
 kubectl port-forward services/kafka-service 19092:19092
 kubectl port-forward services/schema-registry-service 8081:8081
-
-kubectl port-forward services/my-mongodb-sharded 27017:27017
-mongosh -u root -p password
 ```
 
 run the game client

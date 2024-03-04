@@ -1,10 +1,10 @@
 kubectl exec -it <pod-name> -- /bin/bash
 
-mongosh
+mongosh -u root -p password
 
 sh.status()
 sh.enableSharding("TidesOfPower")
-sh.shardCollection("TidesOfPower.Entities", { location.x : 1, location.y : 1} )
+sh.shardCollection("TidesOfPower.Entities", { "location.x" : 1, "location.y" : 1} )
 
 use TidesOfPower
 db.Entities.getShardDistribution()

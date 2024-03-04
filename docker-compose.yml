@@ -88,6 +88,7 @@ services:
       - 81:80
     restart: unless-stopped
     depends_on:
+      - schema-registry
       - mongodb-1
     networks:
       sharednetwork:
@@ -101,6 +102,7 @@ services:
       - 82:80
     restart: unless-stopped
     depends_on:
+      - schema-registry
       - mongodb-1
     networks:
       sharednetwork:
@@ -114,6 +116,7 @@ services:
       - 83:80
     restart: unless-stopped
     depends_on:
+      - schema-registry
       - mongodb-1
     networks:
       sharednetwork:
@@ -127,6 +130,7 @@ services:
       - 84:80
     restart: unless-stopped
     depends_on:
+      - schema-registry
       - mongodb-1
     networks:
       sharednetwork:

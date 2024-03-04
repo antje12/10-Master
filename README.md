@@ -22,7 +22,7 @@ Install Docker Desktop + Kind + Helm
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install my-mongodb-sharded bitnami/mongodb-sharded -f mongodb-values.yml
+helm install mongodb-sharded bitnami/mongodb-sharded -f Pipeline/Kubernetes/Helm/mongodb-values.yml
 ...
 ```
 
@@ -31,7 +31,7 @@ kubectl port-forward services/my-mongodb-sharded 27017:27017
 mongosh -u root -p password
 sh.status()
 sh.enableSharding("TidesOfPower")
-sh.shardCollection("TidesOfPower.Entities", { location.x : 1, location.y : 1} )
+sh.shardCollection("TidesOfPower.Entities", { "location.x" : 1, "location.y" : 1} )
 ```
 
 

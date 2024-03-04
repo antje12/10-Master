@@ -11,10 +11,10 @@ mongos:
   replicaCount: 1 #2
 
 # MongoDB Shards parameters
-shards: 2 #3
+shards: 1 #3
 shardsvr:
   dataNode:
-    replicaCount: 2 #3
+    replicaCount: 1 #3
   persistence:
     size: 1Gi
 

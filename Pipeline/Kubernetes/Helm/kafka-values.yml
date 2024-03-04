@@ -1,0 +1,30 @@
+# Zookeeper parameters
+#zookeeper:
+#  replicaCount: 3
+#  persistence:
+#    size: 1Gi
+
+# Kafka Security parameters
+listeners:
+  client:
+    protocol: PLAINTEXT
+  controller:
+    protocol: PLAINTEXT
+  interbroker:
+    protocol: PLAINTEXT
+  external:
+    protocol: PLAINTEXT
+
+# Kafka Controller parameters
+controller:
+  replicaCount: 1 #3
+  persistence:
+    size: 1Gi
+
+# Kafka Broker parameters
+#broker:
+#  replicaCount: 3
+#  persistence:
+#    size: 1Gi
+#
+#replicaCount: 3

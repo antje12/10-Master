@@ -2,28 +2,24 @@
 Master Thesis Project
 
 # Local Docker Run With Local Images
+Install Docker Desktop
 ```cd /```
-
 ```docker compose build --no-cache```
-
 ```docker compose up```
 
 run the game client
 
 # Local Kubernetes Run With Local Images
 Install Docker Desktop + Kind + Helm
-
 ```cd /```
-
 ```docker compose build --no-cache```
-
 ```kind create cluster```
 
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 helm install mongodb-sharded bitnami/mongodb-sharded -f Pipeline/Kubernetes/Helm/mongodb-values.yml
-...
+helm install kafka bitnami/kafka -f Pipeline\Kubernetes\Helm\kafka-values.yml 
 ```
 
 ```

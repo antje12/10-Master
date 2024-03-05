@@ -19,6 +19,7 @@ Install Docker Desktop + Kind + Helm
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 helm install mongodb-sharded bitnami/mongodb-sharded -f Pipeline/Kubernetes/Helm/mongodb-values.yml
+
 helm install kafka bitnami/kafka -f Pipeline\Kubernetes\Helm\kafka-values.yml
 helm install schema-registry bitnami/schema-registry -f Pipeline\Kubernetes\Helm\schema-registry-values.yml
 ```
@@ -32,11 +33,11 @@ sh.shardCollection("TidesOfPower.Entities", { "location.x" : 1, "location.y" : 1
 ```
 
 ~~kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-mongodb.yml~~
-~~kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-zookeeper.yml~~
-~~kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-kafka.yml~~
-~~kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-schema-registry.yml~~
 
 ```
+kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-zookeeper.yml
+kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-kafka.yml
+kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-schema-registry.yml
 kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-kowl.yml
 ```
 
@@ -56,8 +57,8 @@ kubectl apply -f Pipeline/Kubernetes/Services/deploy-tick-service.yml
 
 ```
 kubectl port-forward services/kowl-service 8080:8080
-kubectl port-forward services/kafka-service 19092:19092
-kubectl port-forward services/schema-registry-service 8081:8081
+kubectl port-forward services/kafka 9092:9092
+kubectl port-forward services/schema-registry 8081:8081
 ```
 
 run the game client

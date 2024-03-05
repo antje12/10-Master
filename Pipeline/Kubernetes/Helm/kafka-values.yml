@@ -4,8 +4,25 @@
 #  persistence:
 #    size: 1Gi
 
+# Kafka External parameters
+externalAccess:
+  enabled: true
+  autoDiscovery:
+    enabled: true
+  controller:
+    service:
+      type: LoadBalancer
+  broker:
+    service:
+      type: LoadBalancer
+serviceAccount:
+  create: true
+rbac:
+  create: true
+
 # Kafka Security parameters
 listeners:
+  advertisedListeners: 127.0.0.1:9092
   client:
     protocol: PLAINTEXT
   controller:
@@ -20,8 +37,11 @@ controller:
   replicaCount: 3 #3
   persistence:
     size: 1Gi
+  automountServiceAccountToken: true
 
 # Kafka Broker parameters
+broker:
+  automountServiceAccountToken: true
 #broker:
 #  replicaCount: 3
 #  persistence:

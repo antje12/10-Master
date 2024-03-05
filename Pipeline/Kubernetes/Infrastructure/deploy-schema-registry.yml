@@ -33,7 +33,7 @@ spec:
             - name: SCHEMA_REGISTRY_HOST_NAME
               value: "schema-registry-service"
             - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
-              value: "kafka:9092"
+              value: "kafka-service:9092"
             - name: SCHEMA_REGISTRY_LISTENERS
               value: "http://0.0.0.0:8081"
             - name: SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN

@@ -9,11 +9,11 @@ public class KafkaConfig
     //client:           "localhost:19092"
     //docker compose:   "kafka-1:9092"
     //kubernetes:       "kafka-service:9092"
-    private string KafkaServers = "kafka:9092";
+    private string KafkaServers = "kafka-service:9092";
     //client:           "localhost:8081"
     //docker compose:   "schema-registry:8081"
     //kubernetes:       "schema-registry-service:8081"
-    private string SchemaRegistry = "schema-registry:8081";
+    private string SchemaRegistry = "schema-registry-service:8081";
 
     public readonly SchemaRegistryConfig SchemaRegistryConfig;
     public readonly AvroSerializerConfig AvroSerializerConfig;
@@ -25,7 +25,7 @@ public class KafkaConfig
     {
         if (client)
         {
-            KafkaServers = "localhost:19092";
+            KafkaServers = "localhost:9092";
             SchemaRegistry = "localhost:8081";
         }
         SchemaRegistryConfig = new()

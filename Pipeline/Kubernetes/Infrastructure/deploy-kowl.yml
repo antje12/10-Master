@@ -31,8 +31,8 @@ spec:
             - containerPort: 8080
           env:
             - name: KAFKA_BROKERS
-              value: "kafka:9092"
+              value: "kafka-service:9092"
             - name: KAFKA_SCHEMAREGISTRY_ENABLED
               value: "true"
             - name: KAFKA_SCHEMAREGISTRY_URLS
-              value: "http://schema-registry:8081"
+              value: "http://schema-registry-service:8081"

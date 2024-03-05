@@ -25,7 +25,7 @@ public class KafkaConfig
     {
         if (client)
         {
-            KafkaServers = "localhost:9092";
+            KafkaServers = "localhost:19092";
             SchemaRegistry = "localhost:8081";
         }
         SchemaRegistryConfig = new()

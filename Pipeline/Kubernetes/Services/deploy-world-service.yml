@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: world-service
-          image: docker.io/library/10-master-world-service:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/antje12/10-master/world-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080

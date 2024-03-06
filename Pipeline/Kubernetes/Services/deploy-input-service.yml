@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: input-service
-          image: docker.io/library/10-master-input-service:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/antje12/10-master/input-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080

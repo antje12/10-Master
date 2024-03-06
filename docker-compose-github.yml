@@ -81,9 +81,7 @@ services:
   
   input-service:
     container_name: input-service
-    build:
-      context: ./TidesOfPower
-      dockerfile: InputService/Dockerfile
+    image: ghcr.io/antje12/10-master/input-service:latest
     ports:
       - 81:80
     restart: unless-stopped
@@ -95,9 +93,7 @@ services:
   
   collision-service:
     container_name: collision-service
-    build:
-      context: ./TidesOfPower
-      dockerfile: CollisionService/Dockerfile
+    image: ghcr.io/antje12/10-master/collision-service:latest
     ports:
       - 82:80
     restart: unless-stopped
@@ -109,9 +105,7 @@ services:
   
   world-service:
     container_name: world-service
-    build:
-      context: ./TidesOfPower
-      dockerfile: WorldService/Dockerfile
+    image: ghcr.io/antje12/10-master/world-service:latest
     ports:
       - 83:80
     restart: unless-stopped
@@ -123,9 +117,7 @@ services:
   
   tick-service:
     container_name: tick-service
-    build:
-      context: ./TidesOfPower
-      dockerfile: TickService/Dockerfile
+    image: ghcr.io/antje12/10-master/tick-service:latest
     ports:
       - 84:80
     restart: unless-stopped

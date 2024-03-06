@@ -6,7 +6,11 @@ Install Docker Desktop
 ```cd /```
 ```docker compose build --no-cache```
 ```docker compose up```
+run the game client
 
+# Local Docker Run With External Images
+```cd /```
+```docker-compose -f docker-compose-github.yml up```
 run the game client
 
 # Local Kubernetes Run With Local Images

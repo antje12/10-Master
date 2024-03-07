@@ -1,8 +1,8 @@
 ﻿using ClassLibrary.Classes.Data;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.Messages.Avro;
 using InputService.Interfaces;
+using ClassLibrary.Messages.Avro;
 
 namespace InputService.Services;
 

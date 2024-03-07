@@ -2,9 +2,9 @@
 using ClassLibrary.Classes.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.Messages.Avro;
 using ClassLibrary.MongoDB;
 using CollisionService.Interfaces;
+using ClassLibrary.Messages.Avro;
 
 namespace CollisionService.Services;
 

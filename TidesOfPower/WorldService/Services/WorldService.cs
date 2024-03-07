@@ -2,9 +2,9 @@
 using ClassLibrary.Classes.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.Messages.Avro;
 using ClassLibrary.MongoDB;
 using WorldService.Interfaces;
+using ClassLibrary.Messages.Avro;
 
 namespace WorldService.Services;
 

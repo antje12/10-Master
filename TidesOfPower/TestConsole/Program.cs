@@ -7,14 +7,13 @@ using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Avro;
 using ClassLibrary.MongoDB;
-using Google.Protobuf.Collections;
 
 Console.WriteLine("Hello, World!");
 
 //TestMongoDB();
 //await TestHTTP();
 await TestKafkaAvro();
-await TestKafkaProto();
+//await TestKafkaProto();
 
 void TestMongoDB()
 {
@@ -104,7 +103,8 @@ async Task TestKafkaAvro()
     var consumer = new KafkaConsumer<LocalState>(config);
 
     var count = 0;
-    var testCount = 10;
+    var testCount = 1000;
+    var results = new List<long>(); 
 
     var message = new Input()
     {
@@ -121,10 +121,16 @@ async Task TestKafkaAvro()
     {
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        Console.WriteLine($"Kafka result in {elapsedTime} ms");
+        //Console.WriteLine($"Kafka result in {elapsedTime} ms");
 
+        if (count > 0) 
+        { 
+            results.Add(elapsedTime); 
+        }
+        
         if (count >= testCount)
         {
+            Console.WriteLine($"Kafka results {results.Count}, avg {results.Average()} ms");
             cts.Cancel();
             return;
         }
@@ -160,7 +166,8 @@ async Task TestKafkaProto()
     var consumer = new ProtoKafkaConsumer<ClassLibrary.Messages.Protobuf.LocalState>(config);
 
     var count = 0;
-    var testCount = 10;
+    var testCount = 1000;
+    var results = new List<long>(); 
 
     var message = new ClassLibrary.Messages.Protobuf.Input()
     {
@@ -177,10 +184,16 @@ async Task TestKafkaProto()
     {
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        Console.WriteLine($"Kafka result in {elapsedTime} ms");
+        //Console.WriteLine($"Kafka result in {elapsedTime} ms");
 
+        if (count > 0) 
+        { 
+            results.Add(elapsedTime); 
+        }
+        
         if (count >= testCount)
         {
+            Console.WriteLine($"Kafka results {results.Count}, avg {results.Average()} ms");
             cts.Cancel();
             return;
         }

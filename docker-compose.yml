@@ -121,19 +121,19 @@ services:
     networks:
       sharednetwork:
   
-  tick-service:
-    container_name: tick-service
-    build:
-      context: ./TidesOfPower
-      dockerfile: TickService/Dockerfile
-    ports:
-      - 84:80
-    restart: unless-stopped
-    depends_on:
-      - schema-registry-service
-      - mongodb-service
-    networks:
-      sharednetwork:
+  #tick-service:
+  #  container_name: tick-service
+  #  build:
+  #    context: ./TidesOfPower
+  #    dockerfile: TickService/Dockerfile
+  #  ports:
+  #    - 84:80
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - schema-registry-service
+  #    - mongodb-service
+  #  networks:
+  #    sharednetwork:
 
 volumes:
   mongodb-service.vol:

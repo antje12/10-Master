@@ -13,11 +13,15 @@ public class MongoDbContext
     //client:           "mongodb://localhost:27017/"
     //kubernetes:       "mongodb://mongodb-service:27017/"
     //kubernetes(shard):"mongodb://{_username}:{_password}@mongodb-sharded:27017/"
-    private const string _mongos = "mongodb://localhost:27017/"; // Routers
+    private string _mongos = "mongodb://mongodb-service:27017/"; // Routers
     private readonly IMongoDatabase _database;
 
-    public MongoDbContext()
+    public MongoDbContext(bool isClient)
     {
+        if (isClient)
+        {
+            _mongos = "mongodb://localhost:27017/";
+        }
         MongoClient client = new(_mongos);
         _database = client.GetDatabase("TidesOfPower");
         BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));

@@ -1,0 +1,10 @@
+Kafka results 1000, avg 5,225 ms, min 4 ms, max 17 ms
+Kafka results 1000, avg 5,208 ms, min 4 ms, max 26 ms
+Kafka results 1000, avg 5,343 ms, min 4 ms, max 20 ms
+Kafka results 1000, avg 5,219 ms, min 4 ms, max 17 ms
+Kafka results 1000, avg 5,373 ms, min 4 ms, max 22 ms
+Kafka results 1000, avg 5,364 ms, min 4 ms, max 21 ms
+Kafka results 1000, avg 5,455 ms, min 4 ms, max 23 ms
+Kafka results 1000, avg 5,465 ms, min 4 ms, max 20 ms
+Kafka results 1000, avg 5,384 ms, min 4 ms, max 26 ms
+Kafka results 1000, avg 5,449 ms, min 4 ms, max 25 ms

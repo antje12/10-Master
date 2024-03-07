@@ -30,7 +30,7 @@ public class KafkaConsumer<T> : IConsumer<T> where T : ISpecificRecord
     public Task Consume(string topic, IConsumer<T>.ProcessMessage action, CancellationToken ct)
     {
         _consumer.Subscribe(topic);
-        Console.WriteLine("Consumption started");
+        //Console.WriteLine("Consumption started");
         while (!ct.IsCancellationRequested)
         {
             var consumeResult = _consumer.Consume(ct);

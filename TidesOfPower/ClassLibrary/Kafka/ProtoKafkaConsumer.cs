@@ -30,7 +30,7 @@ public class ProtoKafkaConsumer<T> : IProtoConsumer<T> where T : class, IMessage
     public Task Consume(string topic, IProtoConsumer<T>.ProcessMessage action, CancellationToken ct)
     {
         _consumer.Subscribe(topic);
-        Console.WriteLine("Consumption started");
+        //Console.WriteLine("Consumption started");
         while (!ct.IsCancellationRequested)
         {
             var consumeResult = _consumer.Consume(ct);

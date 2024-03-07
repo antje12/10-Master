@@ -12,8 +12,8 @@ Console.WriteLine("Hello, World!");
 
 //TestMongoDB();
 //await TestHTTP();
-await TestKafkaAvro();
-//await TestKafkaProto();
+//await TestKafkaAvro();
+await TestKafkaProto();
 
 void TestMongoDB()
 {

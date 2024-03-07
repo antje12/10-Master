@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using ClassLibrary.Classes.Data;
-using ClassLibrary.Classes.Messages;
 using ClassLibrary.Kafka;
+using ClassLibrary.Messages.Avro;
 using GameClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

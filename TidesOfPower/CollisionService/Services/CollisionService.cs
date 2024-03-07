@@ -1,10 +1,10 @@
 ﻿using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
-using ClassLibrary.Classes.Messages;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using CollisionService.Interfaces;
+using ClassLibrary.Messages.Avro;
 
 namespace CollisionService.Services;
 

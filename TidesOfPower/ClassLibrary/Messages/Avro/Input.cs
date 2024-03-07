@@ -2,7 +2,7 @@
 using Avro.Specific;
 using ClassLibrary.Classes.Data;
 
-namespace ClassLibrary.Classes.Messages;
+namespace ClassLibrary.Messages.Avro;
 
 public class Input : ISpecificRecord
 {

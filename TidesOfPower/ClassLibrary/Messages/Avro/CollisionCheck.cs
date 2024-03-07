@@ -2,20 +2,20 @@
 using Avro.Specific;
 using ClassLibrary.Classes.Data;
 
-namespace ClassLibrary.Classes.Messages;
+namespace ClassLibrary.Messages.Avro;
 
-public class WorldChange : ISpecificRecord
+public class CollisionCheck : ISpecificRecord
 {
     public Guid EntityId { get; set; }
-    public ChangeType Change { get; set; }
-    public Coordinates Location { get; set; }
-    public Coordinates Direction { get; set; }
+    public EntityType Entity { get; set; }
+    public Coordinates FromLocation { get; set; }
+    public Coordinates ToLocation { get; set; }
     public double Timer { get; set; }
 
-    public WorldChange()
+    public CollisionCheck()
     {
-        Location = new Coordinates();
-        Direction = new Coordinates();
+        FromLocation = new Coordinates();
+        ToLocation = new Coordinates();
     }
 
     public Schema Schema => StatSchema;
@@ -23,19 +23,19 @@ public class WorldChange : ISpecificRecord
     {{
         ""namespace"": ""ClassLibrary.Classes.Messages"",
         ""type"": ""record"",
-        ""name"": ""WorldChange"",
+        ""name"": ""CollisionCheck"",
         ""fields"": [
             {{ ""name"": ""EntityId"", ""type"": ""string"" }},
             {{
-                ""name"": ""Change"", 
+                ""name"": ""Entity"", 
                 ""type"": {{
                     ""type"": ""enum"",
-                    ""name"": ""ChangeType"",
-                    ""symbols"": [""MovePlayer"", ""SpawnBullet"", ""MoveBullet"", ""DamagePlayer""]
+                    ""name"": ""EntityType"",
+                    ""symbols"": [""Avatar"", ""Projectile""]
                 }}
             }},
-            {{ ""name"": ""Location"", ""type"": {Coordinates.StatSchema()} }},
-            {{ ""name"": ""Direction"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }},
+            {{ ""name"": ""FromLocation"", ""type"": {Coordinates.StatSchema()} }},
+            {{ ""name"": ""ToLocation"", ""type"": ""ClassLibrary.Classes.Data.Coordinates"" }},
             {{ ""name"": ""Timer"", ""type"": ""double"" }}
         ]
     }}");
@@ -45,9 +45,9 @@ public class WorldChange : ISpecificRecord
         switch (fieldPos)
         {
             case 0: return EntityId.ToString();
-            case 1: return Change;
-            case 2: return Location;
-            case 3: return Direction;
+            case 1: return Entity;
+            case 2: return FromLocation;
+            case 3: return ToLocation;
             case 4: return Timer;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
         }
@@ -61,13 +61,13 @@ public class WorldChange : ISpecificRecord
                 EntityId = Guid.Parse((string) fieldValue);
                 break;
             case 1:
-                Change = (ChangeType) fieldValue;
+                Entity = (EntityType) fieldValue;
                 break;
             case 2:
-                Location = (Coordinates) fieldValue;
+                FromLocation = (Coordinates) fieldValue;
                 break;
             case 3:
-                Direction = (Coordinates) fieldValue;
+                ToLocation = (Coordinates) fieldValue;
                 break;
             case 4:
                 Timer = (double) fieldValue;

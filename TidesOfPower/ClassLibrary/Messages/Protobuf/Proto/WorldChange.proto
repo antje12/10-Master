@@ -1,0 +1,22 @@
+﻿syntax = "proto3";
+
+package ClassLibrary.Messages.Protobuf;
+
+import "Common.proto";
+
+option csharp_namespace = "ClassLibrary.Messages.Protobuf";
+
+message WorldChange {
+  string EntityId = 1; // UUIDs are represented as strings in Protobuf
+  ChangeType Change = 2;
+  ClassLibrary.Messages.Protobuf.Coordinates Location = 3;
+  ClassLibrary.Messages.Protobuf.Coordinates Direction = 4;
+  double Timer = 5;
+}
+
+enum ChangeType {
+  MovePlayer = 0;
+  SpawnBullet = 1;
+  MoveBullet = 2;
+  DamagePlayer = 3;
+}

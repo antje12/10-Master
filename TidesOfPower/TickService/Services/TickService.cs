@@ -1,9 +1,9 @@
 ﻿using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
-using ClassLibrary.Classes.Messages;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using TickService.Interfaces;
+using ClassLibrary.Messages.Avro;
 
 namespace TickService.Services;
 

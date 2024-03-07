@@ -3,19 +3,22 @@
 using System.Diagnostics;
 using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
-using ClassLibrary.Classes.Messages;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
+using ClassLibrary.Messages.Avro;
 using ClassLibrary.MongoDB;
+using Google.Protobuf.Collections;
 
 Console.WriteLine("Hello, World!");
 
-TestMongoDB();
-await TestHTTP();
-await TestKafka();
+//TestMongoDB();
+//await TestHTTP();
+await TestKafkaAvro();
+await TestKafkaProto();
 
 void TestMongoDB()
 {
+    Console.WriteLine("TestMongoDB");
     var mongoBroker = new MongoDbBroker();
 
     var profile = new Profile()
@@ -58,6 +61,7 @@ void TestMongoDB()
 
 async Task TestHTTP()
 {
+    Console.WriteLine("TestHTTP");
     string uri = "http://localhost:5051/InputService/Version";
 
     HttpClientHandler clientHandler = new HttpClientHandler();
@@ -83,16 +87,17 @@ async Task TestHTTP()
     }
 }
 
-async Task TestKafka()
+async Task TestKafkaAvro()
 {
+    Console.WriteLine("TestKafka");
     var testId = Guid.NewGuid();
     var testTopic = $"{KafkaTopic.LocalState}_{testId}";
 
     var cts = new CancellationTokenSource();
-    var config = new KafkaConfig("test");
+    var config = new KafkaConfig("test", true);
     var admin = new KafkaAdministrator(config);
 
-    admin.CreateTopic(KafkaTopic.Input);
+    await admin.CreateTopic(KafkaTopic.Input);
     await admin.CreateTopic(testTopic);
 
     var producer = new KafkaProducer<Input>(config);
@@ -100,6 +105,14 @@ async Task TestKafka()
 
     var count = 0;
     var testCount = 10;
+
+    var message = new Input()
+    {
+        PlayerId = testId,
+        PlayerLocation = new Coordinates() {X = 0, Y = 0},
+        KeyInput = new List<GameKey>() {GameKey.Right},
+        GameTime = 0.5
+    };
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
@@ -111,36 +124,73 @@ async Task TestKafka()
         Console.WriteLine($"Kafka result in {elapsedTime} ms");
 
         if (count >= testCount)
-            return;
-
-        count +=1;
-        stopwatch.Restart();
-        producer.Produce(KafkaTopic.Input, "a", new Input()
         {
-            PlayerId = testId,
-            PlayerLocation = new Coordinates()
-            {
-                X = 0,
-                Y = 0
-            },
-            KeyInput = new List<GameKey>() {GameKey.Right},
-            GameTime = 0.5
-        });
+            cts.Cancel();
+            return;
+        }
+
+        count += 1;
+        stopwatch.Restart();
+        producer.Produce(KafkaTopic.Input, "a", message);
     }
 
     stopwatch.Restart();
-    producer.Produce(KafkaTopic.Input, "tester", new Input()
-    {
-        PlayerId = testId,
-        PlayerLocation = new Coordinates()
-        {
-            X = 0,
-            Y = 0
-        },
-        KeyInput = new List<GameKey>() {GameKey.Right},
-        GameTime = 0.5
-    });
+    producer.Produce(KafkaTopic.Input, "tester", message);
 
     IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
+    await Task.Run(() => consumer.Consume(testTopic, action, cts.Token), cts.Token);
+}
+
+async Task TestKafkaProto()
+{
+    Console.WriteLine("TestKafka");
+    var testId = Guid.NewGuid();
+    var testTopic = $"{KafkaTopic.LocalState}_{testId}";
+
+    var cts = new CancellationTokenSource();
+    var config = new KafkaConfig("test", true);
+    var admin = new KafkaAdministrator(config);
+
+    await admin.CreateTopic(KafkaTopic.Input);
+    await admin.CreateTopic(testTopic);
+
+    var producer = new ProtoKafkaProducer<ClassLibrary.Messages.Protobuf.Input>(config);
+    var consumer = new ProtoKafkaConsumer<ClassLibrary.Messages.Protobuf.LocalState>(config);
+
+    var count = 0;
+    var testCount = 10;
+
+    var message = new ClassLibrary.Messages.Protobuf.Input()
+    {
+        PlayerId = testId.ToString(),
+        PlayerLocation = new ClassLibrary.Messages.Protobuf.Coordinates() {X = 0, Y = 0},
+        GameTime = 0.5
+    };
+    message.KeyInput.Add(ClassLibrary.Messages.Protobuf.GameKey.Right);
+
+    var stopwatch = new Stopwatch();
+    stopwatch.Start();
+
+    void ProcessMessage(string key, ClassLibrary.Messages.Protobuf.LocalState value)
+    {
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        Console.WriteLine($"Kafka result in {elapsedTime} ms");
+
+        if (count >= testCount)
+        {
+            cts.Cancel();
+            return;
+        }
+
+        count += 1;
+        stopwatch.Restart();
+        producer.Produce(KafkaTopic.Input, "test", message);
+    }
+
+    stopwatch.Restart();
+    producer.Produce(KafkaTopic.Input, "init", message);
+
+    IProtoConsumer<ClassLibrary.Messages.Protobuf.LocalState>.ProcessMessage action = ProcessMessage;
     await Task.Run(() => consumer.Consume(testTopic, action, cts.Token), cts.Token);
 }

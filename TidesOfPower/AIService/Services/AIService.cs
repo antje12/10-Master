@@ -1,7 +1,7 @@
 ﻿using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using AIService.Interfaces;
-using ClassLibrary.Classes.Messages;
+using ClassLibrary.Messages.Avro;
 
 namespace AIService.Services;
 

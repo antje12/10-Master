@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.Classes.Data;
-using ClassLibrary.Classes.Messages;
 using ClassLibrary.Kafka;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ClassLibrary.Interfaces;
+using ClassLibrary.Messages.Avro;
 using GameClient.Core;
 using GameClient.Entities;
 

@@ -158,4 +158,14 @@ public class MongoDbBroker
             Console.WriteLine("Avatar upsert failed!");
         }
     }
+
+    public void CleanDB()
+    {
+        var filter = Builders<Entity>.Filter.Empty;
+        var result = _mongoDbContext.Entities.DeleteManyAsync(filter).GetAwaiter().GetResult();
+        if (!result.IsAcknowledged || result.DeletedCount == 0)
+        {
+            Console.WriteLine("Entity delete failed!");
+        }
+    }
 }

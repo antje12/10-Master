@@ -1,4 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 
 using System.Diagnostics;
 using ClassLibrary.Classes.Data;
@@ -9,17 +9,21 @@ using ClassLibrary.Messages.Avro;
 using ClassLibrary.MongoDB;
 
 Console.WriteLine("Hello, World!");
+var mongoBroker = new MongoDbBroker();
 
 //TestMongoDB();
 //await TestHTTP();
-//await TestKafkaAvro();
-await TestKafkaProto();
+for (int i = 0; i < 10; i++)
+{
+    //await TestKafkaAvro();
+}
+for (int i = 0; i < 10; i++)
+{
+    await TestKafkaProto();
+}
 
 void TestMongoDB()
 {
-    Console.WriteLine("TestMongoDB");
-    var mongoBroker = new MongoDbBroker();
-
     var profile = new Profile()
     {
         Id = Guid.NewGuid(),
@@ -55,12 +59,11 @@ void TestMongoDB()
     Console.WriteLine($"Read called in {elapsed_time} ms");
 
     var res = profile.Id == test.Id && profile.Email == test.Email && profile.Password == test.Password;
-    Console.WriteLine($"Test result {res}");
+    Console.WriteLine($"Mongo test result {res}");
 }
 
 async Task TestHTTP()
 {
-    Console.WriteLine("TestHTTP");
     string uri = "http://localhost:5051/InputService/Version";
 
     HttpClientHandler clientHandler = new HttpClientHandler();
@@ -88,7 +91,7 @@ async Task TestHTTP()
 
 async Task TestKafkaAvro()
 {
-    Console.WriteLine("TestKafka");
+    mongoBroker.CleanDB();
     var testId = Guid.NewGuid();
     var testTopic = $"{KafkaTopic.LocalState}_{testId}";
 
@@ -104,7 +107,7 @@ async Task TestKafkaAvro()
 
     var count = 0;
     var testCount = 1000;
-    var results = new List<long>(); 
+    var results = new List<long>();
 
     var message = new Input()
     {
@@ -123,20 +126,21 @@ async Task TestKafkaAvro()
         var elapsedTime = stopwatch.ElapsedMilliseconds;
         //Console.WriteLine($"Kafka result in {elapsedTime} ms");
 
-        if (count > 0) 
-        { 
-            results.Add(elapsedTime); 
+        if (count > 0)
+        {
+            results.Add(elapsedTime);
         }
-        
+
         if (count >= testCount)
         {
-            Console.WriteLine($"Kafka results {results.Count}, avg {results.Average()} ms");
+            Console.WriteLine(
+                $"Kafka results {results.Count}, avg {results.Average()} ms, min {results.Min()} ms, max {results.Max()} ms");
             cts.Cancel();
             return;
         }
 
         message.PlayerLocation = value.Avatars.First().Location;
-        
+
         count += 1;
         stopwatch.Restart();
         producer.Produce(KafkaTopic.Input, "a", message);
@@ -151,7 +155,7 @@ async Task TestKafkaAvro()
 
 async Task TestKafkaProto()
 {
-    Console.WriteLine("TestKafka");
+    mongoBroker.CleanDB();
     var testId = Guid.NewGuid();
     var testTopic = $"{KafkaTopic.LocalState}_{testId}";
 
@@ -167,7 +171,7 @@ async Task TestKafkaProto()
 
     var count = 0;
     var testCount = 1000;
-    var results = new List<long>(); 
+    var results = new List<long>();
 
     var message = new ClassLibrary.Messages.Protobuf.Input()
     {
@@ -186,20 +190,21 @@ async Task TestKafkaProto()
         var elapsedTime = stopwatch.ElapsedMilliseconds;
         //Console.WriteLine($"Kafka result in {elapsedTime} ms");
 
-        if (count > 0) 
-        { 
-            results.Add(elapsedTime); 
+        if (count > 0)
+        {
+            results.Add(elapsedTime);
         }
-        
+
         if (count >= testCount)
         {
-            Console.WriteLine($"Kafka results {results.Count}, avg {results.Average()} ms");
+            Console.WriteLine(
+                $"Kafka results {results.Count}, avg {results.Average()} ms, min {results.Min()} ms, max {results.Max()} ms");
             cts.Cancel();
             return;
         }
 
         message.PlayerLocation = value.Avatars.First().Location;
-        
+
         count += 1;
         stopwatch.Restart();
         producer.Produce(KafkaTopic.Input, "test", message);

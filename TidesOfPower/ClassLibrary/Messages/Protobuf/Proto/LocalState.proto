@@ -1,0 +1,36 @@
+﻿syntax = "proto3";
+
+package ClassLibrary.Messages.Protobuf;
+
+import "Common.proto";
+
+option csharp_namespace = "ClassLibrary.Messages.Protobuf";
+
+message LocalState {
+  string PlayerId = 1; // UUIDs are represented as strings in proto
+  SyncType Sync = 2;
+  repeated Avatar Avatars = 3;
+  repeated Projectile Projectiles = 4;
+}
+
+enum SyncType {
+  Full = 0;
+  Delta = 1;
+  Delete = 2;
+}
+
+message Avatar {
+  string Id = 1;
+  ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
+  string Name = 3;
+  int32 WalkingSpeed = 4;
+  int32 LifePool = 5;
+  int32 Inventory = 6;
+}
+
+message Projectile {
+  string Id = 1;
+  ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
+  ClassLibrary.Messages.Protobuf.Coordinates Direction = 3;
+  double Timer = 4;
+}

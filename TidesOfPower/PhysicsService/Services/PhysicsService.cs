@@ -1,6 +1,6 @@
-﻿using ClassLibrary.Classes.Messages;
-using ClassLibrary.Interfaces;
+﻿using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
+using ClassLibrary.Messages.Avro;
 using PhysicsService.Interfaces;
 
 namespace PhysicsService.Services;

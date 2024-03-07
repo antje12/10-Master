@@ -1,8 +1,8 @@
 ﻿using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
-using ClassLibrary.Classes.Messages;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
+using ClassLibrary.Messages.Avro;
 using ClassLibrary.MongoDB;
 using WorldService.Interfaces;
 

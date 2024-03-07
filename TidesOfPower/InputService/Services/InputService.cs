@@ -1,7 +1,7 @@
 ﻿using ClassLibrary.Classes.Data;
-using ClassLibrary.Classes.Messages;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
+using ClassLibrary.Messages.Avro;
 using InputService.Interfaces;
 
 namespace InputService.Services;

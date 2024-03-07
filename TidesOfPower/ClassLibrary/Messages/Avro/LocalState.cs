@@ -3,7 +3,7 @@ using Avro.Specific;
 using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
 
-namespace ClassLibrary.Classes.Messages;
+namespace ClassLibrary.Messages.Avro;
 
 public class LocalState : ISpecificRecord
 {

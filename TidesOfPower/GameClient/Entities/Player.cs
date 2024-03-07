@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClassLibrary.Classes.Data;
 using ClassLibrary.Kafka;
-using ClassLibrary.Messages.Avro;
 using GameClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ClassLibrary.Messages.Protobuf;
+using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
+using GameKey = ClassLibrary.Messages.Protobuf.GameKey;
 
 namespace GameClient.Entities;
 
@@ -15,14 +16,14 @@ public class Player : Agent
 {
     public Vector2 MousePosition { get; set; }
     private readonly Camera _camera;
-    private readonly KafkaProducer<Input> _producer;
+    private readonly ProtoKafkaProducer<Input> _producer;
 
     private Coordinates _lastLocation;
     private List<GameKey> _lastKeyInput;
 
     private bool attacking = false;
 
-    public Player(Guid agentId, Vector2 position, Texture2D texture, Camera camera, KafkaProducer<Input> producer)
+    public Player(Guid agentId, Vector2 position, Texture2D texture, Camera camera, ProtoKafkaProducer<Input> producer)
         : base(agentId, position, texture)
     {
         _camera = camera;
@@ -81,13 +82,12 @@ public class Player : Agent
         {
             var input = new Input()
             {
-                PlayerId = _agentId,
+                PlayerId = _agentId.ToString(),
                 PlayerLocation = new Coordinates()
                 {
                     X = Position.X,
                     Y = Position.Y
                 },
-                KeyInput = keyInput,
                 MouseLocation = new Coordinates()
                 {
                     X = MousePosition.X,
@@ -95,6 +95,7 @@ public class Player : Agent
                 },
                 GameTime = gameTime.ElapsedGameTime.TotalSeconds
             };
+            input.KeyInput.AddRange(keyInput);
 
             var newLocation = _lastLocation.X != input.PlayerLocation.X || _lastLocation.Y != input.PlayerLocation.Y;
             var newInput = !_lastKeyInput.OrderBy(x => x).SequenceEqual(keyInput.OrderBy(x => x));
@@ -103,7 +104,7 @@ public class Player : Agent
             {
                 _producer.Produce(MyGame.OutputTopic, _agentId.ToString(), input);
                 _lastLocation = input.PlayerLocation;
-                _lastKeyInput = input.KeyInput;
+                _lastKeyInput = input.KeyInput.ToList();
             }
         }
 

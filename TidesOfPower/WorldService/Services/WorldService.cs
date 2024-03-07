@@ -1,10 +1,12 @@
 ﻿using ClassLibrary.Classes.Data;
-using ClassLibrary.Classes.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using WorldService.Interfaces;
-using ClassLibrary.Messages.Avro;
+using ClassLibrary.Messages.Protobuf;
+using ChangeType = ClassLibrary.Messages.Protobuf.ChangeType;
+using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
+using SyncType = ClassLibrary.Messages.Protobuf.SyncType;
 
 namespace WorldService.Services;
 
@@ -17,8 +19,8 @@ public class WorldService : BackgroundService, IConsumerService
     private KafkaTopic OutputTopic = KafkaTopic.LocalState;
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<LocalState> _producer;
-    private readonly KafkaConsumer<WorldChange> _consumer;
+    private readonly ProtoKafkaProducer<LocalState> _producer;
+    private readonly ProtoKafkaConsumer<WorldChange> _consumer;
 
     private readonly MongoDbBroker _mongoBroker;
 
@@ -29,8 +31,8 @@ public class WorldService : BackgroundService, IConsumerService
         Console.WriteLine($"WorldService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _producer = new KafkaProducer<LocalState>(config);
-        _consumer = new KafkaConsumer<WorldChange>(config);
+        _producer = new ProtoKafkaProducer<LocalState>(config);
+        _consumer = new ProtoKafkaConsumer<WorldChange>(config);
         _mongoBroker = new MongoDbBroker();
     }
 
@@ -43,7 +45,7 @@ public class WorldService : BackgroundService, IConsumerService
         Console.WriteLine($"WorldService started");
 
         await _admin.CreateTopic(InputTopic);
-        IConsumer<WorldChange>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<WorldChange>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(InputTopic, action, ct);
 
         IsRunning = false;
@@ -77,24 +79,48 @@ public class WorldService : BackgroundService, IConsumerService
             Location = value.Location
         };
         //_mongoBroker.CreateEntity(player);
-        _mongoBroker.UpsertAvatarLocation(player);
+        _mongoBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.Avatar()
+        {
+            Id = Guid.Parse(player.Id),
+            Location = new ClassLibrary.Classes.Data.Coordinates()
+            {
+                X = player.Location.X,
+                Y = player.Location.Y
+            }
+        });
         
-        var entities = _mongoBroker.GetEntities(player.Location);
+        var entities = _mongoBroker.GetEntities(new ClassLibrary.Classes.Data.Coordinates()
+        {
+            X = player.Location.X,
+            Y = player.Location.Y
+        });
         var output = new LocalState()
         {
             PlayerId = player.Id,
-            Sync = SyncType.Full,
-            Avatars = entities.Where(x => x is Avatar).Select(a => new Avatar()
-            {
-                Id = a.Id,
-                Location = a.Location
-            }).ToList(),
-            Projectiles = entities.Where(x => x is Projectile).Select(a => new Projectile()
-            {
-                Id = a.Id,
-                Location = a.Location
-            }).ToList()
+            Sync = SyncType.Full
         };
+
+        var avatars = entities.Where(x => x is ClassLibrary.Classes.Domain.Avatar).Select(a => new Avatar()
+        {
+            Id = a.Id.ToString(),
+            Location = new Coordinates()
+            {
+                X = a.Location.X,
+                Y = a.Location.Y,
+            }
+        }).ToList();
+        var projectiles = entities.Where(x => x is ClassLibrary.Classes.Domain.Projectile).Select(a => new Projectile()
+        {
+            Id = a.Id.ToString(),
+            Location = new Coordinates()
+            {
+                X = a.Location.X,
+                Y = a.Location.Y,
+            }
+        }).ToList();
+        output.Avatars.AddRange(avatars);
+        output.Projectiles.AddRange(projectiles);
+        
         _producer.Produce($"{OutputTopic}_{player.Id}", key, output);
 
         var enemies = output.Avatars.Where(x => x.Id != output.PlayerId);
@@ -103,9 +129,9 @@ public class WorldService : BackgroundService, IConsumerService
             var deltaOutput = new LocalState()
             {
                 PlayerId = enemy.Id,
-                Sync = SyncType.Delta,
-                Avatars = new List<Avatar>() {player}
+                Sync = SyncType.Delta
             };
+            deltaOutput.Avatars.Add(player);
             _producer.Produce($"{OutputTopic}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
         }
     }
@@ -120,17 +146,32 @@ public class WorldService : BackgroundService, IConsumerService
             Direction = value.Direction,
             Timer = 10
         };
-        _mongoBroker.Insert(projectile);
+        var pro = new ClassLibrary.Classes.Domain.Projectile()
+        {
+            Id = Guid.Parse(projectile.Id),
+            Location = new ClassLibrary.Classes.Data.Coordinates()
+            {
+                X = value.Location.X,
+                Y = value.Location.Y
+            },
+            Direction = new ClassLibrary.Classes.Data.Coordinates()
+            {
+                X = value.Direction.X,
+                Y = value.Direction.Y
+            },
+            Timer = 10
+        };
+        _mongoBroker.Insert(pro);
 
-        var avatars = _mongoBroker.GetEntities(value.Location).Where(x => x is Avatar);
+        var avatars = _mongoBroker.GetEntities(pro.Location).Where(x => x is ClassLibrary.Classes.Domain.Avatar);
         foreach (var avatar in avatars)
         {
             var deltaOutput = new LocalState()
             {
-                PlayerId = avatar.Id,
-                Sync = SyncType.Delta,
-                Projectiles = new List<Projectile>() {projectile}
+                PlayerId = avatar.Id.ToString(),
+                Sync = SyncType.Delta
             };
+            deltaOutput.Projectiles.Add(projectile);
             _producer.Produce($"{OutputTopic}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
         }
     }
@@ -143,29 +184,39 @@ public class WorldService : BackgroundService, IConsumerService
             Location = value.Location,
             Timer = value.Timer
         };
+        var pro = new ClassLibrary.Classes.Domain.Projectile()
+        {
+            Id = Guid.Parse(bullet.Id),
+            Location = new ClassLibrary.Classes.Data.Coordinates()
+            {
+                X = bullet.Location.X,
+                Y = bullet.Location.Y
+            },
+            Timer = bullet.Timer
+        };
 
         SyncType sync;
         
         if (bullet.Timer <= 0)
         {
-            _mongoBroker.Delete(bullet);
+            _mongoBroker.Delete(pro);
             sync = SyncType.Delete;
         }
         else
         {
-            _mongoBroker.UpdateProjectile(bullet);
+            _mongoBroker.UpdateProjectile(pro);
             sync = SyncType.Delta;
         }
         
-        var entities = _mongoBroker.GetEntities(bullet.Location).OfType<Avatar>().ToList();
+        var entities = _mongoBroker.GetEntities(pro.Location).OfType<ClassLibrary.Classes.Domain.Avatar>().ToList();
         foreach (var entity in entities)
         {
             var deltaOutput = new LocalState()
             {
-                PlayerId = entity.Id,
-                Sync = sync,
-                Projectiles = new List<Projectile>() {bullet}
+                PlayerId = entity.Id.ToString(),
+                Sync = sync
             };
+            deltaOutput.Projectiles.Add(bullet);
             _producer.Produce($"{OutputTopic}_{entity.Id}", entity.Id.ToString(), deltaOutput);
         }
     }
@@ -176,17 +227,33 @@ public class WorldService : BackgroundService, IConsumerService
         {
             Id = value.EntityId
         };
-        var avatars = _mongoBroker.GetEntities(value.Location).Where(x => x is Avatar).ToList();
+        var avatars = _mongoBroker.GetEntities(new ClassLibrary.Classes.Data.Coordinates()
+        {
+            X = value.Location.X,
+            Y = value.Location.Y
+        }).Where(x => x is ClassLibrary.Classes.Domain.Avatar).ToList();
         
-        _mongoBroker.Delete(player);
+        _mongoBroker.Delete(new ClassLibrary.Classes.Domain.Avatar()
+        {
+            Id = Guid.Parse(player.Id)
+        });
         foreach (var avatar in avatars)
         {
             var deltaOutput = new LocalState()
             {
-                PlayerId = avatar.Id,
-                Sync = SyncType.Delete,
-                Avatars = new List<Avatar>() {player}
+                PlayerId = avatar.Id.ToString(),
+                Sync = SyncType.Delete
             };
+            var a = new Avatar()
+            {
+                Id = avatar.Id.ToString(),
+                Location = new Coordinates()
+                {
+                    X = avatar.Location.X,
+                    Y= avatar.Location.Y
+                }
+            };
+            deltaOutput.Avatars.Add(a);
             _producer.Produce($"{OutputTopic}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
         }
     }

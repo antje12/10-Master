@@ -9,9 +9,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ClassLibrary.Interfaces;
-using ClassLibrary.Messages.Avro;
 using GameClient.Core;
 using GameClient.Entities;
+using ClassLibrary.Messages.Protobuf;
+using Projectile = GameClient.Entities.Projectile;
+using SyncType = ClassLibrary.Messages.Protobuf.SyncType;
 
 namespace GameClient;
 
@@ -24,8 +26,8 @@ public class MyGame : Game
     static CancellationTokenSource _cts;
     readonly KafkaConfig _config;
     readonly KafkaAdministrator _admin;
-    readonly KafkaProducer<Input> _producer;
-    readonly KafkaConsumer<LocalState> _consumer;
+    readonly ProtoKafkaProducer<Input> _producer;
+    readonly ProtoKafkaConsumer<LocalState> _consumer;
 
     Texture2D oceanTexture; //64x64
     Texture2D islandTexture; //64x64
@@ -50,8 +52,8 @@ public class MyGame : Game
 
         _config = new KafkaConfig(GroupId, true);
         _admin = new KafkaAdministrator(_config);
-        _producer = new KafkaProducer<Input>(_config);
-        _consumer = new KafkaConsumer<LocalState>(_config);
+        _producer = new ProtoKafkaProducer<Input>(_config);
+        _consumer = new ProtoKafkaConsumer<LocalState>(_config);
     }
 
     protected override async void Initialize()
@@ -78,7 +80,7 @@ public class MyGame : Game
 
         _cts = new CancellationTokenSource();
         await _admin.CreateTopic($"{InputTopic}_{Player._agentId}");
-        IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<LocalState>.ProcessMessage action = ProcessMessage;
         await Task.Run(() => _consumer.Consume($"{InputTopic}_{Player._agentId}", action, _cts.Token), _cts.Token);
     }
 
@@ -113,36 +115,36 @@ public class MyGame : Game
         DeltaSync(value);
 
         var onlineAvatarIds = value.Avatars.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y._agentId));
+        LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y._agentId.ToString()));
 
         var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id));
+        LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
     }
 
     private void DeltaSync(LocalState value)
     {
         foreach (var avatar in value.Avatars)
         {
-            if (avatar.Id == Player._agentId)
+            if (avatar.Id == Player._agentId.ToString())
             {
                 Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
                 continue;
             }
             
-            var localAvatar = LocalState.FirstOrDefault(x => x is Agent y && y._agentId == avatar.Id);
+            var localAvatar = LocalState.FirstOrDefault(x => x is Agent y && y._agentId.ToString() == avatar.Id);
             if (localAvatar == null)
                 LocalState.Add(
-                    new Enemy(avatar.Id, new Vector2(avatar.Location.X, avatar.Location.Y), avatarTexture));
+                    new Enemy(Guid.Parse(avatar.Id), new Vector2(avatar.Location.X, avatar.Location.Y), avatarTexture));
             else
                 localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
         }
 
         foreach (var projectile in value.Projectiles)
         {
-            var localAvatar = LocalState.FirstOrDefault(x => x is Projectile y && y._id == projectile.Id);
+            var localAvatar = LocalState.FirstOrDefault(x => x is Projectile y && y._id.ToString() == projectile.Id);
             if (localAvatar == null)
                 LocalState.Add(
-                    new Projectile(projectile.Id, new Vector2(projectile.Location.X, projectile.Location.Y),
+                    new Projectile(Guid.Parse(projectile.Id), new Vector2(projectile.Location.X, projectile.Location.Y),
                         projectileTexture));
             else
                 localAvatar.Position = new Vector2(projectile.Location.X, projectile.Location.Y);
@@ -152,15 +154,15 @@ public class MyGame : Game
     private void DeleteSync(LocalState value)
     {
         var deleteAvatarIds = value.Avatars.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y._agentId));
+        LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y._agentId.ToString()));
 
-        if (deleteAvatarIds.Contains(Player._agentId))
+        if (deleteAvatarIds.Contains(Player._agentId.ToString()))
         {
             Console.WriteLine("Died!");
         }
         
         var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y._id));
+        LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y._id.ToString()));
     }
 
     protected override void Update(GameTime gameTime)

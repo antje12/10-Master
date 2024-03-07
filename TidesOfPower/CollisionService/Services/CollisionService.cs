@@ -1,10 +1,9 @@
-﻿using ClassLibrary.Classes.Data;
-using ClassLibrary.Classes.Domain;
+﻿using ClassLibrary.Classes.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using CollisionService.Interfaces;
-using ClassLibrary.Messages.Avro;
+using ClassLibrary.Messages.Protobuf;
 
 namespace CollisionService.Services;
 
@@ -17,8 +16,8 @@ public class CollisionService : BackgroundService, IConsumerService
     private KafkaTopic OutputTopic = KafkaTopic.World;
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<WorldChange> _producer;
-    private readonly KafkaConsumer<CollisionCheck> _consumer;
+    private readonly ProtoKafkaProducer<WorldChange> _producer;
+    private readonly ProtoKafkaConsumer<CollisionCheck> _consumer;
 
     private readonly MongoDbBroker _mongoBroker;
 
@@ -29,8 +28,8 @@ public class CollisionService : BackgroundService, IConsumerService
         Console.WriteLine($"CollisionService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _producer = new KafkaProducer<WorldChange>(config);
-        _consumer = new KafkaConsumer<CollisionCheck>(config);
+        _producer = new ProtoKafkaProducer<WorldChange>(config);
+        _consumer = new ProtoKafkaConsumer<CollisionCheck>(config);
         _mongoBroker = new MongoDbBroker();
     }
 
@@ -43,7 +42,7 @@ public class CollisionService : BackgroundService, IConsumerService
         Console.WriteLine($"CollisionService started");
 
         await _admin.CreateTopic(InputTopic);
-        IConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(InputTopic, action, ct);
 
         IsRunning = false;
@@ -52,10 +51,14 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, CollisionCheck value)
     {
-        var entities = _mongoBroker.GetCloseEntities(value.ToLocation);
+        var entities = _mongoBroker.GetCloseEntities(new ClassLibrary.Classes.Data.Coordinates()
+        {
+            X = value.ToLocation.X,
+            Y = value.ToLocation.Y
+        });
         foreach (var entity in entities)
         {
-            if (value.EntityId == entity.Id)
+            if (value.EntityId == entity.Id.ToString())
             {
                 continue;
             }
@@ -64,25 +67,28 @@ public class CollisionService : BackgroundService, IConsumerService
                 value.Entity is EntityType.Projectile ? 5 :
                 value.Entity is EntityType.Avatar ? 25 : 0;
             var w2 =
-                entity is Projectile ? 5 :
-                entity is Avatar ? 25 : 0;
+                entity is ClassLibrary.Classes.Domain.Projectile ? 5 :
+                entity is ClassLibrary.Classes.Domain.Avatar ? 25 : 0;
 
             if (circleCollision(value.ToLocation, w1, entity.Location, w2))
             {
-                if (value.Entity is EntityType.Avatar && entity is Avatar)
+                if (value.Entity is EntityType.Avatar && entity is ClassLibrary.Classes.Domain.Avatar)
                 {
                     return;
                 }
 
-                if (value.Entity is EntityType.Avatar && entity is Projectile)
+                if (value.Entity is EntityType.Avatar && entity is ClassLibrary.Classes.Domain.Projectile)
                 {
-                    Damage(value.EntityId, value.ToLocation);
+                    Damage(Guid.Parse(value.EntityId), value.ToLocation);
                     return;
                 }
 
-                if (value.Entity is EntityType.Projectile && entity is Avatar)
+                if (value.Entity is EntityType.Projectile && entity is ClassLibrary.Classes.Domain.Avatar)
                 {
-                    Damage(entity.Id, entity.Location);
+                    var coordinates = new Coordinates();
+                    coordinates.X = entity.Location.X;
+                    coordinates.Y = entity.Location.Y;
+                    Damage(entity.Id, coordinates);
                 }
             }
         }
@@ -98,7 +104,7 @@ public class CollisionService : BackgroundService, IConsumerService
 
             _producer.Produce(OutputTopic, key, output);
         }
-        else
+        else if (value.Entity is EntityType.Projectile)
         {
             var output = new WorldChange()
             {
@@ -112,7 +118,7 @@ public class CollisionService : BackgroundService, IConsumerService
         }
     }
 
-    private bool circleCollision(Coordinates e1, int w1, Coordinates e2, int w2)
+    private bool circleCollision(Coordinates e1, int w1, ClassLibrary.Classes.Data.Coordinates e2, int w2)
     {
         float dx = e1.X - e2.X;
         float dy = e1.Y - e2.Y;
@@ -135,7 +141,7 @@ public class CollisionService : BackgroundService, IConsumerService
     {
         var output = new WorldChange()
         {
-            EntityId = entityId,
+            EntityId = entityId.ToString(),
             Change = ChangeType.DamagePlayer,
             Location = entityLocation
         };

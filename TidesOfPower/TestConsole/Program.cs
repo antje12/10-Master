@@ -7,7 +7,6 @@ using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Avro;
 using ClassLibrary.MongoDB;
-using Google.Protobuf.Collections;
 
 Console.WriteLine("Hello, World!");
 

@@ -1,9 +1,7 @@
-﻿using ClassLibrary.Classes.Data;
-using ClassLibrary.Classes.Domain;
-using ClassLibrary.Kafka;
+﻿using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using TickService.Interfaces;
-using ClassLibrary.Messages.Avro;
+using ClassLibrary.Messages.Protobuf;
 
 namespace TickService.Services;
 
@@ -12,8 +10,8 @@ namespace TickService.Services;
 public class TickService : BackgroundService, IConsumerService
 {
     private KafkaTopic OutputTopic = KafkaTopic.Collision;
-    
-    private readonly KafkaProducer<CollisionCheck> _producer;
+
+    private readonly ProtoKafkaProducer<CollisionCheck> _producer;
 
     private readonly MongoDbBroker _mongoBroker;
 
@@ -23,7 +21,7 @@ public class TickService : BackgroundService, IConsumerService
     {
         Console.WriteLine($"TickService created");
         var config = new KafkaConfig("");
-        _producer = new KafkaProducer<CollisionCheck>(config);
+        _producer = new ProtoKafkaProducer<CollisionCheck>(config);
         _mongoBroker = new MongoDbBroker();
     }
 
@@ -37,11 +35,12 @@ public class TickService : BackgroundService, IConsumerService
 
         while (!ct.IsCancellationRequested)
         {
-            var projectiles = _mongoBroker.GetEntities().OfType<Projectile>().ToList();
+            var projectiles = _mongoBroker.GetEntities().OfType<ClassLibrary.Classes.Domain.Projectile>().ToList();
             foreach (var projectile in projectiles)
             {
                 SendState(projectile);
             }
+
             Thread.Sleep(50);
         }
 
@@ -49,24 +48,28 @@ public class TickService : BackgroundService, IConsumerService
         Console.WriteLine($"TickService stopped");
     }
 
-    private void SendState(Projectile projectile)
+    private void SendState(ClassLibrary.Classes.Domain.Projectile projectile)
     {
         var output = new CollisionCheck()
         {
-            EntityId = projectile.Id,
+            EntityId = projectile.Id.ToString(),
             Entity = EntityType.Projectile,
-            FromLocation = projectile.Location,
+            FromLocation = new Coordinates()
+            {
+                X = projectile.Location.X,
+                Y = projectile.Location.Y
+            },
             ToLocation = new Coordinates()
             {
-                X=projectile.Location.X,
-                Y=projectile.Location.Y
+                X = projectile.Location.X,
+                Y = projectile.Location.Y
             },
             Timer = projectile.Timer - 1
         };
 
         var speed = 100;
         var deltaTime = 0.05f;
-        
+
         output.ToLocation.X += projectile.Direction.X * speed * deltaTime;
         output.ToLocation.Y += projectile.Direction.Y * speed * deltaTime;
 

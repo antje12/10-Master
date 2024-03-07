@@ -1,8 +1,7 @@
-﻿using ClassLibrary.Classes.Data;
-using ClassLibrary.Interfaces;
+﻿using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using InputService.Interfaces;
-using ClassLibrary.Messages.Avro;
+using ClassLibrary.Messages.Protobuf;
 
 namespace InputService.Services;
 
@@ -16,9 +15,9 @@ public class InputService : BackgroundService, IConsumerService
     private KafkaTopic OutputTopicW = KafkaTopic.World;
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<CollisionCheck> _producerC;
-    private readonly KafkaProducer<WorldChange> _producerW;
-    private readonly KafkaConsumer<Input> _consumer;
+    private readonly ProtoKafkaProducer<CollisionCheck> _producerC;
+    private readonly ProtoKafkaProducer<WorldChange> _producerW;
+    private readonly ProtoKafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
 
@@ -27,9 +26,9 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine($"InputService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _producerC = new KafkaProducer<CollisionCheck>(config);
-        _producerW = new KafkaProducer<WorldChange>(config);
-        _consumer = new KafkaConsumer<Input>(config);
+        _producerC = new ProtoKafkaProducer<CollisionCheck>(config);
+        _producerW = new ProtoKafkaProducer<WorldChange>(config);
+        _consumer = new ProtoKafkaConsumer<Input>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -41,7 +40,7 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine($"InputService started");
 
         await _admin.CreateTopic(InputTopic);
-        IConsumer<Input>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<Input>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(InputTopic, action, ct);
 
         IsRunning = false;
@@ -112,7 +111,7 @@ public class InputService : BackgroundService, IConsumerService
         
         var output = new WorldChange()
         {
-            EntityId = Guid.NewGuid(),
+            EntityId = Guid.NewGuid().ToString(),
             Change = ChangeType.SpawnBullet,
             Location = new Coordinates() { X = spawnX, Y = spawnY },
             Direction = new Coordinates() {X = x, Y = y}

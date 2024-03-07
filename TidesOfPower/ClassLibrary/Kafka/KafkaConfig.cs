@@ -41,6 +41,7 @@ public class KafkaConfig
         ProducerConfig = new()
         {
             BootstrapServers = KafkaServers,
+            AllowAutoCreateTopics = false,
             Acks = Acks.None,
             LingerMs = 0,
             BatchSize = 1
@@ -48,6 +49,7 @@ public class KafkaConfig
         ConsumerConfig = new()
         {
             BootstrapServers = KafkaServers,
+            AllowAutoCreateTopics = false,
             GroupId = groupId,
             AutoOffsetReset = AutoOffsetReset.Earliest,
             SessionTimeoutMs = 6000,

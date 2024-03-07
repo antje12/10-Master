@@ -19,9 +19,9 @@ public class KafkaConfig
     public readonly ProducerConfig ProducerConfig;
     public readonly ConsumerConfig ConsumerConfig;
 
-    public KafkaConfig(string groupId, bool client = false)
+    public KafkaConfig(string groupId, bool isClient = false)
     {
-        if (client)
+        if (isClient)
         {
             KafkaServers = "localhost:19092";
             SchemaRegistry = "localhost:8081";

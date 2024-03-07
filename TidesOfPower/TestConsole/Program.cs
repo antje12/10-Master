@@ -9,7 +9,7 @@ using ClassLibrary.Messages.Avro;
 using ClassLibrary.MongoDB;
 
 Console.WriteLine("Hello, World!");
-var mongoBroker = new MongoDbBroker();
+var mongoBroker = new MongoDbBroker(true);
 
 //TestMongoDB();
 //await TestHTTP();

@@ -128,6 +128,8 @@ async Task TestKafkaAvro()
             return;
         }
 
+        message.PlayerLocation = value.Avatars.First().Location;
+        
         count += 1;
         stopwatch.Restart();
         producer.Produce(KafkaTopic.Input, "a", message);
@@ -182,6 +184,8 @@ async Task TestKafkaProto()
             return;
         }
 
+        message.PlayerLocation = value.Avatars.First().Location;
+        
         count += 1;
         stopwatch.Restart();
         producer.Produce(KafkaTopic.Input, "test", message);

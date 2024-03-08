@@ -2,6 +2,7 @@ using System.Globalization;
 using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NRedisStack;
 using NRedisStack.RedisStackCommands;
 using NRedisStack.Search;
@@ -108,6 +109,12 @@ public class RedisBroker
         var src = _ft.Search("idx:entities", new Query(query)
             .Limit(0, 10000)); // 10000 max, may be a problem
         var json = src.ToJson();
+
+        var j = json[0];
+        var jsonObject = JObject.Parse(j);
+        var typeValue = jsonObject["Type"].ToString();
+        var typeEnum = (TheEntityType)Enum.Parse(typeof(TheEntityType), typeValue);
+        
         var res = json.Select(x => JsonConvert.DeserializeObject<Avatar>(x));
         return new List<Entity>();
     }

@@ -1,4 +1,6 @@
-﻿using NRedisStack;
+using ClassLibrary.Classes.Domain;
+using Newtonsoft.Json;
+using NRedisStack;
 using NRedisStack.RedisStackCommands;
 using NRedisStack.Search;
 using NRedisStack.Search.Aggregation;
@@ -27,6 +29,38 @@ public class RedisBroker
         _database = _redis.GetDatabase();
         _ft = _database.FT();
         _json = _database.JSON();
+    }
+
+    public void Init()
+    {
+        var schema = new Schema() // search-able fields
+            .AddTextField(new FieldName("$.Id", "Id"))
+            .AddTextField(new FieldName("$.Email", "Email"))
+            .AddTextField(new FieldName("$.Password", "Password"));
+
+        _ft.Create(
+            "idx:profiles",
+            new FTCreateParams().On(IndexDataType.JSON).Prefix("profile:"),
+            schema);
+    }
+    
+    public void Insert(Profile profile)
+    {
+        _json.Set($@"profile:{profile.Id}", "$", profile);
+    }
+
+    public Profile? GetProfile(Guid profileId)
+    {
+        var profile = _json.Get($"profile:{profileId}");
+        return JsonConvert.DeserializeObject<Profile>(profile.ToString());
+    }
+    
+    public Profile? GetProfiles(Guid profileId)
+    {
+        var src = _ft.Search("idx:profiles", new Query("*").Limit(0, 1000));
+        var json = src.ToJson();
+        var res = json.Select(x => JsonConvert.DeserializeObject<Profile>(x));
+        return res.FirstOrDefault(x => x.Id == profileId);
     }
 
     public void Test()

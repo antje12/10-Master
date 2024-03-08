@@ -78,6 +78,16 @@ services:
       - mongodb-service.vol:/data/db
     networks:
       sharednetwork:
+      
+  redis-stack:
+    container_name: redis-stack
+    image: redis/redis-stack:latest
+    ports:
+      - 6379:6379
+      - 8001:8001
+    restart: unless-stopped
+    networks:
+      sharednetwork:
   
   input-service:
     container_name: input-service

@@ -7,11 +7,14 @@ using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Avro;
 using ClassLibrary.MongoDB;
+using ClassLibrary.Redis;
 
 Console.WriteLine("Hello, World!");
-var mongoBroker = new MongoDbBroker(true);
+MongoDbBroker mongoBroker = null; //new MongoDbBroker(true);
+RedisBroker redisBroker = new RedisBroker(true);
 
 //TestMongoDB();
+TestRedis();
 //await TestHTTP();
 for (int i = 0; i < 10; i++)
 {
@@ -19,7 +22,7 @@ for (int i = 0; i < 10; i++)
 }
 for (int i = 0; i < 10; i++)
 {
-    await TestKafkaProto();
+    //await TestKafkaProto();
 }
 
 void TestMongoDB()
@@ -60,6 +63,11 @@ void TestMongoDB()
 
     var res = profile.Id == test.Id && profile.Email == test.Email && profile.Password == test.Password;
     Console.WriteLine($"Mongo test result {res}");
+}
+
+void TestRedis()
+{
+    redisBroker.Test();
 }
 
 async Task TestHTTP()

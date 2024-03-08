@@ -57,7 +57,7 @@ public class RedisBroker
     
     public Profile? GetProfiles(Guid profileId)
     {
-        var src = _ft.Search("idx:profiles", new Query("*").Limit(0, 1000));
+        var src = _ft.Search("idx:profiles", new Query("*").Limit(0, 10000));
         var json = src.ToJson();
         var res = json.Select(x => JsonConvert.DeserializeObject<Profile>(x));
         return res.FirstOrDefault(x => x.Id == profileId);

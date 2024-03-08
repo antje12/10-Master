@@ -14,6 +14,11 @@ public class Avatar : Entity, ISpecificRecord
     public List<Weapon> Weapons { get; set; }
     public Ship Ship { get; set; }
 
+    public Avatar()
+    {
+        Type = TheEntityType.Avatar;
+    }
+    
     public Schema Schema => StatSchema;
     public static Schema StatSchema => Schema.Parse($@"
     {{

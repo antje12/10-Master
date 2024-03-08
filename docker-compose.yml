@@ -67,17 +67,17 @@ services:
   #    KAFKA_SCHEMAREGISTRY_URLS: http://schema-registry-service:8081
   #  networks:
   #    sharednetwork:
-  
-  mongodb-service:
-    container_name: mongodb-service
-    image: mongo:latest
-    ports:
-      - 27017:27017
-    restart: unless-stopped
-    #volumes:
-    #  - mongodb-service.vol:/data/db
-    networks:
-      sharednetwork:
+  #
+  #mongodb-service:
+  #  container_name: mongodb-service
+  #  image: mongo:latest
+  #  ports:
+  #    - 27017:27017
+  #  restart: unless-stopped
+  #  #volumes:
+  #  #  - mongodb-service.vol:/data/db
+  #  networks:
+  #    sharednetwork:
 
   redis-stack:
     container_name: redis-stack

@@ -12,15 +12,33 @@ using ClassLibrary.Redis;
 Console.WriteLine("Hello, World!");
 MongoDbBroker mongoBroker = new MongoDbBroker(true);
 RedisBroker redisBroker = new RedisBroker(true);
-//redisBroker.Init();
 
-TestMongoDB();
-TestRedis();
+redisBroker.InitEntity();
+var avatar = new Avatar()
+{
+    Id = Guid.NewGuid(),
+    Location = new Coordinates()
+    {
+        X = 50.123f,
+        Y = 100.456f
+    },
+    Name = "Mr.Test",
+    WalkingSpeed = 10,
+    LifePool = 100,
+    Inventory = 0
+};
+redisBroker.Insert(avatar);
+redisBroker.GetEntities(avatar.Location);
+
+//redisBroker.InitProfile();
+//TestRedis();
+//TestMongoDB();
 //await TestHTTP();
 for (int i = 0; i < 10; i++)
 {
     //await TestKafkaAvro();
 }
+
 for (int i = 0; i < 10; i++)
 {
     //await TestKafkaProto();
@@ -81,7 +99,7 @@ void TestRedis()
     stopwatch.Stop();
     var elapsed_time = stopwatch.ElapsedMilliseconds;
     Console.WriteLine($"Create called in {elapsed_time} ms");
-    
+
     stopwatch.Restart();
     var test = redisBroker.GetProfiles(profile.Id);
     stopwatch.Stop();

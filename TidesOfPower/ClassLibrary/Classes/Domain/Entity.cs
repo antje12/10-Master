@@ -9,10 +9,19 @@ public class Entity
 {
     [BsonId] public Guid Id { get; set; }
     [BsonElement("location")] public Coordinates Location { get; set; }
+    public TheEntityType Type { get; set; }
     
     public Entity()
     {
         Location = new Coordinates();
     }
     
+}
+
+public enum TheEntityType
+{
+    Avatar,
+    Projectile,
+    Ship,
+    Treasure
 }

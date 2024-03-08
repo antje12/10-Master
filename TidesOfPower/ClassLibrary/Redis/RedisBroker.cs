@@ -1,3 +1,5 @@
+using System.Globalization;
+using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
 using Newtonsoft.Json;
 using NRedisStack;
@@ -31,17 +33,20 @@ public class RedisBroker
         _json = _database.JSON();
     }
 
-    public void Init()
+    public void InitProfile()
     {
-        var schema = new Schema() // search-able fields
-            .AddTextField(new FieldName("$.Id", "Id"))
-            .AddTextField(new FieldName("$.Email", "Email"))
-            .AddTextField(new FieldName("$.Password", "Password"));
-
-        _ft.Create(
-            "idx:profiles",
-            new FTCreateParams().On(IndexDataType.JSON).Prefix("profile:"),
-            schema);
+        var indexes = _ft._List();
+        if (indexes.All(x => x.ToString() != "idx:profiles"))
+        {
+            var schema = new Schema() // search-able fields
+                .AddTextField(new FieldName("$.Id", "Id"))
+                .AddTextField(new FieldName("$.Email", "Email"))
+                .AddTextField(new FieldName("$.Password", "Password"));
+            _ft.Create(
+                "idx:profiles",
+                new FTCreateParams().On(IndexDataType.JSON).Prefix("profile:"),
+                schema);
+        }
     }
     
     public void Insert(Profile profile)
@@ -57,10 +62,54 @@ public class RedisBroker
     
     public Profile? GetProfiles(Guid profileId)
     {
-        var src = _ft.Search("idx:profiles", new Query("*").Limit(0, 10000));
+        var src = _ft.Search("idx:profiles", new Query("*").Limit(0, 10000)); // 10000 max, may be a problem
         var json = src.ToJson();
         var res = json.Select(x => JsonConvert.DeserializeObject<Profile>(x));
         return res.FirstOrDefault(x => x.Id == profileId);
+    }
+    
+    public void InitEntity()
+    {
+        var indexes = _ft._List();
+        if (indexes.All(x => x.ToString() != "idx:entities"))
+        {
+            var schema = new Schema() // search-able fields
+                .AddTextField(new FieldName("$.Id", "Id"))
+                .AddNumericField(new FieldName("$.Location.X", "Location.X"))
+                .AddNumericField(new FieldName("$.Location.Y", "Location.Y"));
+            _ft.Create(
+                "idx:entities",
+                new FTCreateParams().On(IndexDataType.JSON).Prefix("entity:"),
+                schema);
+        }
+    }
+    
+    public void Insert(Entity entity)
+    {
+        _json.Set($@"entity:{entity.Id}", "$", entity);
+    }
+    
+    public List<Entity> GetEntities()
+    {
+        var src = _ft.Search("idx:entities", new Query("*").Limit(0, 10000)); // 10000 max, may be a problem
+        var json = src.ToJson();
+        var res = json.Select(x => JsonConvert.DeserializeObject<Entity>(x));
+        return res.ToList();
+    }
+    
+    public List<Entity> GetEntities(Coordinates location)
+    {
+        var xFrom = (location.X - 50).ToString(CultureInfo.InvariantCulture);
+        var xTo = (location.X + 50).ToString(CultureInfo.InvariantCulture);
+        var yFrom = (location.Y - 50).ToString(CultureInfo.InvariantCulture);
+        var yTo = (location.Y + 50).ToString(CultureInfo.InvariantCulture);
+        var query = $"@Location\\.X:[{xFrom} {xTo}] @Location\\.Y:[{yFrom} {yTo}]";
+        
+        var src = _ft.Search("idx:entities", new Query(query)
+            .Limit(0, 10000)); // 10000 max, may be a problem
+        var json = src.ToJson();
+        var res = json.Select(x => JsonConvert.DeserializeObject<Avatar>(x));
+        return new List<Entity>();
     }
 
     public void Test()

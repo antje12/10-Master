@@ -2,7 +2,6 @@ using System.Globalization;
 using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NRedisStack;
 using NRedisStack.RedisStackCommands;
 using NRedisStack.Search;
@@ -32,6 +31,7 @@ public class RedisBroker
         _database = _redis.GetDatabase();
         _ft = _database.FT();
         _json = _database.JSON();
+        InitEntity();
     }
 
     public void InitProfile()
@@ -89,6 +89,11 @@ public class RedisBroker
     {
         _json.Set($@"entity:{entity.Id}", "$", entity);
     }
+
+    public void Delete(Entity entity)
+    {
+        _json.Del($@"entity:{entity.Id}");
+    }
     
     public List<Entity> GetEntities()
     {
@@ -97,26 +102,66 @@ public class RedisBroker
         var res = json.Select(x => JsonConvert.DeserializeObject<Entity>(x));
         return res.ToList();
     }
-    
-    public List<Entity> GetEntities(Coordinates location)
+
+    public List<Entity> GetCloseEntities(Coordinates location)
     {
         var xFrom = (location.X - 50).ToString(CultureInfo.InvariantCulture);
         var xTo = (location.X + 50).ToString(CultureInfo.InvariantCulture);
         var yFrom = (location.Y - 50).ToString(CultureInfo.InvariantCulture);
         var yTo = (location.Y + 50).ToString(CultureInfo.InvariantCulture);
+        return GetEntities(xFrom, xTo, yFrom, yTo);
+    }
+
+    public List<Entity> GetEntities(Coordinates location)
+    {
+        var xFrom = (location.X - 400).ToString(CultureInfo.InvariantCulture);
+        var xTo = (location.X + 400).ToString(CultureInfo.InvariantCulture);
+        var yFrom = (location.Y - 240).ToString(CultureInfo.InvariantCulture);
+        var yTo = (location.Y + 240).ToString(CultureInfo.InvariantCulture);
+        return GetEntities(xFrom, xTo, yFrom, yTo);
+    }
+    
+    private List<Entity> GetEntities(string xFrom, string xTo, string yFrom, string yTo)
+    {
         var query = $"@Location\\.X:[{xFrom} {xTo}] @Location\\.Y:[{yFrom} {yTo}]";
-        
         var src = _ft.Search("idx:entities", new Query(query)
             .Limit(0, 10000)); // 10000 max, may be a problem
         var json = src.ToJson();
 
-        var j = json[0];
-        var jsonObject = JObject.Parse(j);
-        var typeValue = jsonObject["Type"].ToString();
-        var typeEnum = (TheEntityType)Enum.Parse(typeof(TheEntityType), typeValue);
-        
-        var res = json.Select(x => JsonConvert.DeserializeObject<Avatar>(x));
-        return new List<Entity>();
+        var results = new List<Entity>();
+        foreach (var j in json)
+        {
+            var result = JsonConvert.DeserializeObject<Entity>(j);
+            if (result == null) continue;
+            switch (result.Type)
+            {
+                case TheEntityType.Avatar:
+                    result = JsonConvert.DeserializeObject<Avatar>(j);
+                    break;
+                case TheEntityType.Projectile:
+                    result = JsonConvert.DeserializeObject<Projectile>(j);
+                    break;
+                case TheEntityType.Ship:
+                    result = JsonConvert.DeserializeObject<Ship>(j);
+                    break;
+                case TheEntityType.Treasure:
+                    result = JsonConvert.DeserializeObject<Treasure>(j);
+                    break;
+            }
+            if (result == null) continue;
+            results.Add(result);
+        }
+        return results;
+    }
+
+    public void UpdateProjectile(Projectile entity)
+    {
+        _json.Set($@"entity:{entity.Id}", "$", entity);
+    }
+
+    public void UpsertAvatarLocation(Avatar entity)
+    {        
+        _json.Set($@"entity:{entity.Id}", "$", entity);
     }
 
     public void Test()

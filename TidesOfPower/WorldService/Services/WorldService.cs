@@ -4,6 +4,7 @@ using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using WorldService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
+using ClassLibrary.Redis;
 using ChangeType = ClassLibrary.Messages.Protobuf.ChangeType;
 using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
 using SyncType = ClassLibrary.Messages.Protobuf.SyncType;
@@ -22,7 +23,8 @@ public class WorldService : BackgroundService, IConsumerService
     private readonly ProtoKafkaProducer<LocalState> _producer;
     private readonly ProtoKafkaConsumer<WorldChange> _consumer;
 
-    private readonly MongoDbBroker _mongoBroker;
+    private readonly MongoDbBroker _mongoBroker;   
+    private readonly RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
 
@@ -34,6 +36,7 @@ public class WorldService : BackgroundService, IConsumerService
         _producer = new ProtoKafkaProducer<LocalState>(config);
         _consumer = new ProtoKafkaConsumer<WorldChange>(config);
         _mongoBroker = new MongoDbBroker();
+        _redisBroker = new RedisBroker();
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -79,7 +82,7 @@ public class WorldService : BackgroundService, IConsumerService
             Location = value.Location
         };
         //_mongoBroker.CreateEntity(player);
-        _mongoBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.Avatar()
+        _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.Avatar()
         {
             Id = Guid.Parse(player.Id),
             Location = new ClassLibrary.Classes.Data.Coordinates()
@@ -89,7 +92,7 @@ public class WorldService : BackgroundService, IConsumerService
             }
         });
         
-        var entities = _mongoBroker.GetEntities(new ClassLibrary.Classes.Data.Coordinates()
+        var entities = _redisBroker.GetEntities(new ClassLibrary.Classes.Data.Coordinates()
         {
             X = player.Location.X,
             Y = player.Location.Y
@@ -161,9 +164,9 @@ public class WorldService : BackgroundService, IConsumerService
             },
             Timer = 10
         };
-        _mongoBroker.Insert(pro);
+        _redisBroker.Insert(pro);
 
-        var avatars = _mongoBroker.GetEntities(pro.Location).Where(x => x is ClassLibrary.Classes.Domain.Avatar);
+        var avatars = _redisBroker.GetEntities(pro.Location).Where(x => x is ClassLibrary.Classes.Domain.Avatar);
         foreach (var avatar in avatars)
         {
             var deltaOutput = new LocalState()
@@ -199,16 +202,16 @@ public class WorldService : BackgroundService, IConsumerService
         
         if (bullet.Timer <= 0)
         {
-            _mongoBroker.Delete(pro);
+            _redisBroker.Delete(pro);
             sync = SyncType.Delete;
         }
         else
         {
-            _mongoBroker.UpdateProjectile(pro);
+            _redisBroker.UpdateProjectile(pro);
             sync = SyncType.Delta;
         }
         
-        var entities = _mongoBroker.GetEntities(pro.Location).OfType<ClassLibrary.Classes.Domain.Avatar>().ToList();
+        var entities = _redisBroker.GetEntities(pro.Location).OfType<ClassLibrary.Classes.Domain.Avatar>().ToList();
         foreach (var entity in entities)
         {
             var deltaOutput = new LocalState()
@@ -227,13 +230,13 @@ public class WorldService : BackgroundService, IConsumerService
         {
             Id = value.EntityId
         };
-        var avatars = _mongoBroker.GetEntities(new ClassLibrary.Classes.Data.Coordinates()
+        var avatars = _redisBroker.GetEntities(new ClassLibrary.Classes.Data.Coordinates()
         {
             X = value.Location.X,
             Y = value.Location.Y
         }).Where(x => x is ClassLibrary.Classes.Domain.Avatar).ToList();
         
-        _mongoBroker.Delete(new ClassLibrary.Classes.Domain.Avatar()
+        _redisBroker.Delete(new ClassLibrary.Classes.Domain.Avatar()
         {
             Id = Guid.Parse(player.Id)
         });

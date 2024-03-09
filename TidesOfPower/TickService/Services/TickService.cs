@@ -2,6 +2,8 @@
 using ClassLibrary.MongoDB;
 using TickService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
+using ClassLibrary.Redis;
+using Projectile = ClassLibrary.Classes.Domain.Projectile;
 
 namespace TickService.Services;
 
@@ -14,6 +16,7 @@ public class TickService : BackgroundService, IConsumerService
     private readonly ProtoKafkaProducer<CollisionCheck> _producer;
 
     private readonly MongoDbBroker _mongoBroker;
+    private readonly RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
 
@@ -23,6 +26,7 @@ public class TickService : BackgroundService, IConsumerService
         var config = new KafkaConfig("");
         _producer = new ProtoKafkaProducer<CollisionCheck>(config);
         _mongoBroker = new MongoDbBroker();
+        _redisBroker = new RedisBroker();
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -35,10 +39,10 @@ public class TickService : BackgroundService, IConsumerService
 
         while (!ct.IsCancellationRequested)
         {
-            var projectiles = _mongoBroker.GetEntities().OfType<ClassLibrary.Classes.Domain.Projectile>().ToList();
+            var projectiles = _redisBroker.GetEntities().Where(x => x is ClassLibrary.Classes.Domain.Projectile).ToList();
             foreach (var projectile in projectiles)
             {
-                SendState(projectile);
+                SendState((ClassLibrary.Classes.Domain.Projectile)projectile);
             }
 
             Thread.Sleep(50);

@@ -4,6 +4,7 @@ using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using CollisionService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
+using ClassLibrary.Redis;
 
 namespace CollisionService.Services;
 
@@ -20,6 +21,7 @@ public class CollisionService : BackgroundService, IConsumerService
     private readonly ProtoKafkaConsumer<CollisionCheck> _consumer;
 
     private readonly MongoDbBroker _mongoBroker;
+    private readonly RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
 
@@ -31,6 +33,7 @@ public class CollisionService : BackgroundService, IConsumerService
         _producer = new ProtoKafkaProducer<WorldChange>(config);
         _consumer = new ProtoKafkaConsumer<CollisionCheck>(config);
         _mongoBroker = new MongoDbBroker();
+        _redisBroker = new RedisBroker();
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -51,7 +54,7 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, CollisionCheck value)
     {
-        var entities = _mongoBroker.GetCloseEntities(new ClassLibrary.Classes.Data.Coordinates()
+        var entities = _redisBroker.GetCloseEntities(new ClassLibrary.Classes.Data.Coordinates()
         {
             X = value.ToLocation.X,
             Y = value.ToLocation.Y

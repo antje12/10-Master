@@ -11,6 +11,7 @@ namespace TickService.Services;
 //https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class TickService : BackgroundService, IConsumerService
 {
+    private const string GroupId = "tick-group";
     private KafkaTopic OutputTopic = KafkaTopic.Collision;
 
     private readonly ProtoKafkaProducer<CollisionCheck> _producer;
@@ -23,7 +24,7 @@ public class TickService : BackgroundService, IConsumerService
     public TickService()
     {
         Console.WriteLine($"TickService created");
-        var config = new KafkaConfig("");
+        var config = new KafkaConfig(GroupId);
         _producer = new ProtoKafkaProducer<CollisionCheck>(config);
         _mongoBroker = new MongoDbBroker();
         _redisBroker = new RedisBroker();
@@ -39,10 +40,10 @@ public class TickService : BackgroundService, IConsumerService
 
         while (!ct.IsCancellationRequested)
         {
-            var projectiles = _redisBroker.GetEntities().Where(x => x is ClassLibrary.Classes.Domain.Projectile).ToList();
+            var projectiles = _redisBroker.GetEntities().OfType<ClassLibrary.Classes.Domain.Projectile>().ToList();
             foreach (var projectile in projectiles)
             {
-                SendState((ClassLibrary.Classes.Domain.Projectile)projectile);
+                SendState(projectile);
             }
 
             Thread.Sleep(50);

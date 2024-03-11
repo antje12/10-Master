@@ -1,4 +1,5 @@
-﻿using ClassLibrary.Interfaces;
+﻿using System.Diagnostics;
+using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using InputService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
@@ -49,6 +50,9 @@ public class InputService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, Input value)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        
         if (value.KeyInput.Any(x => x is GameKey.Up or GameKey.Down or GameKey.Left or GameKey.Right))
             Move(key, value);
 
@@ -57,6 +61,10 @@ public class InputService : BackgroundService, IConsumerService
 
         if (value.KeyInput.Any(x => x is GameKey.Interact))
             Interact(key, value);
+        
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        if (elapsedTime > 10) Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Move(string key, Input value)

@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Classes.Data;
+﻿using System.Diagnostics;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
@@ -57,6 +57,9 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, WorldChange value)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        
         switch (value.Change)
         {
             case ChangeType.MovePlayer:
@@ -72,6 +75,10 @@ public class WorldService : BackgroundService, IConsumerService
                 DamagePlayer(key, value);
                 break;
         }
+        
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        if (elapsedTime > 10) Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void MovePlayer(string key, WorldChange value)
@@ -112,13 +119,13 @@ public class WorldService : BackgroundService, IConsumerService
                 Y = a.Location.Y,
             }
         }).ToList();
-        var projectiles = entities.Where(x => x is ClassLibrary.Classes.Domain.Projectile).Select(a => new Projectile()
+        var projectiles = entities.Where(x => x is ClassLibrary.Classes.Domain.Projectile).Select(p => new Projectile()
         {
-            Id = a.Id.ToString(),
+            Id = p.Id.ToString(),
             Location = new Coordinates()
             {
-                X = a.Location.X,
-                Y = a.Location.Y,
+                X = p.Location.X,
+                Y = p.Location.Y,
             }
         }).ToList();
         output.Avatars.AddRange(avatars);
@@ -249,12 +256,7 @@ public class WorldService : BackgroundService, IConsumerService
             };
             var a = new Avatar()
             {
-                Id = avatar.Id.ToString(),
-                Location = new Coordinates()
-                {
-                    X = avatar.Location.X,
-                    Y= avatar.Location.Y
-                }
+                Id = player.Id
             };
             deltaOutput.Avatars.Add(a);
             _producer.Produce($"{OutputTopic}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);

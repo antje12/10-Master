@@ -99,8 +99,31 @@ public class RedisBroker
     {
         var src = _ft.Search("idx:entities", new Query("*").Limit(0, 10000)); // 10000 max, may be a problem
         var json = src.ToJson();
-        var res = json.Select(x => JsonConvert.DeserializeObject<Entity>(x));
-        return res.ToList();
+
+        var results = new List<Entity>();
+        foreach (var j in json)
+        {
+            var result = JsonConvert.DeserializeObject<Entity>(j);
+            if (result == null) continue;
+            switch (result.Type)
+            {
+                case TheEntityType.Avatar:
+                    result = JsonConvert.DeserializeObject<Avatar>(j);
+                    break;
+                case TheEntityType.Projectile:
+                    result = JsonConvert.DeserializeObject<Projectile>(j);
+                    break;
+                case TheEntityType.Ship:
+                    result = JsonConvert.DeserializeObject<Ship>(j);
+                    break;
+                case TheEntityType.Treasure:
+                    result = JsonConvert.DeserializeObject<Treasure>(j);
+                    break;
+            }
+            if (result == null) continue;
+            results.Add(result);
+        }
+        return results;
     }
 
     public List<Entity> GetCloseEntities(Coordinates location)
@@ -156,7 +179,9 @@ public class RedisBroker
 
     public void UpdateProjectile(Projectile entity)
     {
-        _json.Set($@"entity:{entity.Id}", "$", entity);
+        _json.Set($@"entity:{entity.Id}", ".Timer", entity.Timer);
+        _json.Set($@"entity:{entity.Id}", ".Location.X", entity.Location.X);
+        _json.Set($@"entity:{entity.Id}", ".Location.Y", entity.Location.Y);
     }
 
     public void UpsertAvatarLocation(Avatar entity)

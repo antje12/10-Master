@@ -1,4 +1,5 @@
-﻿using ClassLibrary.Classes.Domain;
+﻿using System.Diagnostics;
+using ClassLibrary.Classes.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
@@ -54,6 +55,9 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, CollisionCheck value)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        
         var entities = _redisBroker.GetCloseEntities(new ClassLibrary.Classes.Data.Coordinates()
         {
             X = value.ToLocation.X,
@@ -119,6 +123,10 @@ public class CollisionService : BackgroundService, IConsumerService
 
             _producer.Produce(OutputTopic, key, output);
         }
+        
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        if (elapsedTime > 10) Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private bool circleCollision(Coordinates e1, int w1, ClassLibrary.Classes.Data.Coordinates e2, int w2)

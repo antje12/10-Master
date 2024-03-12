@@ -69,6 +69,9 @@ public class InputService : BackgroundService, IConsumerService
 
     private void Move(string key, Input value)
     {
+        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         
@@ -105,6 +108,9 @@ public class InputService : BackgroundService, IConsumerService
         }
 
         _producerC.Produce(OutputTopicC, key, output);
+        
+        timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
         
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;

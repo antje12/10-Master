@@ -60,7 +60,8 @@ public class SyncService : BackgroundService
                 game.dict.Remove(value.EventId);
                 var endTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 var timeDiff = endTime - startTime;
-                Console.WriteLine($"Latency = {timeDiff} ms");
+                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                Console.WriteLine($"Latency = {timeDiff} ms - stamp: {timestampWithMs}");
                 FullSync(value);
                 break;
             case SyncType.Delta:

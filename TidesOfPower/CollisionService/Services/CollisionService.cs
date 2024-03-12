@@ -59,6 +59,9 @@ public class CollisionService : BackgroundService, IConsumerService
         var s2 = new Stopwatch();
         stopwatch.Start();
         
+        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        
         s2.Start();
         var entities = _redisBroker.GetCloseEntities(new ClassLibrary.Classes.Data.Coordinates()
         {
@@ -114,6 +117,8 @@ public class CollisionService : BackgroundService, IConsumerService
             };
 
             _producer.Produce(OutputTopic, key, output);
+            timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
         }
         else if (value.Entity is EntityType.Projectile)
         {

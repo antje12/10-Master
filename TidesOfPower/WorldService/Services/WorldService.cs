@@ -80,6 +80,9 @@ public class WorldService : BackgroundService, IConsumerService
         var s2 = new Stopwatch();
         stopwatch.Start();
         
+        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        
         var player = new Avatar()
         {
             Id = value.EntityId,
@@ -144,6 +147,9 @@ public class WorldService : BackgroundService, IConsumerService
             deltaOutput.Avatars.Add(player);
             _producer.Produce($"{OutputTopic}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
         }
+        
+        timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
         
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;

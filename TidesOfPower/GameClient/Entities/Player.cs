@@ -108,6 +108,8 @@ public class Player : Agent
             {
                 var timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 _game.dict.Add(input.EventId, timeStamp);
+                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                Console.WriteLine($"Send {input.EventId} at {timestampWithMs}");
                 _producer.Produce(MyGame.OutputTopic, _agentId.ToString(), input);
                 _lastLocation = input.PlayerLocation;
                 _lastKeyInput = input.KeyInput.ToList();

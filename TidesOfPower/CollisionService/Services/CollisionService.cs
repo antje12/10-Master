@@ -109,7 +109,8 @@ public class CollisionService : BackgroundService, IConsumerService
             {
                 EntityId = value.EntityId,
                 Change = ChangeType.MovePlayer,
-                Location = value.ToLocation
+                Location = value.ToLocation,
+                EventId = value.EventId
             };
 
             _producer.Produce(OutputTopic, key, output);

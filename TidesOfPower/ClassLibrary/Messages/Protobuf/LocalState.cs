@@ -25,25 +25,25 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChBMb2NhbFN0YXRlLnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
-            "dG9idWYaDENvbW1vbi5wcm90byLQAQoKTG9jYWxTdGF0ZRIQCghQbGF5ZXJJ",
+            "dG9idWYaDENvbW1vbi5wcm90byLhAQoKTG9jYWxTdGF0ZRIQCghQbGF5ZXJJ",
             "ZBgBIAEoCRI2CgRTeW5jGAIgASgOMiguQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
             "LlByb3RvYnVmLlN5bmNUeXBlEjcKB0F2YXRhcnMYAyADKAsyJi5DbGFzc0xp",
             "YnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQXZhdGFyEj8KC1Byb2plY3RpbGVz",
             "GAQgAygLMiouQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlByb2pl",
-            "Y3RpbGUinAEKBkF2YXRhchIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEo",
+            "Y3RpbGUSDwoHRXZlbnRJZBgFIAEoCSKcAQoGQXZhdGFyEgoKAklkGAEgASgJ",
+            "Ej0KCExvY2F0aW9uGAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
+            "b3RvYnVmLkNvb3JkaW5hdGVzEgwKBE5hbWUYAyABKAkSFAoMV2Fsa2luZ1Nw",
+            "ZWVkGAQgASgFEhAKCExpZmVQb29sGAUgASgFEhEKCUludmVudG9yeRgGIAEo",
+            "BSKmAQoKUHJvamVjdGlsZRIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEo",
             "CzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRl",
-            "cxIMCgROYW1lGAMgASgJEhQKDFdhbGtpbmdTcGVlZBgEIAEoBRIQCghMaWZl",
-            "UG9vbBgFIAEoBRIRCglJbnZlbnRvcnkYBiABKAUipgEKClByb2plY3RpbGUS",
-            "CgoCSWQYASABKAkSPQoITG9jYXRpb24YAiABKAsyKy5DbGFzc0xpYnJhcnku",
-            "TWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXMSPgoJRGlyZWN0aW9uGAMg",
-            "ASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5h",
-            "dGVzEg0KBVRpbWVyGAQgASgBKisKCFN5bmNUeXBlEggKBEZ1bGwQABIJCgVE",
-            "ZWx0YRABEgoKBkRlbGV0ZRACQiGqAh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMu",
-            "UHJvdG9idWZiBnByb3RvMw=="));
+            "cxI+CglEaXJlY3Rpb24YAyABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMu",
+            "UHJvdG9idWYuQ29vcmRpbmF0ZXMSDQoFVGltZXIYBCABKAEqKwoIU3luY1R5",
+            "cGUSCAoERnVsbBAAEgkKBURlbHRhEAESCgoGRGVsZXRlEAJCIaoCHkNsYXNz",
+            "TGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1ZmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.SyncType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState), global::ClassLibrary.Messages.Protobuf.LocalState.Parser, new[]{ "PlayerId", "Sync", "Avatars", "Projectiles" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState), global::ClassLibrary.Messages.Protobuf.LocalState.Parser, new[]{ "PlayerId", "Sync", "Avatars", "Projectiles", "EventId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Avatar), global::ClassLibrary.Messages.Protobuf.Avatar.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile), global::ClassLibrary.Messages.Protobuf.Projectile.Parser, new[]{ "Id", "Location", "Direction", "Timer" }, null, null, null, null)
           }));
@@ -100,6 +100,7 @@ namespace ClassLibrary.Messages.Protobuf {
       sync_ = other.sync_;
       avatars_ = other.avatars_.Clone();
       projectiles_ = other.projectiles_.Clone();
+      eventId_ = other.eventId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -158,6 +159,18 @@ namespace ClassLibrary.Messages.Protobuf {
       get { return projectiles_; }
     }
 
+    /// <summary>Field number for the "EventId" field.</summary>
+    public const int EventIdFieldNumber = 5;
+    private string eventId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string EventId {
+      get { return eventId_; }
+      set {
+        eventId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -177,6 +190,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Sync != other.Sync) return false;
       if(!avatars_.Equals(other.avatars_)) return false;
       if(!projectiles_.Equals(other.projectiles_)) return false;
+      if (EventId != other.EventId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -188,6 +202,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Sync != global::ClassLibrary.Messages.Protobuf.SyncType.Full) hash ^= Sync.GetHashCode();
       hash ^= avatars_.GetHashCode();
       hash ^= projectiles_.GetHashCode();
+      if (EventId.Length != 0) hash ^= EventId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -216,6 +231,10 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       avatars_.WriteTo(output, _repeated_avatars_codec);
       projectiles_.WriteTo(output, _repeated_projectiles_codec);
+      if (EventId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(EventId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -236,6 +255,10 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       avatars_.WriteTo(ref output, _repeated_avatars_codec);
       projectiles_.WriteTo(ref output, _repeated_projectiles_codec);
+      if (EventId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(EventId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -254,6 +277,9 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       size += avatars_.CalculateSize(_repeated_avatars_codec);
       size += projectiles_.CalculateSize(_repeated_projectiles_codec);
+      if (EventId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(EventId);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -274,6 +300,9 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       avatars_.Add(other.avatars_);
       projectiles_.Add(other.projectiles_);
+      if (other.EventId.Length != 0) {
+        EventId = other.EventId;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -305,6 +334,10 @@ namespace ClassLibrary.Messages.Protobuf {
             projectiles_.AddEntriesFrom(input, _repeated_projectiles_codec);
             break;
           }
+          case 42: {
+            EventId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -334,6 +367,10 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 34: {
             projectiles_.AddEntriesFrom(ref input, _repeated_projectiles_codec);
+            break;
+          }
+          case 42: {
+            EventId = input.ReadString();
             break;
           }
         }

@@ -25,19 +25,19 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgtJbnB1dC5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVm",
-            "GgxDb21tb24ucHJvdG8i7wEKBUlucHV0EhAKCFBsYXllcklkGAEgASgJEkMK",
+            "GgxDb21tb24ucHJvdG8igAIKBUlucHV0EhAKCFBsYXllcklkGAEgASgJEkMK",
             "DlBsYXllckxvY2F0aW9uGAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
             "LlByb3RvYnVmLkNvb3JkaW5hdGVzEkIKDU1vdXNlTG9jYXRpb24YAyABKAsy",
             "Ky5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXMS",
             "OQoIS2V5SW5wdXQYBCADKA4yJy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
-            "dG9idWYuR2FtZUtleRIQCghHYW1lVGltZRgFIAEoASpKCgdHYW1lS2V5EgYK",
-            "AlVwEAASCAoERG93bhABEggKBExlZnQQAhIJCgVSaWdodBADEgoKBkF0dGFj",
-            "axAEEgwKCEludGVyYWN0EAVCIaoCHkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Q",
-            "cm90b2J1ZmIGcHJvdG8z"));
+            "dG9idWYuR2FtZUtleRIQCghHYW1lVGltZRgFIAEoARIPCgdFdmVudElkGAYg",
+            "ASgJKkoKB0dhbWVLZXkSBgoCVXAQABIICgREb3duEAESCAoETGVmdBACEgkK",
+            "BVJpZ2h0EAMSCgoGQXR0YWNrEAQSDAoISW50ZXJhY3QQBUIhqgIeQ2xhc3NM",
+            "aWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.GameKey), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Input), global::ClassLibrary.Messages.Protobuf.Input.Parser, new[]{ "PlayerId", "PlayerLocation", "MouseLocation", "KeyInput", "GameTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Input), global::ClassLibrary.Messages.Protobuf.Input.Parser, new[]{ "PlayerId", "PlayerLocation", "MouseLocation", "KeyInput", "GameTime", "EventId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -96,6 +96,7 @@ namespace ClassLibrary.Messages.Protobuf {
       mouseLocation_ = other.mouseLocation_ != null ? other.mouseLocation_.Clone() : null;
       keyInput_ = other.keyInput_.Clone();
       gameTime_ = other.gameTime_;
+      eventId_ = other.eventId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -167,6 +168,18 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "EventId" field.</summary>
+    public const int EventIdFieldNumber = 6;
+    private string eventId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string EventId {
+      get { return eventId_; }
+      set {
+        eventId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -187,6 +200,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (!object.Equals(MouseLocation, other.MouseLocation)) return false;
       if(!keyInput_.Equals(other.keyInput_)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(GameTime, other.GameTime)) return false;
+      if (EventId != other.EventId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -199,6 +213,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (mouseLocation_ != null) hash ^= MouseLocation.GetHashCode();
       hash ^= keyInput_.GetHashCode();
       if (GameTime != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(GameTime);
+      if (EventId.Length != 0) hash ^= EventId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -234,6 +249,10 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(41);
         output.WriteDouble(GameTime);
       }
+      if (EventId.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(EventId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -261,6 +280,10 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(41);
         output.WriteDouble(GameTime);
       }
+      if (EventId.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(EventId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -283,6 +306,9 @@ namespace ClassLibrary.Messages.Protobuf {
       size += keyInput_.CalculateSize(_repeated_keyInput_codec);
       if (GameTime != 0D) {
         size += 1 + 8;
+      }
+      if (EventId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(EventId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -314,6 +340,9 @@ namespace ClassLibrary.Messages.Protobuf {
       keyInput_.Add(other.keyInput_);
       if (other.GameTime != 0D) {
         GameTime = other.GameTime;
+      }
+      if (other.EventId.Length != 0) {
+        EventId = other.EventId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -357,6 +386,10 @@ namespace ClassLibrary.Messages.Protobuf {
             GameTime = input.ReadDouble();
             break;
           }
+          case 50: {
+            EventId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -397,6 +430,10 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 41: {
             GameTime = input.ReadDouble();
+            break;
+          }
+          case 50: {
+            EventId = input.ReadString();
             break;
           }
         }

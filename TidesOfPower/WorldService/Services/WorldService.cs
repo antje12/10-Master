@@ -106,7 +106,8 @@ public class WorldService : BackgroundService, IConsumerService
         var output = new LocalState()
         {
             PlayerId = player.Id,
-            Sync = SyncType.Full
+            Sync = SyncType.Full,
+            EventId = value.EventId
         };
 
         var avatars = entities.Where(x => x is ClassLibrary.Classes.Domain.Avatar).Select(a => new Avatar()

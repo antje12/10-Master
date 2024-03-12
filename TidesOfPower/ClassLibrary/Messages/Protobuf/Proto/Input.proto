@@ -12,6 +12,7 @@ message Input {
   ClassLibrary.Messages.Protobuf.Coordinates MouseLocation = 3;
   repeated GameKey KeyInput = 4;
   double GameTime = 5;
+  string EventId = 6;
 }
 
 enum GameKey {

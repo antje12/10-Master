@@ -45,6 +45,8 @@ public class MyGame : Game
     private List<Sprite> LocalState;
     private readonly object _lockObject = new object();
 
+    public static Dictionary<string, long> dict = new Dictionary<string, long>();
+    
     public MyGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -101,6 +103,11 @@ public class MyGame : Game
         switch (value.Sync)
         {
             case SyncType.Full:
+                var startTime = dict[value.EventId];
+                dict.Remove(value.EventId);
+                var endTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                var timeDiff = endTime - startTime;
+                Console.WriteLine($"Latency = {timeDiff} ms");
                 FullSync(value);
                 break;
             case SyncType.Delta:

@@ -93,7 +93,8 @@ public class Player : Agent
                     X = MousePosition.X,
                     Y = MousePosition.Y
                 },
-                GameTime = gameTime.ElapsedGameTime.TotalSeconds
+                GameTime = gameTime.ElapsedGameTime.TotalSeconds,
+                EventId = Guid.NewGuid().ToString()
             };
             input.KeyInput.AddRange(keyInput);
 
@@ -102,6 +103,8 @@ public class Player : Agent
 
             if (keyInput.Any() && (newLocation || newInput))
             {
+                var timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                MyGame.dict.Add(input.EventId, timeStamp);
                 _producer.Produce(MyGame.OutputTopic, _agentId.ToString(), input);
                 _lastLocation = input.PlayerLocation;
                 _lastKeyInput = input.KeyInput.ToList();

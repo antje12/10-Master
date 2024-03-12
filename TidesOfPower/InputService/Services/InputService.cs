@@ -78,7 +78,8 @@ public class InputService : BackgroundService, IConsumerService
             {
                 X = value.PlayerLocation.X,
                 Y = value.PlayerLocation.Y
-            }
+            },
+            EventId = value.EventId
         };
 
         foreach (var input in value.KeyInput)

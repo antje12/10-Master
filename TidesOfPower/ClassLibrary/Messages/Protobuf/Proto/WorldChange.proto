@@ -12,6 +12,7 @@ message WorldChange {
   ClassLibrary.Messages.Protobuf.Coordinates Location = 3;
   ClassLibrary.Messages.Protobuf.Coordinates Direction = 4;
   double Timer = 5;
+  string EventId = 6;
 }
 
 enum ChangeType {

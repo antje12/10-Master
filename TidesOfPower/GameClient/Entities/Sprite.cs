@@ -15,5 +15,5 @@ public abstract class Sprite
     }
 
     public abstract void Update(GameTime gameTime);
-    public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+    public abstract void Draw(SpriteBatch spriteBatch);
 }

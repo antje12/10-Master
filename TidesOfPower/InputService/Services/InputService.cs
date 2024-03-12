@@ -36,14 +36,11 @@ public class InputService : BackgroundService, IConsumerService
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
-
         IsRunning = true;
         Console.WriteLine($"InputService started");
-
         await _admin.CreateTopic(InputTopic);
         IProtoConsumer<Input>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(InputTopic, action, ct);
-
         IsRunning = false;
         Console.WriteLine($"InputService stopped");
     }

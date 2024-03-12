@@ -44,6 +44,7 @@ kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-kafka.yml
 kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-schema-registry.yml
 kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-kowl.yml
 kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-mongodb.yml
+kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-redis.yml
 ```
 
 Setup the game services:

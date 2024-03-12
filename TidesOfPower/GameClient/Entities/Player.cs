@@ -7,8 +7,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ClassLibrary.Messages.Protobuf;
-using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
-using GameKey = ClassLibrary.Messages.Protobuf.GameKey;
 
 namespace GameClient.Entities;
 
@@ -40,14 +38,13 @@ public class Player : Agent
         var keyInput = new List<GameKey>();
         
         var mState = Mouse.GetState();
-        if (mState.RightButton == ButtonState.Pressed && MouseOnScreen(mState.Position.ToVector2()))
+        if (mState.RightButton == ButtonState.Pressed && _camera.MouseOnScreen(mState.Position.ToVector2()))
         {
             if (!attacking)
             {
                 attacking = true;
                 keyInput.Add(GameKey.Attack);
-                MousePosition = MouseInWorld(mState.Position.ToVector2(), _camera);
-                //Console.WriteLine($"Mouse clicked at {MousePosition.X}:{MousePosition.Y}");
+                MousePosition = _camera.MouseInWorld(mState.Position.ToVector2());
             }
         }
         else
@@ -65,19 +62,6 @@ public class Player : Agent
             keyInput.Add(GameKey.Left);
         if (kState.IsKeyDown(Keys.D))
             keyInput.Add(GameKey.Right);
-        //if (kState.IsKeyDown(Keys.Space))
-        //{
-        //    if (!attacking)
-        //    {
-        //        attacking = true;
-        //        keyInput.Add(GameKey.Attack);
-        //    }
-        //}
-        //else
-        //{
-        //    attacking = false;
-        //    _lastKeyInput.Remove(GameKey.Attack);
-        //}
         if (kState.IsKeyDown(Keys.Space))
             keyInput.Add(GameKey.Interact);
 
@@ -119,21 +103,7 @@ public class Player : Agent
         _camera.Follow(Position, Texture, MyGame.screenWidth, MyGame.screenHeight);
     }
 
-    private bool MouseOnScreen(Vector2 mouse)
-    {
-        return 0 <= mouse.X && mouse.X <= MyGame.screenWidth &&
-               0 <= mouse.Y && mouse.Y <= MyGame.screenHeight;
-    }
-    
-    public Vector2 MouseInWorld(Vector2 screenPosition, Camera camera)
-    {
-        Matrix inverseTransform = Matrix.Invert(camera.Transform);
-        Vector3 screenPosition3 = new Vector3(screenPosition, 0);
-        Vector3 worldPosition = Vector3.Transform(screenPosition3, inverseTransform);
-        return new Vector2(worldPosition.X, worldPosition.Y);
-    }
-
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch)
     {
         var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
         spriteBatch.Draw(Texture, offset, Color.Green);

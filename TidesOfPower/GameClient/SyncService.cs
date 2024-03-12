@@ -24,8 +24,6 @@ public class SyncService : BackgroundService
 
     private MyGame game;
     
-    public bool IsRunning { get; private set; }
-    
     public SyncService(MyGame game)
     {
         Console.WriteLine("SyncService Created!");
@@ -39,15 +37,10 @@ public class SyncService : BackgroundService
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
-
-        IsRunning = true;
         Console.WriteLine($"SyncService started");
-
         await _admin.CreateTopic($"{InputTopic}_{game.PlayerId}");
         IProtoConsumer<LocalState>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume($"{InputTopic}_{game.PlayerId}", action, ct);
-
-        IsRunning = false;
         Console.WriteLine($"SyncService stopped");
     }
 
@@ -114,7 +107,9 @@ public class SyncService : BackgroundService
                 }
             }
             else
+            {
                 localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
+            }
         }
 
         foreach (var projectile in value.Projectiles)
@@ -132,7 +127,9 @@ public class SyncService : BackgroundService
                 }
             }
             else
+            {
                 localAvatar.Position = new Vector2(projectile.Location.X, projectile.Location.Y);
+            }
         }
     }
 
@@ -154,7 +151,7 @@ public class SyncService : BackgroundService
 
         if (deleteAvatarIds.Contains(game.PlayerId.ToString()))
         {
-            Console.WriteLine("Died!");
+            Console.WriteLine("Player Died!");
         }
     }
 }

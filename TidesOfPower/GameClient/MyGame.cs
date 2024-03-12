@@ -15,7 +15,6 @@ public class MyGame : Game
     public Guid PlayerId = Guid.NewGuid();
     
     const string GroupId = "output-group";
-    private KafkaTopic InputTopic = KafkaTopic.LocalState;
     public static KafkaTopic OutputTopic = KafkaTopic.Input;
 
     readonly KafkaConfig _config;
@@ -34,9 +33,8 @@ public class MyGame : Game
     public static int screenWidth; //800
 
     public Player Player;
-    public List<Sprite> LocalState;
+    public List<Sprite> LocalState = new List<Sprite>();
     public readonly object _lockObject = new object();
-
     public Dictionary<string, long> dict = new Dictionary<string, long>();
     
     public MyGame()
@@ -56,14 +54,12 @@ public class MyGame : Game
         _camera = new Camera();
         base.Initialize();
 
-        LocalState = new List<Sprite>();
-
         var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
         Player = new Player(this, PlayerId, playerPosition, avatarTexture, _camera, _producer);
 
         var oceanPosition = new Vector2(0, 0);
         var ocean = new Ocean(oceanPosition, oceanTexture, Player);
-
+        
         var islandPosition = new Vector2(screenWidth / 2, screenHeight / 2);
         var island = new Island(islandPosition, islandTexture);
 
@@ -74,7 +70,6 @@ public class MyGame : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
         avatarTexture = Content.Load<Texture2D>("circle");
         islandTexture = Content.Load<Texture2D>("island");
         oceanTexture = Content.Load<Texture2D>("ocean");
@@ -88,9 +83,8 @@ public class MyGame : Game
             Exit();
         lock (_lockObject)
         {
-            for (var i = 0; i < LocalState.Count; i++)
+            foreach (var sprite in LocalState)
             {
-                var sprite = LocalState[i];
                 sprite.Update(gameTime);
             }
         }
@@ -104,13 +98,12 @@ public class MyGame : Game
         _spriteBatch.Begin(transformMatrix: _camera.Transform);
         lock (_lockObject)
         {
-            for (var i = 0; i < LocalState.Count; i++)
+            foreach (var sprite in LocalState)
             {
-                var sprite = LocalState[i];
-                sprite.Draw(gameTime, _spriteBatch);
+                sprite.Draw(_spriteBatch);
             }
         }
-        Player.Draw(gameTime, _spriteBatch);
+        Player.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

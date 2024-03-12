@@ -28,7 +28,7 @@ var avatar = new Avatar()
     Inventory = 0
 };
 redisBroker.Insert(avatar);
-redisBroker.GetEntities(avatar.Location);
+redisBroker.GetEntities(avatar.Location.X, avatar.Location.Y);
 
 //redisBroker.InitProfile();
 //TestRedis();

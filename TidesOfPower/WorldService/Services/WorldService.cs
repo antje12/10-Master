@@ -43,14 +43,11 @@ public class WorldService : BackgroundService, IConsumerService
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
-
         IsRunning = true;
         Console.WriteLine($"WorldService started");
-
         await _admin.CreateTopic(InputTopic);
         IProtoConsumer<WorldChange>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(InputTopic, action, ct);
-
         IsRunning = false;
         Console.WriteLine($"WorldService stopped");
     }
@@ -100,11 +97,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Y = player.Location.Y
             }
         });
-        var entities = _redisBroker.GetEntities(new ClassLibrary.Classes.Data.Coordinates()
-        {
-            X = player.Location.X,
-            Y = player.Location.Y
-        });
+        var entities = _redisBroker.GetEntities(player.Location.X, player.Location.Y);
         s2.Stop();
         var output = new LocalState()
         {
@@ -113,7 +106,7 @@ public class WorldService : BackgroundService, IConsumerService
             EventId = value.EventId
         };
 
-        var avatars = entities.Where(x => x is ClassLibrary.Classes.Domain.Avatar).Select(a => new Avatar()
+        var avatars = entities.OfType<ClassLibrary.Classes.Domain.Avatar>().Select(a => new Avatar()
         {
             Id = a.Id.ToString(),
             Location = new Coordinates()
@@ -122,7 +115,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Y = a.Location.Y,
             }
         }).ToList();
-        var projectiles = entities.Where(x => x is ClassLibrary.Classes.Domain.Projectile).Select(p => new Projectile()
+        var projectiles = entities.OfType<ClassLibrary.Classes.Domain.Projectile>().Select(p => new Projectile()
         {
             Id = p.Id.ToString(),
             Location = new Coordinates()
@@ -188,7 +181,7 @@ public class WorldService : BackgroundService, IConsumerService
         
         s2.Start();
         _redisBroker.Insert(pro);
-        var avatars = _redisBroker.GetEntities(pro.Location).Where(x => x is ClassLibrary.Classes.Domain.Avatar);
+        var avatars = _redisBroker.GetEntities(pro.Location.X, pro.Location.Y).OfType<ClassLibrary.Classes.Domain.Avatar>();
         s2.Stop();
         
         foreach (var avatar in avatars)
@@ -243,7 +236,7 @@ public class WorldService : BackgroundService, IConsumerService
             _redisBroker.UpdateProjectile(pro);
             sync = SyncType.Delta;
         }
-        var entities = _redisBroker.GetEntities(pro.Location).OfType<ClassLibrary.Classes.Domain.Avatar>().ToList();
+        var entities = _redisBroker.GetEntities(pro.Location.X, pro.Location.Y).OfType<ClassLibrary.Classes.Domain.Avatar>().ToList();
         s2.Stop();
         
         foreach (var entity in entities)
@@ -274,11 +267,8 @@ public class WorldService : BackgroundService, IConsumerService
         };
         
         s2.Start();
-        var avatars = _redisBroker.GetEntities(new ClassLibrary.Classes.Data.Coordinates()
-        {
-            X = value.Location.X,
-            Y = value.Location.Y
-        }).Where(x => x is ClassLibrary.Classes.Domain.Avatar).ToList();
+        var avatars = _redisBroker.GetEntities(value.Location.X, value.Location.Y)
+            .OfType<ClassLibrary.Classes.Domain.Avatar>().ToList();
         _redisBroker.Delete(new ClassLibrary.Classes.Domain.Avatar()
         {
             Id = Guid.Parse(player.Id)

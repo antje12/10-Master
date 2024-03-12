@@ -1,5 +1,4 @@
 using System.Globalization;
-using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
 using Newtonsoft.Json;
 using NRedisStack;
@@ -126,21 +125,21 @@ public class RedisBroker
         return results;
     }
 
-    public List<Entity> GetCloseEntities(Coordinates location)
+    public List<Entity> GetCloseEntities(float x, float y)
     {
-        var xFrom = (location.X - 50).ToString(CultureInfo.InvariantCulture);
-        var xTo = (location.X + 50).ToString(CultureInfo.InvariantCulture);
-        var yFrom = (location.Y - 50).ToString(CultureInfo.InvariantCulture);
-        var yTo = (location.Y + 50).ToString(CultureInfo.InvariantCulture);
+        var xFrom = (x - 50).ToString(CultureInfo.InvariantCulture);
+        var xTo = (x + 50).ToString(CultureInfo.InvariantCulture);
+        var yFrom = (y - 50).ToString(CultureInfo.InvariantCulture);
+        var yTo = (y + 50).ToString(CultureInfo.InvariantCulture);
         return GetEntities(xFrom, xTo, yFrom, yTo);
     }
 
-    public List<Entity> GetEntities(Coordinates location)
+    public List<Entity> GetEntities(float x, float y)
     {
-        var xFrom = (location.X - 400).ToString(CultureInfo.InvariantCulture);
-        var xTo = (location.X + 400).ToString(CultureInfo.InvariantCulture);
-        var yFrom = (location.Y - 240).ToString(CultureInfo.InvariantCulture);
-        var yTo = (location.Y + 240).ToString(CultureInfo.InvariantCulture);
+        var xFrom = (x - 400).ToString(CultureInfo.InvariantCulture);
+        var xTo = (x + 400).ToString(CultureInfo.InvariantCulture);
+        var yFrom = (y - 240).ToString(CultureInfo.InvariantCulture);
+        var yTo = (y + 240).ToString(CultureInfo.InvariantCulture);
         return GetEntities(xFrom, xTo, yFrom, yTo);
     }
     

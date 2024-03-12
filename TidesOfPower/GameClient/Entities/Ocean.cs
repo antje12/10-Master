@@ -16,7 +16,7 @@ public class Ocean : Sprite
     {
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch)
     {
         int screenWidth = MyGame.screenWidth;
         int screenHeight = MyGame.screenHeight;
@@ -32,7 +32,7 @@ public class Ocean : Sprite
         var bgWidth = screenWidth + Texture.Width * 2;
         var bgHeight = screenHeight + Texture.Height * 2;
 
-        Rectangle background = new Rectangle((int) startX, (int) startY, bgWidth, bgHeight);
+        var background = new Rectangle((int) startX, (int) startY, bgWidth, bgHeight);
         //_spriteBatch.Draw(oceanTexture, background, Color.White);
         // Draw the repeating texture using a loop to cover the entire destination rectangle
         for (int y = background.Top; y < background.Bottom; y += Texture.Height)

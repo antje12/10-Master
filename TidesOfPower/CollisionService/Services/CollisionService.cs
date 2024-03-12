@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using ClassLibrary.Classes.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
@@ -41,14 +40,11 @@ public class CollisionService : BackgroundService, IConsumerService
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
-
         IsRunning = true;
         Console.WriteLine($"CollisionService started");
-
         await _admin.CreateTopic(InputTopic);
         IProtoConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(InputTopic, action, ct);
-
         IsRunning = false;
         Console.WriteLine($"CollisionService stopped");
     }
@@ -63,11 +59,7 @@ public class CollisionService : BackgroundService, IConsumerService
         Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
         
         s2.Start();
-        var entities = _redisBroker.GetCloseEntities(new ClassLibrary.Classes.Data.Coordinates()
-        {
-            X = value.ToLocation.X,
-            Y = value.ToLocation.Y
-        });
+        var entities = _redisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
         s2.Stop();
         foreach (var entity in entities)
         {
@@ -142,18 +134,15 @@ public class CollisionService : BackgroundService, IConsumerService
     {
         float dx = e1.X - e2.X;
         float dy = e1.Y - e2.Y;
-
         // a^2 + b^2 = c^2
         // c = sqrt(a^2 + b^2)
         double distance = Math.Sqrt(dx * dx + dy * dy);
-
         // if radius overlap
         if (distance < w1 + w2)
         {
             // Collision!
             return true;
         }
-
         return false;
     }
 
@@ -165,7 +154,6 @@ public class CollisionService : BackgroundService, IConsumerService
             Change = ChangeType.DamagePlayer,
             Location = entityLocation
         };
-
         _producer.Produce(OutputTopic, entityId.ToString(), output);
     }
 }

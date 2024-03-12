@@ -4,7 +4,6 @@ using ClassLibrary.MongoDB;
 using TickService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.Redis;
-using Projectile = ClassLibrary.Classes.Domain.Projectile;
 
 namespace TickService.Services;
 

@@ -130,7 +130,7 @@ public class CollisionService : BackgroundService, IConsumerService
         
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
+        if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time -- {value.EventId}");
     }
 
     private bool circleCollision(Coordinates e1, int w1, ClassLibrary.Classes.Data.Coordinates e2, int w2)

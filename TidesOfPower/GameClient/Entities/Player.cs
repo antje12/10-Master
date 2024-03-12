@@ -14,6 +14,8 @@ namespace GameClient.Entities;
 
 public class Player : Agent
 {
+    private MyGame _game;
+    
     public Vector2 MousePosition { get; set; }
     private readonly Camera _camera;
     private readonly ProtoKafkaProducer<Input> _producer;
@@ -23,9 +25,10 @@ public class Player : Agent
 
     private bool attacking = false;
 
-    public Player(Guid agentId, Vector2 position, Texture2D texture, Camera camera, ProtoKafkaProducer<Input> producer)
+    public Player(MyGame game, Guid agentId, Vector2 position, Texture2D texture, Camera camera, ProtoKafkaProducer<Input> producer)
         : base(agentId, position, texture)
     {
+        _game = game;
         _camera = camera;
         _producer = producer;
         _lastLocation = new Coordinates();
@@ -104,7 +107,7 @@ public class Player : Agent
             if (keyInput.Any() && (newLocation || newInput))
             {
                 var timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                MyGame.dict.Add(input.EventId, timeStamp);
+                _game.dict.Add(input.EventId, timeStamp);
                 _producer.Produce(MyGame.OutputTopic, _agentId.ToString(), input);
                 _lastLocation = input.PlayerLocation;
                 _lastKeyInput = input.KeyInput.ToList();

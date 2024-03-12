@@ -50,8 +50,8 @@ public class InputService : BackgroundService, IConsumerService
 
     private void ProcessMessage(string key, Input value)
     {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
+        //var stopwatch = new Stopwatch();
+        //stopwatch.Start();
         
         if (value.KeyInput.Any(x => x is GameKey.Up or GameKey.Down or GameKey.Left or GameKey.Right))
             Move(key, value);
@@ -62,13 +62,16 @@ public class InputService : BackgroundService, IConsumerService
         if (value.KeyInput.Any(x => x is GameKey.Interact))
             Interact(key, value);
         
-        stopwatch.Stop();
-        var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms");
+        //stopwatch.Stop();
+        //var elapsedTime = stopwatch.ElapsedMilliseconds;
+        //if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Move(string key, Input value)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        
         var output = new CollisionCheck()
         {
             EntityId = value.PlayerId,
@@ -102,6 +105,10 @@ public class InputService : BackgroundService, IConsumerService
         }
 
         _producerC.Produce(OutputTopicC, key, output);
+        
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms -- {value.EventId}");
     }
 
     private void Attack(string key, Input value)

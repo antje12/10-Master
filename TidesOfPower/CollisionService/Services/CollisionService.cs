@@ -56,13 +56,16 @@ public class CollisionService : BackgroundService, IConsumerService
     private void ProcessMessage(string key, CollisionCheck value)
     {
         var stopwatch = new Stopwatch();
+        var s2 = new Stopwatch();
         stopwatch.Start();
         
+        s2.Start();
         var entities = _redisBroker.GetCloseEntities(new ClassLibrary.Classes.Data.Coordinates()
         {
             X = value.ToLocation.X,
             Y = value.ToLocation.Y
         });
+        s2.Stop();
         foreach (var entity in entities)
         {
             if (value.EntityId == entity.Id.ToString())
@@ -126,7 +129,7 @@ public class CollisionService : BackgroundService, IConsumerService
         
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (elapsedTime > 10) Console.WriteLine($"Message processed in {elapsedTime} ms");
+        if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
     }
 
     private bool circleCollision(Coordinates e1, int w1, ClassLibrary.Classes.Data.Coordinates e2, int w2)

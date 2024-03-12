@@ -9,8 +9,8 @@ Install Docker Desktop
 Setup environment:
 ```
 cd /
-docker compose build --no-cache
-docker compose up
+docker-compose build --no-cache
+docker-compose up
 ```
 run the game client
 

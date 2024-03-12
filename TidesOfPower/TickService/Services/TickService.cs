@@ -1,4 +1,5 @@
-﻿using ClassLibrary.Kafka;
+﻿using System.Diagnostics;
+using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using TickService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
@@ -38,13 +39,24 @@ public class TickService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine($"TickService started");
 
+        var stopwatch = new Stopwatch();
+        var s2 = new Stopwatch();
+        
         while (!ct.IsCancellationRequested)
         {
+            stopwatch.Restart();
+            s2.Restart();
             var projectiles = _redisBroker.GetEntities().OfType<ClassLibrary.Classes.Domain.Projectile>().ToList();
+            s2.Stop();
+            
             foreach (var projectile in projectiles)
             {
                 SendState(projectile);
             }
+        
+            stopwatch.Stop();
+            var elapsedTime = stopwatch.ElapsedMilliseconds;
+            if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
 
             Thread.Sleep(50);
         }

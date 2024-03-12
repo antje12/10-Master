@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ClassLibrary.Classes.Data;
 using ClassLibrary.Kafka;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -43,6 +43,7 @@ public class MyGame : Game
 
     private Player Player;
     private List<Sprite> LocalState;
+    private readonly object _lockObject = new object();
 
     public MyGame()
     {
@@ -64,7 +65,7 @@ public class MyGame : Game
         base.Initialize();
 
         LocalState = new List<Sprite>();
-        
+
         var PlayerId = Guid.NewGuid();
         var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
         Player = new Player(PlayerId, playerPosition, avatarTexture, _camera, _producer);
@@ -81,6 +82,7 @@ public class MyGame : Game
         _cts = new CancellationTokenSource();
         await _admin.CreateTopic($"{InputTopic}_{Player._agentId}");
         IProtoConsumer<LocalState>.ProcessMessage action = ProcessMessage;
+        
         await Task.Run(() => _consumer.Consume($"{InputTopic}_{Player._agentId}", action, _cts.Token), _cts.Token);
     }
 
@@ -115,10 +117,18 @@ public class MyGame : Game
         DeltaSync(value);
 
         var onlineAvatarIds = value.Avatars.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y._agentId.ToString()));
-
         var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
+
+        if (LocalState.OfType<Agent>().Any(x => !onlineAvatarIds.Contains(x._agentId.ToString())) ||
+            LocalState.OfType<Projectile>().Any(x => !onlineProjectileIds.Contains(x._id.ToString())))
+        {
+            lock (_lockObject)
+            {
+                LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y._agentId.ToString()));
+                LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
+                Console.WriteLine($"LocalState count {LocalState.Count}");
+            }
+        }
     }
 
     private void DeltaSync(LocalState value)
@@ -130,11 +140,18 @@ public class MyGame : Game
                 Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
                 continue;
             }
-            
+
             var localAvatar = LocalState.FirstOrDefault(x => x is Agent y && y._agentId.ToString() == avatar.Id);
             if (localAvatar == null)
-                LocalState.Add(
-                    new Enemy(Guid.Parse(avatar.Id), new Vector2(avatar.Location.X, avatar.Location.Y), avatarTexture));
+            {
+                lock (_lockObject)
+                {
+                    LocalState.Add(
+                        new Enemy(Guid.Parse(avatar.Id), new Vector2(avatar.Location.X, avatar.Location.Y),
+                            avatarTexture));
+                    Console.WriteLine($"LocalState count {LocalState.Count}");
+                }
+            }
             else
                 localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
         }
@@ -143,9 +160,16 @@ public class MyGame : Game
         {
             var localAvatar = LocalState.FirstOrDefault(x => x is Projectile y && y._id.ToString() == projectile.Id);
             if (localAvatar == null)
-                LocalState.Add(
-                    new Projectile(Guid.Parse(projectile.Id), new Vector2(projectile.Location.X, projectile.Location.Y),
-                        projectileTexture));
+            {
+                lock (_lockObject)
+                {
+                    LocalState.Add(
+                        new Projectile(Guid.Parse(projectile.Id),
+                            new Vector2(projectile.Location.X, projectile.Location.Y),
+                            projectileTexture));
+                    Console.WriteLine($"LocalState count {LocalState.Count}");
+                }
+            }
             else
                 localAvatar.Position = new Vector2(projectile.Location.X, projectile.Location.Y);
         }
@@ -154,15 +178,23 @@ public class MyGame : Game
     private void DeleteSync(LocalState value)
     {
         var deleteAvatarIds = value.Avatars.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y._agentId.ToString()));
+        var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
+
+        if (LocalState.OfType<Agent>().Any(x => deleteAvatarIds.Contains(x._agentId.ToString())) ||
+            LocalState.OfType<Projectile>().Any(x => deleteProjectileIds.Contains(x._id.ToString())))
+        {
+            lock (_lockObject)
+            {
+                LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y._agentId.ToString()));
+                LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y._id.ToString()));
+                Console.WriteLine($"LocalState count {LocalState.Count}");
+            }
+        }
 
         if (deleteAvatarIds.Contains(Player._agentId.ToString()))
         {
             Console.WriteLine("Died!");
         }
-        
-        var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y._id.ToString()));
     }
 
     protected override void Update(GameTime gameTime)
@@ -170,10 +202,13 @@ public class MyGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-        for (var i = 0; i < LocalState.Count; i++)
+        lock (_lockObject)
         {
-            var sprite = LocalState[i];
-            sprite.Update(gameTime);
+            for (var i = 0; i < LocalState.Count; i++)
+            {
+                var sprite = LocalState[i];
+                sprite.Update(gameTime);
+            }
         }
         Player.Update(gameTime);
         base.Update(gameTime);
@@ -183,10 +218,13 @@ public class MyGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
         _spriteBatch.Begin(transformMatrix: _camera.Transform);
-        for (var i = 0; i < LocalState.Count; i++)
+        lock (_lockObject)
         {
-            var sprite = LocalState[i];
-            sprite.Draw(gameTime, _spriteBatch);
+            for (var i = 0; i < LocalState.Count; i++)
+            {
+                var sprite = LocalState[i];
+                sprite.Draw(gameTime, _spriteBatch);
+            }
         }
         Player.Draw(gameTime, _spriteBatch);
         _spriteBatch.End();

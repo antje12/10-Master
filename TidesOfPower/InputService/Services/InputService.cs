@@ -64,7 +64,7 @@ public class InputService : BackgroundService, IConsumerService
         
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (elapsedTime > 10) Console.WriteLine($"Message processed in {elapsedTime} ms");
+        if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Move(string key, Input value)

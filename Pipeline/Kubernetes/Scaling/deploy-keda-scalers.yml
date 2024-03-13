@@ -8,7 +8,14 @@ metadata:
 spec:
   scaleTargetRef:
     name: input-service
+  #https://developers.redhat.com/articles/2023/12/29/autoscaling-kafka-workloads-custom-metrics-autoscaler#kafka_scaler_configuration
+  #behavior:
+  #  scaleDown:
+  #    stabilizationWindowSeconds: 300 # seconds
+  #  scaleUp:
+  #    stabilizationWindowSeconds: 30 # seconds
   pollingInterval: 30 # seconds
+  cooldownPeriod: 30 # seconds
   triggers:
     - type: kafka
       metadata:
@@ -31,6 +38,7 @@ spec:
   scaleTargetRef:
     name: collision-service
   pollingInterval: 30 # seconds
+  cooldownPeriod: 30 # seconds
   triggers:
     - type: kafka
       metadata:
@@ -53,6 +61,7 @@ spec:
   scaleTargetRef:
     name: world-service
   pollingInterval: 30 # seconds
+  cooldownPeriod: 30 # seconds
   triggers:
     - type: kafka
       metadata:

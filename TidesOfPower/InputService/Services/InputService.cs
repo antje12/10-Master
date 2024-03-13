@@ -1,8 +1,8 @@
-﻿using ClassLibrary.Classes.Data;
+﻿using System.Diagnostics;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using InputService.Interfaces;
-using ClassLibrary.Messages.Avro;
+using ClassLibrary.Messages.Protobuf;
 
 namespace InputService.Services;
 
@@ -16,9 +16,9 @@ public class InputService : BackgroundService, IConsumerService
     private KafkaTopic OutputTopicW = KafkaTopic.World;
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<CollisionCheck> _producerC;
-    private readonly KafkaProducer<WorldChange> _producerW;
-    private readonly KafkaConsumer<Input> _consumer;
+    private readonly ProtoKafkaProducer<CollisionCheck> _producerC;
+    private readonly ProtoKafkaProducer<WorldChange> _producerW;
+    private readonly ProtoKafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
 
@@ -27,29 +27,29 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine($"InputService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _producerC = new KafkaProducer<CollisionCheck>(config);
-        _producerW = new KafkaProducer<WorldChange>(config);
-        _consumer = new KafkaConsumer<Input>(config);
+        _producerC = new ProtoKafkaProducer<CollisionCheck>(config);
+        _producerW = new ProtoKafkaProducer<WorldChange>(config);
+        _consumer = new ProtoKafkaConsumer<Input>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
-
         IsRunning = true;
         Console.WriteLine($"InputService started");
-
         await _admin.CreateTopic(InputTopic);
-        IConsumer<Input>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<Input>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(InputTopic, action, ct);
-
         IsRunning = false;
         Console.WriteLine($"InputService stopped");
     }
 
     private void ProcessMessage(string key, Input value)
     {
+        //var stopwatch = new Stopwatch();
+        //stopwatch.Start();
+        
         if (value.KeyInput.Any(x => x is GameKey.Up or GameKey.Down or GameKey.Left or GameKey.Right))
             Move(key, value);
 
@@ -58,10 +58,20 @@ public class InputService : BackgroundService, IConsumerService
 
         if (value.KeyInput.Any(x => x is GameKey.Interact))
             Interact(key, value);
+        
+        //stopwatch.Stop();
+        //var elapsedTime = stopwatch.ElapsedMilliseconds;
+        //if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Move(string key, Input value)
     {
+        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        
         var output = new CollisionCheck()
         {
             EntityId = value.PlayerId,
@@ -71,7 +81,8 @@ public class InputService : BackgroundService, IConsumerService
             {
                 X = value.PlayerLocation.X,
                 Y = value.PlayerLocation.Y
-            }
+            },
+            EventId = value.EventId
         };
 
         foreach (var input in value.KeyInput)
@@ -94,6 +105,13 @@ public class InputService : BackgroundService, IConsumerService
         }
 
         _producerC.Produce(OutputTopicC, key, output);
+        
+        timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
+        
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms -- {value.EventId}");
     }
 
     private void Attack(string key, Input value)
@@ -112,7 +130,7 @@ public class InputService : BackgroundService, IConsumerService
         
         var output = new WorldChange()
         {
-            EntityId = Guid.NewGuid(),
+            EntityId = Guid.NewGuid().ToString(),
             Change = ChangeType.SpawnBullet,
             Location = new Coordinates() { X = spawnX, Y = spawnY },
             Direction = new Coordinates() {X = x, Y = y}

@@ -6,7 +6,7 @@ namespace ClassLibrary.Kafka;
 
 public class KafkaConfig
 {
-    //client:           "localhost:9092"
+    //client:           "localhost:19092"
     //kubernetes:       "kafka-service:9092"
     private string KafkaServers = "kafka-service:9092";
     //client:           "localhost:8081"

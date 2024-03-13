@@ -1,10 +1,10 @@
-﻿using ClassLibrary.Classes.Data;
-using ClassLibrary.Classes.Domain;
+﻿using System.Diagnostics;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using CollisionService.Interfaces;
-using ClassLibrary.Messages.Avro;
+using ClassLibrary.Messages.Protobuf;
+using ClassLibrary.Redis;
 
 namespace CollisionService.Services;
 
@@ -17,10 +17,11 @@ public class CollisionService : BackgroundService, IConsumerService
     private KafkaTopic OutputTopic = KafkaTopic.World;
 
     private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<WorldChange> _producer;
-    private readonly KafkaConsumer<CollisionCheck> _consumer;
+    private readonly ProtoKafkaProducer<WorldChange> _producer;
+    private readonly ProtoKafkaConsumer<CollisionCheck> _consumer;
 
     private readonly MongoDbBroker _mongoBroker;
+    private readonly RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
 
@@ -29,33 +30,40 @@ public class CollisionService : BackgroundService, IConsumerService
         Console.WriteLine($"CollisionService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _producer = new KafkaProducer<WorldChange>(config);
-        _consumer = new KafkaConsumer<CollisionCheck>(config);
+        _producer = new ProtoKafkaProducer<WorldChange>(config);
+        _consumer = new ProtoKafkaConsumer<CollisionCheck>(config);
         _mongoBroker = new MongoDbBroker();
+        _redisBroker = new RedisBroker();
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
-
         IsRunning = true;
         Console.WriteLine($"CollisionService started");
-
         await _admin.CreateTopic(InputTopic);
-        IConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(InputTopic, action, ct);
-
         IsRunning = false;
         Console.WriteLine($"CollisionService stopped");
     }
 
     private void ProcessMessage(string key, CollisionCheck value)
     {
-        var entities = _mongoBroker.GetCloseEntities(value.ToLocation);
+        var stopwatch = new Stopwatch();
+        var s2 = new Stopwatch();
+        stopwatch.Start();
+        
+        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        
+        s2.Start();
+        var entities = _redisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
+        s2.Stop();
         foreach (var entity in entities)
         {
-            if (value.EntityId == entity.Id)
+            if (value.EntityId == entity.Id.ToString())
             {
                 continue;
             }
@@ -64,25 +72,28 @@ public class CollisionService : BackgroundService, IConsumerService
                 value.Entity is EntityType.Projectile ? 5 :
                 value.Entity is EntityType.Avatar ? 25 : 0;
             var w2 =
-                entity is Projectile ? 5 :
-                entity is Avatar ? 25 : 0;
+                entity is ClassLibrary.Classes.Domain.Projectile ? 5 :
+                entity is ClassLibrary.Classes.Domain.Avatar ? 25 : 0;
 
             if (circleCollision(value.ToLocation, w1, entity.Location, w2))
             {
-                if (value.Entity is EntityType.Avatar && entity is Avatar)
+                if (value.Entity is EntityType.Avatar && entity is ClassLibrary.Classes.Domain.Avatar)
                 {
                     return;
                 }
 
-                if (value.Entity is EntityType.Avatar && entity is Projectile)
+                if (value.Entity is EntityType.Avatar && entity is ClassLibrary.Classes.Domain.Projectile)
                 {
-                    Damage(value.EntityId, value.ToLocation);
+                    Damage(Guid.Parse(value.EntityId), value.ToLocation);
                     return;
                 }
 
-                if (value.Entity is EntityType.Projectile && entity is Avatar)
+                if (value.Entity is EntityType.Projectile && entity is ClassLibrary.Classes.Domain.Avatar)
                 {
-                    Damage(entity.Id, entity.Location);
+                    var coordinates = new Coordinates();
+                    coordinates.X = entity.Location.X;
+                    coordinates.Y = entity.Location.Y;
+                    Damage(entity.Id, coordinates);
                 }
             }
         }
@@ -93,12 +104,15 @@ public class CollisionService : BackgroundService, IConsumerService
             {
                 EntityId = value.EntityId,
                 Change = ChangeType.MovePlayer,
-                Location = value.ToLocation
+                Location = value.ToLocation,
+                EventId = value.EventId
             };
 
             _producer.Produce(OutputTopic, key, output);
+            timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
         }
-        else
+        else if (value.Entity is EntityType.Projectile)
         {
             var output = new WorldChange()
             {
@@ -110,24 +124,25 @@ public class CollisionService : BackgroundService, IConsumerService
 
             _producer.Produce(OutputTopic, key, output);
         }
+        
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time -- {value.EventId}");
     }
 
-    private bool circleCollision(Coordinates e1, int w1, Coordinates e2, int w2)
+    private bool circleCollision(Coordinates e1, int w1, ClassLibrary.Classes.Data.Coordinates e2, int w2)
     {
         float dx = e1.X - e2.X;
         float dy = e1.Y - e2.Y;
-
         // a^2 + b^2 = c^2
         // c = sqrt(a^2 + b^2)
         double distance = Math.Sqrt(dx * dx + dy * dy);
-
         // if radius overlap
         if (distance < w1 + w2)
         {
             // Collision!
             return true;
         }
-
         return false;
     }
 
@@ -135,11 +150,10 @@ public class CollisionService : BackgroundService, IConsumerService
     {
         var output = new WorldChange()
         {
-            EntityId = entityId,
+            EntityId = entityId.ToString(),
             Change = ChangeType.DamagePlayer,
             Location = entityLocation
         };
-
         _producer.Produce(OutputTopic, entityId.ToString(), output);
     }
 }

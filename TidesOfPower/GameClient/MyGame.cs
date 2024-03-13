@@ -1,36 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using ClassLibrary.Classes.Data;
 using ClassLibrary.Kafka;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using ClassLibrary.Interfaces;
-using ClassLibrary.Messages.Avro;
 using GameClient.Core;
 using GameClient.Entities;
+using ClassLibrary.Messages.Protobuf;
 
 namespace GameClient;
 
 public class MyGame : Game
 {
+    public Guid PlayerId = Guid.NewGuid();
+    
     const string GroupId = "output-group";
-    private KafkaTopic InputTopic = KafkaTopic.LocalState;
     public static KafkaTopic OutputTopic = KafkaTopic.Input;
 
-    static CancellationTokenSource _cts;
     readonly KafkaConfig _config;
-    readonly KafkaAdministrator _admin;
-    readonly KafkaProducer<Input> _producer;
-    readonly KafkaConsumer<LocalState> _consumer;
+    readonly ProtoKafkaProducer<Input> _producer;
 
-    Texture2D oceanTexture; //64x64
-    Texture2D islandTexture; //64x64
-    Texture2D avatarTexture; //50x50
-    Texture2D projectileTexture; //10x10
+    public Texture2D oceanTexture; //64x64
+    public Texture2D islandTexture; //64x64
+    public Texture2D avatarTexture; //50x50
+    public Texture2D projectileTexture; //10x10
 
     Camera _camera;
     GraphicsDeviceManager _graphics;
@@ -39,9 +32,11 @@ public class MyGame : Game
     public static int screenHeight; //480
     public static int screenWidth; //800
 
-    private Player Player;
-    private List<Sprite> LocalState;
-
+    public Player Player;
+    public List<Sprite> LocalState = new List<Sprite>();
+    public readonly object _lockObject = new object();
+    public Dictionary<string, long> dict = new Dictionary<string, long>();
+    
     public MyGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -49,9 +44,7 @@ public class MyGame : Game
         IsMouseVisible = true;
 
         _config = new KafkaConfig(GroupId, true);
-        _admin = new KafkaAdministrator(_config);
-        _producer = new KafkaProducer<Input>(_config);
-        _consumer = new KafkaConsumer<LocalState>(_config);
+        _producer = new ProtoKafkaProducer<Input>(_config);
     }
 
     protected override async void Initialize()
@@ -61,106 +54,26 @@ public class MyGame : Game
         _camera = new Camera();
         base.Initialize();
 
-        LocalState = new List<Sprite>();
-        
-        var PlayerId = Guid.NewGuid();
         var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
-        Player = new Player(PlayerId, playerPosition, avatarTexture, _camera, _producer);
+        Player = new Player(this, PlayerId, playerPosition, avatarTexture, _camera, _producer);
 
         var oceanPosition = new Vector2(0, 0);
         var ocean = new Ocean(oceanPosition, oceanTexture, Player);
-
+        
         var islandPosition = new Vector2(screenWidth / 2, screenHeight / 2);
         var island = new Island(islandPosition, islandTexture);
 
         LocalState.Add(ocean);
         LocalState.Add(island);
-
-        _cts = new CancellationTokenSource();
-        await _admin.CreateTopic($"{InputTopic}_{Player._agentId}");
-        IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
-        await Task.Run(() => _consumer.Consume($"{InputTopic}_{Player._agentId}", action, _cts.Token), _cts.Token);
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
         avatarTexture = Content.Load<Texture2D>("circle");
         islandTexture = Content.Load<Texture2D>("island");
         oceanTexture = Content.Load<Texture2D>("ocean");
         projectileTexture = Content.Load<Texture2D>("small-circle");
-    }
-
-    private void ProcessMessage(string key, LocalState value)
-    {
-        switch (value.Sync)
-        {
-            case SyncType.Full:
-                FullSync(value);
-                break;
-            case SyncType.Delta:
-                DeltaSync(value);
-                break;
-            case SyncType.Delete:
-                DeleteSync(value);
-                break;
-        }
-    }
-
-    private void FullSync(LocalState value)
-    {
-        DeltaSync(value);
-
-        var onlineAvatarIds = value.Avatars.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y._agentId));
-
-        var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id));
-    }
-
-    private void DeltaSync(LocalState value)
-    {
-        foreach (var avatar in value.Avatars)
-        {
-            if (avatar.Id == Player._agentId)
-            {
-                Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
-                continue;
-            }
-            
-            var localAvatar = LocalState.FirstOrDefault(x => x is Agent y && y._agentId == avatar.Id);
-            if (localAvatar == null)
-                LocalState.Add(
-                    new Enemy(avatar.Id, new Vector2(avatar.Location.X, avatar.Location.Y), avatarTexture));
-            else
-                localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
-        }
-
-        foreach (var projectile in value.Projectiles)
-        {
-            var localAvatar = LocalState.FirstOrDefault(x => x is Projectile y && y._id == projectile.Id);
-            if (localAvatar == null)
-                LocalState.Add(
-                    new Projectile(projectile.Id, new Vector2(projectile.Location.X, projectile.Location.Y),
-                        projectileTexture));
-            else
-                localAvatar.Position = new Vector2(projectile.Location.X, projectile.Location.Y);
-        }
-    }
-
-    private void DeleteSync(LocalState value)
-    {
-        var deleteAvatarIds = value.Avatars.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y._agentId));
-
-        if (deleteAvatarIds.Contains(Player._agentId))
-        {
-            Console.WriteLine("Died!");
-        }
-        
-        var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
-        LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y._id));
     }
 
     protected override void Update(GameTime gameTime)
@@ -168,10 +81,12 @@ public class MyGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-        for (var i = 0; i < LocalState.Count; i++)
+        lock (_lockObject)
         {
-            var sprite = LocalState[i];
-            sprite.Update(gameTime);
+            foreach (var sprite in LocalState)
+            {
+                sprite.Update(gameTime);
+            }
         }
         Player.Update(gameTime);
         base.Update(gameTime);
@@ -181,12 +96,14 @@ public class MyGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
         _spriteBatch.Begin(transformMatrix: _camera.Transform);
-        for (var i = 0; i < LocalState.Count; i++)
+        lock (_lockObject)
         {
-            var sprite = LocalState[i];
-            sprite.Draw(gameTime, _spriteBatch);
+            foreach (var sprite in LocalState)
+            {
+                sprite.Draw(_spriteBatch);
+            }
         }
-        Player.Draw(gameTime, _spriteBatch);
+        Player.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

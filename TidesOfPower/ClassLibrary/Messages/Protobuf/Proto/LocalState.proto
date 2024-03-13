@@ -11,6 +11,7 @@ message LocalState {
   SyncType Sync = 2;
   repeated Avatar Avatars = 3;
   repeated Projectile Projectiles = 4;
+  string EventId = 5;
 }
 
 enum SyncType {

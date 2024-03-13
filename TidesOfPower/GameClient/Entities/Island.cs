@@ -13,7 +13,7 @@ public class Island : Sprite
     {
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch)
     {
         var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
         //Rectangle island = new Rectangle(screenWidth / 2, screenHeight / 2, 64, 64);

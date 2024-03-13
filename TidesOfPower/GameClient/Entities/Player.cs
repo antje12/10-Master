@@ -1,30 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClassLibrary.Classes.Data;
 using ClassLibrary.Kafka;
-using ClassLibrary.Messages.Avro;
 using GameClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ClassLibrary.Messages.Protobuf;
 
 namespace GameClient.Entities;
 
 public class Player : Agent
 {
+    private MyGame _game;
+    
     public Vector2 MousePosition { get; set; }
     private readonly Camera _camera;
-    private readonly KafkaProducer<Input> _producer;
+    private readonly ProtoKafkaProducer<Input> _producer;
 
     private Coordinates _lastLocation;
     private List<GameKey> _lastKeyInput;
 
     private bool attacking = false;
 
-    public Player(Guid agentId, Vector2 position, Texture2D texture, Camera camera, KafkaProducer<Input> producer)
+    public Player(MyGame game, Guid agentId, Vector2 position, Texture2D texture, Camera camera, ProtoKafkaProducer<Input> producer)
         : base(agentId, position, texture)
     {
+        _game = game;
         _camera = camera;
         _producer = producer;
         _lastLocation = new Coordinates();
@@ -36,14 +38,13 @@ public class Player : Agent
         var keyInput = new List<GameKey>();
         
         var mState = Mouse.GetState();
-        if (mState.RightButton == ButtonState.Pressed && MouseOnScreen(mState.Position.ToVector2()))
+        if (mState.RightButton == ButtonState.Pressed && _camera.MouseOnScreen(mState.Position.ToVector2()))
         {
             if (!attacking)
             {
                 attacking = true;
                 keyInput.Add(GameKey.Attack);
-                MousePosition = MouseInWorld(mState.Position.ToVector2(), _camera);
-                //Console.WriteLine($"Mouse clicked at {MousePosition.X}:{MousePosition.Y}");
+                MousePosition = _camera.MouseInWorld(mState.Position.ToVector2());
             }
         }
         else
@@ -61,19 +62,6 @@ public class Player : Agent
             keyInput.Add(GameKey.Left);
         if (kState.IsKeyDown(Keys.D))
             keyInput.Add(GameKey.Right);
-        //if (kState.IsKeyDown(Keys.Space))
-        //{
-        //    if (!attacking)
-        //    {
-        //        attacking = true;
-        //        keyInput.Add(GameKey.Attack);
-        //    }
-        //}
-        //else
-        //{
-        //    attacking = false;
-        //    _lastKeyInput.Remove(GameKey.Attack);
-        //}
         if (kState.IsKeyDown(Keys.Space))
             keyInput.Add(GameKey.Interact);
 
@@ -81,50 +69,41 @@ public class Player : Agent
         {
             var input = new Input()
             {
-                PlayerId = _agentId,
+                PlayerId = _agentId.ToString(),
                 PlayerLocation = new Coordinates()
                 {
                     X = Position.X,
                     Y = Position.Y
                 },
-                KeyInput = keyInput,
                 MouseLocation = new Coordinates()
                 {
                     X = MousePosition.X,
                     Y = MousePosition.Y
                 },
-                GameTime = gameTime.ElapsedGameTime.TotalSeconds
+                GameTime = gameTime.ElapsedGameTime.TotalSeconds,
+                EventId = Guid.NewGuid().ToString()
             };
+            input.KeyInput.AddRange(keyInput);
 
             var newLocation = _lastLocation.X != input.PlayerLocation.X || _lastLocation.Y != input.PlayerLocation.Y;
             var newInput = !_lastKeyInput.OrderBy(x => x).SequenceEqual(keyInput.OrderBy(x => x));
 
             if (keyInput.Any() && (newLocation || newInput))
             {
+                var timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                _game.dict.Add(input.EventId, timeStamp);
+                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                Console.WriteLine($"Send {input.EventId} at {timestampWithMs}");
                 _producer.Produce(MyGame.OutputTopic, _agentId.ToString(), input);
                 _lastLocation = input.PlayerLocation;
-                _lastKeyInput = input.KeyInput;
+                _lastKeyInput = input.KeyInput.ToList();
             }
         }
 
         _camera.Follow(Position, Texture, MyGame.screenWidth, MyGame.screenHeight);
     }
 
-    private bool MouseOnScreen(Vector2 mouse)
-    {
-        return 0 <= mouse.X && mouse.X <= MyGame.screenWidth &&
-               0 <= mouse.Y && mouse.Y <= MyGame.screenHeight;
-    }
-    
-    public Vector2 MouseInWorld(Vector2 screenPosition, Camera camera)
-    {
-        Matrix inverseTransform = Matrix.Invert(camera.Transform);
-        Vector3 screenPosition3 = new Vector3(screenPosition, 0);
-        Vector3 worldPosition = Vector3.Transform(screenPosition3, inverseTransform);
-        return new Vector2(worldPosition.X, worldPosition.Y);
-    }
-
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch)
     {
         var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
         spriteBatch.Draw(Texture, offset, Color.Green);

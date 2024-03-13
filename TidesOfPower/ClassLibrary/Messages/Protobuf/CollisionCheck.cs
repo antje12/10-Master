@@ -25,18 +25,19 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChRDb2xsaXNpb25DaGVjay5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
-            "LlByb3RvYnVmGgxDb21tb24ucHJvdG8i8QEKDkNvbGxpc2lvbkNoZWNrEhAK",
+            "LlByb3RvYnVmGgxDb21tb24ucHJvdG8iggIKDkNvbGxpc2lvbkNoZWNrEhAK",
             "CEVudGl0eUlkGAEgASgJEjoKBkVudGl0eRgCIAEoDjIqLkNsYXNzTGlicmFy",
             "eS5NZXNzYWdlcy5Qcm90b2J1Zi5FbnRpdHlUeXBlEkEKDEZyb21Mb2NhdGlv",
             "bhgDIAEoCzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29y",
             "ZGluYXRlcxI/CgpUb0xvY2F0aW9uGAQgASgLMisuQ2xhc3NMaWJyYXJ5Lk1l",
-            "c3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEg0KBVRpbWVyGAUgASgBKigK",
-            "CkVudGl0eVR5cGUSCgoGQXZhdGFyEAASDgoKUHJvamVjdGlsZRABQiGqAh5D",
-            "bGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
+            "c3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEg0KBVRpbWVyGAUgASgBEg8K",
+            "B0V2ZW50SWQYBiABKAkqKAoKRW50aXR5VHlwZRIKCgZBdmF0YXIQABIOCgpQ",
+            "cm9qZWN0aWxlEAFCIaoCHkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1",
+            "ZmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.EntityType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.CollisionCheck), global::ClassLibrary.Messages.Protobuf.CollisionCheck.Parser, new[]{ "EntityId", "Entity", "FromLocation", "ToLocation", "Timer" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.CollisionCheck), global::ClassLibrary.Messages.Protobuf.CollisionCheck.Parser, new[]{ "EntityId", "Entity", "FromLocation", "ToLocation", "Timer", "EventId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -91,6 +92,7 @@ namespace ClassLibrary.Messages.Protobuf {
       fromLocation_ = other.fromLocation_ != null ? other.fromLocation_.Clone() : null;
       toLocation_ = other.toLocation_ != null ? other.toLocation_.Clone() : null;
       timer_ = other.timer_;
+      eventId_ = other.eventId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -163,6 +165,18 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "EventId" field.</summary>
+    public const int EventIdFieldNumber = 6;
+    private string eventId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string EventId {
+      get { return eventId_; }
+      set {
+        eventId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -183,6 +197,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (!object.Equals(FromLocation, other.FromLocation)) return false;
       if (!object.Equals(ToLocation, other.ToLocation)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Timer, other.Timer)) return false;
+      if (EventId != other.EventId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -195,6 +210,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (fromLocation_ != null) hash ^= FromLocation.GetHashCode();
       if (toLocation_ != null) hash ^= ToLocation.GetHashCode();
       if (Timer != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Timer);
+      if (EventId.Length != 0) hash ^= EventId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -233,6 +249,10 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(41);
         output.WriteDouble(Timer);
       }
+      if (EventId.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(EventId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -263,6 +283,10 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(41);
         output.WriteDouble(Timer);
       }
+      if (EventId.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(EventId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -287,6 +311,9 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (Timer != 0D) {
         size += 1 + 8;
+      }
+      if (EventId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(EventId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -320,6 +347,9 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (other.Timer != 0D) {
         Timer = other.Timer;
+      }
+      if (other.EventId.Length != 0) {
+        EventId = other.EventId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -362,6 +392,10 @@ namespace ClassLibrary.Messages.Protobuf {
             Timer = input.ReadDouble();
             break;
           }
+          case 50: {
+            EventId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -401,6 +435,10 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 41: {
             Timer = input.ReadDouble();
+            break;
+          }
+          case 50: {
+            EventId = input.ReadString();
             break;
           }
         }

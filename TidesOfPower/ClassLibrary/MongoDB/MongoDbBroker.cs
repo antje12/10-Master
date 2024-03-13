@@ -63,21 +63,21 @@ public class MongoDbBroker
         return entity;
     }
 
-    public List<Entity> GetCloseEntities(Coordinates location)
+    public List<Entity> GetCloseEntities(float x, float y)
     {
-        var xFrom = location.X - 50;
-        var xTo = location.X + 50;
-        var yFrom = location.Y - 50;
-        var yTo = location.Y + 50;
+        var xFrom = x - 50;
+        var xTo = x + 50;
+        var yFrom = y - 50;
+        var yTo = y + 50;
         return GetEntities(xFrom, xTo, yFrom, yTo);
     }
 
-    public List<Entity> GetEntities(Coordinates location)
+    public List<Entity> GetEntities(float x, float y)
     {
-        var xFrom = location.X - 400;
-        var xTo = location.X + 400;
-        var yFrom = location.Y - 240;
-        var yTo = location.Y + 240;
+        var xFrom = x - 400;
+        var xTo = x + 400;
+        var yFrom = y - 240;
+        var yTo = y + 240;
         return GetEntities(xFrom, xTo, yFrom, yTo);
     }
 

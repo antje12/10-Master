@@ -1,0 +1,62 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: kafka-scaled-input
+  namespace: default
+  labels:
+    deploymentName: input-service
+spec:
+  scaleTargetRef:
+    name: input-service
+  pollingInterval: 30 # seconds
+  triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka-service:9092
+        consumerGroup: input-group
+        topic: Input
+        # Optional
+        lagThreshold: "50" # when to scale up
+        offsetResetPolicy: latest
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: kafka-scaled-collision
+  namespace: default
+  labels:
+    deploymentName: collision-service
+spec:
+  scaleTargetRef:
+    name: collision-service
+  pollingInterval: 30 # seconds
+  triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka-service:9092
+        consumerGroup: collision-group
+        topic: Collision
+        # Optional
+        lagThreshold: "50" # when to scale up
+        offsetResetPolicy: latest
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: kafka-scaled-world
+  namespace: default
+  labels:
+    deploymentName: world-service
+spec:
+  scaleTargetRef:
+    name: world-service
+  pollingInterval: 30 # seconds
+  triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka-service:9092
+        consumerGroup: world-group
+        topic: World
+        # Optional
+        lagThreshold: "50" # when to scale up
+        offsetResetPolicy: latest

@@ -1,7 +1,7 @@
 # 10-Master
 Master Thesis Project
 
-
+--------------------------------------------------
 
 ## Local Docker Run With Local Images
 Install Docker Desktop
@@ -14,7 +14,7 @@ docker-compose up
 ```
 run the game client
 
-
+--------------------------------------------------
 
 ## Local Docker Run With External Images
 Install Docker Desktop
@@ -26,7 +26,7 @@ docker-compose -f docker-compose-github.yml up
 ```
 run the game client
 
-
+--------------------------------------------------
 
 ## Local Kubernetes Run With External Images
 Install Docker Desktop + Kind + Helm
@@ -77,6 +77,8 @@ Cleanup the cluster:
 ```
 kind delete cluster
 ```
+
+--------------------------------------------------
 
 ### Extra
 Setup sharded MongoDB via helm:

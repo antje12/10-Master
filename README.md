@@ -55,6 +55,14 @@ kubectl apply -f Pipeline/Kubernetes/Services/deploy-world-service.yml
 kubectl apply -f Pipeline/Kubernetes/Services/deploy-tick-service.yml
 ```
 
+Setup KEDA:
+```
+helm repo add kedacore https://kedacore.github.io/charts
+helm repo update
+helm install keda kedacore/keda
+kubectl apply -f Pipeline/Kubernetes/Scaling/deploy-keda-scalers.yml
+```
+
 Setup sharding in the database:
 ```
 kubectl port-forward services/mongodb-service 27017:27017

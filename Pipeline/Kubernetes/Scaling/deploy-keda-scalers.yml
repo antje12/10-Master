@@ -18,6 +18,7 @@ spec:
         # Optional
         lagThreshold: "50" # when to scale up
         offsetResetPolicy: latest
+  minReplicaCount: 1
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
@@ -39,6 +40,7 @@ spec:
         # Optional
         lagThreshold: "50" # when to scale up
         offsetResetPolicy: latest
+  minReplicaCount: 1
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
@@ -60,3 +62,4 @@ spec:
         # Optional
         lagThreshold: "50" # when to scale up
         offsetResetPolicy: latest
+  minReplicaCount: 1

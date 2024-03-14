@@ -82,11 +82,11 @@ public class CollisionService : BackgroundService, IConsumerService
                     return;
                 }
 
-                if (value.Entity is EntityType.Avatar && entity is ClassLibrary.Classes.Domain.Projectile)
-                {
-                    Damage(Guid.Parse(value.EntityId), value.ToLocation);
-                    return;
-                }
+                //if (value.Entity is EntityType.Avatar && entity is ClassLibrary.Classes.Domain.Projectile)
+                //{
+                //    Damage(Guid.Parse(value.EntityId), value.ToLocation);
+                //    return;
+                //}
 
                 if (value.Entity is EntityType.Projectile && entity is ClassLibrary.Classes.Domain.Avatar)
                 {
@@ -119,7 +119,9 @@ public class CollisionService : BackgroundService, IConsumerService
                 EntityId = value.EntityId,
                 Change = ChangeType.MoveBullet,
                 Location = value.ToLocation,
-                Timer = value.Timer
+                Timer = value.Timer,
+                Direction = value.Direction,
+                GameTime = value.GameTime
             };
 
             _producer.Produce(OutputTopic, key, output);

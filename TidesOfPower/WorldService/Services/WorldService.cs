@@ -5,6 +5,7 @@ using ClassLibrary.MongoDB;
 using WorldService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.Redis;
+using Google.Protobuf.WellKnownTypes;
 using ChangeType = ClassLibrary.Messages.Protobuf.ChangeType;
 using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
 using SyncType = ClassLibrary.Messages.Protobuf.SyncType;
@@ -17,10 +18,12 @@ public class WorldService : BackgroundService, IConsumerService
 {
     private const string GroupId = "world-group";
     private KafkaTopic InputTopic = KafkaTopic.World;
-    private KafkaTopic OutputTopic = KafkaTopic.LocalState;
+    private KafkaTopic OutputTopicL = KafkaTopic.LocalState;
+    private KafkaTopic OutputTopicP = KafkaTopic.Projectile;
 
     private readonly KafkaAdministrator _admin;
-    private readonly ProtoKafkaProducer<LocalState> _producer;
+    private readonly ProtoKafkaProducer<LocalState> _producerL;
+    private readonly ProtoKafkaProducer<Projectile> _producerP;
     private readonly ProtoKafkaConsumer<WorldChange> _consumer;
 
     private readonly MongoDbBroker _mongoBroker;   
@@ -33,7 +36,8 @@ public class WorldService : BackgroundService, IConsumerService
         Console.WriteLine($"WorldService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
-        _producer = new ProtoKafkaProducer<LocalState>(config);
+        _producerL = new ProtoKafkaProducer<LocalState>(config);
+        _producerP = new ProtoKafkaProducer<Projectile>(config);
         _consumer = new ProtoKafkaConsumer<WorldChange>(config);
         _mongoBroker = new MongoDbBroker();
         _redisBroker = new RedisBroker();
@@ -127,7 +131,7 @@ public class WorldService : BackgroundService, IConsumerService
         output.Avatars.AddRange(avatars);
         output.Projectiles.AddRange(projectiles);
         
-        _producer.Produce($"{OutputTopic}_{player.Id}", key, output);
+        _producerL.Produce($"{OutputTopicL}_{player.Id}", key, output);
 
         var enemies = output.Avatars.Where(x => x.Id != output.PlayerId);
         foreach (var enemy in enemies)
@@ -138,7 +142,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Sync = SyncType.Delta
             };
             deltaOutput.Avatars.Add(player);
-            _producer.Produce($"{OutputTopic}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
+            _producerL.Produce($"{OutputTopicL}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
         }
         
         timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
@@ -161,7 +165,8 @@ public class WorldService : BackgroundService, IConsumerService
             Id = value.EntityId,
             Location = value.Location,
             Direction = value.Direction,
-            Timer = 10
+            Timer = 10,
+            GameTime = Timestamp.FromDateTime(DateTime.UtcNow) // Timestamp requires UTC DateTime
         };
         var pro = new ClassLibrary.Classes.Domain.Projectile()
         {
@@ -179,8 +184,10 @@ public class WorldService : BackgroundService, IConsumerService
             Timer = 10
         };
         
+        _producerP.Produce(OutputTopicP, projectile.Id, projectile);
+        
         s2.Start();
-        _redisBroker.Insert(pro);
+        //_redisBroker.Insert(pro);
         var avatars = _redisBroker.GetEntities(pro.Location.X, pro.Location.Y).OfType<ClassLibrary.Classes.Domain.Avatar>();
         s2.Stop();
         
@@ -192,7 +199,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Sync = SyncType.Delta
             };
             deltaOutput.Projectiles.Add(projectile);
-            _producer.Produce($"{OutputTopic}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
+            _producerL.Produce($"{OutputTopicL}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
         }
         
         stopwatch.Stop();
@@ -210,7 +217,9 @@ public class WorldService : BackgroundService, IConsumerService
         {
             Id = value.EntityId,
             Location = value.Location,
-            Timer = value.Timer
+            Timer = value.Timer,
+            Direction = value.Direction,
+            GameTime = Timestamp.FromDateTime(DateTime.UtcNow) // Timestamp requires UTC DateTime
         };
         var pro = new ClassLibrary.Classes.Domain.Projectile()
         {
@@ -228,12 +237,13 @@ public class WorldService : BackgroundService, IConsumerService
         s2.Start();
         if (bullet.Timer <= 0)
         {
-            _redisBroker.Delete(pro);
+            //_redisBroker.Delete(pro);
             sync = SyncType.Delete;
         }
         else
         {
-            _redisBroker.UpdateProjectile(pro);
+            _producerP.Produce(OutputTopicP, bullet.Id, bullet);
+            //_redisBroker.UpdateProjectile(pro);
             sync = SyncType.Delta;
         }
         var entities = _redisBroker.GetEntities(pro.Location.X, pro.Location.Y).OfType<ClassLibrary.Classes.Domain.Avatar>().ToList();
@@ -247,7 +257,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Sync = sync
             };
             deltaOutput.Projectiles.Add(bullet);
-            _producer.Produce($"{OutputTopic}_{entity.Id}", entity.Id.ToString(), deltaOutput);
+            _producerL.Produce($"{OutputTopicL}_{entity.Id}", entity.Id.ToString(), deltaOutput);
         }
         
         stopwatch.Stop();
@@ -287,7 +297,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Id = player.Id
             };
             deltaOutput.Avatars.Add(a);
-            _producer.Produce($"{OutputTopic}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
+            _producerL.Produce($"{OutputTopicL}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
         }
         
         stopwatch.Stop();

@@ -6,6 +6,7 @@ using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Protobuf;
 using Microsoft.Extensions.Hosting;
 using ClassLibrary.Interfaces;
+using GameClient.Core;
 using GameClient.Entities;
 using Microsoft.Xna.Framework;
 using Projectile = GameClient.Entities.Projectile;
@@ -23,13 +24,14 @@ public class SyncService : BackgroundService
     readonly ProtoKafkaConsumer<LocalState> _consumer;
 
     private MyGame game;
+    private LatencyList latency = new LatencyList(100);
     
     public SyncService(MyGame game)
     {
         Console.WriteLine("SyncService Created!");
-        _config = new KafkaConfig(GroupId, true);
-        _admin = new KafkaAdministrator(_config);
-        _consumer = new ProtoKafkaConsumer<LocalState>(_config);
+        //_config = new KafkaConfig(GroupId, true);
+        //_admin = new KafkaAdministrator(_config);
+        //_consumer = new ProtoKafkaConsumer<LocalState>(_config);
         this.game = game;
     }
 
@@ -38,9 +40,9 @@ public class SyncService : BackgroundService
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         Console.WriteLine($"SyncService started");
-        await _admin.CreateTopic($"{InputTopic}_{game.PlayerId}");
+        //await _admin.CreateTopic($"{InputTopic}_{game.PlayerId}");
         IProtoConsumer<LocalState>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume($"{InputTopic}_{game.PlayerId}", action, ct);
+        //await _consumer.Consume($"{InputTopic}_{game.PlayerId}", action, ct);
         Console.WriteLine($"SyncService stopped");
     }
 
@@ -54,6 +56,8 @@ public class SyncService : BackgroundService
                 var endTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 var timeDiff = endTime - startTime;
                 string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                latency.Add(timeDiff);
+                game.Player.Latency = latency.GetAverage();
                 Console.WriteLine($"Latency = {timeDiff} ms - stamp: {timestampWithMs}");
                 FullSync(value);
                 break;
@@ -71,15 +75,15 @@ public class SyncService : BackgroundService
         DeltaSync(value);
 
         var onlineAvatarIds = value.Avatars.Select(x => x.Id).ToList();
-        var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
+        //var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
 
-        if (game.LocalState.OfType<Agent>().Any(x => !onlineAvatarIds.Contains(x._agentId.ToString())) ||
-            game.LocalState.OfType<Projectile>().Any(x => !onlineProjectileIds.Contains(x._id.ToString())))
+        if (game.LocalState.OfType<Agent>().Any(x => !onlineAvatarIds.Contains(x._agentId.ToString()))) //||
+            //game.LocalState.OfType<Projectile>().Any(x => !onlineProjectileIds.Contains(x._id.ToString())))
         {
             lock (game._lockObject)
             {
                 game.LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y._agentId.ToString()));
-                game.LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
+                //game.LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
                 Console.WriteLine($"LocalState count {game.LocalState.Count}");
             }
         }

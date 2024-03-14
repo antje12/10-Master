@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
 using TickService.Interfaces;
@@ -12,12 +13,15 @@ namespace TickService.Services;
 public class TickService : BackgroundService, IConsumerService
 {
     private const string GroupId = "tick-group";
+    private KafkaTopic InputTopic = KafkaTopic.Projectile;
     private KafkaTopic OutputTopic = KafkaTopic.Collision;
 
+    private readonly KafkaAdministrator _admin;
     private readonly ProtoKafkaProducer<CollisionCheck> _producer;
+    private readonly ProtoKafkaConsumer<Projectile> _consumer;
 
-    private readonly MongoDbBroker _mongoBroker;
-    private readonly RedisBroker _redisBroker;
+    //private readonly MongoDbBroker _mongoBroker;
+    //private readonly RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
 
@@ -25,50 +29,41 @@ public class TickService : BackgroundService, IConsumerService
     {
         Console.WriteLine($"TickService created");
         var config = new KafkaConfig(GroupId);
+        _admin = new KafkaAdministrator(config);
         _producer = new ProtoKafkaProducer<CollisionCheck>(config);
-        _mongoBroker = new MongoDbBroker();
-        _redisBroker = new RedisBroker();
+        _consumer = new ProtoKafkaConsumer<Projectile>(config);
+        //_mongoBroker = new MongoDbBroker();
+        //_redisBroker = new RedisBroker();
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
-
         IsRunning = true;
         Console.WriteLine($"TickService started");
-
-        var stopwatch = new Stopwatch();
-        var s2 = new Stopwatch();
-        
-        while (!ct.IsCancellationRequested)
-        {
-            stopwatch.Restart();
-            s2.Restart();
-            var projectiles = _redisBroker.GetEntities().OfType<ClassLibrary.Classes.Domain.Projectile>().ToList();
-            s2.Stop();
-            
-            foreach (var projectile in projectiles)
-            {
-                SendState(projectile);
-            }
-        
-            stopwatch.Stop();
-            var elapsedTime = stopwatch.ElapsedMilliseconds;
-            if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
-
-            Thread.Sleep(50);
-        }
-
+        await _admin.CreateTopic(InputTopic);
+        IProtoConsumer<Projectile>.ProcessMessage action = ProcessMessage;
+        await _consumer.Consume(InputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine($"TickService stopped");
     }
 
-    private void SendState(ClassLibrary.Classes.Domain.Projectile projectile)
+    private void ProcessMessage(string key, Projectile value)
+    {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        SendState(value);
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms");
+    }
+
+    private void SendState(Projectile projectile)
     {
         var output = new CollisionCheck()
         {
-            EntityId = projectile.Id.ToString(),
+            EntityId = projectile.Id,
             Entity = EntityType.Projectile,
             FromLocation = new Coordinates()
             {
@@ -80,14 +75,20 @@ public class TickService : BackgroundService, IConsumerService
                 X = projectile.Location.X,
                 Y = projectile.Location.Y
             },
-            Timer = projectile.Timer - 1
+            Timer = projectile.Timer - 1,
+            Direction = projectile.Direction,
+            GameTime = projectile.GameTime
         };
+        
+        var from = output.GameTime.ToDateTime();
+        var to = DateTime.UtcNow;
+        TimeSpan difference = to - from;
+        
+        var deltaTime = difference.TotalSeconds;
+        var speed = 200;
 
-        var speed = 100;
-        var deltaTime = 0.05f;
-
-        output.ToLocation.X += projectile.Direction.X * speed * deltaTime;
-        output.ToLocation.Y += projectile.Direction.Y * speed * deltaTime;
+        output.ToLocation.X += projectile.Direction.X * speed * (float) deltaTime;
+        output.ToLocation.Y += projectile.Direction.Y * speed * (float) deltaTime;
 
         _producer.Produce(OutputTopic, output.EntityId.ToString(), output);
     }

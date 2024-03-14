@@ -85,21 +85,22 @@ public class InputService : BackgroundService, IConsumerService
             EventId = value.EventId
         };
 
+        var speed = 100;
         foreach (var input in value.KeyInput)
         {
             switch (input)
             {
                 case GameKey.Up:
-                    output.ToLocation.Y -= 100 * (float) value.GameTime;
+                    output.ToLocation.Y -= speed * (float) value.GameTime;
                     break;
                 case GameKey.Down:
-                    output.ToLocation.Y += 100 * (float) value.GameTime;
+                    output.ToLocation.Y += speed * (float) value.GameTime;
                     break;
                 case GameKey.Left:
-                    output.ToLocation.X -= 100 * (float) value.GameTime;
+                    output.ToLocation.X -= speed * (float) value.GameTime;
                     break;
                 case GameKey.Right:
-                    output.ToLocation.X += 100 * (float) value.GameTime;
+                    output.ToLocation.X += speed * (float) value.GameTime;
                     break;
             }
         }

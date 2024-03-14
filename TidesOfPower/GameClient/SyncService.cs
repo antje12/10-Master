@@ -29,9 +29,9 @@ public class SyncService : BackgroundService
     public SyncService(MyGame game)
     {
         Console.WriteLine("SyncService Created!");
-        //_config = new KafkaConfig(GroupId, true);
-        //_admin = new KafkaAdministrator(_config);
-        //_consumer = new ProtoKafkaConsumer<LocalState>(_config);
+        _config = new KafkaConfig(GroupId, true);
+        _admin = new KafkaAdministrator(_config);
+        _consumer = new ProtoKafkaConsumer<LocalState>(_config);
         this.game = game;
     }
 
@@ -40,9 +40,9 @@ public class SyncService : BackgroundService
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         Console.WriteLine($"SyncService started");
-        //await _admin.CreateTopic($"{InputTopic}_{game.PlayerId}");
+        await _admin.CreateTopic($"{InputTopic}_{game.PlayerId}");
         IProtoConsumer<LocalState>.ProcessMessage action = ProcessMessage;
-        //await _consumer.Consume($"{InputTopic}_{game.PlayerId}", action, ct);
+        await _consumer.Consume($"{InputTopic}_{game.PlayerId}", action, ct);
         Console.WriteLine($"SyncService stopped");
     }
 

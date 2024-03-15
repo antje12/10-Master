@@ -1,22 +1,27 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace GameClient.Core;
 
 public class Camera
 {
-    public Matrix Transform { get; private set; }
+    private MyGame _game;
+    public Matrix Transform;
 
-    public void Follow(Vector2 playerPosition, Texture2D playerTexture, int screenWidth, int screenHeight)
+    public Camera(MyGame game)
+    {
+        _game = game;
+    }
+
+    public void Follow(Vector2 playerPosition)
     {
         var position = Matrix.CreateTranslation(
-            -playerPosition.X, //- (playerTexture.Width / 2),
-            -playerPosition.Y, //- (playerTexture.Height / 2),
+            -playerPosition.X,
+            -playerPosition.Y,
             0);
 
         var offset = Matrix.CreateTranslation(
-            screenWidth / 2,
-            screenHeight / 2,
+            _game.ScreenWidth / 2,
+            _game.ScreenHeight / 2,
             0);
 
         Transform = position * offset;
@@ -24,8 +29,8 @@ public class Camera
     
     public bool MouseOnScreen(Vector2 mouse)
     {
-        return 0 <= mouse.X && mouse.X <= MyGame.screenWidth &&
-               0 <= mouse.Y && mouse.Y <= MyGame.screenHeight;
+        return 0 <= mouse.X && mouse.X <= _game.ScreenWidth &&
+               0 <= mouse.Y && mouse.Y <= _game.ScreenHeight;
     }
     
     public Vector2 MouseInWorld(Vector2 screenPosition)

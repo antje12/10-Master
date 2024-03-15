@@ -8,27 +8,27 @@ public class KafkaConfig
 {
     //client:           "localhost:19092"
     //kubernetes:       "kafka-service:9092"
-    private string KafkaServers = "kafka-service:9092";
+    private string _kafkaServers = "kafka-service:9092";
     //client:           "localhost:8081"
     //kubernetes:       "schema-registry-service:8081"
-    private string SchemaRegistry = "schema-registry-service:8081";
+    private string _schemaRegistry = "schema-registry-service:8081";
 
-    public readonly SchemaRegistryConfig SchemaRegistryConfig;
-    public readonly AvroSerializerConfig AvroSerializerConfig;
-    public readonly AdminClientConfig AdminConfig;
-    public readonly ProducerConfig ProducerConfig;
-    public readonly ConsumerConfig ConsumerConfig;
+    public SchemaRegistryConfig SchemaRegistryConfig;
+    public AvroSerializerConfig AvroSerializerConfig;
+    public AdminClientConfig AdminConfig;
+    public ProducerConfig ProducerConfig;
+    public ConsumerConfig ConsumerConfig;
 
     public KafkaConfig(string groupId, bool isClient = false)
     {
         if (isClient)
         {
-            KafkaServers = "localhost:19092";
-            SchemaRegistry = "localhost:8081";
+            _kafkaServers = "localhost:19092";
+            _schemaRegistry = "localhost:8081";
         }
         SchemaRegistryConfig = new()
         {
-            Url = SchemaRegistry
+            Url = _schemaRegistry
         };
         AvroSerializerConfig = new()
         {
@@ -36,11 +36,11 @@ public class KafkaConfig
         };
         AdminConfig = new()
         {
-            BootstrapServers = KafkaServers
+            BootstrapServers = _kafkaServers
         };
         ProducerConfig = new()
         {
-            BootstrapServers = KafkaServers,
+            BootstrapServers = _kafkaServers,
             AllowAutoCreateTopics = false,
             Acks = Acks.None,
             LingerMs = 0,
@@ -48,7 +48,7 @@ public class KafkaConfig
         };
         ConsumerConfig = new()
         {
-            BootstrapServers = KafkaServers,
+            BootstrapServers = _kafkaServers,
             AllowAutoCreateTopics = false,
             GroupId = groupId,
             AutoOffsetReset = AutoOffsetReset.Earliest,

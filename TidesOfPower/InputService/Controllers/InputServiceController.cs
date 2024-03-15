@@ -8,7 +8,7 @@ namespace InputService.Controllers;
 public class InputServiceController : ControllerBase
 {
     //https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/examples/AvroSpecific/Program.cs
-    private const string ApiVersion = "1.00";
+    private string _apiVersion = "1.00";
     private readonly IConsumerService _inputService;
 
     public InputServiceController(IConsumerService inputService)
@@ -19,7 +19,7 @@ public class InputServiceController : ControllerBase
     [HttpGet("Version")]
     public object Version()
     {
-        return $"Service version = {ApiVersion}";
+        return $"Service version = {_apiVersion}";
     }
 
     [HttpGet("Status")]

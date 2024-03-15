@@ -7,18 +7,23 @@ namespace GameClient.Core;
 public class UI
 {
     private SpriteFont _font;
+    private Player _player;
+    private MyGame _game;
     
-    public UI(SpriteFont font)
+    public UI(SpriteFont font, Player player, MyGame game)
     {
         _font = font;
+        _player = player;
+        _game = game;
     }
 
-    public void Draw(SpriteBatch spriteBatch, Player player)
+    public void Draw(SpriteBatch spriteBatch)
     {
-        var x = player.Position.X - MyGame.screenWidth / 2;
-        var y = player.Position.Y - MyGame.screenHeight / 2;
-        spriteBatch.DrawString(_font, $"Latency: {player.Latency} ms", new Vector2(x+10, y), Color.Black);
-        spriteBatch.DrawString(_font, $"Health: {player.Health} %", new Vector2(x+10, y+20), Color.Black);
-        spriteBatch.DrawString(_font, $"Score: {player.Score} $", new Vector2(x+10, y+40), Color.Black);
+        if (_player == null) return;
+        var x = _player.Position.X - _game.ScreenWidth / 2;
+        var y = _player.Position.Y - _game.ScreenHeight / 2;
+        spriteBatch.DrawString(_font, $"Latency: {_player.Latency} ms", new Vector2(x+10, y), Color.Black);
+        spriteBatch.DrawString(_font, $"Health: {_player.Health} %", new Vector2(x+10, y+20), Color.Black);
+        spriteBatch.DrawString(_font, $"Score: {_player.Score} $", new Vector2(x+10, y+40), Color.Black);
     }
 }

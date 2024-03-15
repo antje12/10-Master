@@ -6,7 +6,7 @@ namespace ClassLibrary.Kafka;
 
 public class KafkaAdministrator : IAdministrator
 {
-    private readonly IAdminClient _adminClient;
+    private IAdminClient _adminClient;
 
     public KafkaAdministrator(KafkaConfig config)
     {

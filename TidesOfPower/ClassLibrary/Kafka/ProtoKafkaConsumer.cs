@@ -9,8 +9,8 @@ namespace ClassLibrary.Kafka;
 
 public class ProtoKafkaConsumer<T> : IProtoConsumer<T> where T : class, IMessage<T>, new()
 {
-    private readonly CachedSchemaRegistryClient _schemaRegistry;
-    private readonly IConsumer<string, T> _consumer;
+    private CachedSchemaRegistryClient _schemaRegistry;
+    private IConsumer<string, T> _consumer;
 
     public ProtoKafkaConsumer(KafkaConfig config)
     {

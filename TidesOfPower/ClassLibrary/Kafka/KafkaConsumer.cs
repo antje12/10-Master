@@ -9,8 +9,8 @@ namespace ClassLibrary.Kafka;
 
 public class KafkaConsumer<T> : IConsumer<T> where T : ISpecificRecord
 {
-    private readonly CachedSchemaRegistryClient _schemaRegistry;
-    private readonly IConsumer<string, T> _consumer;
+    private CachedSchemaRegistryClient _schemaRegistry;
+    private IConsumer<string, T> _consumer;
 
     public KafkaConsumer(KafkaConfig config)
     {

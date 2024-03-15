@@ -6,11 +6,11 @@ namespace ProfileService.Controllers;
 [Route("[controller]")]
 public class WorldServiceController : ControllerBase
 {
-    private const string ApiVersion = "1.00";
+    private string _apiVersion = "1.00";
 
     [HttpGet("Version")]
     public object Version()
     {
-        return $"Service version = {ApiVersion}";
+        return $"Service version = {_apiVersion}";
     }
 }

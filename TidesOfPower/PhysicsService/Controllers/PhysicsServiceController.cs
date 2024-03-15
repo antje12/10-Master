@@ -7,9 +7,8 @@ namespace PhysicsService.Controllers;
 [Route("[controller]")]
 public class PhysicsServiceController : ControllerBase
 {
-    //https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/examples/AvroSpecific/Program.cs
-    private const string ApiVersion = "1.00";
-    private readonly IConsumerService _consumerService;
+    private string _apiVersion = "1.00";
+    private IConsumerService _consumerService;
 
     public PhysicsServiceController(IConsumerService consumerService)
     {
@@ -19,7 +18,7 @@ public class PhysicsServiceController : ControllerBase
     [HttpGet("Version")]
     public object Version()
     {
-        return $"Service version = {ApiVersion}";
+        return $"Service version = {_apiVersion}";
     }
 
     [HttpGet("Status")]

@@ -5,24 +5,22 @@ using ClassLibrary.Messages.Avro;
 
 namespace AIService.Services;
 
-//https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-8.0&tabs=visual-studio
-//https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class AIService : BackgroundService, IConsumerService
 {
-    private const string GroupId = "ai-group";
-    private KafkaTopic InputTopic = KafkaTopic.AI;
-    private KafkaTopic OutputTopic = KafkaTopic.Input;
+    private string _groupId = "ai-group";
+    private KafkaTopic _inputTopic = KafkaTopic.AI;
+    private KafkaTopic _outputTopic = KafkaTopic.Input;
 
-    private readonly KafkaAdministrator _admin;
-    private readonly KafkaProducer<LocalState> _producer;
-    private readonly KafkaConsumer<Input> _consumer;
+    private KafkaAdministrator _admin;
+    private KafkaProducer<LocalState> _producer;
+    private KafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
 
     public AIService()
     {
         Console.WriteLine($"AIService created");
-        var config = new KafkaConfig(GroupId);
+        var config = new KafkaConfig(_groupId);
         _admin = new KafkaAdministrator(config);
         _producer = new KafkaProducer<LocalState>(config);
         _consumer = new KafkaConsumer<Input>(config);
@@ -36,9 +34,9 @@ public class AIService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine($"AIService started");
 
-        await _admin.CreateTopic(InputTopic);
+        await _admin.CreateTopic(_inputTopic);
         IConsumer<Input>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(InputTopic, action, ct);
+        await _consumer.Consume(_inputTopic, action, ct);
 
         IsRunning = false;
         Console.WriteLine($"AIService stopped");
@@ -51,6 +49,6 @@ public class AIService : BackgroundService, IConsumerService
             PlayerId = value.PlayerId
         };
         
-        _producer.Produce(OutputTopic, key, output);
+        _producer.Produce(_outputTopic, key, output);
     }
 }

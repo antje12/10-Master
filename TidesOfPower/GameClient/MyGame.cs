@@ -12,32 +12,29 @@ namespace GameClient;
 
 public class MyGame : Game
 {
-    public Guid PlayerId = Guid.NewGuid();
-    
-    const string GroupId = "output-group";
-    public static KafkaTopic OutputTopic = KafkaTopic.Input;
+    private string _groupId = "output-group";
+    public KafkaTopic OutputTopic = KafkaTopic.Input;
+    private KafkaConfig _config;
+    private ProtoKafkaProducer<Input> _producer;
 
-    readonly KafkaConfig _config;
-    readonly ProtoKafkaProducer<Input> _producer;
+    private Texture2D _oceanTexture; //64x64
+    private Texture2D _islandTexture; //64x64
+    public Texture2D AvatarTexture; //50x50
+    public Texture2D ProjectileTexture; //10x10
+    private SpriteFont _font; //10x10
 
-    public Texture2D oceanTexture; //64x64
-    public Texture2D islandTexture; //64x64
-    public Texture2D avatarTexture; //50x50
-    public Texture2D projectileTexture; //10x10
-    public SpriteFont font; //10x10
+    private UI _ui;
+    private Camera _camera;
+    private GraphicsDeviceManager _graphics;
+    private SpriteBatch _spriteBatch;
 
-    UI _ui;
-    Camera _camera;
-    GraphicsDeviceManager _graphics;
-    SpriteBatch _spriteBatch;
-
-    public static int screenHeight; //480
-    public static int screenWidth; //800
+    public int ScreenHeight; //480
+    public int ScreenWidth; //800
 
     public Player Player;
-    public List<Sprite> LocalState = new List<Sprite>();
-    public readonly object _lockObject = new object();
-    public Dictionary<string, long> dict = new Dictionary<string, long>();
+    public List<Sprite> LocalState = new();
+    public readonly object LockObject = new();
+    public Dictionary<string, long> EventTimes = new();
     
     public MyGame()
     {
@@ -45,25 +42,25 @@ public class MyGame : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        _config = new KafkaConfig(GroupId, true);
+        _config = new KafkaConfig(_groupId, true);
         _producer = new ProtoKafkaProducer<Input>(_config);
     }
 
-    protected override async void Initialize()
+    protected override void Initialize()
     {
-        screenWidth = GraphicsDevice.Viewport.Width;
-        screenHeight = GraphicsDevice.Viewport.Height;
-        _camera = new Camera();
-        base.Initialize();
-
-        var playerPosition = new Vector2(screenWidth / 2, screenHeight / 2);
-        Player = new Player(this, PlayerId, playerPosition, avatarTexture, _camera, _producer);
+        ScreenWidth = GraphicsDevice.Viewport.Width;
+        ScreenHeight = GraphicsDevice.Viewport.Height;
+        base.Initialize(); // Runs LoadContent
+        
+        _camera = new Camera(this);
+        var playerPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
+        Player = new Player(this, Guid.NewGuid(), playerPosition, AvatarTexture, _camera, _producer);
+        _ui = new UI(_font, Player, this);
 
         var oceanPosition = new Vector2(0, 0);
-        var ocean = new Ocean(oceanPosition, oceanTexture, Player);
-        
-        var islandPosition = new Vector2(screenWidth / 2, screenHeight / 2);
-        var island = new Island(islandPosition, islandTexture);
+        var ocean = new Ocean(oceanPosition, _oceanTexture, Player, this);
+        var islandPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
+        var island = new Island(islandPosition, _islandTexture);
 
         LocalState.Add(ocean);
         LocalState.Add(island);
@@ -72,12 +69,11 @@ public class MyGame : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        avatarTexture = Content.Load<Texture2D>("circle");
-        islandTexture = Content.Load<Texture2D>("island");
-        oceanTexture = Content.Load<Texture2D>("ocean");
-        projectileTexture = Content.Load<Texture2D>("small-circle");
-        font = Content.Load<SpriteFont>("Arial16");
-        _ui = new UI(font);
+        AvatarTexture = Content.Load<Texture2D>("circle");
+        _islandTexture = Content.Load<Texture2D>("island");
+        _oceanTexture = Content.Load<Texture2D>("ocean");
+        ProjectileTexture = Content.Load<Texture2D>("small-circle");
+        _font = Content.Load<SpriteFont>("Arial16");
     }
 
     protected override void Update(GameTime gameTime)
@@ -85,13 +81,13 @@ public class MyGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-        lock (_lockObject)
+        lock (LockObject)
         {
             for (var i = LocalState.Count - 1; i >= 0; i--)
             {
                 var sprite = LocalState[i];
                 sprite.Update(gameTime);
-                if (sprite is GameClient.Entities.Projectile && IsOffScreen(sprite))
+                if (sprite is Entities.Projectile && IsOffScreen(sprite))
                 {
                     LocalState.RemoveAt(i);
                 }
@@ -103,10 +99,10 @@ public class MyGame : Game
 
     private bool IsOffScreen(Sprite sprite)
     {
-        var startX = Player.Position.X - screenWidth / 2;
-        var endX = Player.Position.X + screenWidth / 2;
-        var startY = Player.Position.Y - screenHeight / 2;
-        var endY = Player.Position.Y + screenHeight / 2;
+        var startX = Player.Position.X - ScreenWidth / 2;
+        var endX = Player.Position.X + ScreenWidth / 2;
+        var startY = Player.Position.Y - ScreenHeight / 2;
+        var endY = Player.Position.Y + ScreenHeight / 2;
 
         if (sprite.Position.X <= startX || endX <= sprite.Position.X ||
             sprite.Position.Y <= startY || endY <= sprite.Position.Y)
@@ -121,7 +117,7 @@ public class MyGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
         _spriteBatch.Begin(transformMatrix: _camera.Transform);
-        lock (_lockObject)
+        lock (LockObject)
         {
             foreach (var sprite in LocalState)
             {
@@ -129,7 +125,7 @@ public class MyGame : Game
             }
         }
         Player.Draw(_spriteBatch);
-        _ui.Draw(_spriteBatch, Player);
+        _ui.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

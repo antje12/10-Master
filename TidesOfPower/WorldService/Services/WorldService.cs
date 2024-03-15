@@ -12,29 +12,27 @@ using SyncType = ClassLibrary.Messages.Protobuf.SyncType;
 
 namespace WorldService.Services;
 
-//https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-8.0&tabs=visual-studio
-//https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class WorldService : BackgroundService, IConsumerService
 {
-    private const string GroupId = "world-group";
-    private KafkaTopic InputTopic = KafkaTopic.World;
-    private KafkaTopic OutputTopicL = KafkaTopic.LocalState;
-    private KafkaTopic OutputTopicP = KafkaTopic.Projectile;
+    private string _groupId = "world-group";
+    private KafkaTopic _inputTopic = KafkaTopic.World;
+    private KafkaTopic _outputTopicL = KafkaTopic.LocalState;
+    private KafkaTopic _outputTopicP = KafkaTopic.Projectile;
 
-    private readonly KafkaAdministrator _admin;
-    private readonly ProtoKafkaProducer<LocalState> _producerL;
-    private readonly ProtoKafkaProducer<Projectile> _producerP;
-    private readonly ProtoKafkaConsumer<WorldChange> _consumer;
+    private KafkaAdministrator _admin;
+    private ProtoKafkaProducer<LocalState> _producerL;
+    private ProtoKafkaProducer<Projectile> _producerP;
+    private ProtoKafkaConsumer<WorldChange> _consumer;
 
-    private readonly MongoDbBroker _mongoBroker;   
-    private readonly RedisBroker _redisBroker;
+    private MongoDbBroker _mongoBroker;   
+    private RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
 
     public WorldService()
     {
         Console.WriteLine($"WorldService created");
-        var config = new KafkaConfig(GroupId);
+        var config = new KafkaConfig(_groupId);
         _admin = new KafkaAdministrator(config);
         _producerL = new ProtoKafkaProducer<LocalState>(config);
         _producerP = new ProtoKafkaProducer<Projectile>(config);
@@ -45,13 +43,12 @@ public class WorldService : BackgroundService, IConsumerService
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         IsRunning = true;
         Console.WriteLine($"WorldService started");
-        await _admin.CreateTopic(InputTopic);
+        await _admin.CreateTopic(_inputTopic);
         IProtoConsumer<WorldChange>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(InputTopic, action, ct);
+        await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine($"WorldService stopped");
     }
@@ -131,7 +128,7 @@ public class WorldService : BackgroundService, IConsumerService
         output.Avatars.AddRange(avatars);
         output.Projectiles.AddRange(projectiles);
         
-        _producerL.Produce($"{OutputTopicL}_{player.Id}", key, output);
+        _producerL.Produce($"{_outputTopicL}_{player.Id}", key, output);
 
         var enemies = output.Avatars.Where(x => x.Id != output.PlayerId);
         foreach (var enemy in enemies)
@@ -142,7 +139,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Sync = SyncType.Delta
             };
             deltaOutput.Avatars.Add(player);
-            _producerL.Produce($"{OutputTopicL}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
+            _producerL.Produce($"{_outputTopicL}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
         }
         
         timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
@@ -184,7 +181,7 @@ public class WorldService : BackgroundService, IConsumerService
             Timer = 10
         };
         
-        _producerP.Produce(OutputTopicP, projectile.Id, projectile);
+        _producerP.Produce(_outputTopicP, projectile.Id, projectile);
         
         s2.Start();
         //_redisBroker.Insert(pro);
@@ -199,7 +196,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Sync = SyncType.Delta
             };
             deltaOutput.Projectiles.Add(projectile);
-            _producerL.Produce($"{OutputTopicL}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
+            _producerL.Produce($"{_outputTopicL}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
         }
         
         stopwatch.Stop();
@@ -242,7 +239,7 @@ public class WorldService : BackgroundService, IConsumerService
         }
         else
         {
-            _producerP.Produce(OutputTopicP, bullet.Id, bullet);
+            _producerP.Produce(_outputTopicP, bullet.Id, bullet);
             //_redisBroker.UpdateProjectile(pro);
             sync = SyncType.Delta;
         }
@@ -257,7 +254,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Sync = sync
             };
             deltaOutput.Projectiles.Add(bullet);
-            _producerL.Produce($"{OutputTopicL}_{entity.Id}", entity.Id.ToString(), deltaOutput);
+            _producerL.Produce($"{_outputTopicL}_{entity.Id}", entity.Id.ToString(), deltaOutput);
         }
         
         stopwatch.Stop();
@@ -297,7 +294,7 @@ public class WorldService : BackgroundService, IConsumerService
                 Id = player.Id
             };
             deltaOutput.Avatars.Add(a);
-            _producerL.Produce($"{OutputTopicL}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
+            _producerL.Produce($"{_outputTopicL}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
         }
         
         stopwatch.Stop();

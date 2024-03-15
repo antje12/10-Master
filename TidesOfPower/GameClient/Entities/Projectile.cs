@@ -6,11 +6,11 @@ namespace GameClient.Entities;
 
 public class Projectile : Sprite
 {
-    public Guid _id;
+    public Guid Id;
     
     public Projectile(Guid id, Vector2 position, Texture2D texture) : base(position, texture)
     {
-        _id = id;
+        Id = id;
     }
 
     public override void Update(GameTime gameTime)

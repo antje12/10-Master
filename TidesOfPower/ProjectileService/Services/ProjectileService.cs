@@ -6,24 +6,22 @@ using ProjectileService.Interfaces;
 
 namespace ProjectileService.Services;
 
-//https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-8.0&tabs=visual-studio
-//https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class ProjectileService : BackgroundService, IConsumerService
 {
-    private const string GroupId = "projectile-group";
-    private KafkaTopic InputTopic = KafkaTopic.Projectile;
-    private KafkaTopic OutputTopic = KafkaTopic.Collision;
+    private string _groupId = "projectile-group";
+    private KafkaTopic _inputTopic = KafkaTopic.Projectile;
+    private KafkaTopic _outputTopic = KafkaTopic.Collision;
 
-    private readonly KafkaAdministrator _admin;
-    private readonly ProtoKafkaProducer<CollisionCheck> _producer;
-    private readonly ProtoKafkaConsumer<Projectile> _consumer;
+    private KafkaAdministrator _admin;
+    private ProtoKafkaProducer<CollisionCheck> _producer;
+    private ProtoKafkaConsumer<Projectile> _consumer;
 
     public bool IsRunning { get; private set; }
 
     public ProjectileService()
     {
         Console.WriteLine($"ProjectileService created");
-        var config = new KafkaConfig(GroupId);
+        var config = new KafkaConfig(_groupId);
         _admin = new KafkaAdministrator(config);
         _producer = new ProtoKafkaProducer<CollisionCheck>(config);
         _consumer = new ProtoKafkaConsumer<Projectile>(config);
@@ -31,13 +29,12 @@ public class ProjectileService : BackgroundService, IConsumerService
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         IsRunning = true;
         Console.WriteLine($"ProjectileService started");
-        await _admin.CreateTopic(InputTopic);
+        await _admin.CreateTopic(_inputTopic);
         IProtoConsumer<Projectile>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(InputTopic, action, ct);
+        await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine($"ProjectileService stopped");
     }
@@ -83,6 +80,6 @@ public class ProjectileService : BackgroundService, IConsumerService
         output.ToLocation.X += projectile.Direction.X * speed * (float) deltaTime;
         output.ToLocation.Y += projectile.Direction.Y * speed * (float) deltaTime;
 
-        _producer.Produce(OutputTopic, output.EntityId.ToString(), output);
+        _producer.Produce(_outputTopic, output.EntityId.ToString(), output);
     }
 }

@@ -5,11 +5,13 @@ namespace GameClient.Entities;
 
 public class Ocean : Sprite
 {
-    private readonly Player _player;
+    private Player _player;
+    private MyGame _game;
 
-    public Ocean(Vector2 position, Texture2D texture, Player player) : base(position, texture)
+    public Ocean(Vector2 position, Texture2D texture, Player player, MyGame game) : base(position, texture)
     {
         _player = player;
+        _game = game;
     }
 
     public override void Update(GameTime gameTime)
@@ -18,8 +20,8 @@ public class Ocean : Sprite
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        int screenWidth = MyGame.screenWidth;
-        int screenHeight = MyGame.screenHeight;
+        int screenWidth = _game.ScreenWidth;
+        int screenHeight = _game.ScreenHeight;
 
         var startX = _player.Position.X - screenWidth / 2 - Texture.Width;
         var offsetX = startX % Texture.Width;
@@ -33,8 +35,6 @@ public class Ocean : Sprite
         var bgHeight = screenHeight + Texture.Height * 2;
 
         var background = new Rectangle((int) startX, (int) startY, bgWidth, bgHeight);
-        //_spriteBatch.Draw(oceanTexture, background, Color.White);
-        // Draw the repeating texture using a loop to cover the entire destination rectangle
         for (int y = background.Top; y < background.Bottom; y += Texture.Height)
         {
             for (int x = background.Left; x < background.Right; x += Texture.Width)

@@ -6,10 +6,10 @@ namespace GameClient.Entities;
 
 public abstract class Agent : Sprite
 {
-    public Guid _agentId;
+    public Guid Id;
 
-    protected Agent(Guid agentId, Vector2 position, Texture2D texture) : base(position, texture)
+    protected Agent(Guid id, Vector2 position, Texture2D texture) : base(position, texture)
     {
-        _agentId = agentId;
+        Id = id;
     }
 }

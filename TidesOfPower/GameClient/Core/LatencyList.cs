@@ -5,8 +5,8 @@ namespace GameClient.Core;
 
 public class LatencyList
 {
-    private readonly List<long> _values = new List<long>();
-    private readonly int _maxSize;
+    private readonly List<long> _values = new();
+    private int _maxSize;
 
     public LatencyList(int maxSize)
     {

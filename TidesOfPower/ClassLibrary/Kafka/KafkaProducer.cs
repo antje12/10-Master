@@ -8,8 +8,8 @@ namespace ClassLibrary.Kafka;
 
 public class KafkaProducer<T> : IProducer<T> where T : ISpecificRecord
 {
-    private readonly CachedSchemaRegistryClient _schemaRegistry;
-    private readonly IProducer<string, T> _producer;
+    private CachedSchemaRegistryClient _schemaRegistry;
+    private IProducer<string, T> _producer;
 
     public KafkaProducer(KafkaConfig config)
     {

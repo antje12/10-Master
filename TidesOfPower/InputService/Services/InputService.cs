@@ -10,22 +10,22 @@ namespace InputService.Services;
 //https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class InputService : BackgroundService, IConsumerService
 {
-    private const string GroupId = "input-group";
-    private KafkaTopic InputTopic = KafkaTopic.Input;
-    private KafkaTopic OutputTopicC = KafkaTopic.Collision;
-    private KafkaTopic OutputTopicW = KafkaTopic.World;
+    private string _groupId = "input-group";
+    private KafkaTopic _inputTopic = KafkaTopic.Input;
+    private KafkaTopic _outputTopicC = KafkaTopic.Collision;
+    private KafkaTopic _outputTopicW = KafkaTopic.World;
 
-    private readonly KafkaAdministrator _admin;
-    private readonly ProtoKafkaProducer<CollisionCheck> _producerC;
-    private readonly ProtoKafkaProducer<WorldChange> _producerW;
-    private readonly ProtoKafkaConsumer<Input> _consumer;
+    private KafkaAdministrator _admin;
+    private ProtoKafkaProducer<CollisionCheck> _producerC;
+    private ProtoKafkaProducer<WorldChange> _producerW;
+    private ProtoKafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
 
     public InputService()
     {
         Console.WriteLine($"InputService created");
-        var config = new KafkaConfig(GroupId);
+        var config = new KafkaConfig(_groupId);
         _admin = new KafkaAdministrator(config);
         _producerC = new ProtoKafkaProducer<CollisionCheck>(config);
         _producerW = new ProtoKafkaProducer<WorldChange>(config);
@@ -38,9 +38,9 @@ public class InputService : BackgroundService, IConsumerService
         await Task.Yield();
         IsRunning = true;
         Console.WriteLine($"InputService started");
-        await _admin.CreateTopic(InputTopic);
+        await _admin.CreateTopic(_inputTopic);
         IProtoConsumer<Input>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(InputTopic, action, ct);
+        await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine($"InputService stopped");
     }
@@ -105,7 +105,7 @@ public class InputService : BackgroundService, IConsumerService
             }
         }
 
-        _producerC.Produce(OutputTopicC, key, output);
+        _producerC.Produce(_outputTopicC, key, output);
         
         timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
         Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
@@ -137,7 +137,7 @@ public class InputService : BackgroundService, IConsumerService
             Direction = new Coordinates() {X = x, Y = y}
         };
 
-        _producerW.Produce(OutputTopicW, key, output);
+        _producerW.Produce(_outputTopicW, key, output);
     }
 
     private void Interact(string key, Input value)

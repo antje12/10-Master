@@ -8,8 +8,8 @@ namespace ClassLibrary.Kafka;
 
 public class ProtoKafkaProducer<T> : IProtoProducer<T> where T : class, IMessage<T>, new()
 {
-    private readonly CachedSchemaRegistryClient _schemaRegistry;
-    private readonly IProducer<string, T> _producer;
+    private CachedSchemaRegistryClient _schemaRegistry;
+    private IProducer<string, T> _producer;
 
     public ProtoKafkaProducer(KafkaConfig config)
     {

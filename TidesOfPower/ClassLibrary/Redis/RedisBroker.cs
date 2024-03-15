@@ -62,7 +62,7 @@ public class RedisBroker
     
     public Profile? GetProfiles(Guid profileId)
     {
-        var src = _ft.Search("idx:profiles", new Query("*").Limit(0, 10000)); // 10000 max, may be a problem
+        var src = _ft.Search("idx:profiles", new Query("*").Limit(0, 10000)); // 10000 max
         var json = src.ToJson();
         var res = json.Select(x => JsonConvert.DeserializeObject<Profile>(x));
         return res.FirstOrDefault(x => x.Id == profileId);
@@ -96,7 +96,7 @@ public class RedisBroker
     
     public List<Entity> GetEntities()
     {
-        var src = _ft.Search("idx:entities", new Query("*").Limit(0, 10000)); // 10000 max, may be a problem
+        var src = _ft.Search("idx:entities", new Query("*").Limit(0, 10000)); // 10000 max
         var json = src.ToJson();
 
         var results = new List<Entity>();
@@ -147,7 +147,7 @@ public class RedisBroker
     {
         var query = $"@Location\\.X:[{xFrom} {xTo}] @Location\\.Y:[{yFrom} {yTo}]";
         var src = _ft.Search("idx:entities", new Query(query)
-            .Limit(0, 10000)); // 10000 max, may be a problem
+            .Limit(0, 10000)); // 10000 max
         var json = src.ToJson();
 
         var results = new List<Entity>();

@@ -8,27 +8,25 @@ using ClassLibrary.Redis;
 
 namespace CollisionService.Services;
 
-//https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-8.0&tabs=visual-studio
-//https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
 public class CollisionService : BackgroundService, IConsumerService
 {
-    private const string GroupId = "collision-group";
-    private KafkaTopic InputTopic = KafkaTopic.Collision;
-    private KafkaTopic OutputTopic = KafkaTopic.World;
+    private string _groupId = "collision-group";
+    private KafkaTopic _inputTopic = KafkaTopic.Collision;
+    private KafkaTopic _outputTopic = KafkaTopic.World;
 
-    private readonly KafkaAdministrator _admin;
-    private readonly ProtoKafkaProducer<WorldChange> _producer;
-    private readonly ProtoKafkaConsumer<CollisionCheck> _consumer;
+    private KafkaAdministrator _admin;
+    private ProtoKafkaProducer<WorldChange> _producer;
+    private ProtoKafkaConsumer<CollisionCheck> _consumer;
 
-    private readonly MongoDbBroker _mongoBroker;
-    private readonly RedisBroker _redisBroker;
+    private MongoDbBroker _mongoBroker;
+    private RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
 
     public CollisionService()
     {
         Console.WriteLine($"CollisionService created");
-        var config = new KafkaConfig(GroupId);
+        var config = new KafkaConfig(_groupId);
         _admin = new KafkaAdministrator(config);
         _producer = new ProtoKafkaProducer<WorldChange>(config);
         _consumer = new ProtoKafkaConsumer<CollisionCheck>(config);
@@ -38,13 +36,12 @@ public class CollisionService : BackgroundService, IConsumerService
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         IsRunning = true;
         Console.WriteLine($"CollisionService started");
-        await _admin.CreateTopic(InputTopic);
+        await _admin.CreateTopic(_inputTopic);
         IProtoConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(InputTopic, action, ct);
+        await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine($"CollisionService stopped");
     }
@@ -108,7 +105,7 @@ public class CollisionService : BackgroundService, IConsumerService
                 EventId = value.EventId
             };
 
-            _producer.Produce(OutputTopic, key, output);
+            _producer.Produce(_outputTopic, key, output);
             timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
             Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
         }
@@ -124,7 +121,7 @@ public class CollisionService : BackgroundService, IConsumerService
                 GameTime = value.GameTime
             };
 
-            _producer.Produce(OutputTopic, key, output);
+            _producer.Produce(_outputTopic, key, output);
         }
         
         stopwatch.Stop();
@@ -156,6 +153,6 @@ public class CollisionService : BackgroundService, IConsumerService
             Change = ChangeType.DamagePlayer,
             Location = entityLocation
         };
-        _producer.Produce(OutputTopic, entityId.ToString(), output);
+        _producer.Produce(_outputTopic, entityId.ToString(), output);
     }
 }

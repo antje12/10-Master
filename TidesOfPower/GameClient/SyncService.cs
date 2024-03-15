@@ -16,23 +16,22 @@ namespace GameClient;
 
 public class SyncService : BackgroundService
 {
-    const string GroupId = "output-group";
-    private KafkaTopic InputTopic = KafkaTopic.LocalState;
+    private string _groupId = "output-group";
+    private KafkaTopic _inputTopic = KafkaTopic.LocalState;
+    private KafkaConfig _config;
+    private KafkaAdministrator _admin;
+    private ProtoKafkaConsumer<LocalState> _consumer;
 
-    readonly KafkaConfig _config;
-    private readonly KafkaAdministrator _admin;
-    readonly ProtoKafkaConsumer<LocalState> _consumer;
-
-    private MyGame game;
-    private LatencyList latency = new LatencyList(100);
+    private MyGame _game;
+    private LatencyList _latency = new(100);
     
     public SyncService(MyGame game)
     {
         Console.WriteLine("SyncService Created!");
-        _config = new KafkaConfig(GroupId, true);
+        _config = new KafkaConfig(_groupId, true);
         _admin = new KafkaAdministrator(_config);
         _consumer = new ProtoKafkaConsumer<LocalState>(_config);
-        this.game = game;
+        _game = game;
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -40,9 +39,9 @@ public class SyncService : BackgroundService
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         Console.WriteLine($"SyncService started");
-        await _admin.CreateTopic($"{InputTopic}_{game.PlayerId}");
+        await _admin.CreateTopic($"{_inputTopic}_{_game.Player.Id}");
         IProtoConsumer<LocalState>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume($"{InputTopic}_{game.PlayerId}", action, ct);
+        await _consumer.Consume($"{_inputTopic}_{_game.Player.Id}", action, ct);
         Console.WriteLine($"SyncService stopped");
     }
 
@@ -51,14 +50,7 @@ public class SyncService : BackgroundService
         switch (value.Sync)
         {
             case SyncType.Full:
-                var startTime = game.dict[value.EventId];
-                game.dict.Remove(value.EventId);
-                var endTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                var timeDiff = endTime - startTime;
-                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-                latency.Add(timeDiff);
-                game.Player.Latency = latency.GetAverage();
-                Console.WriteLine($"Latency = {timeDiff} ms - stamp: {timestampWithMs}");
+                GetLatency(value);
                 FullSync(value);
                 break;
             case SyncType.Delta:
@@ -70,6 +62,18 @@ public class SyncService : BackgroundService
         }
     }
 
+    private void GetLatency(LocalState value)
+    {
+        var startTime = _game.EventTimes[value.EventId];
+        _game.EventTimes.Remove(value.EventId);
+        var endTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        var timeDiff = endTime - startTime;
+        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        _latency.Add(timeDiff);
+        _game.Player.Latency = _latency.GetAverage();
+        Console.WriteLine($"Latency = {timeDiff} ms - stamp: {timestampWithMs}");
+    }
+
     private void FullSync(LocalState value)
     {
         DeltaSync(value);
@@ -77,14 +81,14 @@ public class SyncService : BackgroundService
         var onlineAvatarIds = value.Avatars.Select(x => x.Id).ToList();
         //var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
 
-        if (game.LocalState.OfType<Agent>().Any(x => !onlineAvatarIds.Contains(x._agentId.ToString()))) //||
+        if (_game.LocalState.OfType<Agent>().Any(x => !onlineAvatarIds.Contains(x.Id.ToString()))) //||
             //game.LocalState.OfType<Projectile>().Any(x => !onlineProjectileIds.Contains(x._id.ToString())))
         {
-            lock (game._lockObject)
+            lock (_game.LockObject)
             {
-                game.LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y._agentId.ToString()));
+                _game.LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y.Id.ToString()));
                 //game.LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
-                Console.WriteLine($"LocalState count {game.LocalState.Count}");
+                Console.WriteLine($"LocalState count {_game.LocalState.Count}");
             }
         }
     }
@@ -93,21 +97,21 @@ public class SyncService : BackgroundService
     {
         foreach (var avatar in value.Avatars)
         {
-            if (avatar.Id == game.PlayerId.ToString())
+            if (avatar.Id == _game.Player.Id.ToString())
             {
-                game.Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
+                _game.Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
                 continue;
             }
 
-            var localAvatar = game.LocalState.FirstOrDefault(x => x is Agent y && y._agentId.ToString() == avatar.Id);
+            var localAvatar = _game.LocalState.FirstOrDefault(x => x is Agent y && y.Id.ToString() == avatar.Id);
             if (localAvatar == null)
             {
-                lock (game._lockObject)
+                lock (_game.LockObject)
                 {
-                    game.LocalState.Add(
+                    _game.LocalState.Add(
                         new Enemy(Guid.Parse(avatar.Id), new Vector2(avatar.Location.X, avatar.Location.Y),
-                            game.avatarTexture));
-                    Console.WriteLine($"LocalState count {game.LocalState.Count}");
+                            _game.AvatarTexture));
+                    Console.WriteLine($"LocalState count {_game.LocalState.Count}");
                 }
             }
             else
@@ -118,16 +122,16 @@ public class SyncService : BackgroundService
 
         foreach (var projectile in value.Projectiles)
         {
-            var localAvatar = game.LocalState.FirstOrDefault(x => x is Projectile y && y._id.ToString() == projectile.Id);
+            var localAvatar = _game.LocalState.FirstOrDefault(x => x is Projectile y && y.Id.ToString() == projectile.Id);
             if (localAvatar == null)
             {
-                lock (game._lockObject)
+                lock (_game.LockObject)
                 {
-                    game.LocalState.Add(
+                    _game.LocalState.Add(
                         new Projectile(Guid.Parse(projectile.Id),
                             new Vector2(projectile.Location.X, projectile.Location.Y),
-                            game.projectileTexture));
-                    Console.WriteLine($"LocalState count {game.LocalState.Count}");
+                            _game.ProjectileTexture));
+                    Console.WriteLine($"LocalState count {_game.LocalState.Count}");
                 }
             }
             else
@@ -142,18 +146,18 @@ public class SyncService : BackgroundService
         var deleteAvatarIds = value.Avatars.Select(x => x.Id).ToList();
         var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
 
-        if (game.LocalState.OfType<Agent>().Any(x => deleteAvatarIds.Contains(x._agentId.ToString())) ||
-            game.LocalState.OfType<Projectile>().Any(x => deleteProjectileIds.Contains(x._id.ToString())))
+        if (_game.LocalState.OfType<Agent>().Any(x => deleteAvatarIds.Contains(x.Id.ToString())) ||
+            _game.LocalState.OfType<Projectile>().Any(x => deleteProjectileIds.Contains(x.Id.ToString())))
         {
-            lock (game._lockObject)
+            lock (_game.LockObject)
             {
-                game.LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y._agentId.ToString()));
-                game.LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y._id.ToString()));
-                Console.WriteLine($"LocalState count {game.LocalState.Count}");
+                _game.LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y.Id.ToString()));
+                _game.LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y.Id.ToString()));
+                Console.WriteLine($"LocalState count {_game.LocalState.Count}");
             }
         }
 
-        if (deleteAvatarIds.Contains(game.PlayerId.ToString()))
+        if (deleteAvatarIds.Contains(_game.Player.Id.ToString()))
         {
             Console.WriteLine("Player Died!");
         }

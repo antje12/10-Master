@@ -53,12 +53,12 @@ jobs:
             ghcr.io/antje12/10-master/world-service:GA-${{ github.sha }},
             ghcr.io/antje12/10-master/world-service:latest
 
-      - name: Build and push TickService image to registry
+      - name: Build and push ProjectileService image to registry
         uses: docker/build-push-action@v2
         with:
           context: ./TidesOfPower
-          file: ./TidesOfPower/TickService/Dockerfile
+          file: ./TidesOfPower/ProjectileService/Dockerfile
           push: true
           tags: |
-            ghcr.io/antje12/10-master/tick-service:GA-${{ github.sha }},
-            ghcr.io/antje12/10-master/tick-service:latest
+            ghcr.io/antje12/10-master/projectile-service:GA-${{ github.sha }},
+            ghcr.io/antje12/10-master/projectile-service:latest

@@ -131,11 +131,11 @@ services:
     networks:
       sharednetwork:
   
-  tick-service:
-    container_name: tick-service
+  projectile-service:
+    container_name: projectile-service
     build:
       context: ./TidesOfPower
-      dockerfile: TickService/Dockerfile
+      dockerfile: ProjectileService/Dockerfile
     ports:
       - 84:80
     restart: unless-stopped

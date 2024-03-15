@@ -1,4 +1,4 @@
-﻿namespace TickService.Interfaces;
+﻿namespace ProjectileService.Interfaces;
 
 public interface IConsumerService : IHostedService
 {

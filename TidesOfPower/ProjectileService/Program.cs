@@ -1,9 +1,9 @@
-using TickService.Interfaces;
+using ProjectileService.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //https://github.com/dotnet/runtime/issues/36063
-builder.Services.AddSingleton<IConsumerService, TickService.Services.TickService>();
+builder.Services.AddSingleton<IConsumerService, ProjectileService.Services.ProjectileService>();
 builder.Services.AddHostedService(provider => provider.GetRequiredService<IConsumerService>());
 
 builder.Services.AddControllers();

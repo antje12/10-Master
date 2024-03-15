@@ -52,7 +52,7 @@ Setup the game services:
 kubectl apply -f Pipeline/Kubernetes/Services/deploy-input-service.yml
 kubectl apply -f Pipeline/Kubernetes/Services/deploy-collision-service.yml
 kubectl apply -f Pipeline/Kubernetes/Services/deploy-world-service.yml
-kubectl apply -f Pipeline/Kubernetes/Services/deploy-tick-service.yml
+kubectl apply -f Pipeline/Kubernetes/Services/deploy-projectile-service.yml
 ```
 
 Setup KEDA:

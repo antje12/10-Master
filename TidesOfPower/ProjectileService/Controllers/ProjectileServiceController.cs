@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TickService.Interfaces;
+using ProjectileService.Interfaces;
 
-namespace TickService.Controllers;
+namespace ProjectileService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TickServiceController : ControllerBase
+public class ProjectileServiceController : ControllerBase
 {
     //https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/examples/AvroSpecific/Program.cs
     private const string ApiVersion = "1.00";
     private readonly IConsumerService _consumerService;
 
-    public TickServiceController(IConsumerService consumerService)
+    public ProjectileServiceController(IConsumerService consumerService)
     {
         _consumerService = consumerService;
     }

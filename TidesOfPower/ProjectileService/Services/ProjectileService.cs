@@ -1,18 +1,16 @@
 ﻿using System.Diagnostics;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.MongoDB;
-using TickService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
-using ClassLibrary.Redis;
+using ProjectileService.Interfaces;
 
-namespace TickService.Services;
+namespace ProjectileService.Services;
 
 //https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-8.0&tabs=visual-studio
 //https://medium.com/simform-engineering/creating-microservices-with-net-core-and-kafka-a-step-by-step-approach-1737410ba76a
-public class TickService : BackgroundService, IConsumerService
+public class ProjectileService : BackgroundService, IConsumerService
 {
-    private const string GroupId = "tick-group";
+    private const string GroupId = "projectile-group";
     private KafkaTopic InputTopic = KafkaTopic.Projectile;
     private KafkaTopic OutputTopic = KafkaTopic.Collision;
 
@@ -20,20 +18,15 @@ public class TickService : BackgroundService, IConsumerService
     private readonly ProtoKafkaProducer<CollisionCheck> _producer;
     private readonly ProtoKafkaConsumer<Projectile> _consumer;
 
-    //private readonly MongoDbBroker _mongoBroker;
-    //private readonly RedisBroker _redisBroker;
-
     public bool IsRunning { get; private set; }
 
-    public TickService()
+    public ProjectileService()
     {
-        Console.WriteLine($"TickService created");
+        Console.WriteLine($"ProjectileService created");
         var config = new KafkaConfig(GroupId);
         _admin = new KafkaAdministrator(config);
         _producer = new ProtoKafkaProducer<CollisionCheck>(config);
         _consumer = new ProtoKafkaConsumer<Projectile>(config);
-        //_mongoBroker = new MongoDbBroker();
-        //_redisBroker = new RedisBroker();
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -41,12 +34,12 @@ public class TickService : BackgroundService, IConsumerService
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         IsRunning = true;
-        Console.WriteLine($"TickService started");
+        Console.WriteLine($"ProjectileService started");
         await _admin.CreateTopic(InputTopic);
         IProtoConsumer<Projectile>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(InputTopic, action, ct);
         IsRunning = false;
-        Console.WriteLine($"TickService stopped");
+        Console.WriteLine($"ProjectileService stopped");
     }
 
     private void ProcessMessage(string key, Projectile value)

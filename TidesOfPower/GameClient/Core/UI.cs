@@ -17,6 +17,8 @@ public class UI
     {
         var x = player.Position.X - MyGame.screenWidth / 2;
         var y = player.Position.Y - MyGame.screenHeight / 2;
-        spriteBatch.DrawString(_font, $"Latency: {player.Latency}", new Vector2(x+10, y), Color.Black);
+        spriteBatch.DrawString(_font, $"Latency: {player.Latency} ms", new Vector2(x+10, y), Color.Black);
+        spriteBatch.DrawString(_font, $"Health: {player.Health} %", new Vector2(x+10, y+20), Color.Black);
+        spriteBatch.DrawString(_font, $"Score: {player.Score} $", new Vector2(x+10, y+40), Color.Black);
     }
 }

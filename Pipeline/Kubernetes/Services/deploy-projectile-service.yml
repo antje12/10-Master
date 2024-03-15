@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tick-service
+  name: projectile-service
 spec:
   ports:
     - name: http
@@ -9,26 +9,26 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: tick-service
+    app: projectile-service
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tick-service
+  name: projectile-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tick-service
+      app: projectile-service
   template:
     metadata:
       labels:
-        app: tick-service
+        app: projectile-service
     spec:
       containers:
-        - name: tick-service
-          image: ghcr.io/antje12/10-master/tick-service:latest
+        - name: projectile-service
+          image: ghcr.io/antje12/10-master/projectile-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

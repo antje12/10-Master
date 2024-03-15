@@ -3,6 +3,7 @@
 package ClassLibrary.Messages.Protobuf;
 
 import "Common.proto";
+import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
@@ -34,4 +35,5 @@ message Projectile {
   ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
   ClassLibrary.Messages.Protobuf.Coordinates Direction = 3;
   double Timer = 4;
+  google.protobuf.Timestamp GameTime = 5;
 }

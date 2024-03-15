@@ -7,5 +7,6 @@ public enum KafkaTopic
     Collision,
     Physics,
     World,
-    AI
+    AI,
+    Projectile
 }

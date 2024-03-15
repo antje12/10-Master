@@ -24,7 +24,9 @@ public class MyGame : Game
     public Texture2D islandTexture; //64x64
     public Texture2D avatarTexture; //50x50
     public Texture2D projectileTexture; //10x10
+    public SpriteFont font; //10x10
 
+    UI _ui;
     Camera _camera;
     GraphicsDeviceManager _graphics;
     SpriteBatch _spriteBatch;
@@ -74,6 +76,8 @@ public class MyGame : Game
         islandTexture = Content.Load<Texture2D>("island");
         oceanTexture = Content.Load<Texture2D>("ocean");
         projectileTexture = Content.Load<Texture2D>("small-circle");
+        font = Content.Load<SpriteFont>("Arial16");
+        _ui = new UI(font);
     }
 
     protected override void Update(GameTime gameTime)
@@ -83,15 +87,36 @@ public class MyGame : Game
             Exit();
         lock (_lockObject)
         {
-            foreach (var sprite in LocalState)
+            for (var i = LocalState.Count - 1; i >= 0; i--)
             {
+                var sprite = LocalState[i];
                 sprite.Update(gameTime);
+                if (sprite is GameClient.Entities.Projectile && IsOffScreen(sprite))
+                {
+                    LocalState.RemoveAt(i);
+                }
             }
         }
         Player.Update(gameTime);
         base.Update(gameTime);
     }
 
+    private bool IsOffScreen(Sprite sprite)
+    {
+        var startX = Player.Position.X - screenWidth / 2;
+        var endX = Player.Position.X + screenWidth / 2;
+        var startY = Player.Position.Y - screenHeight / 2;
+        var endY = Player.Position.Y + screenHeight / 2;
+
+        if (sprite.Position.X <= startX || endX <= sprite.Position.X ||
+            sprite.Position.Y <= startY || endY <= sprite.Position.Y)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -104,6 +129,7 @@ public class MyGame : Game
             }
         }
         Player.Draw(_spriteBatch);
+        _ui.Draw(_spriteBatch, Player);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

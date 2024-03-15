@@ -14,7 +14,7 @@ public class Player : Agent
 {
     private MyGame _game;
     public int Latency = 0;
-    public int Health = 0;
+    public int Health = 100;
     public int Score = 0;
     
     public Vector2 MousePosition { get; set; }

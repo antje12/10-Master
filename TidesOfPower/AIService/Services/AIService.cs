@@ -57,12 +57,12 @@ public class AIService : BackgroundService, IConsumerService
     private void SendState(AiAgent agent)
     {
         var targets = _redisBroker.GetEntities(agent.Location.X, agent.Location.Y)
-            .OfType<ClassLibrary.Classes.Domain.Avatar>()
+            .OfType<ClassLibrary.Classes.Domain.Player>()
             .Where(x => x.Id.ToString() != agent.Id);
         
         var from = agent.LastUpdate.ToDateTime();
         var to = DateTime.UtcNow;
-        TimeSpan difference = to - from;
+        var difference = to - from;
         var deltaTime = difference.TotalSeconds;
         
         var output = new Input()
@@ -78,10 +78,21 @@ public class AIService : BackgroundService, IConsumerService
             Source = Source.Ai
         };
 
-        var target = targets.FirstOrDefault();
+        var target = targets.MinBy(t => AStar.H((int)agent.Location.X, (int)agent.Location.Y, (int)t.Location.X, (int)t.Location.Y));
         if (target != null)
         {
-            output.KeyInput.Add(GameKey.Right);
+            var start = new Node((int)agent.Location.X, (int)agent.Location.Y);
+            var end = new Node((int)target.Location.X, (int)target.Location.Y);
+            var nextStep = AStar.Search(start, end, new HashSet<string>());
+            
+            if (nextStep.X < start.X)
+                output.KeyInput.Add(GameKey.Left);
+            if (start.X < nextStep.X)
+                output.KeyInput.Add(GameKey.Right);
+            if (nextStep.Y < start.Y)
+                output.KeyInput.Add(GameKey.Up);
+            if (start.Y < nextStep.Y)
+                output.KeyInput.Add(GameKey.Down);
         
             _producer.Produce(_outputTopic, output.PlayerId.ToString(), output);
         }

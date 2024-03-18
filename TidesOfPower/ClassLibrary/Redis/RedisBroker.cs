@@ -106,8 +106,11 @@ public class RedisBroker
             if (result == null) continue;
             switch (result.Type)
             {
-                case TheEntityType.Avatar:
-                    result = JsonConvert.DeserializeObject<Avatar>(j);
+                case TheEntityType.Player:
+                    result = JsonConvert.DeserializeObject<Player>(j);
+                    break;
+                case TheEntityType.AiAgent:
+                    result = JsonConvert.DeserializeObject<AiAgent>(j);
                     break;
                 case TheEntityType.Projectile:
                     result = JsonConvert.DeserializeObject<Projectile>(j);
@@ -157,8 +160,11 @@ public class RedisBroker
             if (result == null) continue;
             switch (result.Type)
             {
-                case TheEntityType.Avatar:
-                    result = JsonConvert.DeserializeObject<Avatar>(j);
+                case TheEntityType.Player:
+                    result = JsonConvert.DeserializeObject<Player>(j);
+                    break;
+                case TheEntityType.AiAgent:
+                    result = JsonConvert.DeserializeObject<AiAgent>(j);
                     break;
                 case TheEntityType.Projectile:
                     result = JsonConvert.DeserializeObject<Projectile>(j);
@@ -178,7 +184,7 @@ public class RedisBroker
 
     public void UpdateProjectile(Projectile entity)
     {
-        _json.Set($@"entity:{entity.Id}", ".Timer", entity.Timer);
+        _json.Set($@"entity:{entity.Id}", ".TimeToLive", entity.TimeToLive);
         _json.Set($@"entity:{entity.Id}", ".Location.X", entity.Location.X);
         _json.Set($@"entity:{entity.Id}", ".Location.Y", entity.Location.Y);
     }

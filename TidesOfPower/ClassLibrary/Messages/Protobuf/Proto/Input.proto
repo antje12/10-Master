@@ -13,6 +13,7 @@ message Input {
   repeated GameKey KeyInput = 4;
   double GameTime = 5;
   string EventId = 6;
+  Source Source = 7;
 }
 
 enum GameKey {
@@ -22,4 +23,9 @@ enum GameKey {
   Right = 3;
   Attack = 4;
   Interact = 5;
+}
+
+enum Source {
+  Player = 0;
+  Ai = 1;
 }

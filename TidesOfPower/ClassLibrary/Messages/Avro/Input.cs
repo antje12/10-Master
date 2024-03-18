@@ -47,7 +47,7 @@ public class Input : ISpecificRecord
                     }}
                 }}
             }},
-            {{ ""name"": ""Timer"", ""type"": ""double"" }}
+            {{ ""name"": ""GameTime"", ""type"": ""double"" }}
         ]
     }}");
 

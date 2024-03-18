@@ -25,19 +25,21 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgtJbnB1dC5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVm",
-            "GgxDb21tb24ucHJvdG8igAIKBUlucHV0EhAKCFBsYXllcklkGAEgASgJEkMK",
+            "GgxDb21tb24ucHJvdG8iuAIKBUlucHV0EhAKCFBsYXllcklkGAEgASgJEkMK",
             "DlBsYXllckxvY2F0aW9uGAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
             "LlByb3RvYnVmLkNvb3JkaW5hdGVzEkIKDU1vdXNlTG9jYXRpb24YAyABKAsy",
             "Ky5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXMS",
             "OQoIS2V5SW5wdXQYBCADKA4yJy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
             "dG9idWYuR2FtZUtleRIQCghHYW1lVGltZRgFIAEoARIPCgdFdmVudElkGAYg",
-            "ASgJKkoKB0dhbWVLZXkSBgoCVXAQABIICgREb3duEAESCAoETGVmdBACEgkK",
-            "BVJpZ2h0EAMSCgoGQXR0YWNrEAQSDAoISW50ZXJhY3QQBUIhqgIeQ2xhc3NM",
-            "aWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
+            "ASgJEjYKBlNvdXJjZRgHIAEoDjImLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Q",
+            "cm90b2J1Zi5Tb3VyY2UqSgoHR2FtZUtleRIGCgJVcBAAEggKBERvd24QARII",
+            "CgRMZWZ0EAISCQoFUmlnaHQQAxIKCgZBdHRhY2sQBBIMCghJbnRlcmFjdBAF",
+            "KhwKBlNvdXJjZRIKCgZQbGF5ZXIQABIGCgJBaRABQiGqAh5DbGFzc0xpYnJh",
+            "cnkuTWVzc2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.GameKey), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Input), global::ClassLibrary.Messages.Protobuf.Input.Parser, new[]{ "PlayerId", "PlayerLocation", "MouseLocation", "KeyInput", "GameTime", "EventId" }, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.GameKey), typeof(global::ClassLibrary.Messages.Protobuf.Source), }, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Input), global::ClassLibrary.Messages.Protobuf.Input.Parser, new[]{ "PlayerId", "PlayerLocation", "MouseLocation", "KeyInput", "GameTime", "EventId", "Source" }, null, null, null, null)
           }));
     }
     #endregion
@@ -51,6 +53,11 @@ namespace ClassLibrary.Messages.Protobuf {
     [pbr::OriginalName("Right")] Right = 3,
     [pbr::OriginalName("Attack")] Attack = 4,
     [pbr::OriginalName("Interact")] Interact = 5,
+  }
+
+  public enum Source {
+    [pbr::OriginalName("Player")] Player = 0,
+    [pbr::OriginalName("Ai")] Ai = 1,
   }
 
   #endregion
@@ -97,6 +104,7 @@ namespace ClassLibrary.Messages.Protobuf {
       keyInput_ = other.keyInput_.Clone();
       gameTime_ = other.gameTime_;
       eventId_ = other.eventId_;
+      source_ = other.source_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -180,6 +188,18 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "Source" field.</summary>
+    public const int SourceFieldNumber = 7;
+    private global::ClassLibrary.Messages.Protobuf.Source source_ = global::ClassLibrary.Messages.Protobuf.Source.Player;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::ClassLibrary.Messages.Protobuf.Source Source {
+      get { return source_; }
+      set {
+        source_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -201,6 +221,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if(!keyInput_.Equals(other.keyInput_)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(GameTime, other.GameTime)) return false;
       if (EventId != other.EventId) return false;
+      if (Source != other.Source) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -214,6 +235,7 @@ namespace ClassLibrary.Messages.Protobuf {
       hash ^= keyInput_.GetHashCode();
       if (GameTime != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(GameTime);
       if (EventId.Length != 0) hash ^= EventId.GetHashCode();
+      if (Source != global::ClassLibrary.Messages.Protobuf.Source.Player) hash ^= Source.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -253,6 +275,10 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(50);
         output.WriteString(EventId);
       }
+      if (Source != global::ClassLibrary.Messages.Protobuf.Source.Player) {
+        output.WriteRawTag(56);
+        output.WriteEnum((int) Source);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -284,6 +310,10 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(50);
         output.WriteString(EventId);
       }
+      if (Source != global::ClassLibrary.Messages.Protobuf.Source.Player) {
+        output.WriteRawTag(56);
+        output.WriteEnum((int) Source);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -309,6 +339,9 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (EventId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EventId);
+      }
+      if (Source != global::ClassLibrary.Messages.Protobuf.Source.Player) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Source);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -343,6 +376,9 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (other.EventId.Length != 0) {
         EventId = other.EventId;
+      }
+      if (other.Source != global::ClassLibrary.Messages.Protobuf.Source.Player) {
+        Source = other.Source;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -390,6 +426,10 @@ namespace ClassLibrary.Messages.Protobuf {
             EventId = input.ReadString();
             break;
           }
+          case 56: {
+            Source = (global::ClassLibrary.Messages.Protobuf.Source) input.ReadEnum();
+            break;
+          }
         }
       }
     #endif
@@ -434,6 +474,10 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 50: {
             EventId = input.ReadString();
+            break;
+          }
+          case 56: {
+            Source = (global::ClassLibrary.Messages.Protobuf.Source) input.ReadEnum();
             break;
           }
         }

@@ -19,6 +19,7 @@ message CollisionCheck {
 }
 
 enum EntityType {
-  Avatar = 0;
+  Player = 0;
   Projectile = 1;
+  Ai = 2;
 }

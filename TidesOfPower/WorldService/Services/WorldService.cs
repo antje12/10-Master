@@ -18,27 +18,31 @@ public class WorldService : BackgroundService, IConsumerService
     private KafkaTopic _inputTopic = KafkaTopic.World;
     private KafkaTopic _outputTopicL = KafkaTopic.LocalState;
     private KafkaTopic _outputTopicP = KafkaTopic.Projectile;
+    private KafkaTopic _outputTopicA = KafkaTopic.Ai;
 
     private KafkaAdministrator _admin;
     private ProtoKafkaProducer<LocalState> _producerL;
     private ProtoKafkaProducer<Projectile> _producerP;
+    private ProtoKafkaProducer<AiAgent> _producerA;
     private ProtoKafkaConsumer<WorldChange> _consumer;
 
-    private MongoDbBroker _mongoBroker;   
+    private MongoDbBroker _mongoBroker;
     private RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
+    private bool localTest = true;
 
     public WorldService()
     {
         Console.WriteLine($"WorldService created");
-        var config = new KafkaConfig(_groupId);
+        var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
         _producerL = new ProtoKafkaProducer<LocalState>(config);
         _producerP = new ProtoKafkaProducer<Projectile>(config);
+        _producerA = new ProtoKafkaProducer<AiAgent>(config);
         _consumer = new ProtoKafkaConsumer<WorldChange>(config);
-        _mongoBroker = new MongoDbBroker();
-        _redisBroker = new RedisBroker();
+        _mongoBroker = new MongoDbBroker(localTest);
+        _redisBroker = new RedisBroker(localTest);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -60,6 +64,12 @@ public class WorldService : BackgroundService, IConsumerService
             case ChangeType.MovePlayer:
                 MovePlayer(key, value);
                 break;
+            case ChangeType.SpawnAi:
+                SpawnAi(key, value);
+                break;
+            case ChangeType.MoveAi:
+                MoveAi(key, value);
+                break;
             case ChangeType.SpawnBullet:
                 SpawnBullet(key, value);
                 break;
@@ -72,24 +82,84 @@ public class WorldService : BackgroundService, IConsumerService
         }
     }
 
+    private void SpawnAi(string key, WorldChange value)
+    {
+        var agent = new AiAgent()
+        {
+            Id = Guid.NewGuid().ToString(),
+            Location = new Coordinates() {X = value.Location.X, Y = value.Location.Y},
+            LastUpdate = Timestamp.FromDateTime(DateTime.UtcNow), // Timestamp requires UTC DateTime
+        };
+        _producerA.Produce(_outputTopicA, agent.Id, agent);
+    }
+
+    private void MoveAi(string key, WorldChange value)
+    {
+        var agent = new AiAgent()
+        {
+            Id = value.EntityId,
+            Location = value.Location,
+            LastUpdate = Timestamp.FromDateTime(DateTime.UtcNow), // Timestamp requires UTC DateTime
+        };
+        _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.AiAgent()
+        {
+            Id = Guid.Parse(agent.Id),
+            Location = new ClassLibrary.Classes.Data.Coordinates()
+            {
+                X = agent.Location.X,
+                Y = agent.Location.Y
+            }
+        });
+        var entities = _redisBroker.GetEntities(agent.Location.X, agent.Location.Y);
+        var avatars = entities.OfType<ClassLibrary.Classes.Domain.Player>().Select(a => new Avatar()
+        {
+            Id = a.Id.ToString(),
+            Location = new Coordinates()
+            {
+                X = a.Location.X,
+                Y = a.Location.Y,
+            }
+        }).ToList();
+
+        _producerA.Produce(_outputTopicA, agent.Id, agent);
+
+        var a = new Avatar()
+        {
+            Id = value.EntityId,
+            Location = value.Location
+        };
+
+        var enemies = avatars.Where(x => x.Id != agent.Id);
+        foreach (var enemy in enemies)
+        {
+            var deltaOutput = new LocalState()
+            {
+                PlayerId = enemy.Id,
+                Sync = SyncType.Delta
+            };
+            deltaOutput.Avatars.Add(a);
+            _producerL.Produce($"{_outputTopicL}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
+        }
+    }
+
     private void MovePlayer(string key, WorldChange value)
     {
         var stopwatch = new Stopwatch();
         var s2 = new Stopwatch();
         stopwatch.Start();
-        
+
         string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-        Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
-        
+        //Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+
         var player = new Avatar()
         {
             Id = value.EntityId,
             Location = value.Location
         };
-        
+
         s2.Start();
         //_mongoBroker.CreateEntity(player);
-        _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.Avatar()
+        _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.Player()
         {
             Id = Guid.Parse(player.Id),
             Location = new ClassLibrary.Classes.Data.Coordinates()
@@ -127,27 +197,27 @@ public class WorldService : BackgroundService, IConsumerService
         }).ToList();
         output.Avatars.AddRange(avatars);
         output.Projectiles.AddRange(projectiles);
-        
+
         _producerL.Produce($"{_outputTopicL}_{player.Id}", key, output);
 
-        var enemies = output.Avatars.Where(x => x.Id != output.PlayerId);
+        var enemies = entities.OfType<ClassLibrary.Classes.Domain.Player>().Where(x => x.Id.ToString() != output.PlayerId);
         foreach (var enemy in enemies)
         {
             var deltaOutput = new LocalState()
             {
-                PlayerId = enemy.Id,
+                PlayerId = enemy.Id.ToString(),
                 Sync = SyncType.Delta
             };
             deltaOutput.Avatars.Add(player);
             _producerL.Produce($"{_outputTopicL}_{enemy.Id}", enemy.Id.ToString(), deltaOutput);
         }
-        
+
         timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-        Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
-        
+        //Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
+
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time -- {value.EventId}");
+        //if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time -- {value.EventId}");
     }
 
     private void SpawnBullet(string key, WorldChange value)
@@ -155,15 +225,15 @@ public class WorldService : BackgroundService, IConsumerService
         var stopwatch = new Stopwatch();
         var s2 = new Stopwatch();
         stopwatch.Start();
-        
+
         //var avatars = _mongoBroker.ReadScreen(value.Location);
         var projectile = new Projectile()
         {
             Id = value.EntityId,
             Location = value.Location,
             Direction = value.Direction,
-            Timer = 10,
-            GameTime = Timestamp.FromDateTime(DateTime.UtcNow) // Timestamp requires UTC DateTime
+            LastUpdate = Timestamp.FromDateTime(DateTime.UtcNow), // Timestamp requires UTC DateTime
+            TimeToLive = 100
         };
         var pro = new ClassLibrary.Classes.Domain.Projectile()
         {
@@ -178,16 +248,17 @@ public class WorldService : BackgroundService, IConsumerService
                 X = value.Direction.X,
                 Y = value.Direction.Y
             },
-            Timer = 10
+            TimeToLive = 10
         };
-        
+
         _producerP.Produce(_outputTopicP, projectile.Id, projectile);
-        
+
         s2.Start();
         //_redisBroker.Insert(pro);
-        var avatars = _redisBroker.GetEntities(pro.Location.X, pro.Location.Y).OfType<ClassLibrary.Classes.Domain.Avatar>();
+        var avatars = _redisBroker.GetEntities(pro.Location.X, pro.Location.Y)
+            .OfType<ClassLibrary.Classes.Domain.Player>();
         s2.Stop();
-        
+
         foreach (var avatar in avatars)
         {
             var deltaOutput = new LocalState()
@@ -198,10 +269,10 @@ public class WorldService : BackgroundService, IConsumerService
             deltaOutput.Projectiles.Add(projectile);
             _producerL.Produce($"{_outputTopicL}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
         }
-        
+
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
+        //if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
     }
 
     private void MoveBullet(string key, WorldChange value)
@@ -209,14 +280,14 @@ public class WorldService : BackgroundService, IConsumerService
         var stopwatch = new Stopwatch();
         var s2 = new Stopwatch();
         stopwatch.Start();
-        
+
         var bullet = new Projectile()
         {
             Id = value.EntityId,
             Location = value.Location,
-            Timer = value.Timer,
             Direction = value.Direction,
-            GameTime = Timestamp.FromDateTime(DateTime.UtcNow) // Timestamp requires UTC DateTime
+            LastUpdate = Timestamp.FromDateTime(DateTime.UtcNow), // Timestamp requires UTC DateTime
+            TimeToLive = value.Timer
         };
         var pro = new ClassLibrary.Classes.Domain.Projectile()
         {
@@ -226,13 +297,13 @@ public class WorldService : BackgroundService, IConsumerService
                 X = bullet.Location.X,
                 Y = bullet.Location.Y
             },
-            Timer = bullet.Timer
+            TimeToLive = bullet.TimeToLive
         };
 
         SyncType sync;
-        
+
         s2.Start();
-        if (bullet.Timer <= 0)
+        if (bullet.TimeToLive <= 0)
         {
             //_redisBroker.Delete(pro);
             sync = SyncType.Delete;
@@ -243,9 +314,11 @@ public class WorldService : BackgroundService, IConsumerService
             //_redisBroker.UpdateProjectile(pro);
             sync = SyncType.Delta;
         }
-        var entities = _redisBroker.GetEntities(pro.Location.X, pro.Location.Y).OfType<ClassLibrary.Classes.Domain.Avatar>().ToList();
+
+        var entities = _redisBroker.GetEntities(pro.Location.X, pro.Location.Y)
+            .OfType<ClassLibrary.Classes.Domain.Player>().ToList();
         s2.Stop();
-        
+
         foreach (var entity in entities)
         {
             var deltaOutput = new LocalState()
@@ -256,10 +329,10 @@ public class WorldService : BackgroundService, IConsumerService
             deltaOutput.Projectiles.Add(bullet);
             _producerL.Produce($"{_outputTopicL}_{entity.Id}", entity.Id.ToString(), deltaOutput);
         }
-        
+
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
+        Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
     }
 
     private void DamagePlayer(string key, WorldChange value)
@@ -267,21 +340,21 @@ public class WorldService : BackgroundService, IConsumerService
         var stopwatch = new Stopwatch();
         var s2 = new Stopwatch();
         stopwatch.Start();
-        
+
         var player = new Avatar()
         {
             Id = value.EntityId
         };
-        
+
         s2.Start();
         var avatars = _redisBroker.GetEntities(value.Location.X, value.Location.Y)
-            .OfType<ClassLibrary.Classes.Domain.Avatar>().ToList();
+            .OfType<ClassLibrary.Classes.Domain.Player>().ToList();
         _redisBroker.Delete(new ClassLibrary.Classes.Domain.Avatar()
         {
             Id = Guid.Parse(player.Id)
         });
         s2.Stop();
-        
+
         foreach (var avatar in avatars)
         {
             var deltaOutput = new LocalState()
@@ -296,9 +369,9 @@ public class WorldService : BackgroundService, IConsumerService
             deltaOutput.Avatars.Add(a);
             _producerL.Produce($"{_outputTopicL}_{avatar.Id}", avatar.Id.ToString(), deltaOutput);
         }
-        
+
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
+        //if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time");
     }
 }

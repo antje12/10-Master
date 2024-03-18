@@ -34,20 +34,20 @@ namespace ClassLibrary.Messages.Protobuf {
             "bnRJZBgFIAEoCSKcAQoGQXZhdGFyEgoKAklkGAEgASgJEj0KCExvY2F0aW9u",
             "GAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3Jk",
             "aW5hdGVzEgwKBE5hbWUYAyABKAkSFAoMV2Fsa2luZ1NwZWVkGAQgASgFEhAK",
-            "CExpZmVQb29sGAUgASgFEhEKCUludmVudG9yeRgGIAEoBSLUAQoKUHJvamVj",
+            "CExpZmVQb29sGAUgASgFEhEKCUludmVudG9yeRgGIAEoBSLbAQoKUHJvamVj",
             "dGlsZRIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEoCzIrLkNsYXNzTGli",
             "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxI+CglEaXJlY3Rp",
             "b24YAyABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29v",
-            "cmRpbmF0ZXMSDQoFVGltZXIYBCABKAESLAoIR2FtZVRpbWUYBSABKAsyGi5n",
-            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wKisKCFN5bmNUeXBlEggKBEZ1bGwQ",
-            "ABIJCgVEZWx0YRABEgoKBkRlbGV0ZRACQiGqAh5DbGFzc0xpYnJhcnkuTWVz",
-            "c2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
+            "cmRpbmF0ZXMSLgoKTGFzdFVwZGF0ZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1",
+            "Zi5UaW1lc3RhbXASEgoKVGltZVRvTGl2ZRgFIAEoASorCghTeW5jVHlwZRII",
+            "CgRGdWxsEAASCQoFRGVsdGEQARIKCgZEZWxldGUQAkIhqgIeQ2xhc3NMaWJy",
+            "YXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.SyncType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState), global::ClassLibrary.Messages.Protobuf.LocalState.Parser, new[]{ "PlayerId", "Sync", "Avatars", "Projectiles", "EventId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Avatar), global::ClassLibrary.Messages.Protobuf.Avatar.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile), global::ClassLibrary.Messages.Protobuf.Projectile.Parser, new[]{ "Id", "Location", "Direction", "Timer", "GameTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile), global::ClassLibrary.Messages.Protobuf.Projectile.Parser, new[]{ "Id", "Location", "Direction", "LastUpdate", "TimeToLive" }, null, null, null, null)
           }));
     }
     #endregion
@@ -804,8 +804,8 @@ namespace ClassLibrary.Messages.Protobuf {
       id_ = other.id_;
       location_ = other.location_ != null ? other.location_.Clone() : null;
       direction_ = other.direction_ != null ? other.direction_.Clone() : null;
-      timer_ = other.timer_;
-      gameTime_ = other.gameTime_ != null ? other.gameTime_.Clone() : null;
+      lastUpdate_ = other.lastUpdate_ != null ? other.lastUpdate_.Clone() : null;
+      timeToLive_ = other.timeToLive_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -851,27 +851,27 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "Timer" field.</summary>
-    public const int TimerFieldNumber = 4;
-    private double timer_;
+    /// <summary>Field number for the "LastUpdate" field.</summary>
+    public const int LastUpdateFieldNumber = 4;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp lastUpdate_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double Timer {
-      get { return timer_; }
+    public global::Google.Protobuf.WellKnownTypes.Timestamp LastUpdate {
+      get { return lastUpdate_; }
       set {
-        timer_ = value;
+        lastUpdate_ = value;
       }
     }
 
-    /// <summary>Field number for the "GameTime" field.</summary>
-    public const int GameTimeFieldNumber = 5;
-    private global::Google.Protobuf.WellKnownTypes.Timestamp gameTime_;
+    /// <summary>Field number for the "TimeToLive" field.</summary>
+    public const int TimeToLiveFieldNumber = 5;
+    private double timeToLive_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Google.Protobuf.WellKnownTypes.Timestamp GameTime {
-      get { return gameTime_; }
+    public double TimeToLive {
+      get { return timeToLive_; }
       set {
-        gameTime_ = value;
+        timeToLive_ = value;
       }
     }
 
@@ -893,8 +893,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Id != other.Id) return false;
       if (!object.Equals(Location, other.Location)) return false;
       if (!object.Equals(Direction, other.Direction)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Timer, other.Timer)) return false;
-      if (!object.Equals(GameTime, other.GameTime)) return false;
+      if (!object.Equals(LastUpdate, other.LastUpdate)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TimeToLive, other.TimeToLive)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -905,8 +905,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (location_ != null) hash ^= Location.GetHashCode();
       if (direction_ != null) hash ^= Direction.GetHashCode();
-      if (Timer != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Timer);
-      if (gameTime_ != null) hash ^= GameTime.GetHashCode();
+      if (lastUpdate_ != null) hash ^= LastUpdate.GetHashCode();
+      if (TimeToLive != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TimeToLive);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -937,13 +937,13 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(26);
         output.WriteMessage(Direction);
       }
-      if (Timer != 0D) {
-        output.WriteRawTag(33);
-        output.WriteDouble(Timer);
+      if (lastUpdate_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(LastUpdate);
       }
-      if (gameTime_ != null) {
-        output.WriteRawTag(42);
-        output.WriteMessage(GameTime);
+      if (TimeToLive != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(TimeToLive);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -967,13 +967,13 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(26);
         output.WriteMessage(Direction);
       }
-      if (Timer != 0D) {
-        output.WriteRawTag(33);
-        output.WriteDouble(Timer);
+      if (lastUpdate_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(LastUpdate);
       }
-      if (gameTime_ != null) {
-        output.WriteRawTag(42);
-        output.WriteMessage(GameTime);
+      if (TimeToLive != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(TimeToLive);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -994,11 +994,11 @@ namespace ClassLibrary.Messages.Protobuf {
       if (direction_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Direction);
       }
-      if (Timer != 0D) {
-        size += 1 + 8;
+      if (lastUpdate_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastUpdate);
       }
-      if (gameTime_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(GameTime);
+      if (TimeToLive != 0D) {
+        size += 1 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1027,14 +1027,14 @@ namespace ClassLibrary.Messages.Protobuf {
         }
         Direction.MergeFrom(other.Direction);
       }
-      if (other.Timer != 0D) {
-        Timer = other.Timer;
-      }
-      if (other.gameTime_ != null) {
-        if (gameTime_ == null) {
-          GameTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+      if (other.lastUpdate_ != null) {
+        if (lastUpdate_ == null) {
+          LastUpdate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
-        GameTime.MergeFrom(other.GameTime);
+        LastUpdate.MergeFrom(other.LastUpdate);
+      }
+      if (other.TimeToLive != 0D) {
+        TimeToLive = other.TimeToLive;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1069,15 +1069,15 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(Direction);
             break;
           }
-          case 33: {
-            Timer = input.ReadDouble();
+          case 34: {
+            if (lastUpdate_ == null) {
+              LastUpdate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastUpdate);
             break;
           }
-          case 42: {
-            if (gameTime_ == null) {
-              GameTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(GameTime);
+          case 41: {
+            TimeToLive = input.ReadDouble();
             break;
           }
         }
@@ -1113,15 +1113,15 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(Direction);
             break;
           }
-          case 33: {
-            Timer = input.ReadDouble();
+          case 34: {
+            if (lastUpdate_ == null) {
+              LastUpdate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastUpdate);
             break;
           }
-          case 42: {
-            if (gameTime_ == null) {
-              GameTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(GameTime);
+          case 41: {
+            TimeToLive = input.ReadDouble();
             break;
           }
         }

@@ -21,11 +21,12 @@ public class InputService : BackgroundService, IConsumerService
     private ProtoKafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
+    private bool localTest = true;
 
     public InputService()
     {
         Console.WriteLine($"InputService created");
-        var config = new KafkaConfig(_groupId);
+        var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
         _producerC = new ProtoKafkaProducer<CollisionCheck>(config);
         _producerW = new ProtoKafkaProducer<WorldChange>(config);
@@ -75,7 +76,7 @@ public class InputService : BackgroundService, IConsumerService
         var output = new CollisionCheck()
         {
             EntityId = value.PlayerId,
-            Entity = EntityType.Avatar,
+            Entity = value.Source == Source.Ai ? EntityType.Ai : EntityType.Player,
             FromLocation = value.PlayerLocation,
             ToLocation = new Coordinates()
             {
@@ -142,5 +143,12 @@ public class InputService : BackgroundService, IConsumerService
 
     private void Interact(string key, Input value)
     {
+        var output = new WorldChange()
+        {
+            EntityId = Guid.NewGuid().ToString(),
+            Location = value.MouseLocation,
+            Change = ChangeType.SpawnAi
+        };
+        _producerW.Produce(_outputTopicW, key, output);
     }
 }

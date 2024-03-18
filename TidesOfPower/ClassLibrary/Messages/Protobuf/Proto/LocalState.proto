@@ -34,6 +34,6 @@ message Projectile {
   string Id = 1;
   ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
   ClassLibrary.Messages.Protobuf.Coordinates Direction = 3;
-  double Timer = 4;
-  google.protobuf.Timestamp GameTime = 5;
+  google.protobuf.Timestamp LastUpdate = 4;
+  double TimeToLive = 5;
 }

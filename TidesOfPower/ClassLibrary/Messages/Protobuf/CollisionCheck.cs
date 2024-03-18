@@ -34,9 +34,9 @@ namespace ClassLibrary.Messages.Protobuf {
             "YnVmLkNvb3JkaW5hdGVzEg0KBVRpbWVyGAUgASgBEg8KB0V2ZW50SWQYBiAB",
             "KAkSPgoJRGlyZWN0aW9uGAcgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
             "LlByb3RvYnVmLkNvb3JkaW5hdGVzEiwKCEdhbWVUaW1lGAggASgLMhouZ29v",
-            "Z2xlLnByb3RvYnVmLlRpbWVzdGFtcCooCgpFbnRpdHlUeXBlEgoKBkF2YXRh",
-            "chAAEg4KClByb2plY3RpbGUQAUIhqgIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
-            "LlByb3RvYnVmYgZwcm90bzM="));
+            "Z2xlLnByb3RvYnVmLlRpbWVzdGFtcCowCgpFbnRpdHlUeXBlEgoKBlBsYXll",
+            "chAAEg4KClByb2plY3RpbGUQARIGCgJBaRACQiGqAh5DbGFzc0xpYnJhcnku",
+            "TWVzc2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.EntityType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -48,8 +48,9 @@ namespace ClassLibrary.Messages.Protobuf {
   }
   #region Enums
   public enum EntityType {
-    [pbr::OriginalName("Avatar")] Avatar = 0,
+    [pbr::OriginalName("Player")] Player = 0,
     [pbr::OriginalName("Projectile")] Projectile = 1,
+    [pbr::OriginalName("Ai")] Ai = 2,
   }
 
   #endregion
@@ -124,7 +125,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "Entity" field.</summary>
     public const int EntityFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.EntityType entity_ = global::ClassLibrary.Messages.Protobuf.EntityType.Avatar;
+    private global::ClassLibrary.Messages.Protobuf.EntityType entity_ = global::ClassLibrary.Messages.Protobuf.EntityType.Player;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::ClassLibrary.Messages.Protobuf.EntityType Entity {
@@ -237,7 +238,7 @@ namespace ClassLibrary.Messages.Protobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (EntityId.Length != 0) hash ^= EntityId.GetHashCode();
-      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Avatar) hash ^= Entity.GetHashCode();
+      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) hash ^= Entity.GetHashCode();
       if (fromLocation_ != null) hash ^= FromLocation.GetHashCode();
       if (toLocation_ != null) hash ^= ToLocation.GetHashCode();
       if (Timer != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Timer);
@@ -266,7 +267,7 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(10);
         output.WriteString(EntityId);
       }
-      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Avatar) {
+      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Entity);
       }
@@ -308,7 +309,7 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(10);
         output.WriteString(EntityId);
       }
-      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Avatar) {
+      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Entity);
       }
@@ -349,7 +350,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (EntityId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EntityId);
       }
-      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Avatar) {
+      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Entity);
       }
       if (fromLocation_ != null) {
@@ -385,7 +386,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other.EntityId.Length != 0) {
         EntityId = other.EntityId;
       }
-      if (other.Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Avatar) {
+      if (other.Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
         Entity = other.Entity;
       }
       if (other.fromLocation_ != null) {

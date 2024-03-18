@@ -32,10 +32,11 @@ namespace ClassLibrary.Messages.Protobuf {
             "Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEj4KCURpcmVjdGlvbhgE",
             "IAEoCzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGlu",
             "YXRlcxINCgVUaW1lchgFIAEoARIPCgdFdmVudElkGAYgASgJEiwKCEdhbWVU",
-            "aW1lGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCpPCgpDaGFu",
+            "aW1lGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCpoCgpDaGFu",
             "Z2VUeXBlEg4KCk1vdmVQbGF5ZXIQABIPCgtTcGF3bkJ1bGxldBABEg4KCk1v",
-            "dmVCdWxsZXQQAhIQCgxEYW1hZ2VQbGF5ZXIQA0IhqgIeQ2xhc3NMaWJyYXJ5",
-            "Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
+            "dmVCdWxsZXQQAhIQCgxEYW1hZ2VQbGF5ZXIQAxILCgdTcGF3bkFpEAQSCgoG",
+            "TW92ZUFpEAVCIaoCHkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1ZmIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.ChangeType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -51,6 +52,8 @@ namespace ClassLibrary.Messages.Protobuf {
     [pbr::OriginalName("SpawnBullet")] SpawnBullet = 1,
     [pbr::OriginalName("MoveBullet")] MoveBullet = 2,
     [pbr::OriginalName("DamagePlayer")] DamagePlayer = 3,
+    [pbr::OriginalName("SpawnAi")] SpawnAi = 4,
+    [pbr::OriginalName("MoveAi")] MoveAi = 5,
   }
 
   #endregion

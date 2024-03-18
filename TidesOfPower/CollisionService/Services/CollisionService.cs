@@ -22,16 +22,17 @@ public class CollisionService : BackgroundService, IConsumerService
     private RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
+    private bool localTest = true;
 
     public CollisionService()
     {
         Console.WriteLine($"CollisionService created");
-        var config = new KafkaConfig(_groupId);
+        var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
         _producer = new ProtoKafkaProducer<WorldChange>(config);
         _consumer = new ProtoKafkaConsumer<CollisionCheck>(config);
-        _mongoBroker = new MongoDbBroker();
-        _redisBroker = new RedisBroker();
+        _mongoBroker = new MongoDbBroker(localTest);
+        _redisBroker = new RedisBroker(localTest);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -67,14 +68,14 @@ public class CollisionService : BackgroundService, IConsumerService
 
             var w1 =
                 value.Entity is EntityType.Projectile ? 5 :
-                value.Entity is EntityType.Avatar ? 25 : 0;
+                value.Entity is EntityType.Player or EntityType.Ai ? 25 : 0;
             var w2 =
                 entity is ClassLibrary.Classes.Domain.Projectile ? 5 :
                 entity is ClassLibrary.Classes.Domain.Avatar ? 25 : 0;
 
             if (circleCollision(value.ToLocation, w1, entity.Location, w2))
             {
-                if (value.Entity is EntityType.Avatar && entity is ClassLibrary.Classes.Domain.Avatar)
+                if (value.Entity is EntityType.Player or EntityType.Ai && entity is ClassLibrary.Classes.Domain.Avatar)
                 {
                     return;
                 }
@@ -95,12 +96,12 @@ public class CollisionService : BackgroundService, IConsumerService
             }
         }
 
-        if (value.Entity is EntityType.Avatar)
+        if (value.Entity is EntityType.Player or EntityType.Ai)
         {
             var output = new WorldChange()
             {
                 EntityId = value.EntityId,
-                Change = ChangeType.MovePlayer,
+                Change = value.Entity is EntityType.Ai ? ChangeType.MoveAi : ChangeType.MovePlayer,
                 Location = value.ToLocation,
                 EventId = value.EventId
             };

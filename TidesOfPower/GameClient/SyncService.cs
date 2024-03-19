@@ -110,13 +110,20 @@ public class SyncService : BackgroundService
                 {
                     _game.LocalState.Add(
                         new Enemy(Guid.Parse(avatar.Id), new Vector2(avatar.Location.X, avatar.Location.Y),
-                            _game.AvatarTexture));
+                            _game.EnemyTexture));
                     Console.WriteLine($"LocalState count {_game.LocalState.Count}");
                 }
             }
             else
             {
-                localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
+                if (localAvatar is Enemy la)
+                {
+                    la.SetPosition(new Vector2(avatar.Location.X, avatar.Location.Y));
+                }
+                else
+                {
+                    localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
+                }
             }
         }
 

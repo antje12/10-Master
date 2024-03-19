@@ -40,9 +40,9 @@ public class Animation
         _active = true;
     }
 
-    public void Reset()
+    public void Reset(int i = 0)
     {
-        _frame = 0;
+        _frame = i;
         _frameTimeLeft = _frameTime;
     }
 

@@ -16,6 +16,7 @@ public class Player : Agent
     private Camera _camera;
     private Vector2 _mousePosition;
     private ProtoKafkaProducer<Input> _producer;
+    private AnimationManager _anims = new();
 
     private Coordinates _lastLocation;
     private List<GameKey> _lastKeyInput;
@@ -34,13 +35,22 @@ public class Player : Agent
         _producer = producer;
         _lastLocation = new Coordinates();
         _lastKeyInput = new List<GameKey>();
+        
+        _anims.AddAnimation(GameKey.Up, new(texture, 3, 4, 0.2f, 1));
+        _anims.AddAnimation(GameKey.Right, new(texture, 3, 4, 0.2f, 2));
+        _anims.AddAnimation(GameKey.Down, new(texture, 3, 4, 0.2f, 3));
+        _anims.AddAnimation(GameKey.Left, new(texture,3, 4, 0.2f, 4));
     }
 
     public override void Update(GameTime gameTime)
     {
         _camera.Follow(Position);
         var keyInput = GetKeyInput();
-        if (!keyInput.Any()) return;
+        if (!keyInput.Any())
+        {
+            _anims.Update(gameTime, new());
+            return;
+        }
         
         var input = new Input()
         {
@@ -59,8 +69,17 @@ public class Player : Agent
             EventId = Guid.NewGuid().ToString(),
             Source = Source.Player
         };
+        
         input.KeyInput.AddRange(keyInput);
-
+        if (input.KeyInput.Contains(GameKey.Left))
+            _anims.Update(gameTime, GameKey.Left);
+        else if (input.KeyInput.Contains(GameKey.Right))
+            _anims.Update(gameTime, GameKey.Right);
+        else if (input.KeyInput.Contains(GameKey.Up))
+            _anims.Update(gameTime, GameKey.Up);
+        else if (input.KeyInput.Contains(GameKey.Down))
+            _anims.Update(gameTime, GameKey.Down);
+        
         var newLocation = _lastLocation.X != input.PlayerLocation.X || _lastLocation.Y != input.PlayerLocation.Y;
         var newInput = !_lastKeyInput.OrderBy(x => x).SequenceEqual(keyInput.OrderBy(x => x));
         if (!newLocation && !newInput) return;
@@ -112,7 +131,9 @@ public class Player : Agent
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
-        spriteBatch.Draw(Texture, offset, Color.Green);
+        var offset = new Vector2(Position.X - (48 / 2), Position.Y - (64 / 2));
+        _anims.Draw(spriteBatch, offset);
+        //var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
+        //spriteBatch.Draw(Texture, offset, Color.Green);
     }
 }

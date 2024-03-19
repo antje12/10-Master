@@ -17,11 +17,19 @@ public class MyGame : Game
     private KafkaConfig _config;
     private ProtoKafkaProducer<Input> _producer;
 
-    private Texture2D _oceanTexture; //64x64
-    private Texture2D _islandTexture; //64x64
-    public Texture2D AvatarTexture; //50x50
-    public Texture2D ProjectileTexture; //10x10
-    private SpriteFont _font; //10x10
+    private SpriteFont _font;
+    
+    public Texture2D OceanTexture;
+    public Texture2D IslandTexture;
+    
+    public Texture2D PlayerTexture;
+    public Texture2D EnemyTexture;
+    public Texture2D TreasureTexture;
+    public Texture2D CoinTexture;
+    
+    public Texture2D ShipTexture;
+    
+    public Texture2D ProjectileTexture;
 
     private UI _ui;
     private Camera _camera;
@@ -35,14 +43,10 @@ public class MyGame : Game
     public List<Sprite> LocalState = new();
     public readonly object LockObject = new();
     public Dictionary<string, long> EventTimes = new();
-
-    public Texture2D PlayerTexture;
-    public Texture2D EnemyTexture;
-    public Texture2D CoinTexture;
-    public Texture2D TreasureTexture;
+    
     private Coin _coin;
     private Treasure _treasure;
-    private Hero _hero;
+    private Ship _ship;
     
     public MyGame()
     {
@@ -53,46 +57,46 @@ public class MyGame : Game
         _config = new KafkaConfig(_groupId, true);
         _producer = new ProtoKafkaProducer<Input>(_config);
     }
-
+    
+    protected override void LoadContent()
+    {
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        //AvatarTexture = Content.Load<Texture2D>("test/circle");
+        IslandTexture = Content.Load<Texture2D>("environment/island_rough");
+        OceanTexture = Content.Load<Texture2D>("environment/ocean");
+        ProjectileTexture = Content.Load<Texture2D>("projectiles/cannon_ball");
+        _font = Content.Load<SpriteFont>("fonts/Arial16");
+        
+        PlayerTexture = Content.Load<Texture2D>("avatars/player");
+        EnemyTexture = Content.Load<Texture2D>("avatars/enemy");
+        
+        CoinTexture = Content.Load<Texture2D>("treasure/gold_coin");
+        TreasureTexture = Content.Load<Texture2D>("treasure/gold_chest");
+        ShipTexture = Content.Load<Texture2D>("ships/ship_1");
+    }
+    
     protected override void Initialize()
     {
         ScreenWidth = GraphicsDevice.Viewport.Width;
         ScreenHeight = GraphicsDevice.Viewport.Height;
         base.Initialize(); // Runs LoadContent
-
-        _coin = new Coin(new Vector2(300, 300), CoinTexture);
-        _treasure = new Treasure(new Vector2(100, 100), TreasureTexture);
         
         _camera = new Camera(this);
         var playerPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
-        Player = new Player(this, Guid.NewGuid(), playerPosition, AvatarTexture, _camera, _producer);
+        Player = new Player(this, Guid.NewGuid(), playerPosition, PlayerTexture, _camera, _producer);
         _ui = new UI(_font, Player, this);
 
-        _hero = new Hero(Player.Position, PlayerTexture);
+        _coin = new Coin(new Vector2(300, 300), CoinTexture);
+        _treasure = new Treasure(new Vector2(100, 100), TreasureTexture);
+        _ship = new Ship(new Vector2(200, 200), ShipTexture);
         
         var oceanPosition = new Vector2(0, 0);
-        var ocean = new Ocean(oceanPosition, _oceanTexture, Player, this);
+        var ocean = new Ocean(oceanPosition, OceanTexture, Player, this);
         var islandPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
-        var island = new Island(islandPosition, _islandTexture);
+        var island = new Island(islandPosition, IslandTexture);
 
         LocalState.Add(ocean);
         LocalState.Add(island);
-    }
-
-    protected override void LoadContent()
-    {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
-        AvatarTexture = Content.Load<Texture2D>("circle");
-        _islandTexture = Content.Load<Texture2D>("island");
-        _oceanTexture = Content.Load<Texture2D>("ocean");
-        ProjectileTexture = Content.Load<Texture2D>("small-circle");
-        _font = Content.Load<SpriteFont>("Arial16");
-        
-        PlayerTexture = Content.Load<Texture2D>("player");
-        EnemyTexture = Content.Load<Texture2D>("enemy");
-        
-        CoinTexture = Content.Load<Texture2D>("gold_coin");
-        TreasureTexture = Content.Load<Texture2D>("gold_chest");
     }
 
     protected override void Update(GameTime gameTime)
@@ -115,7 +119,7 @@ public class MyGame : Game
         Player.Update(gameTime);
         _coin.Update(gameTime);
         _treasure.Update(gameTime);
-        _hero.Update(gameTime);
+        _ship.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -150,7 +154,7 @@ public class MyGame : Game
         _coin.Draw(_spriteBatch);
         _ui.Draw(_spriteBatch);
         _treasure.Draw(_spriteBatch);
-        _hero.Draw(_spriteBatch);
+        _ship.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

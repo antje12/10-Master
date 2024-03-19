@@ -20,6 +20,6 @@ public class Projectile : Sprite
     public override void Draw(SpriteBatch spriteBatch)
     {
         var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
-        spriteBatch.Draw(Texture, offset, Color.Blue);
+        spriteBatch.Draw(Texture, offset, Color.White);
     }
 }

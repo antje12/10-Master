@@ -26,7 +26,7 @@ public class AnimationManager
         else
         {
             _anims[_lastKey].Stop();
-            _anims[_lastKey].Reset();
+            _anims[_lastKey].Reset(1);
         }
     }
 

@@ -35,6 +35,14 @@ public class MyGame : Game
     public List<Sprite> LocalState = new();
     public readonly object LockObject = new();
     public Dictionary<string, long> EventTimes = new();
+
+    public Texture2D PlayerTexture;
+    public Texture2D EnemyTexture;
+    public Texture2D CoinTexture;
+    public Texture2D TreasureTexture;
+    private Coin _coin;
+    private Treasure _treasure;
+    private Hero _hero;
     
     public MyGame()
     {
@@ -51,12 +59,17 @@ public class MyGame : Game
         ScreenWidth = GraphicsDevice.Viewport.Width;
         ScreenHeight = GraphicsDevice.Viewport.Height;
         base.Initialize(); // Runs LoadContent
+
+        _coin = new Coin(new Vector2(300, 300), CoinTexture);
+        _treasure = new Treasure(new Vector2(100, 100), TreasureTexture);
         
         _camera = new Camera(this);
         var playerPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
         Player = new Player(this, Guid.NewGuid(), playerPosition, AvatarTexture, _camera, _producer);
         _ui = new UI(_font, Player, this);
 
+        _hero = new Hero(Player.Position, PlayerTexture);
+        
         var oceanPosition = new Vector2(0, 0);
         var ocean = new Ocean(oceanPosition, _oceanTexture, Player, this);
         var islandPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
@@ -74,6 +87,12 @@ public class MyGame : Game
         _oceanTexture = Content.Load<Texture2D>("ocean");
         ProjectileTexture = Content.Load<Texture2D>("small-circle");
         _font = Content.Load<SpriteFont>("Arial16");
+        
+        PlayerTexture = Content.Load<Texture2D>("player");
+        EnemyTexture = Content.Load<Texture2D>("enemy");
+        
+        CoinTexture = Content.Load<Texture2D>("gold_coin");
+        TreasureTexture = Content.Load<Texture2D>("gold_chest");
     }
 
     protected override void Update(GameTime gameTime)
@@ -94,6 +113,9 @@ public class MyGame : Game
             }
         }
         Player.Update(gameTime);
+        _coin.Update(gameTime);
+        _treasure.Update(gameTime);
+        _hero.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -125,7 +147,10 @@ public class MyGame : Game
             }
         }
         Player.Draw(_spriteBatch);
+        _coin.Draw(_spriteBatch);
         _ui.Draw(_spriteBatch);
+        _treasure.Draw(_spriteBatch);
+        _hero.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

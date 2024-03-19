@@ -99,7 +99,10 @@ public class SyncService : BackgroundService
         {
             if (avatar.Id == _game.Player.Id.ToString())
             {
-                _game.Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
+                var xDiff = Math.Abs(_game.Player.Position.X - avatar.Location.X);
+                var yDiff = Math.Abs(_game.Player.Position.Y - avatar.Location.Y);
+                if (xDiff > 10 || yDiff > 10)
+                    _game.Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
                 continue;
             }
 

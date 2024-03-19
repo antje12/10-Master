@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClassLibrary.Kafka;
@@ -51,7 +51,16 @@ public class Player : Agent
             _anims.Update(gameTime, new());
             return;
         }
-        
+
+        if (keyInput.Contains(GameKey.Left))
+            _anims.Update(gameTime, GameKey.Left);
+        else if (keyInput.Contains(GameKey.Right))
+            _anims.Update(gameTime, GameKey.Right);
+        else if (keyInput.Contains(GameKey.Up))
+            _anims.Update(gameTime, GameKey.Up);
+        else if (keyInput.Contains(GameKey.Down))
+            _anims.Update(gameTime, GameKey.Down);
+
         var input = new Input()
         {
             PlayerId = Id.ToString(),
@@ -69,16 +78,7 @@ public class Player : Agent
             EventId = Guid.NewGuid().ToString(),
             Source = Source.Player
         };
-        
         input.KeyInput.AddRange(keyInput);
-        if (input.KeyInput.Contains(GameKey.Left))
-            _anims.Update(gameTime, GameKey.Left);
-        else if (input.KeyInput.Contains(GameKey.Right))
-            _anims.Update(gameTime, GameKey.Right);
-        else if (input.KeyInput.Contains(GameKey.Up))
-            _anims.Update(gameTime, GameKey.Up);
-        else if (input.KeyInput.Contains(GameKey.Down))
-            _anims.Update(gameTime, GameKey.Down);
         
         var newLocation = _lastLocation.X != input.PlayerLocation.X || _lastLocation.Y != input.PlayerLocation.Y;
         var newInput = !_lastKeyInput.OrderBy(x => x).SequenceEqual(keyInput.OrderBy(x => x));
@@ -93,6 +93,35 @@ public class Player : Agent
         _lastKeyInput = input.KeyInput.ToList();
         
         Console.WriteLine($"Mouse: {_mousePosition.X}:{_mousePosition.Y}");
+
+        LocalMovement(input);
+    }
+
+    private void LocalMovement(Input value)
+    {
+        var x = Position.X;
+        var y = Position.Y;
+        var speed = 100;
+        foreach (var input in value.KeyInput)
+        {
+            switch (input)
+            {
+                case GameKey.Up:
+                    y -= speed * (float) value.GameTime;
+                    break;
+                case GameKey.Down:
+                    y += speed * (float) value.GameTime;
+                    break;
+                case GameKey.Left:
+                    x -= speed * (float) value.GameTime;
+                    break;
+                case GameKey.Right:
+                    x += speed * (float) value.GameTime;
+                    break;
+            }
+        }
+
+        Position = new Vector2(x, y);
     }
 
     private List<GameKey> GetKeyInput()

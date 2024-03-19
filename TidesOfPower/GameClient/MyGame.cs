@@ -152,9 +152,9 @@ public class MyGame : Game
         }
         Player.Draw(_spriteBatch);
         _coin.Draw(_spriteBatch);
-        _ui.Draw(_spriteBatch);
         _treasure.Draw(_spriteBatch);
         _ship.Draw(_spriteBatch);
+        _ui.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

@@ -6,7 +6,7 @@ namespace GameClient.Entities;
 
 public class Ship : Sprite
 {
-    private float rotation; // in radians
+    private float rotation;
 
     public Ship(Vector2 position, Texture2D texture) : base(position, texture)
     {
@@ -37,11 +37,7 @@ public class Ship : Sprite
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        // The origin of the rotation; using the center of the sprite
         Vector2 origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
-
         spriteBatch.Draw(Texture, Position, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 0f);
-        //var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
-        //spriteBatch.Draw(Texture, offset, Color.White);
     }
 }

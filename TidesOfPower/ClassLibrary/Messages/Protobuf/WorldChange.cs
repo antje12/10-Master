@@ -25,20 +25,18 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChFXb3JsZENoYW5nZS5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
-            "b3RvYnVmGgxDb21tb24ucHJvdG8aH2dvb2dsZS9wcm90b2J1Zi90aW1lc3Rh",
-            "bXAucHJvdG8iqAIKC1dvcmxkQ2hhbmdlEhAKCEVudGl0eUlkGAEgASgJEjoK",
-            "BkNoYW5nZRgCIAEoDjIqLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1",
-            "Zi5DaGFuZ2VUeXBlEj0KCExvY2F0aW9uGAMgASgLMisuQ2xhc3NMaWJyYXJ5",
-            "Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEj4KCURpcmVjdGlvbhgE",
-            "IAEoCzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGlu",
-            "YXRlcxINCgVUaW1lchgFIAEoARIPCgdFdmVudElkGAYgASgJEiwKCEdhbWVU",
-            "aW1lGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCpoCgpDaGFu",
-            "Z2VUeXBlEg4KCk1vdmVQbGF5ZXIQABIPCgtTcGF3bkJ1bGxldBABEg4KCk1v",
-            "dmVCdWxsZXQQAhIQCgxEYW1hZ2VQbGF5ZXIQAxILCgdTcGF3bkFpEAQSCgoG",
-            "TW92ZUFpEAVCIaoCHkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1ZmIG",
-            "cHJvdG8z"));
+            "b3RvYnVmGgxDb21tb24ucHJvdG8ijAIKC1dvcmxkQ2hhbmdlEhAKCEVudGl0",
+            "eUlkGAEgASgJEjoKBkNoYW5nZRgCIAEoDjIqLkNsYXNzTGlicmFyeS5NZXNz",
+            "YWdlcy5Qcm90b2J1Zi5DaGFuZ2VUeXBlEj0KCExvY2F0aW9uGAMgASgLMisu",
+            "Q2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEj4K",
+            "CURpcmVjdGlvbhgEIAEoCzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90",
+            "b2J1Zi5Db29yZGluYXRlcxINCgVUaW1lchgFIAEoARIPCgdFdmVudElkGAYg",
+            "ASgJEhAKCEdhbWVUaW1lGAcgASgBKmgKCkNoYW5nZVR5cGUSDgoKTW92ZVBs",
+            "YXllchAAEg8KC1NwYXduQnVsbGV0EAESDgoKTW92ZUJ1bGxldBACEhAKDERh",
+            "bWFnZVBsYXllchADEgsKB1NwYXduQWkQBBIKCgZNb3ZlQWkQBUIhqgIeQ2xh",
+            "c3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.ChangeType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.WorldChange), global::ClassLibrary.Messages.Protobuf.WorldChange.Parser, new[]{ "EntityId", "Change", "Location", "Direction", "Timer", "EventId", "GameTime" }, null, null, null, null)
           }));
@@ -100,7 +98,7 @@ namespace ClassLibrary.Messages.Protobuf {
       direction_ = other.direction_ != null ? other.direction_.Clone() : null;
       timer_ = other.timer_;
       eventId_ = other.eventId_;
-      gameTime_ = other.gameTime_ != null ? other.gameTime_.Clone() : null;
+      gameTime_ = other.gameTime_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -187,10 +185,10 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "GameTime" field.</summary>
     public const int GameTimeFieldNumber = 7;
-    private global::Google.Protobuf.WellKnownTypes.Timestamp gameTime_;
+    private double gameTime_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Google.Protobuf.WellKnownTypes.Timestamp GameTime {
+    public double GameTime {
       get { return gameTime_; }
       set {
         gameTime_ = value;
@@ -218,7 +216,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (!object.Equals(Direction, other.Direction)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Timer, other.Timer)) return false;
       if (EventId != other.EventId) return false;
-      if (!object.Equals(GameTime, other.GameTime)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(GameTime, other.GameTime)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -232,7 +230,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (direction_ != null) hash ^= Direction.GetHashCode();
       if (Timer != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Timer);
       if (EventId.Length != 0) hash ^= EventId.GetHashCode();
-      if (gameTime_ != null) hash ^= GameTime.GetHashCode();
+      if (GameTime != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(GameTime);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -275,9 +273,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(50);
         output.WriteString(EventId);
       }
-      if (gameTime_ != null) {
-        output.WriteRawTag(58);
-        output.WriteMessage(GameTime);
+      if (GameTime != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(GameTime);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -313,9 +311,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(50);
         output.WriteString(EventId);
       }
-      if (gameTime_ != null) {
-        output.WriteRawTag(58);
-        output.WriteMessage(GameTime);
+      if (GameTime != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(GameTime);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -345,8 +343,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (EventId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EventId);
       }
-      if (gameTime_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(GameTime);
+      if (GameTime != 0D) {
+        size += 1 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -384,11 +382,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other.EventId.Length != 0) {
         EventId = other.EventId;
       }
-      if (other.gameTime_ != null) {
-        if (gameTime_ == null) {
-          GameTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-        }
-        GameTime.MergeFrom(other.GameTime);
+      if (other.GameTime != 0D) {
+        GameTime = other.GameTime;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -435,11 +430,8 @@ namespace ClassLibrary.Messages.Protobuf {
             EventId = input.ReadString();
             break;
           }
-          case 58: {
-            if (gameTime_ == null) {
-              GameTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(GameTime);
+          case 57: {
+            GameTime = input.ReadDouble();
             break;
           }
         }
@@ -487,11 +479,8 @@ namespace ClassLibrary.Messages.Protobuf {
             EventId = input.ReadString();
             break;
           }
-          case 58: {
-            if (gameTime_ == null) {
-              GameTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(GameTime);
+          case 57: {
+            GameTime = input.ReadDouble();
             break;
           }
         }

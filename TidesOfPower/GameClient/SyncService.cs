@@ -88,7 +88,8 @@ public class SyncService : BackgroundService
             {
                 _game.LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y.Id.ToString()));
                 //game.LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
-                Console.WriteLine($"LocalState count {_game.LocalState.Count}");
+                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
             }
         }
     }
@@ -114,7 +115,8 @@ public class SyncService : BackgroundService
                     _game.LocalState.Add(
                         new Enemy(Guid.Parse(avatar.Id), new Vector2(avatar.Location.X, avatar.Location.Y),
                             _game.EnemyTexture));
-                    Console.WriteLine($"LocalState count {_game.LocalState.Count}");
+                    string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                    Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }
             }
             else
@@ -140,8 +142,10 @@ public class SyncService : BackgroundService
                     _game.LocalState.Add(
                         new Projectile(Guid.Parse(projectile.Id),
                             new Vector2(projectile.Location.X, projectile.Location.Y),
+                            new Vector2(projectile.Direction.X, projectile.Direction.Y),
                             _game.ProjectileTexture));
-                    Console.WriteLine($"LocalState count {_game.LocalState.Count}");
+                    string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                    Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }
             }
             else
@@ -163,7 +167,8 @@ public class SyncService : BackgroundService
             {
                 _game.LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y.Id.ToString()));
                 _game.LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y.Id.ToString()));
-                Console.WriteLine($"LocalState count {_game.LocalState.Count}");
+                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
             }
         }
 

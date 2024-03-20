@@ -3,7 +3,6 @@
 package ClassLibrary.Messages.Protobuf;
 
 import "Common.proto";
-import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
@@ -14,7 +13,7 @@ message WorldChange {
   ClassLibrary.Messages.Protobuf.Coordinates Direction = 4;
   double Timer = 5;
   string EventId = 6;
-  google.protobuf.Timestamp GameTime = 7;
+  double GameTime = 7;
 }
 
 enum ChangeType {

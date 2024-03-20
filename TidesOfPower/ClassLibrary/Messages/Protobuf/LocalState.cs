@@ -25,25 +25,24 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChBMb2NhbFN0YXRlLnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
-            "dG9idWYaDENvbW1vbi5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVzdGFt",
-            "cC5wcm90byLhAQoKTG9jYWxTdGF0ZRIQCghQbGF5ZXJJZBgBIAEoCRI2CgRT",
-            "eW5jGAIgASgOMiguQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlN5",
-            "bmNUeXBlEjcKB0F2YXRhcnMYAyADKAsyJi5DbGFzc0xpYnJhcnkuTWVzc2Fn",
-            "ZXMuUHJvdG9idWYuQXZhdGFyEj8KC1Byb2plY3RpbGVzGAQgAygLMiouQ2xh",
-            "c3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlByb2plY3RpbGUSDwoHRXZl",
-            "bnRJZBgFIAEoCSKcAQoGQXZhdGFyEgoKAklkGAEgASgJEj0KCExvY2F0aW9u",
-            "GAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3Jk",
-            "aW5hdGVzEgwKBE5hbWUYAyABKAkSFAoMV2Fsa2luZ1NwZWVkGAQgASgFEhAK",
-            "CExpZmVQb29sGAUgASgFEhEKCUludmVudG9yeRgGIAEoBSLbAQoKUHJvamVj",
-            "dGlsZRIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEoCzIrLkNsYXNzTGli",
-            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxI+CglEaXJlY3Rp",
-            "b24YAyABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29v",
-            "cmRpbmF0ZXMSLgoKTGFzdFVwZGF0ZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1",
-            "Zi5UaW1lc3RhbXASEgoKVGltZVRvTGl2ZRgFIAEoASorCghTeW5jVHlwZRII",
-            "CgRGdWxsEAASCQoFRGVsdGEQARIKCgZEZWxldGUQAkIhqgIeQ2xhc3NMaWJy",
-            "YXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
+            "dG9idWYaDENvbW1vbi5wcm90byLhAQoKTG9jYWxTdGF0ZRIQCghQbGF5ZXJJ",
+            "ZBgBIAEoCRI2CgRTeW5jGAIgASgOMiguQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
+            "LlByb3RvYnVmLlN5bmNUeXBlEjcKB0F2YXRhcnMYAyADKAsyJi5DbGFzc0xp",
+            "YnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQXZhdGFyEj8KC1Byb2plY3RpbGVz",
+            "GAQgAygLMiouQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlByb2pl",
+            "Y3RpbGUSDwoHRXZlbnRJZBgFIAEoCSKcAQoGQXZhdGFyEgoKAklkGAEgASgJ",
+            "Ej0KCExvY2F0aW9uGAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
+            "b3RvYnVmLkNvb3JkaW5hdGVzEgwKBE5hbWUYAyABKAkSFAoMV2Fsa2luZ1Nw",
+            "ZWVkGAQgASgFEhAKCExpZmVQb29sGAUgASgFEhEKCUludmVudG9yeRgGIAEo",
+            "BSK/AQoKUHJvamVjdGlsZRIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEo",
+            "CzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRl",
+            "cxI+CglEaXJlY3Rpb24YAyABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMu",
+            "UHJvdG9idWYuQ29vcmRpbmF0ZXMSEgoKTGFzdFVwZGF0ZRgEIAEoARISCgpU",
+            "aW1lVG9MaXZlGAUgASgBKisKCFN5bmNUeXBlEggKBEZ1bGwQABIJCgVEZWx0",
+            "YRABEgoKBkRlbGV0ZRACQiGqAh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
+            "dG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.SyncType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState), global::ClassLibrary.Messages.Protobuf.LocalState.Parser, new[]{ "PlayerId", "Sync", "Avatars", "Projectiles", "EventId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Avatar), global::ClassLibrary.Messages.Protobuf.Avatar.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
@@ -804,7 +803,7 @@ namespace ClassLibrary.Messages.Protobuf {
       id_ = other.id_;
       location_ = other.location_ != null ? other.location_.Clone() : null;
       direction_ = other.direction_ != null ? other.direction_.Clone() : null;
-      lastUpdate_ = other.lastUpdate_ != null ? other.lastUpdate_.Clone() : null;
+      lastUpdate_ = other.lastUpdate_;
       timeToLive_ = other.timeToLive_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -853,10 +852,10 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "LastUpdate" field.</summary>
     public const int LastUpdateFieldNumber = 4;
-    private global::Google.Protobuf.WellKnownTypes.Timestamp lastUpdate_;
+    private double lastUpdate_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Google.Protobuf.WellKnownTypes.Timestamp LastUpdate {
+    public double LastUpdate {
       get { return lastUpdate_; }
       set {
         lastUpdate_ = value;
@@ -893,7 +892,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Id != other.Id) return false;
       if (!object.Equals(Location, other.Location)) return false;
       if (!object.Equals(Direction, other.Direction)) return false;
-      if (!object.Equals(LastUpdate, other.LastUpdate)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(LastUpdate, other.LastUpdate)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TimeToLive, other.TimeToLive)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -905,7 +904,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (location_ != null) hash ^= Location.GetHashCode();
       if (direction_ != null) hash ^= Direction.GetHashCode();
-      if (lastUpdate_ != null) hash ^= LastUpdate.GetHashCode();
+      if (LastUpdate != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(LastUpdate);
       if (TimeToLive != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TimeToLive);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -937,9 +936,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(26);
         output.WriteMessage(Direction);
       }
-      if (lastUpdate_ != null) {
-        output.WriteRawTag(34);
-        output.WriteMessage(LastUpdate);
+      if (LastUpdate != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(LastUpdate);
       }
       if (TimeToLive != 0D) {
         output.WriteRawTag(41);
@@ -967,9 +966,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(26);
         output.WriteMessage(Direction);
       }
-      if (lastUpdate_ != null) {
-        output.WriteRawTag(34);
-        output.WriteMessage(LastUpdate);
+      if (LastUpdate != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(LastUpdate);
       }
       if (TimeToLive != 0D) {
         output.WriteRawTag(41);
@@ -994,8 +993,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (direction_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Direction);
       }
-      if (lastUpdate_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastUpdate);
+      if (LastUpdate != 0D) {
+        size += 1 + 8;
       }
       if (TimeToLive != 0D) {
         size += 1 + 8;
@@ -1027,11 +1026,8 @@ namespace ClassLibrary.Messages.Protobuf {
         }
         Direction.MergeFrom(other.Direction);
       }
-      if (other.lastUpdate_ != null) {
-        if (lastUpdate_ == null) {
-          LastUpdate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-        }
-        LastUpdate.MergeFrom(other.LastUpdate);
+      if (other.LastUpdate != 0D) {
+        LastUpdate = other.LastUpdate;
       }
       if (other.TimeToLive != 0D) {
         TimeToLive = other.TimeToLive;
@@ -1069,11 +1065,8 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(Direction);
             break;
           }
-          case 34: {
-            if (lastUpdate_ == null) {
-              LastUpdate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(LastUpdate);
+          case 33: {
+            LastUpdate = input.ReadDouble();
             break;
           }
           case 41: {
@@ -1113,11 +1106,8 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(Direction);
             break;
           }
-          case 34: {
-            if (lastUpdate_ == null) {
-              LastUpdate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(LastUpdate);
+          case 33: {
+            LastUpdate = input.ReadDouble();
             break;
           }
           case 41: {

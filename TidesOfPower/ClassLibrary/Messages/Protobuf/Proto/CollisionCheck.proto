@@ -3,7 +3,6 @@
 package ClassLibrary.Messages.Protobuf;
 
 import "Common.proto";
-import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
@@ -15,7 +14,7 @@ message CollisionCheck {
   double Timer = 5;
   string EventId = 6;
   ClassLibrary.Messages.Protobuf.Coordinates Direction = 7;
-  google.protobuf.Timestamp GameTime = 8;
+  double GameTime = 8;
 }
 
 enum EntityType {

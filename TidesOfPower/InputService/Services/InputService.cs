@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using ClassLibrary.GameLogic;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using InputService.Interfaces;
@@ -21,7 +22,7 @@ public class InputService : BackgroundService, IConsumerService
     private ProtoKafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
-    private bool localTest = false;
+    private bool localTest = true;
 
     public InputService()
     {
@@ -50,7 +51,7 @@ public class InputService : BackgroundService, IConsumerService
     {
         //var stopwatch = new Stopwatch();
         //stopwatch.Start();
-        
+
         if (value.KeyInput.Any(x => x is GameKey.Up or GameKey.Down or GameKey.Left or GameKey.Right))
             Move(key, value);
 
@@ -59,7 +60,7 @@ public class InputService : BackgroundService, IConsumerService
 
         if (value.KeyInput.Any(x => x is GameKey.Interact))
             Interact(key, value);
-        
+
         //stopwatch.Stop();
         //var elapsedTime = stopwatch.ElapsedMilliseconds;
         //if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms");
@@ -69,48 +70,31 @@ public class InputService : BackgroundService, IConsumerService
     {
         string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
         Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
-        
+
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        
+
         var output = new CollisionCheck()
         {
             EntityId = value.PlayerId,
             Entity = value.Source == Source.Ai ? EntityType.Ai : EntityType.Player,
             FromLocation = value.PlayerLocation,
-            ToLocation = new Coordinates()
-            {
-                X = value.PlayerLocation.X,
-                Y = value.PlayerLocation.Y
-            },
             EventId = value.EventId
         };
 
-        var speed = 100;
-        foreach (var input in value.KeyInput)
+        Movement.MoveAvatar(value.PlayerLocation.X, value.PlayerLocation.Y, value.KeyInput.ToList(), value.GameTime,
+            out float toX, out float toY);
+        output.ToLocation = new()
         {
-            switch (input)
-            {
-                case GameKey.Up:
-                    output.ToLocation.Y -= speed * (float) value.GameTime;
-                    break;
-                case GameKey.Down:
-                    output.ToLocation.Y += speed * (float) value.GameTime;
-                    break;
-                case GameKey.Left:
-                    output.ToLocation.X -= speed * (float) value.GameTime;
-                    break;
-                case GameKey.Right:
-                    output.ToLocation.X += speed * (float) value.GameTime;
-                    break;
-            }
-        }
+            X = toX,
+            Y = toY
+        };
 
         _producerC.Produce(_outputTopicC, key, output);
-        
+
         timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
         Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
-        
+
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
         if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms -- {value.EventId}");
@@ -126,15 +110,15 @@ public class InputService : BackgroundService, IConsumerService
             x /= length;
             y /= length;
         }
-        
+
         var spawnX = value.PlayerLocation.X + x * (25 + 5 + 1);
         var spawnY = value.PlayerLocation.Y + y * (25 + 5 + 1);
-        
+
         var output = new WorldChange()
         {
             EntityId = Guid.NewGuid().ToString(),
             Change = ChangeType.SpawnBullet,
-            Location = new Coordinates() { X = spawnX, Y = spawnY },
+            Location = new Coordinates() {X = spawnX, Y = spawnY},
             Direction = new Coordinates() {X = x, Y = y}
         };
 

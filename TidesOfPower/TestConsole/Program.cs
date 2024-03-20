@@ -1,13 +1,16 @@
 // See https://aka.ms/new-console-template for more information
 
 using System.Diagnostics;
-using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.Messages.Avro;
+using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
+using Avatar = ClassLibrary.Classes.Domain.Avatar;
+using Coordinates = ClassLibrary.Classes.Data.Coordinates;
+using Input = ClassLibrary.Messages.Avro.Input;
+using LocalState = ClassLibrary.Messages.Avro.LocalState;
 
 Console.WriteLine("Hello, World!");
 MongoDbBroker mongoBroker = new MongoDbBroker(true);

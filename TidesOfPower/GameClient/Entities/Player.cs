@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClassLibrary.GameLogic;
 using ClassLibrary.Kafka;
 using GameClient.Core;
 using Microsoft.Xna.Framework;
@@ -94,34 +95,13 @@ public class Player : Agent
         
         Console.WriteLine($"Mouse: {_mousePosition.X}:{_mousePosition.Y}");
 
-        LocalMovement(input);
+        LocalMovement(keyInput, input.GameTime);
     }
 
-    private void LocalMovement(Input value)
+    private void LocalMovement(List<GameKey> keyInput, double gameTime)
     {
-        var x = Position.X;
-        var y = Position.Y;
-        var speed = 100;
-        foreach (var input in value.KeyInput)
-        {
-            switch (input)
-            {
-                case GameKey.Up:
-                    y -= speed * (float) value.GameTime;
-                    break;
-                case GameKey.Down:
-                    y += speed * (float) value.GameTime;
-                    break;
-                case GameKey.Left:
-                    x -= speed * (float) value.GameTime;
-                    break;
-                case GameKey.Right:
-                    x += speed * (float) value.GameTime;
-                    break;
-            }
-        }
-
-        Position = new Vector2(x, y);
+        Movement.MoveAvatar(Position.X, Position.Y, keyInput, gameTime, out float toX, out float toY);
+        Position = new Vector2(toX, toY);
     }
 
     private List<GameKey> GetKeyInput()

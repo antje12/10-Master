@@ -3,7 +3,6 @@
 package ClassLibrary.Messages.Protobuf;
 
 import "Common.proto";
-import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
@@ -34,6 +33,6 @@ message Projectile {
   string Id = 1;
   ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
   ClassLibrary.Messages.Protobuf.Coordinates Direction = 3;
-  google.protobuf.Timestamp LastUpdate = 4;
+  double LastUpdate = 4;
   double TimeToLive = 5;
 }

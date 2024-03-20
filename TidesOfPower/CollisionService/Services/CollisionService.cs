@@ -22,7 +22,7 @@ public class CollisionService : BackgroundService, IConsumerService
     private RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
-    private bool localTest = false;
+    private bool localTest = true;
 
     public CollisionService()
     {

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using ClassLibrary.GameLogic;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Protobuf;
@@ -17,7 +18,7 @@ public class ProjectileService : BackgroundService, IConsumerService
     private ProtoKafkaConsumer<Projectile> _consumer;
 
     public bool IsRunning { get; private set; }
-    private bool localTest = false;
+    private bool localTest = true;
 
     public ProjectileService()
     {
@@ -61,26 +62,31 @@ public class ProjectileService : BackgroundService, IConsumerService
                 X = projectile.Location.X,
                 Y = projectile.Location.Y
             },
-            ToLocation = new Coordinates()
-            {
-                X = projectile.Location.X,
-                Y = projectile.Location.Y
-            },
             Timer = projectile.TimeToLive,
             Direction = projectile.Direction,
             GameTime = projectile.LastUpdate
         };
-        
-        var from = output.GameTime.ToDateTime();
-        var to = DateTime.UtcNow;
-        TimeSpan difference = to - from;
-        
-        var speed = 600;
-        var deltaTime = difference.TotalSeconds;
-        output.Timer -= deltaTime*speed;
 
-        output.ToLocation.X += projectile.Direction.X * speed * (float) deltaTime;
-        output.ToLocation.Y += projectile.Direction.Y * speed * (float) deltaTime;
+        var from = (long) output.GameTime;
+        var to = DateTime.UtcNow.Ticks;
+        TimeSpan difference = TimeSpan.FromTicks(to - from);
+        var deltaTime = difference.TotalSeconds;
+        
+        //ToDo: fix the timing issue        
+        // monogame updates 20 times a second
+        // each update has a gametime of 0.0166667
+        
+        Console.WriteLine("Delta: " + deltaTime);
+        
+        Movement.MoveProjectile(projectile.Location.X, projectile.Location.Y, projectile.Direction.X,
+            projectile.Direction.Y, deltaTime,
+            out double time, out float toX, out float toY);
+        output.Timer -= time;
+        output.ToLocation = new()
+        {
+            X = toX,
+            Y = toY
+        };
 
         _producer.Produce(_outputTopic, output.EntityId.ToString(), output);
     }

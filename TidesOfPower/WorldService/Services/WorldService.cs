@@ -30,7 +30,7 @@ public class WorldService : BackgroundService, IConsumerService
     private RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
-    private bool localTest = false;
+    private bool localTest = true;
 
     public WorldService()
     {
@@ -232,7 +232,7 @@ public class WorldService : BackgroundService, IConsumerService
             Id = value.EntityId,
             Location = value.Location,
             Direction = value.Direction,
-            LastUpdate = Timestamp.FromDateTime(DateTime.UtcNow), // Timestamp requires UTC DateTime
+            LastUpdate = DateTime.UtcNow.Ticks,
             TimeToLive = 100
         };
         var pro = new ClassLibrary.Classes.Domain.Projectile()
@@ -286,7 +286,7 @@ public class WorldService : BackgroundService, IConsumerService
             Id = value.EntityId,
             Location = value.Location,
             Direction = value.Direction,
-            LastUpdate = Timestamp.FromDateTime(DateTime.UtcNow), // Timestamp requires UTC DateTime
+            LastUpdate = DateTime.UtcNow.Ticks,
             TimeToLive = value.Timer
         };
         var pro = new ClassLibrary.Classes.Domain.Projectile()

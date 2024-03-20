@@ -17,7 +17,7 @@ public class ProjectileService : BackgroundService, IConsumerService
     private ProtoKafkaConsumer<Projectile> _consumer;
 
     public bool IsRunning { get; private set; }
-    private bool localTest = true;
+    private bool localTest = false;
 
     public ProjectileService()
     {

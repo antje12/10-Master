@@ -89,61 +89,75 @@ services:
     networks:
       sharednetwork:
   
-  #input-service:
-  #  container_name: input-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: InputService/Dockerfile
-  #  ports:
-  #    - 81:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #    - mongodb-service
-  #  networks:
-  #    sharednetwork:
-  #
-  #collision-service:
-  #  container_name: collision-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: CollisionService/Dockerfile
-  #  ports:
-  #    - 82:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #    - mongodb-service
-  #  networks:
-  #    sharednetwork:
-  #
-  #world-service:
-  #  container_name: world-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: WorldService/Dockerfile
-  #  ports:
-  #    - 83:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #    - mongodb-service
-  #  networks:
-  #    sharednetwork:
-  #
-  #projectile-service:
-  #  container_name: projectile-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: ProjectileService/Dockerfile
-  #  ports:
-  #    - 84:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #    - mongodb-service
-  #  networks:
-  #    sharednetwork:
+  input-service:
+    container_name: input-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: InputService/Dockerfile
+    ports:
+      - 81:80
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      - mongodb-service
+    networks:
+      sharednetwork:
+  
+  collision-service:
+    container_name: collision-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: CollisionService/Dockerfile
+    ports:
+      - 82:80
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      - mongodb-service
+    networks:
+      sharednetwork:
+  
+  world-service:
+    container_name: world-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: WorldService/Dockerfile
+    ports:
+      - 83:80
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      - mongodb-service
+    networks:
+      sharednetwork:
+  
+  projectile-service:
+    container_name: projectile-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: ProjectileService/Dockerfile
+    ports:
+      - 84:80
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      - mongodb-service
+    networks:
+      sharednetwork:
+  
+  ai-service:
+    container_name: ai-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: AIService/Dockerfile
+    ports:
+      - 85:80
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      - mongodb-service
+    networks:
+      sharednetwork:
 
 #volumes:
 #  mongodb-service.vol:

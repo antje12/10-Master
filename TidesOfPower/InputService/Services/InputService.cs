@@ -21,7 +21,7 @@ public class InputService : BackgroundService, IConsumerService
     private ProtoKafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
-    private bool localTest = true;
+    private bool localTest = false;
 
     public InputService()
     {

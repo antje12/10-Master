@@ -101,7 +101,7 @@ public class SyncService : BackgroundService
             {
                 var xDiff = Math.Abs(_game.Player.Position.X - avatar.Location.X);
                 var yDiff = Math.Abs(_game.Player.Position.Y - avatar.Location.Y);
-                if (xDiff > 10 || yDiff > 10)
+                if (xDiff > 50 || yDiff > 50)
                     _game.Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
                 continue;
             }

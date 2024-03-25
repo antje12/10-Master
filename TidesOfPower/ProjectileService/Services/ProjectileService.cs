@@ -71,13 +71,13 @@ public class ProjectileService : BackgroundService, IConsumerService
         var to = DateTime.UtcNow.Ticks;
         TimeSpan difference = TimeSpan.FromTicks(to - from);
         var deltaTime = difference.TotalSeconds;
-        
-        //ToDo: fix the timing issue        
+
+        //ToDo: fix the timing issue
         // monogame updates 20 times a second
         // each update has a gametime of 0.0166667
-        
-        Console.WriteLine("Delta: " + deltaTime);
-        
+
+        Console.WriteLine($"Delta {deltaTime}");
+
         Movement.MoveProjectile(projectile.Location.X, projectile.Location.Y, projectile.Direction.X,
             projectile.Direction.Y, deltaTime,
             out double time, out float toX, out float toY);
@@ -87,7 +87,7 @@ public class ProjectileService : BackgroundService, IConsumerService
             X = toX,
             Y = toY
         };
-
+        output.GameTime = to;
         _producer.Produce(_outputTopic, output.EntityId.ToString(), output);
     }
 }

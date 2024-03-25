@@ -9,32 +9,24 @@ public class Projectile : Sprite
 {
     public Guid Id;
     private Vector2 _direction;
-    private DateTime _timer { get; set; }
 
     public Projectile(Guid id, Vector2 position, Vector2 direction, Texture2D texture) : base(position, texture)
     {
         Id = id;
         _direction = direction;
-        _timer = DateTime.UtcNow;
     }
 
     public override void Update(GameTime gameTime)
     {
-        //LocalMovement(gameTime.ElapsedGameTime.TotalSeconds);
+        LocalMovement(gameTime.ElapsedGameTime.TotalSeconds);
     }
 
     private void LocalMovement(double gameTime)
     {
-        var from = _timer;
-        var to = DateTime.UtcNow;
-        TimeSpan difference = to - from;
-        var deltaTime = difference.TotalSeconds;
-
         Movement.MoveProjectile(Position.X, Position.Y, _direction.X,
             _direction.Y, gameTime,
             out double time, out float toX, out float toY);
-        Position = new Vector2(toX, toY);
-        _timer = DateTime.UtcNow;
+        Position = new Vector2(toX, toY);;
     }
 
     public override void Draw(SpriteBatch spriteBatch)

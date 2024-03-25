@@ -82,7 +82,7 @@ public class InputService : BackgroundService, IConsumerService
             EventId = value.EventId
         };
 
-        Movement.MoveAvatar(value.PlayerLocation.X, value.PlayerLocation.Y, value.KeyInput.ToList(), value.GameTime,
+        ClassLibrary.GameLogic.Move.Avatar(value.PlayerLocation.X, value.PlayerLocation.Y, value.KeyInput.ToList(), value.GameTime,
             out float toX, out float toY);
         output.ToLocation = new()
         {

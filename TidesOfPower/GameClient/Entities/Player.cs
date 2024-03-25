@@ -100,8 +100,32 @@ public class Player : Agent
 
     private void LocalMovement(List<GameKey> keyInput, double gameTime)
     {
-        Movement.MoveAvatar(Position.X, Position.Y, keyInput, gameTime, out float toX, out float toY);
-        Position = new Vector2(toX, toY);
+        Move.Avatar(Position.X, Position.Y, keyInput, gameTime, out float toX, out float toY);
+        var to = new Vector2(toX, toY);
+        if (IsLocationFree(to))
+            Position = to;
+    }
+
+    private bool IsLocationFree(Vector2 to)
+    {
+        foreach (var sprite in _game.LocalState)
+        {
+            var w1 = 25;
+            var w2 =
+                sprite is Projectile ? 5 :
+                sprite is Agent ? 25 : 0;
+
+            if (Collide.Circle(to.X, to.Y, w1, 
+                    sprite.Position.X, sprite.Position.Y, w2))
+            {
+                if (sprite is Agent)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private List<GameKey> GetKeyInput()

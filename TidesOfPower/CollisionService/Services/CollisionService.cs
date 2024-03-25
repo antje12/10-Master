@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using ClassLibrary.GameLogic;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
@@ -73,7 +74,9 @@ public class CollisionService : BackgroundService, IConsumerService
                 entity is ClassLibrary.Classes.Domain.Projectile ? 5 :
                 entity is ClassLibrary.Classes.Domain.Avatar ? 25 : 0;
 
-            if (circleCollision(value.ToLocation, w1, entity.Location, w2))
+            if (Collide.Circle(
+                    value.ToLocation.X,value.ToLocation.Y, w1, 
+                    entity.Location.X, entity.Location.Y, w2))
             {
                 if (value.Entity is EntityType.Player or EntityType.Ai && entity is ClassLibrary.Classes.Domain.Avatar)
                 {
@@ -128,22 +131,6 @@ public class CollisionService : BackgroundService, IConsumerService
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
         if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time -- {value.EventId}");
-    }
-
-    private bool circleCollision(Coordinates e1, int w1, ClassLibrary.Classes.Data.Coordinates e2, int w2)
-    {
-        float dx = e1.X - e2.X;
-        float dy = e1.Y - e2.Y;
-        // a^2 + b^2 = c^2
-        // c = sqrt(a^2 + b^2)
-        double distance = Math.Sqrt(dx * dx + dy * dy);
-        // if radius overlap
-        if (distance < w1 + w2)
-        {
-            // Collision!
-            return true;
-        }
-        return false;
     }
 
     private void Damage(Guid entityId, Coordinates entityLocation)

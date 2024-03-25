@@ -61,7 +61,6 @@ public class MyGame : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        //AvatarTexture = Content.Load<Texture2D>("test/circle");
         IslandTexture = Content.Load<Texture2D>("environment/island_rough");
         OceanTexture = Content.Load<Texture2D>("environment/ocean");
         ProjectileTexture = Content.Load<Texture2D>("projectiles/cannon_ball");
@@ -110,7 +109,7 @@ public class MyGame : Game
             {
                 var sprite = LocalState[i];
                 sprite.Update(gameTime);
-                if (sprite is Entities.Projectile && IsOffScreen(sprite))
+                if (sprite is Entities.Projectile p && (IsOffScreen(p) || p.TimeToLive <= 0))
                 {
                     LocalState.RemoveAt(i);
                 }

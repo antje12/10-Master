@@ -7,12 +7,17 @@ using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
+using TestConsole.Tests;
 using Avatar = ClassLibrary.Classes.Domain.Avatar;
 using Coordinates = ClassLibrary.Classes.Data.Coordinates;
 using Input = ClassLibrary.Messages.Avro.Input;
 using LocalState = ClassLibrary.Messages.Avro.LocalState;
 
 Console.WriteLine("Hello, World!");
+var latency = new Latency();
+await latency.Test();
+return;
+
 MongoDbBroker mongoBroker = new MongoDbBroker(true);
 RedisBroker redisBroker = new RedisBroker(true);
 
@@ -268,7 +273,8 @@ async Task TestKafkaProto()
             return;
         }
 
-        message.PlayerLocation = value.Avatars.First().Location;
+        message.PlayerLocation = value.Avatars
+            .First(x => x.Id == testId.ToString()).Location;
 
         count += 1;
         stopwatch.Restart();

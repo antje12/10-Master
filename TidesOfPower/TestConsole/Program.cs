@@ -14,12 +14,14 @@ using Input = ClassLibrary.Messages.Avro.Input;
 using LocalState = ClassLibrary.Messages.Avro.LocalState;
 
 Console.WriteLine("Hello, World!");
+RedisBroker redisBroker = new RedisBroker(true);
+redisBroker.Clean();
+
 var latency = new Latency();
 await latency.Test();
 return;
 
 MongoDbBroker mongoBroker = new MongoDbBroker(true);
-RedisBroker redisBroker = new RedisBroker(true);
 
 redisBroker.InitEntity();
 var avatar = new Avatar()

@@ -66,8 +66,8 @@ public class MyGame : Game
         ProjectileTexture = Content.Load<Texture2D>("projectiles/cannon_ball");
         _font = Content.Load<SpriteFont>("fonts/Arial16");
         
-        PlayerTexture = Content.Load<Texture2D>("avatars/player");
-        EnemyTexture = Content.Load<Texture2D>("avatars/enemy");
+        PlayerTexture = Content.Load<Texture2D>("avatars/pirate_1");
+        EnemyTexture = Content.Load<Texture2D>("avatars/pirate_7");
         
         CoinTexture = Content.Load<Texture2D>("treasure/gold_coin");
         TreasureTexture = Content.Load<Texture2D>("treasure/gold_chest");

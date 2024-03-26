@@ -22,7 +22,8 @@ public class LatencyClient
     private CancellationTokenSource _cts;
 
     private int _counter = 0;
-    private int _testCount = 110;
+    private int _padding = 10;
+    private int _testCount = 100;
 
     private Guid _testId;
     private string _testTopic;
@@ -76,17 +77,17 @@ public class LatencyClient
         var elapsedTime = _sw.ElapsedMilliseconds;
         //Console.WriteLine($"Thread {_index} Kafka result in {elapsedTime} ms");
         
-        if (_counter > 10)
+        if (_counter > _padding)
         {
             _results.Add(elapsedTime);
         }
 
-        if (_counter >= _testCount)
+        if (_counter >= _testCount + _padding)
         {
             Console.WriteLine(
                 $"Client{_index} results {_results.Count}, avg {_results.Average()} ms, min {_results.Min()} ms, max {_results.Max()} ms");
             File.WriteAllLines(
-                $"Client{_index}_results.txt",
+                $"D:\\Git\\10-Master\\TestResults\\Client{_index}_results.txt",
                 _results.Select(r => r.ToString()));
             _cts.Cancel();
             return;

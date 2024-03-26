@@ -49,7 +49,7 @@ public class LatencyClient
         {
             PlayerId = _testId.ToString(),
             PlayerLocation = new Coordinates() {X = _index * 1000, Y = _index * 1000},
-            GameTime =  0.0166667, // monogame = 60 updates a second
+            GameTime = 0.0166667, // monogame = 60 updates a second
             EventId = Guid.NewGuid().ToString(),
             Source = Source.Player
         };
@@ -76,7 +76,7 @@ public class LatencyClient
         _sw.Stop();
         var elapsedTime = _sw.ElapsedMilliseconds;
         //Console.WriteLine($"Thread {_index} Kafka result in {elapsedTime} ms");
-        
+
         if (_counter > _padding)
         {
             _results.Add(elapsedTime);

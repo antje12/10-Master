@@ -36,7 +36,7 @@ public class KafkaAdministrator : IAdministrator
                         NumPartitions = 10,
                         Configs = new Dictionary<string, string>
                         {
-                            { "retention.ms", $"{TimeSpan.FromDays(1).TotalMilliseconds}" }
+                            { "retention.ms", $"{TimeSpan.FromMinutes(1).TotalMilliseconds}" }
                         }
                     }
                 });

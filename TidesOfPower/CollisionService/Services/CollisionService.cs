@@ -72,7 +72,7 @@ public class CollisionService : BackgroundService, IConsumerService
                 continue;
 
             var w1 =
-                value.Entity is EntityType.Projectile ? 5 :
+                value.Entity is EntityType.Bullet ? 5 :
                 value.Entity is EntityType.Player or EntityType.Ai ? 25 : 0;
             var w2 =
                 entity is ClassLibrary.Classes.Domain.Projectile ? 5 :
@@ -88,7 +88,7 @@ public class CollisionService : BackgroundService, IConsumerService
                         if (entity is ClassLibrary.Classes.Domain.Avatar)
                             blocked = true;
                         break;
-                    case EntityType.Projectile:
+                    case EntityType.Bullet:
                         if (entity is ClassLibrary.Classes.Domain.Avatar)
                             DamageAvatar(entity);
                         break;
@@ -120,7 +120,7 @@ public class CollisionService : BackgroundService, IConsumerService
                 output.Change = ChangeType.MoveAi;
                 output.EventId = value.EventId;
                 break;
-            case EntityType.Projectile:
+            case EntityType.Bullet:
                 output.Change = ChangeType.MoveBullet;
                 output.Timer = value.Timer;
                 output.Direction = value.Direction;

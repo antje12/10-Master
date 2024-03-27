@@ -2,7 +2,7 @@
 
 package ClassLibrary.Messages.Protobuf;
 
-import "Common.proto";
+import "Classes.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 

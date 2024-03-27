@@ -25,19 +25,19 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgtJbnB1dC5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVm",
-            "GgxDb21tb24ucHJvdG8iuAIKBUlucHV0EhAKCFBsYXllcklkGAEgASgJEkMK",
-            "DlBsYXllckxvY2F0aW9uGAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
-            "LlByb3RvYnVmLkNvb3JkaW5hdGVzEkIKDU1vdXNlTG9jYXRpb24YAyABKAsy",
-            "Ky5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXMS",
-            "OQoIS2V5SW5wdXQYBCADKA4yJy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
-            "dG9idWYuR2FtZUtleRIQCghHYW1lVGltZRgFIAEoARIPCgdFdmVudElkGAYg",
-            "ASgJEjYKBlNvdXJjZRgHIAEoDjImLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Q",
-            "cm90b2J1Zi5Tb3VyY2UqSgoHR2FtZUtleRIGCgJVcBAAEggKBERvd24QARII",
-            "CgRMZWZ0EAISCQoFUmlnaHQQAxIKCgZBdHRhY2sQBBIMCghJbnRlcmFjdBAF",
-            "KhwKBlNvdXJjZRIKCgZQbGF5ZXIQABIGCgJBaRABQiGqAh5DbGFzc0xpYnJh",
-            "cnkuTWVzc2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
+            "Gg1DbGFzc2VzLnByb3RvIrgCCgVJbnB1dBIQCghQbGF5ZXJJZBgBIAEoCRJD",
+            "Cg5QbGF5ZXJMb2NhdGlvbhgCIAEoCzIrLkNsYXNzTGlicmFyeS5NZXNzYWdl",
+            "cy5Qcm90b2J1Zi5Db29yZGluYXRlcxJCCg1Nb3VzZUxvY2F0aW9uGAMgASgL",
+            "MisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVz",
+            "EjkKCEtleUlucHV0GAQgAygOMicuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
+            "b3RvYnVmLkdhbWVLZXkSEAoIR2FtZVRpbWUYBSABKAESDwoHRXZlbnRJZBgG",
+            "IAEoCRI2CgZTb3VyY2UYByABKA4yJi5DbGFzc0xpYnJhcnkuTWVzc2FnZXMu",
+            "UHJvdG9idWYuU291cmNlKkoKB0dhbWVLZXkSBgoCVXAQABIICgREb3duEAES",
+            "CAoETGVmdBACEgkKBVJpZ2h0EAMSCgoGQXR0YWNrEAQSDAoISW50ZXJhY3QQ",
+            "BSocCgZTb3VyY2USCgoGUGxheWVyEAASBgoCQWkQAUIhqgIeQ2xhc3NMaWJy",
+            "YXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.GameKey), typeof(global::ClassLibrary.Messages.Protobuf.Source), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Input), global::ClassLibrary.Messages.Protobuf.Input.Parser, new[]{ "PlayerId", "PlayerLocation", "MouseLocation", "KeyInput", "GameTime", "EventId", "Source" }, null, null, null, null)
           }));

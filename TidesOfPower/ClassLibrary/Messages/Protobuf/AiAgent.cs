@@ -25,12 +25,12 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg1BaUFnZW50LnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
-            "dWYaDENvbW1vbi5wcm90byJoCgdBaUFnZW50EgoKAklkGAEgASgJEj0KCExv",
-            "Y2F0aW9uGAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVm",
-            "LkNvb3JkaW5hdGVzEhIKCkxhc3RVcGRhdGUYAyABKAFCIaoCHkNsYXNzTGli",
-            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1ZmIGcHJvdG8z"));
+            "dWYaDUNsYXNzZXMucHJvdG8iaAoHQWlBZ2VudBIKCgJJZBgBIAEoCRI9CghM",
+            "b2NhdGlvbhgCIAEoCzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1",
+            "Zi5Db29yZGluYXRlcxISCgpMYXN0VXBkYXRlGAMgASgBQiGqAh5DbGFzc0xp",
+            "YnJhcnkuTWVzc2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.AiAgent), global::ClassLibrary.Messages.Protobuf.AiAgent.Parser, new[]{ "Id", "Location", "LastUpdate" }, null, null, null, null)
           }));

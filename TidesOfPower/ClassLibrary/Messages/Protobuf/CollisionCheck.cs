@@ -25,19 +25,19 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChRDb2xsaXNpb25DaGVjay5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
-            "LlByb3RvYnVmGgxDb21tb24ucHJvdG8i1AIKDkNvbGxpc2lvbkNoZWNrEhAK",
-            "CEVudGl0eUlkGAEgASgJEjoKBkVudGl0eRgCIAEoDjIqLkNsYXNzTGlicmFy",
-            "eS5NZXNzYWdlcy5Qcm90b2J1Zi5FbnRpdHlUeXBlEkEKDEZyb21Mb2NhdGlv",
-            "bhgDIAEoCzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29y",
-            "ZGluYXRlcxI/CgpUb0xvY2F0aW9uGAQgASgLMisuQ2xhc3NMaWJyYXJ5Lk1l",
-            "c3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEg0KBVRpbWVyGAUgASgBEg8K",
-            "B0V2ZW50SWQYBiABKAkSPgoJRGlyZWN0aW9uGAcgASgLMisuQ2xhc3NMaWJy",
-            "YXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEhAKCEdhbWVUaW1l",
-            "GAggASgBKjAKCkVudGl0eVR5cGUSCgoGUGxheWVyEAASDgoKUHJvamVjdGls",
-            "ZRABEgYKAkFpEAJCIaoCHkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1",
-            "ZmIGcHJvdG8z"));
+            "LlByb3RvYnVmGg1DbGFzc2VzLnByb3RvItQCCg5Db2xsaXNpb25DaGVjaxIQ",
+            "CghFbnRpdHlJZBgBIAEoCRI6CgZFbnRpdHkYAiABKA4yKi5DbGFzc0xpYnJh",
+            "cnkuTWVzc2FnZXMuUHJvdG9idWYuRW50aXR5VHlwZRJBCgxGcm9tTG9jYXRp",
+            "b24YAyABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29v",
+            "cmRpbmF0ZXMSPwoKVG9Mb2NhdGlvbhgEIAEoCzIrLkNsYXNzTGlicmFyeS5N",
+            "ZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxINCgVUaW1lchgFIAEoARIP",
+            "CgdFdmVudElkGAYgASgJEj4KCURpcmVjdGlvbhgHIAEoCzIrLkNsYXNzTGli",
+            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxIQCghHYW1lVGlt",
+            "ZRgIIAEoASosCgpFbnRpdHlUeXBlEgoKBlBsYXllchAAEgoKBkJ1bGxldBAB",
+            "EgYKAkFpEAJCIaoCHkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1ZmIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.EntityType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.CollisionCheck), global::ClassLibrary.Messages.Protobuf.CollisionCheck.Parser, new[]{ "EntityId", "Entity", "FromLocation", "ToLocation", "Timer", "EventId", "Direction", "GameTime" }, null, null, null, null)
           }));
@@ -48,7 +48,7 @@ namespace ClassLibrary.Messages.Protobuf {
   #region Enums
   public enum EntityType {
     [pbr::OriginalName("Player")] Player = 0,
-    [pbr::OriginalName("Projectile")] Projectile = 1,
+    [pbr::OriginalName("Bullet")] Bullet = 1,
     [pbr::OriginalName("Ai")] Ai = 2,
   }
 

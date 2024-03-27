@@ -56,7 +56,7 @@ public class ProjectileService : BackgroundService, IConsumerService
         var output = new CollisionCheck()
         {
             EntityId = projectile.Id,
-            Entity = EntityType.Projectile,
+            Entity = EntityType.Bullet,
             FromLocation = new Coordinates()
             {
                 X = projectile.Location.X,

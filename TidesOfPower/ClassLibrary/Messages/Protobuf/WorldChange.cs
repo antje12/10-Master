@@ -25,18 +25,18 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChFXb3JsZENoYW5nZS5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
-            "b3RvYnVmGgxDb21tb24ucHJvdG8ijAIKC1dvcmxkQ2hhbmdlEhAKCEVudGl0",
-            "eUlkGAEgASgJEjoKBkNoYW5nZRgCIAEoDjIqLkNsYXNzTGlicmFyeS5NZXNz",
-            "YWdlcy5Qcm90b2J1Zi5DaGFuZ2VUeXBlEj0KCExvY2F0aW9uGAMgASgLMisu",
-            "Q2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEj4K",
-            "CURpcmVjdGlvbhgEIAEoCzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90",
-            "b2J1Zi5Db29yZGluYXRlcxINCgVUaW1lchgFIAEoARIPCgdFdmVudElkGAYg",
-            "ASgJEhAKCEdhbWVUaW1lGAcgASgBKmgKCkNoYW5nZVR5cGUSDgoKTW92ZVBs",
-            "YXllchAAEg8KC1NwYXduQnVsbGV0EAESDgoKTW92ZUJ1bGxldBACEhAKDERh",
-            "bWFnZVBsYXllchADEgsKB1NwYXduQWkQBBIKCgZNb3ZlQWkQBUIhqgIeQ2xh",
+            "b3RvYnVmGg1DbGFzc2VzLnByb3RvIowCCgtXb3JsZENoYW5nZRIQCghFbnRp",
+            "dHlJZBgBIAEoCRI6CgZDaGFuZ2UYAiABKA4yKi5DbGFzc0xpYnJhcnkuTWVz",
+            "c2FnZXMuUHJvdG9idWYuQ2hhbmdlVHlwZRI9CghMb2NhdGlvbhgDIAEoCzIr",
+            "LkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxI+",
+            "CglEaXJlY3Rpb24YBCABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
+            "dG9idWYuQ29vcmRpbmF0ZXMSDQoFVGltZXIYBSABKAESDwoHRXZlbnRJZBgG",
+            "IAEoCRIQCghHYW1lVGltZRgHIAEoASpnCgpDaGFuZ2VUeXBlEg4KCk1vdmVQ",
+            "bGF5ZXIQABIPCgtTcGF3bkJ1bGxldBABEg4KCk1vdmVCdWxsZXQQAhIPCgtE",
+            "YW1hZ2VBZ2VudBADEgsKB1NwYXduQWkQBBIKCgZNb3ZlQWkQBUIhqgIeQ2xh",
             "c3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.ChangeType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.WorldChange), global::ClassLibrary.Messages.Protobuf.WorldChange.Parser, new[]{ "EntityId", "Change", "Location", "Direction", "Timer", "EventId", "GameTime" }, null, null, null, null)
           }));

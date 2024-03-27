@@ -25,14 +25,12 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg1BaUFnZW50LnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
-            "dWYaDENvbW1vbi5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVzdGFtcC5w",
-            "cm90byKEAQoHQWlBZ2VudBIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEo",
-            "CzIrLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRl",
-            "cxIuCgpMYXN0VXBkYXRlGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVz",
-            "dGFtcEIhqgIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90",
-            "bzM="));
+            "dWYaDENvbW1vbi5wcm90byJoCgdBaUFnZW50EgoKAklkGAEgASgJEj0KCExv",
+            "Y2F0aW9uGAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVm",
+            "LkNvb3JkaW5hdGVzEhIKCkxhc3RVcGRhdGUYAyABKAFCIaoCHkNsYXNzTGli",
+            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1ZmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.AiAgent), global::ClassLibrary.Messages.Protobuf.AiAgent.Parser, new[]{ "Id", "Location", "LastUpdate" }, null, null, null, null)
           }));
@@ -78,7 +76,7 @@ namespace ClassLibrary.Messages.Protobuf {
     public AiAgent(AiAgent other) : this() {
       id_ = other.id_;
       location_ = other.location_ != null ? other.location_.Clone() : null;
-      lastUpdate_ = other.lastUpdate_ != null ? other.lastUpdate_.Clone() : null;
+      lastUpdate_ = other.lastUpdate_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -114,10 +112,10 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "LastUpdate" field.</summary>
     public const int LastUpdateFieldNumber = 3;
-    private global::Google.Protobuf.WellKnownTypes.Timestamp lastUpdate_;
+    private double lastUpdate_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Google.Protobuf.WellKnownTypes.Timestamp LastUpdate {
+    public double LastUpdate {
       get { return lastUpdate_; }
       set {
         lastUpdate_ = value;
@@ -141,7 +139,7 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (Id != other.Id) return false;
       if (!object.Equals(Location, other.Location)) return false;
-      if (!object.Equals(LastUpdate, other.LastUpdate)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(LastUpdate, other.LastUpdate)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -151,7 +149,7 @@ namespace ClassLibrary.Messages.Protobuf {
       int hash = 1;
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (location_ != null) hash ^= Location.GetHashCode();
-      if (lastUpdate_ != null) hash ^= LastUpdate.GetHashCode();
+      if (LastUpdate != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(LastUpdate);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -178,9 +176,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(18);
         output.WriteMessage(Location);
       }
-      if (lastUpdate_ != null) {
-        output.WriteRawTag(26);
-        output.WriteMessage(LastUpdate);
+      if (LastUpdate != 0D) {
+        output.WriteRawTag(25);
+        output.WriteDouble(LastUpdate);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -200,9 +198,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(18);
         output.WriteMessage(Location);
       }
-      if (lastUpdate_ != null) {
-        output.WriteRawTag(26);
-        output.WriteMessage(LastUpdate);
+      if (LastUpdate != 0D) {
+        output.WriteRawTag(25);
+        output.WriteDouble(LastUpdate);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -220,8 +218,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (location_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Location);
       }
-      if (lastUpdate_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastUpdate);
+      if (LastUpdate != 0D) {
+        size += 1 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -244,11 +242,8 @@ namespace ClassLibrary.Messages.Protobuf {
         }
         Location.MergeFrom(other.Location);
       }
-      if (other.lastUpdate_ != null) {
-        if (lastUpdate_ == null) {
-          LastUpdate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-        }
-        LastUpdate.MergeFrom(other.LastUpdate);
+      if (other.LastUpdate != 0D) {
+        LastUpdate = other.LastUpdate;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -276,11 +271,8 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(Location);
             break;
           }
-          case 26: {
-            if (lastUpdate_ == null) {
-              LastUpdate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(LastUpdate);
+          case 25: {
+            LastUpdate = input.ReadDouble();
             break;
           }
         }
@@ -309,11 +301,8 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(Location);
             break;
           }
-          case 26: {
-            if (lastUpdate_ == null) {
-              LastUpdate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(LastUpdate);
+          case 25: {
+            LastUpdate = input.ReadDouble();
             break;
           }
         }

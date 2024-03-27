@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using ClassLibrary.GameLogic;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using InputService.Interfaces;
@@ -26,7 +25,7 @@ public class InputService : BackgroundService, IConsumerService
 
     public InputService()
     {
-        Console.WriteLine($"InputService created");
+        Console.WriteLine("InputService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
         _producerC = new ProtoKafkaProducer<CollisionCheck>(config);
@@ -39,65 +38,53 @@ public class InputService : BackgroundService, IConsumerService
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         IsRunning = true;
-        Console.WriteLine($"InputService started");
+        Console.WriteLine("InputService started");
         await _admin.CreateTopic(_inputTopic);
         IProtoConsumer<Input>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
-        Console.WriteLine($"InputService stopped");
+        Console.WriteLine("InputService stopped");
     }
 
     private void ProcessMessage(string key, Input value)
     {
-        //var stopwatch = new Stopwatch();
-        //stopwatch.Start();
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        Process(key, value);
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        Console.WriteLine($"Message processed in {elapsedTime} ms");
+    }
 
+    private void Process(string key, Input value)
+    {
         if (value.KeyInput.Any(x => x is GameKey.Up or GameKey.Down or GameKey.Left or GameKey.Right))
             Move(key, value);
-
         if (value.KeyInput.Any(x => x is GameKey.Attack))
             Attack(key, value);
-
         if (value.KeyInput.Any(x => x is GameKey.Interact))
             Interact(key, value);
-
-        //stopwatch.Stop();
-        //var elapsedTime = stopwatch.ElapsedMilliseconds;
-        //if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Move(string key, Input value)
     {
-        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-        Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
-
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
+        ClassLibrary.GameLogic.Move.Avatar(value.PlayerLocation.X, value.PlayerLocation.Y, value.KeyInput.ToList(),
+            value.GameTime,
+            out float toX, out float toY);
 
         var output = new CollisionCheck()
         {
             EntityId = value.PlayerId,
             Entity = value.Source == Source.Ai ? EntityType.Ai : EntityType.Player,
+            EventId = value.EventId,
             FromLocation = value.PlayerLocation,
-            EventId = value.EventId
+            ToLocation = new()
+            {
+                X = toX,
+                Y = toY
+            }
         };
-
-        ClassLibrary.GameLogic.Move.Avatar(value.PlayerLocation.X, value.PlayerLocation.Y, value.KeyInput.ToList(), value.GameTime,
-            out float toX, out float toY);
-        output.ToLocation = new()
-        {
-            X = toX,
-            Y = toY
-        };
-
         _producerC.Produce(_outputTopicC, key, output);
-
-        timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-        Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
-
-        stopwatch.Stop();
-        var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms -- {value.EventId}");
     }
 
     private void Attack(string key, Input value)
@@ -121,7 +108,6 @@ public class InputService : BackgroundService, IConsumerService
             Location = new Coordinates() {X = spawnX, Y = spawnY},
             Direction = new Coordinates() {X = x, Y = y}
         };
-
         _producerW.Produce(_outputTopicW, key, output);
     }
 

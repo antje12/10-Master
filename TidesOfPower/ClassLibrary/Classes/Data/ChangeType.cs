@@ -5,5 +5,5 @@ public enum ChangeType
     MovePlayer,
     SpawnBullet,
     MoveBullet,
-    DamagePlayer
+    DamageAgent
 }

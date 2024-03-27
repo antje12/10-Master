@@ -3,12 +3,11 @@
 package ClassLibrary.Messages.Protobuf;
 
 import "Common.proto";
-import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
 message AiAgent {
   string Id = 1;
   ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
-  google.protobuf.Timestamp LastUpdate = 3;
+  double LastUpdate = 3;
 }

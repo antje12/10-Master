@@ -49,7 +49,7 @@ namespace ClassLibrary.Messages.Protobuf {
     [pbr::OriginalName("MovePlayer")] MovePlayer = 0,
     [pbr::OriginalName("SpawnBullet")] SpawnBullet = 1,
     [pbr::OriginalName("MoveBullet")] MoveBullet = 2,
-    [pbr::OriginalName("DamagePlayer")] DamagePlayer = 3,
+    [pbr::OriginalName("DamageAgent")] DamageAgent = 3,
     [pbr::OriginalName("SpawnAi")] SpawnAi = 4,
     [pbr::OriginalName("MoveAi")] MoveAi = 5,
   }

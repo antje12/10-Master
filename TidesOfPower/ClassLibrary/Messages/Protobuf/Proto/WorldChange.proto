@@ -20,7 +20,7 @@ enum ChangeType {
   MovePlayer = 0;
   SpawnBullet = 1;
   MoveBullet = 2;
-  DamagePlayer = 3;
+  DamageAgent = 3;
   SpawnAi = 4;
   MoveAi = 5;
 }

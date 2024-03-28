@@ -18,17 +18,17 @@ public class MyGame : Game
     private ProtoKafkaProducer<Input> _producer;
 
     private SpriteFont _font;
-    
+
     public Texture2D OceanTexture;
     public Texture2D IslandTexture;
-    
+
     public Texture2D PlayerTexture;
     public Texture2D EnemyTexture;
     public Texture2D TreasureTexture;
     public Texture2D CoinTexture;
-    
+
     public Texture2D ShipTexture;
-    
+
     public Texture2D ProjectileTexture;
 
     private UI _ui;
@@ -43,11 +43,11 @@ public class MyGame : Game
     public List<Sprite> LocalState = new();
     public readonly object LockObject = new();
     public Dictionary<string, long> EventTimes = new();
-    
+
     private Coin _coin;
     private Treasure _treasure;
     private Ship _ship;
-    
+
     public MyGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -57,7 +57,7 @@ public class MyGame : Game
         _config = new KafkaConfig(_groupId, true);
         _producer = new ProtoKafkaProducer<Input>(_config);
     }
-    
+
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -65,21 +65,21 @@ public class MyGame : Game
         OceanTexture = Content.Load<Texture2D>("environment/ocean");
         ProjectileTexture = Content.Load<Texture2D>("projectiles/cannon_ball");
         _font = Content.Load<SpriteFont>("fonts/Arial16");
-        
+
         PlayerTexture = Content.Load<Texture2D>("avatars/pirate_1");
         EnemyTexture = Content.Load<Texture2D>("avatars/pirate_7");
-        
+
         CoinTexture = Content.Load<Texture2D>("treasure/gold_coin");
         TreasureTexture = Content.Load<Texture2D>("treasure/gold_chest");
         ShipTexture = Content.Load<Texture2D>("ships/ship_1");
     }
-    
+
     protected override void Initialize()
     {
         ScreenWidth = GraphicsDevice.Viewport.Width;
         ScreenHeight = GraphicsDevice.Viewport.Height;
         base.Initialize(); // Runs LoadContent
-        
+
         _camera = new Camera(this);
         var playerPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
         Player = new Player(this, Guid.NewGuid(), playerPosition, PlayerTexture, _camera, _producer);
@@ -88,7 +88,7 @@ public class MyGame : Game
         _coin = new Coin(new Vector2(300, 300), CoinTexture);
         _treasure = new Treasure(new Vector2(100, 100), TreasureTexture);
         _ship = new Ship(new Vector2(200, 200), ShipTexture);
-        
+
         var oceanPosition = new Vector2(0, 0);
         var ocean = new Ocean(oceanPosition, OceanTexture, Player, this);
         var islandPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
@@ -109,12 +109,13 @@ public class MyGame : Game
             {
                 var sprite = LocalState[i];
                 sprite.Update(gameTime);
-                if (sprite is Entities.Projectile p && (IsOffScreen(p) || p.TimeToLive <= 0))
+                if (IsOffScreen(sprite) || sprite is Entities.Projectile {TimeToLive: <= 0})
                 {
                     LocalState.RemoveAt(i);
                 }
             }
         }
+
         Player.Update(gameTime);
         _coin.Update(gameTime);
         _treasure.Update(gameTime);
@@ -124,10 +125,10 @@ public class MyGame : Game
 
     private bool IsOffScreen(Sprite sprite)
     {
-        var startX = Player.Position.X - ScreenWidth / 2;
-        var endX = Player.Position.X + ScreenWidth / 2;
-        var startY = Player.Position.Y - ScreenHeight / 2;
-        var endY = Player.Position.Y + ScreenHeight / 2;
+        var startX = Player.Position.X - ScreenWidth / 2 + 1;
+        var endX = Player.Position.X + ScreenWidth / 2 - 1;
+        var startY = Player.Position.Y - ScreenHeight / 2 + 1;
+        var endY = Player.Position.Y + ScreenHeight / 2 - 1;
 
         if (sprite.Position.X <= startX || endX <= sprite.Position.X ||
             sprite.Position.Y <= startY || endY <= sprite.Position.Y)
@@ -137,7 +138,7 @@ public class MyGame : Game
 
         return false;
     }
-    
+
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -149,6 +150,7 @@ public class MyGame : Game
                 sprite.Draw(_spriteBatch);
             }
         }
+
         Player.Draw(_spriteBatch);
         _coin.Draw(_spriteBatch);
         _treasure.Draw(_spriteBatch);

@@ -173,6 +173,9 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void MoveAi(string key, WorldChange value)
     {
+        if (_redisBroker.Get(Guid.Parse(value.EntityId)) == null)
+            return;
+        
         var msgOut = new AiAgent()
         {
             Id = value.EntityId,
@@ -238,6 +241,15 @@ public class WorldService : BackgroundService, IConsumerService
             Location = new Coordinates() {X = value.Location.X, Y = value.Location.Y},
             LastUpdate = DateTime.UtcNow.Ticks,
         };
+        _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.AiAgent()
+        {
+            Id = Guid.Parse(msgOut.Id),
+            Location = new ClassLibrary.Classes.Data.Coordinates()
+            {
+                X = msgOut.Location.X,
+                Y = msgOut.Location.Y
+            }
+        });
         _producerA.Produce(_outputTopicA, msgOut.Id, msgOut);
         
         var avatar = new Avatar()

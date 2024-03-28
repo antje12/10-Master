@@ -247,8 +247,8 @@ async Task TestKafkaProto()
 
     var message = new ClassLibrary.Messages.Protobuf.Input()
     {
-        PlayerId = testId.ToString(),
-        PlayerLocation = new ClassLibrary.Messages.Protobuf.Coordinates() {X = 0, Y = 0},
+        AgentId = testId.ToString(),
+        AgentLocation = new ClassLibrary.Messages.Protobuf.Coordinates() {X = 0, Y = 0},
         GameTime = 0.5
     };
     message.KeyInput.Add(ClassLibrary.Messages.Protobuf.GameKey.Right);
@@ -275,7 +275,7 @@ async Task TestKafkaProto()
             return;
         }
 
-        message.PlayerLocation = value.Avatars
+        message.AgentLocation = value.Avatars
             .First(x => x.Id == testId.ToString()).Location;
 
         count += 1;

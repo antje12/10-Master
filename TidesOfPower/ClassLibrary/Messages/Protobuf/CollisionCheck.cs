@@ -25,21 +25,21 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChRDb2xsaXNpb25DaGVjay5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
-            "LlByb3RvYnVmGg1DbGFzc2VzLnByb3RvItQCCg5Db2xsaXNpb25DaGVjaxIQ",
-            "CghFbnRpdHlJZBgBIAEoCRI6CgZFbnRpdHkYAiABKA4yKi5DbGFzc0xpYnJh",
-            "cnkuTWVzc2FnZXMuUHJvdG9idWYuRW50aXR5VHlwZRJBCgxGcm9tTG9jYXRp",
-            "b24YAyABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29v",
-            "cmRpbmF0ZXMSPwoKVG9Mb2NhdGlvbhgEIAEoCzIrLkNsYXNzTGlicmFyeS5N",
-            "ZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxINCgVUaW1lchgFIAEoARIP",
-            "CgdFdmVudElkGAYgASgJEj4KCURpcmVjdGlvbhgHIAEoCzIrLkNsYXNzTGli",
-            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxIQCghHYW1lVGlt",
-            "ZRgIIAEoASosCgpFbnRpdHlUeXBlEgoKBlBsYXllchAAEgoKBkJ1bGxldBAB",
-            "EgYKAkFpEAJCIaoCHkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1ZmIG",
-            "cHJvdG8z"));
+            "LlByb3RvYnVmGg1DbGFzc2VzLnByb3RvItgCCg5Db2xsaXNpb25DaGVjaxIQ",
+            "CghFbnRpdHlJZBgBIAEoCRI+CgpFbnRpdHlUeXBlGAIgASgOMiouQ2xhc3NM",
+            "aWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkVudGl0eVR5cGUSQQoMRnJvbUxv",
+            "Y2F0aW9uGAMgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVm",
+            "LkNvb3JkaW5hdGVzEj8KClRvTG9jYXRpb24YBCABKAsyKy5DbGFzc0xpYnJh",
+            "cnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXMSPgoJRGlyZWN0aW9u",
+            "GAUgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3Jk",
+            "aW5hdGVzEhIKCkxhc3RVcGRhdGUYBiABKAESDwoHRXZlbnRJZBgHIAEoCRIL",
+            "CgNUVEwYCCABKAEqLAoKRW50aXR5VHlwZRIKCgZQbGF5ZXIQABIGCgJBaRAB",
+            "EgoKBkJ1bGxldBACQiGqAh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
+            "dWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.EntityType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.CollisionCheck), global::ClassLibrary.Messages.Protobuf.CollisionCheck.Parser, new[]{ "EntityId", "Entity", "FromLocation", "ToLocation", "Timer", "EventId", "Direction", "GameTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.CollisionCheck), global::ClassLibrary.Messages.Protobuf.CollisionCheck.Parser, new[]{ "EntityId", "EntityType", "FromLocation", "ToLocation", "Direction", "LastUpdate", "EventId", "TTL" }, null, null, null, null)
           }));
     }
     #endregion
@@ -48,8 +48,8 @@ namespace ClassLibrary.Messages.Protobuf {
   #region Enums
   public enum EntityType {
     [pbr::OriginalName("Player")] Player = 0,
-    [pbr::OriginalName("Bullet")] Bullet = 1,
-    [pbr::OriginalName("Ai")] Ai = 2,
+    [pbr::OriginalName("Ai")] Ai = 1,
+    [pbr::OriginalName("Bullet")] Bullet = 2,
   }
 
   #endregion
@@ -91,13 +91,13 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public CollisionCheck(CollisionCheck other) : this() {
       entityId_ = other.entityId_;
-      entity_ = other.entity_;
+      entityType_ = other.entityType_;
       fromLocation_ = other.fromLocation_ != null ? other.fromLocation_.Clone() : null;
       toLocation_ = other.toLocation_ != null ? other.toLocation_.Clone() : null;
-      timer_ = other.timer_;
-      eventId_ = other.eventId_;
       direction_ = other.direction_ != null ? other.direction_.Clone() : null;
-      gameTime_ = other.gameTime_;
+      lastUpdate_ = other.lastUpdate_;
+      eventId_ = other.eventId_;
+      tTL_ = other.tTL_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -122,15 +122,15 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "Entity" field.</summary>
-    public const int EntityFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.EntityType entity_ = global::ClassLibrary.Messages.Protobuf.EntityType.Player;
+    /// <summary>Field number for the "EntityType" field.</summary>
+    public const int EntityTypeFieldNumber = 2;
+    private global::ClassLibrary.Messages.Protobuf.EntityType entityType_ = global::ClassLibrary.Messages.Protobuf.EntityType.Player;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.EntityType Entity {
-      get { return entity_; }
+    public global::ClassLibrary.Messages.Protobuf.EntityType EntityType {
+      get { return entityType_; }
       set {
-        entity_ = value;
+        entityType_ = value;
       }
     }
 
@@ -158,32 +158,8 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "Timer" field.</summary>
-    public const int TimerFieldNumber = 5;
-    private double timer_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double Timer {
-      get { return timer_; }
-      set {
-        timer_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "EventId" field.</summary>
-    public const int EventIdFieldNumber = 6;
-    private string eventId_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string EventId {
-      get { return eventId_; }
-      set {
-        eventId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     /// <summary>Field number for the "Direction" field.</summary>
-    public const int DirectionFieldNumber = 7;
+    public const int DirectionFieldNumber = 5;
     private global::ClassLibrary.Messages.Protobuf.Coordinates direction_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -194,15 +170,39 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "GameTime" field.</summary>
-    public const int GameTimeFieldNumber = 8;
-    private double gameTime_;
+    /// <summary>Field number for the "LastUpdate" field.</summary>
+    public const int LastUpdateFieldNumber = 6;
+    private double lastUpdate_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double GameTime {
-      get { return gameTime_; }
+    public double LastUpdate {
+      get { return lastUpdate_; }
       set {
-        gameTime_ = value;
+        lastUpdate_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "EventId" field.</summary>
+    public const int EventIdFieldNumber = 7;
+    private string eventId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string EventId {
+      get { return eventId_; }
+      set {
+        eventId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "TTL" field.</summary>
+    public const int TTLFieldNumber = 8;
+    private double tTL_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double TTL {
+      get { return tTL_; }
+      set {
+        tTL_ = value;
       }
     }
 
@@ -222,13 +222,13 @@ namespace ClassLibrary.Messages.Protobuf {
         return true;
       }
       if (EntityId != other.EntityId) return false;
-      if (Entity != other.Entity) return false;
+      if (EntityType != other.EntityType) return false;
       if (!object.Equals(FromLocation, other.FromLocation)) return false;
       if (!object.Equals(ToLocation, other.ToLocation)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Timer, other.Timer)) return false;
-      if (EventId != other.EventId) return false;
       if (!object.Equals(Direction, other.Direction)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(GameTime, other.GameTime)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(LastUpdate, other.LastUpdate)) return false;
+      if (EventId != other.EventId) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TTL, other.TTL)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -237,13 +237,13 @@ namespace ClassLibrary.Messages.Protobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (EntityId.Length != 0) hash ^= EntityId.GetHashCode();
-      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) hash ^= Entity.GetHashCode();
+      if (EntityType != global::ClassLibrary.Messages.Protobuf.EntityType.Player) hash ^= EntityType.GetHashCode();
       if (fromLocation_ != null) hash ^= FromLocation.GetHashCode();
       if (toLocation_ != null) hash ^= ToLocation.GetHashCode();
-      if (Timer != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Timer);
-      if (EventId.Length != 0) hash ^= EventId.GetHashCode();
       if (direction_ != null) hash ^= Direction.GetHashCode();
-      if (GameTime != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(GameTime);
+      if (LastUpdate != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(LastUpdate);
+      if (EventId.Length != 0) hash ^= EventId.GetHashCode();
+      if (TTL != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TTL);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -266,9 +266,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(10);
         output.WriteString(EntityId);
       }
-      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
+      if (EntityType != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
         output.WriteRawTag(16);
-        output.WriteEnum((int) Entity);
+        output.WriteEnum((int) EntityType);
       }
       if (fromLocation_ != null) {
         output.WriteRawTag(26);
@@ -278,21 +278,21 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(34);
         output.WriteMessage(ToLocation);
       }
-      if (Timer != 0D) {
-        output.WriteRawTag(41);
-        output.WriteDouble(Timer);
-      }
-      if (EventId.Length != 0) {
-        output.WriteRawTag(50);
-        output.WriteString(EventId);
-      }
       if (direction_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(42);
         output.WriteMessage(Direction);
       }
-      if (GameTime != 0D) {
+      if (LastUpdate != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(LastUpdate);
+      }
+      if (EventId.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(EventId);
+      }
+      if (TTL != 0D) {
         output.WriteRawTag(65);
-        output.WriteDouble(GameTime);
+        output.WriteDouble(TTL);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -308,9 +308,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(10);
         output.WriteString(EntityId);
       }
-      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
+      if (EntityType != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
         output.WriteRawTag(16);
-        output.WriteEnum((int) Entity);
+        output.WriteEnum((int) EntityType);
       }
       if (fromLocation_ != null) {
         output.WriteRawTag(26);
@@ -320,21 +320,21 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(34);
         output.WriteMessage(ToLocation);
       }
-      if (Timer != 0D) {
-        output.WriteRawTag(41);
-        output.WriteDouble(Timer);
-      }
-      if (EventId.Length != 0) {
-        output.WriteRawTag(50);
-        output.WriteString(EventId);
-      }
       if (direction_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(42);
         output.WriteMessage(Direction);
       }
-      if (GameTime != 0D) {
+      if (LastUpdate != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(LastUpdate);
+      }
+      if (EventId.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(EventId);
+      }
+      if (TTL != 0D) {
         output.WriteRawTag(65);
-        output.WriteDouble(GameTime);
+        output.WriteDouble(TTL);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -349,8 +349,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (EntityId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EntityId);
       }
-      if (Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Entity);
+      if (EntityType != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) EntityType);
       }
       if (fromLocation_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(FromLocation);
@@ -358,16 +358,16 @@ namespace ClassLibrary.Messages.Protobuf {
       if (toLocation_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(ToLocation);
       }
-      if (Timer != 0D) {
+      if (direction_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Direction);
+      }
+      if (LastUpdate != 0D) {
         size += 1 + 8;
       }
       if (EventId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EventId);
       }
-      if (direction_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Direction);
-      }
-      if (GameTime != 0D) {
+      if (TTL != 0D) {
         size += 1 + 8;
       }
       if (_unknownFields != null) {
@@ -385,8 +385,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other.EntityId.Length != 0) {
         EntityId = other.EntityId;
       }
-      if (other.Entity != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
-        Entity = other.Entity;
+      if (other.EntityType != global::ClassLibrary.Messages.Protobuf.EntityType.Player) {
+        EntityType = other.EntityType;
       }
       if (other.fromLocation_ != null) {
         if (fromLocation_ == null) {
@@ -400,20 +400,20 @@ namespace ClassLibrary.Messages.Protobuf {
         }
         ToLocation.MergeFrom(other.ToLocation);
       }
-      if (other.Timer != 0D) {
-        Timer = other.Timer;
-      }
-      if (other.EventId.Length != 0) {
-        EventId = other.EventId;
-      }
       if (other.direction_ != null) {
         if (direction_ == null) {
           Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
         }
         Direction.MergeFrom(other.Direction);
       }
-      if (other.GameTime != 0D) {
-        GameTime = other.GameTime;
+      if (other.LastUpdate != 0D) {
+        LastUpdate = other.LastUpdate;
+      }
+      if (other.EventId.Length != 0) {
+        EventId = other.EventId;
+      }
+      if (other.TTL != 0D) {
+        TTL = other.TTL;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -435,7 +435,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 16: {
-            Entity = (global::ClassLibrary.Messages.Protobuf.EntityType) input.ReadEnum();
+            EntityType = (global::ClassLibrary.Messages.Protobuf.EntityType) input.ReadEnum();
             break;
           }
           case 26: {
@@ -452,23 +452,23 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(ToLocation);
             break;
           }
-          case 41: {
-            Timer = input.ReadDouble();
-            break;
-          }
-          case 50: {
-            EventId = input.ReadString();
-            break;
-          }
-          case 58: {
+          case 42: {
             if (direction_ == null) {
               Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
             }
             input.ReadMessage(Direction);
             break;
           }
+          case 49: {
+            LastUpdate = input.ReadDouble();
+            break;
+          }
+          case 58: {
+            EventId = input.ReadString();
+            break;
+          }
           case 65: {
-            GameTime = input.ReadDouble();
+            TTL = input.ReadDouble();
             break;
           }
         }
@@ -491,7 +491,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 16: {
-            Entity = (global::ClassLibrary.Messages.Protobuf.EntityType) input.ReadEnum();
+            EntityType = (global::ClassLibrary.Messages.Protobuf.EntityType) input.ReadEnum();
             break;
           }
           case 26: {
@@ -508,23 +508,23 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(ToLocation);
             break;
           }
-          case 41: {
-            Timer = input.ReadDouble();
-            break;
-          }
-          case 50: {
-            EventId = input.ReadString();
-            break;
-          }
-          case 58: {
+          case 42: {
             if (direction_ == null) {
               Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
             }
             input.ReadMessage(Direction);
             break;
           }
+          case 49: {
+            LastUpdate = input.ReadDouble();
+            break;
+          }
+          case 58: {
+            EventId = input.ReadString();
+            break;
+          }
           case 65: {
-            GameTime = input.ReadDouble();
+            TTL = input.ReadDouble();
             break;
           }
         }

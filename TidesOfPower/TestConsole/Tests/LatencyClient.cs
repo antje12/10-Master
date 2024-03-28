@@ -47,8 +47,8 @@ public class LatencyClient
 
         _msg = new Input()
         {
-            PlayerId = _testId.ToString(),
-            PlayerLocation = new Coordinates() {X = _index * 1000, Y = _index * 1000},
+            AgentId = _testId.ToString(),
+            AgentLocation = new Coordinates() {X = _index * 1000, Y = _index * 1000},
             GameTime = 0.0166667, // monogame = 60 updates a second
             EventId = Guid.NewGuid().ToString(),
             Source = Source.Player
@@ -70,7 +70,7 @@ public class LatencyClient
 
     void ProcessMessage(string key, LocalState value)
     {
-        if (value.Sync != SyncType.Full)
+        if (value.Sync != Sync.Full)
             return;
 
         _sw.Stop();
@@ -93,7 +93,7 @@ public class LatencyClient
             return;
         }
 
-        _msg.PlayerLocation = value.Avatars
+        _msg.AgentLocation = value.Avatars
             .First(x => x.Id == _testId.ToString()).Location;
 
         _counter += 1;

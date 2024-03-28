@@ -11,7 +11,9 @@ message Coordinates {
 
 message Avatar {
   string Id = 1;
+  
   ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
+  
   string Name = 3;
   int32 WalkingSpeed = 4;
   int32 LifePool = 5;
@@ -20,8 +22,10 @@ message Avatar {
 
 message Projectile {
   string Id = 1;
+  
   ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
   ClassLibrary.Messages.Protobuf.Coordinates Direction = 3;
+  
   double LastUpdate = 4;
-  double TimeToLive = 5;
+  double TTL = 5;
 }

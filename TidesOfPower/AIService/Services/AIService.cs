@@ -56,7 +56,6 @@ public class AIService : BackgroundService, IConsumerService
 
     private void Process(AiAgent agent)
     {
-        Console.WriteLine("AIService process");
         var targets = _redisBroker.GetEntities(agent.Location.X, agent.Location.Y)
             .OfType<ClassLibrary.Classes.Domain.Player>()
             .Where(x => x.Id.ToString() != agent.Id);
@@ -68,15 +67,16 @@ public class AIService : BackgroundService, IConsumerService
         
         var output = new Input()
         {
-            PlayerId = agent.Id,
-            PlayerLocation = new Coordinates()
+            AgentId = agent.Id,
+            AgentLocation = new Coordinates()
             {
                 X = agent.Location.X,
                 Y = agent.Location.Y
             },
             GameTime = deltaTime,
             EventId = Guid.NewGuid().ToString(),
-            Source = Source.Ai
+            Source = Source.Ai,
+            LastUpdate = to
         };
 
         // ToDo: handle obstacles
@@ -98,6 +98,6 @@ public class AIService : BackgroundService, IConsumerService
         if (start.Y < nextStep.Y)
             output.KeyInput.Add(GameKey.Down);
 
-        _producer.Produce(_outputTopic, output.PlayerId, output);
+        _producer.Produce(_outputTopic, output.AgentId, output);
     }
 }

@@ -62,10 +62,10 @@ public class Player : Agent
         else if (keyInput.Contains(GameKey.Down))
             _anims.Update(gameTime, GameKey.Down);
 
-        var input = new Input()
+        var msgOut = new Input()
         {
-            PlayerId = Id.ToString(),
-            PlayerLocation = new Coordinates()
+            AgentId = Id.ToString(),
+            AgentLocation = new Coordinates()
             {
                 X = Position.X,
                 Y = Position.Y
@@ -79,23 +79,23 @@ public class Player : Agent
             EventId = Guid.NewGuid().ToString(),
             Source = Source.Player
         };
-        input.KeyInput.AddRange(keyInput);
+        msgOut.KeyInput.AddRange(keyInput);
         
-        var newLocation = _lastLocation.X != input.PlayerLocation.X || _lastLocation.Y != input.PlayerLocation.Y;
+        var newLocation = _lastLocation.X != msgOut.AgentLocation.X || _lastLocation.Y != msgOut.AgentLocation.Y;
         var newInput = !_lastKeyInput.OrderBy(x => x).SequenceEqual(keyInput.OrderBy(x => x));
         if (!newLocation && !newInput) return;
         
         var timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        _game.EventTimes.Add(input.EventId, timeStamp);
+        _game.EventTimes.Add(msgOut.EventId, timeStamp);
         string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-        Console.WriteLine($"Send {input.EventId} at {timestampWithMs}");
-        _producer.Produce(_game.OutputTopic, Id.ToString(), input);
-        _lastLocation = input.PlayerLocation;
-        _lastKeyInput = input.KeyInput.ToList();
+        Console.WriteLine($"Send {msgOut.EventId} at {timestampWithMs}");
+        _producer.Produce(_game.OutputTopic, Id.ToString(), msgOut);
+        _lastLocation = msgOut.AgentLocation;
+        _lastKeyInput = msgOut.KeyInput.ToList();
         
         Console.WriteLine($"Mouse: {_mousePosition.X}:{_mousePosition.Y}");
 
-        LocalMovement(keyInput, input.GameTime);
+        LocalMovement(keyInput, msgOut.GameTime);
     }
 
     private void LocalMovement(List<GameKey> keyInput, double gameTime)

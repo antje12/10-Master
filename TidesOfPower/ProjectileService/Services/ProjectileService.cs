@@ -56,18 +56,18 @@ public class ProjectileService : BackgroundService, IConsumerService
         var output = new CollisionCheck()
         {
             EntityId = projectile.Id,
-            Entity = EntityType.Bullet,
+            EntityType = EntityType.Bullet,
             FromLocation = new Coordinates()
             {
                 X = projectile.Location.X,
                 Y = projectile.Location.Y
             },
-            Timer = projectile.TimeToLive,
+            TTL = projectile.TTL,
             Direction = projectile.Direction,
-            GameTime = projectile.LastUpdate
+            LastUpdate = projectile.LastUpdate
         };
 
-        var from = (long) output.GameTime;
+        var from = (long) output.LastUpdate;
         var to = DateTime.UtcNow.Ticks;
         var difference = TimeSpan.FromTicks(to - from);
         var deltaTime = difference.TotalSeconds;
@@ -76,13 +76,13 @@ public class ProjectileService : BackgroundService, IConsumerService
             projectile.Direction.Y, deltaTime,
             out var time, out var toX, out var toY);
 
-        output.Timer -= time;
+        output.TTL -= time;
         output.ToLocation = new Coordinates()
         {
             X = toX,
             Y = toY
         };
-        output.GameTime = to;
+        output.LastUpdate = to;
         _producer.Produce(_outputTopic, output.EntityId, output);
     }
 }

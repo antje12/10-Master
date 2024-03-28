@@ -68,29 +68,31 @@ public class InputService : BackgroundService, IConsumerService
 
     private void Move(string key, Input value)
     {
-        ClassLibrary.GameLogic.Move.Avatar(value.PlayerLocation.X, value.PlayerLocation.Y, value.KeyInput.ToList(),
+        ClassLibrary.GameLogic.Move.Avatar(value.AgentLocation.X, value.AgentLocation.Y, value.KeyInput.ToList(),
             value.GameTime,
             out float toX, out float toY);
 
-        var output = new CollisionCheck()
+        var msgOut = new CollisionCheck()
         {
-            EntityId = value.PlayerId,
-            Entity = value.Source == Source.Ai ? EntityType.Ai : EntityType.Player,
-            EventId = value.EventId,
-            FromLocation = value.PlayerLocation,
+            EntityId = value.AgentId,
+            EntityType = value.Source == Source.Ai ? EntityType.Ai : EntityType.Player,
+            
+            FromLocation = value.AgentLocation,
             ToLocation = new()
             {
                 X = toX,
                 Y = toY
-            }
+            },
+            LastUpdate = value.LastUpdate,
+            EventId = value.EventId
         };
-        _producerC.Produce(_outputTopicC, key, output);
+        _producerC.Produce(_outputTopicC, key, msgOut);
     }
 
     private void Attack(string key, Input value)
     {
-        var x = value.MouseLocation.X - value.PlayerLocation.X;
-        var y = value.MouseLocation.Y - value.PlayerLocation.Y;
+        var x = value.MouseLocation.X - value.AgentLocation.X;
+        var y = value.MouseLocation.Y - value.AgentLocation.Y;
         var length = (float) Math.Sqrt(x * x + y * y);
         if (length > 0)
         {
@@ -98,27 +100,27 @@ public class InputService : BackgroundService, IConsumerService
             y /= length;
         }
 
-        var spawnX = value.PlayerLocation.X + x * (25 + 5 + 1);
-        var spawnY = value.PlayerLocation.Y + y * (25 + 5 + 1);
+        var spawnX = value.AgentLocation.X + x * (25 + 5 + 1);
+        var spawnY = value.AgentLocation.Y + y * (25 + 5 + 1);
 
-        var output = new WorldChange()
+        var msgOut = new WorldChange()
         {
             EntityId = Guid.NewGuid().ToString(),
-            Change = ChangeType.SpawnBullet,
+            Change = Change.SpawnBullet,
             Location = new Coordinates() {X = spawnX, Y = spawnY},
             Direction = new Coordinates() {X = x, Y = y}
         };
-        _producerW.Produce(_outputTopicW, key, output);
+        _producerW.Produce(_outputTopicW, key, msgOut);
     }
 
     private void Interact(string key, Input value)
     {
-        var output = new WorldChange()
+        var msgOut = new WorldChange()
         {
             EntityId = Guid.NewGuid().ToString(),
+            Change = Change.SpawnAi,
             Location = value.MouseLocation,
-            Change = ChangeType.SpawnAi
         };
-        _producerW.Produce(_outputTopicW, key, output);
+        _producerW.Produce(_outputTopicW, key, msgOut);
     }
 }

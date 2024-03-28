@@ -29,18 +29,18 @@ namespace ClassLibrary.Messages.Protobuf {
             "dmF0YXISCgoCSWQYASABKAkSPQoITG9jYXRpb24YAiABKAsyKy5DbGFzc0xp",
             "YnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXMSDAoETmFtZRgD",
             "IAEoCRIUCgxXYWxraW5nU3BlZWQYBCABKAUSEAoITGlmZVBvb2wYBSABKAUS",
-            "EQoJSW52ZW50b3J5GAYgASgFIr8BCgpQcm9qZWN0aWxlEgoKAklkGAEgASgJ",
+            "EQoJSW52ZW50b3J5GAYgASgFIrgBCgpQcm9qZWN0aWxlEgoKAklkGAEgASgJ",
             "Ej0KCExvY2F0aW9uGAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
             "b3RvYnVmLkNvb3JkaW5hdGVzEj4KCURpcmVjdGlvbhgDIAEoCzIrLkNsYXNz",
             "TGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxISCgpMYXN0",
-            "VXBkYXRlGAQgASgBEhIKClRpbWVUb0xpdmUYBSABKAFCIaoCHkNsYXNzTGli",
-            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1ZmIGcHJvdG8z"));
+            "VXBkYXRlGAQgASgBEgsKA1RUTBgFIAEoAUIhqgIeQ2xhc3NMaWJyYXJ5Lk1l",
+            "c3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Coordinates), global::ClassLibrary.Messages.Protobuf.Coordinates.Parser, new[]{ "X", "Y" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Avatar), global::ClassLibrary.Messages.Protobuf.Avatar.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile), global::ClassLibrary.Messages.Protobuf.Projectile.Parser, new[]{ "Id", "Location", "Direction", "LastUpdate", "TimeToLive" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile), global::ClassLibrary.Messages.Protobuf.Projectile.Parser, new[]{ "Id", "Location", "Direction", "LastUpdate", "TTL" }, null, null, null, null)
           }));
     }
     #endregion
@@ -697,7 +697,7 @@ namespace ClassLibrary.Messages.Protobuf {
       location_ = other.location_ != null ? other.location_.Clone() : null;
       direction_ = other.direction_ != null ? other.direction_.Clone() : null;
       lastUpdate_ = other.lastUpdate_;
-      timeToLive_ = other.timeToLive_;
+      tTL_ = other.tTL_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -755,15 +755,15 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "TimeToLive" field.</summary>
-    public const int TimeToLiveFieldNumber = 5;
-    private double timeToLive_;
+    /// <summary>Field number for the "TTL" field.</summary>
+    public const int TTLFieldNumber = 5;
+    private double tTL_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double TimeToLive {
-      get { return timeToLive_; }
+    public double TTL {
+      get { return tTL_; }
       set {
-        timeToLive_ = value;
+        tTL_ = value;
       }
     }
 
@@ -786,7 +786,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (!object.Equals(Location, other.Location)) return false;
       if (!object.Equals(Direction, other.Direction)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(LastUpdate, other.LastUpdate)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TimeToLive, other.TimeToLive)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TTL, other.TTL)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -798,7 +798,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (location_ != null) hash ^= Location.GetHashCode();
       if (direction_ != null) hash ^= Direction.GetHashCode();
       if (LastUpdate != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(LastUpdate);
-      if (TimeToLive != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TimeToLive);
+      if (TTL != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TTL);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -833,9 +833,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(33);
         output.WriteDouble(LastUpdate);
       }
-      if (TimeToLive != 0D) {
+      if (TTL != 0D) {
         output.WriteRawTag(41);
-        output.WriteDouble(TimeToLive);
+        output.WriteDouble(TTL);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -863,9 +863,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(33);
         output.WriteDouble(LastUpdate);
       }
-      if (TimeToLive != 0D) {
+      if (TTL != 0D) {
         output.WriteRawTag(41);
-        output.WriteDouble(TimeToLive);
+        output.WriteDouble(TTL);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -889,7 +889,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (LastUpdate != 0D) {
         size += 1 + 8;
       }
-      if (TimeToLive != 0D) {
+      if (TTL != 0D) {
         size += 1 + 8;
       }
       if (_unknownFields != null) {
@@ -922,8 +922,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other.LastUpdate != 0D) {
         LastUpdate = other.LastUpdate;
       }
-      if (other.TimeToLive != 0D) {
-        TimeToLive = other.TimeToLive;
+      if (other.TTL != 0D) {
+        TTL = other.TTL;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -963,7 +963,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 41: {
-            TimeToLive = input.ReadDouble();
+            TTL = input.ReadDouble();
             break;
           }
         }
@@ -1004,7 +1004,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 41: {
-            TimeToLive = input.ReadDouble();
+            TTL = input.ReadDouble();
             break;
           }
         }

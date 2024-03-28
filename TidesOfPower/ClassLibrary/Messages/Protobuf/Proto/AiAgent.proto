@@ -8,6 +8,8 @@ option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
 message AiAgent {
   string Id = 1;
+  
   ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
+  
   double LastUpdate = 3;
 }

@@ -72,8 +72,8 @@ public class CollisionService : BackgroundService, IConsumerService
                 continue;
 
             var w1 =
-                value.Entity is EntityType.Bullet ? 5 :
-                value.Entity is EntityType.Player or EntityType.Ai ? 25 : 0;
+                value.EntityType is EntityType.Bullet ? 5 :
+                value.EntityType is EntityType.Player or EntityType.Ai ? 25 : 0;
             var w2 =
                 entity is ClassLibrary.Classes.Domain.Projectile ? 5 :
                 entity is ClassLibrary.Classes.Domain.Avatar ? 25 : 0;
@@ -81,7 +81,7 @@ public class CollisionService : BackgroundService, IConsumerService
                     value.ToLocation.X, value.ToLocation.Y, w1,
                     entity.Location.X, entity.Location.Y, w2))
             {
-                switch (value.Entity)
+                switch (value.EntityType)
                 {
                     case EntityType.Player:
                     case EntityType.Ai:
@@ -96,20 +96,20 @@ public class CollisionService : BackgroundService, IConsumerService
             }
         }
 
-        var output = new WorldChange()
+        var msgOut = new WorldChange()
         {
             EntityId = value.EntityId,
             Location = value.ToLocation
         };
-        switch (value.Entity)
+        switch (value.EntityType)
         {
             case EntityType.Player:
                 if (blocked)
                 {
                     return;
                 }
-                output.Change = ChangeType.MovePlayer;
-                output.EventId = value.EventId;
+                msgOut.Change = Change.MovePlayer;
+                msgOut.EventId = value.EventId;
                 break;
             case EntityType.Ai:
                 if (blocked)
@@ -117,28 +117,28 @@ public class CollisionService : BackgroundService, IConsumerService
                     KeepAiAlive(key, value);
                     return;
                 }
-                output.Change = ChangeType.MoveAi;
-                output.EventId = value.EventId;
+                msgOut.Change = Change.MoveAi;
+                msgOut.LastUpdate = value.LastUpdate;
                 break;
             case EntityType.Bullet:
-                output.Change = ChangeType.MoveBullet;
-                output.Timer = value.Timer;
-                output.Direction = value.Direction;
-                output.GameTime = value.GameTime;
+                msgOut.Change = Change.MoveBullet;
+                msgOut.Direction = value.Direction;
+                msgOut.LastUpdate = value.LastUpdate;
+                msgOut.TTL = value.TTL;
                 break;
         }
-        _producerW.Produce(_outputTopicW, key, output);
+        _producerW.Produce(_outputTopicW, key, msgOut);
     }
 
     private void KeepAiAlive(string key, CollisionCheck value)
     {
-        var output = new ClassLibrary.Messages.Protobuf.AiAgent()
+        var msgOut = new ClassLibrary.Messages.Protobuf.AiAgent()
         {
             Id = value.EntityId,
             Location = value.FromLocation,
-            LastUpdate = value.GameTime,
+            LastUpdate = value.LastUpdate
         };
-        _producerA.Produce(_outputTopicA, key, output);
+        _producerA.Produce(_outputTopicA, key, msgOut);
     }
 
     private void DamageAvatar(Entity entity)
@@ -146,7 +146,7 @@ public class CollisionService : BackgroundService, IConsumerService
         var output = new WorldChange()
         {
             EntityId = entity.Id.ToString(),
-            Change = ChangeType.DamageAgent,
+            Change = Change.DamageAgent,
             Location = new Coordinates()
             {
                 X = entity.Location.X,

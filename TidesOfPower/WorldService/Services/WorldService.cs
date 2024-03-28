@@ -8,10 +8,8 @@ using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.Redis;
 using AiAgent = ClassLibrary.Messages.Protobuf.AiAgent;
 using Avatar = ClassLibrary.Messages.Protobuf.Avatar;
-using ChangeType = ClassLibrary.Messages.Protobuf.ChangeType;
 using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
 using Projectile = ClassLibrary.Messages.Protobuf.Projectile;
-using SyncType = ClassLibrary.Messages.Protobuf.SyncType;
 
 namespace WorldService.Services;
 
@@ -74,22 +72,22 @@ public class WorldService : BackgroundService, IConsumerService
     {
         switch (value.Change)
         {
-            case ChangeType.MovePlayer:
+            case Change.MovePlayer:
                 MovePlayer(key, value);
                 break;
-            case ChangeType.MoveAi:
+            case Change.MoveAi:
                 MoveAi(key, value);
                 break;
-            case ChangeType.MoveBullet:
+            case Change.MoveBullet:
                 MoveBullet(key, value);
                 break;
-            case ChangeType.SpawnAi:
+            case Change.SpawnAi:
                 SpawnAi(key, value);
                 break;
-            case ChangeType.SpawnBullet:
+            case Change.SpawnBullet:
                 SpawnBullet(key, value);
                 break;
-            case ChangeType.DamageAgent:
+            case Change.DamageAgent:
                 DamageAgent(key, value);
                 break;
         }
@@ -118,15 +116,15 @@ public class WorldService : BackgroundService, IConsumerService
         var players = entities
             .OfType<ClassLibrary.Classes.Domain.Player>()
             .Where(x => x.Id.ToString() != player.Id).ToList();
-        DeltaSync(players, [player], [], SyncType.Delta);
+        DeltaSync(players, [player], [], Sync.Delta);
     }
 
     private void FullSync(string key, WorldChange value, List<Entity> entities)
     {
-        var output = new LocalState()
+        var msgOut = new LocalState()
         {
-            PlayerId = value.EntityId,
-            Sync = SyncType.Full,
+            AgentId = value.EntityId,
+            Sync = Sync.Full,
             EventId = value.EventId
         };
         var avatars = entities.OfType<ClassLibrary.Classes.Domain.Avatar>()
@@ -149,48 +147,48 @@ public class WorldService : BackgroundService, IConsumerService
                     Y = p.Location.Y,
                 }
             }).ToList();
-        output.Avatars.AddRange(avatars);
-        output.Projectiles.AddRange(projectiles);
-        _producerLS.Produce($"{_outputTopicLS}_{output.PlayerId}", key, output);
+        msgOut.Avatars.AddRange(avatars);
+        msgOut.Projectiles.AddRange(projectiles);
+        _producerLS.Produce($"{_outputTopicLS}_{msgOut.AgentId}", key, msgOut);
     }
 
     private void DeltaSync(
         List<Player> players,
         List<Avatar> avatars,
         List<Projectile> projectiles,
-        SyncType sync)
+        Sync sync)
     {
         foreach (var player in players)
         {
-            var output = new LocalState()
+            var msgOut = new LocalState()
             {
-                PlayerId = player.Id.ToString(),
+                AgentId = player.Id.ToString(),
                 Sync = sync
             };
-            output.Avatars.AddRange(avatars);
-            output.Projectiles.AddRange(projectiles);
-            _producerLS.Produce($"{_outputTopicLS}_{output.PlayerId}", output.PlayerId, output);
+            msgOut.Avatars.AddRange(avatars);
+            msgOut.Projectiles.AddRange(projectiles);
+            _producerLS.Produce($"{_outputTopicLS}_{msgOut.AgentId}", msgOut.AgentId, msgOut);
         }
     }
 
     private void MoveAi(string key, WorldChange value)
     {
-        var agent = new AiAgent()
+        var msgOut = new AiAgent()
         {
             Id = value.EntityId,
             Location = value.Location,
-            LastUpdate = value.GameTime
+            LastUpdate = value.LastUpdate
         };
         _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.AiAgent()
         {
-            Id = Guid.Parse(agent.Id),
+            Id = Guid.Parse(msgOut.Id),
             Location = new ClassLibrary.Classes.Data.Coordinates()
             {
-                X = agent.Location.X,
-                Y = agent.Location.Y
+                X = msgOut.Location.X,
+                Y = msgOut.Location.Y
             }
         });
-        _producerA.Produce(_outputTopicA, agent.Id, agent);
+        _producerA.Produce(_outputTopicA, msgOut.Id, msgOut);
 
         var avatar = new Avatar()
         {
@@ -199,77 +197,77 @@ public class WorldService : BackgroundService, IConsumerService
         };
         
         var players = _redisBroker
-            .GetEntities(agent.Location.X, agent.Location.Y)
+            .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<ClassLibrary.Classes.Domain.Player>().ToList();
-        DeltaSync(players, [avatar], [], SyncType.Delta);
+        DeltaSync(players, [avatar], [], Sync.Delta);
     }
 
     private void MoveBullet(string key, WorldChange value)
     {
-        var bullet = new Projectile()
+        var msgOut = new Projectile()
         {
             Id = value.EntityId,
             Location = value.Location,
             Direction = value.Direction,
-            LastUpdate = value.GameTime,
-            TimeToLive = value.Timer
+            LastUpdate = value.LastUpdate,
+            TTL = value.TTL
         };
 
-        SyncType sync;
-        if (bullet.TimeToLive <= 0)
+        Sync sync;
+        if (msgOut.TTL <= 0)
         {
-            sync = SyncType.Delete;
+            sync = Sync.Delete;
         }
         else
         {
-            _producerP.Produce(_outputTopicP, bullet.Id, bullet);
-            sync = SyncType.Delta;
+            _producerP.Produce(_outputTopicP, msgOut.Id, msgOut);
+            sync = Sync.Delta;
         }
 
         var players = _redisBroker
-            .GetEntities(bullet.Location.X, bullet.Location.Y)
+            .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<ClassLibrary.Classes.Domain.Player>().ToList();
-        DeltaSync(players, [], [bullet], sync);
+        DeltaSync(players, [], [msgOut], sync);
     }
 
     private void SpawnAi(string key, WorldChange value)
     {
-        var agent = new AiAgent()
+        var msgOut = new AiAgent()
         {
             Id = Guid.NewGuid().ToString(),
             Location = new Coordinates() {X = value.Location.X, Y = value.Location.Y},
             LastUpdate = DateTime.UtcNow.Ticks,
         };
-        _producerA.Produce(_outputTopicA, agent.Id, agent);
+        _producerA.Produce(_outputTopicA, msgOut.Id, msgOut);
         
         var avatar = new Avatar()
         {
-            Id = agent.Id,
-            Location = agent.Location
+            Id = msgOut.Id,
+            Location = msgOut.Location
         };
         
         var players = _redisBroker
-            .GetEntities(agent.Location.X, agent.Location.Y)
+            .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<ClassLibrary.Classes.Domain.Player>().ToList();
-        DeltaSync(players, [avatar], [], SyncType.Delta);
+        DeltaSync(players, [avatar], [], Sync.Delta);
     }
 
     private void SpawnBullet(string key, WorldChange value)
     {
-        var bullet = new Projectile()
+        var msgOut = new Projectile()
         {
             Id = value.EntityId,
             Location = value.Location,
             Direction = value.Direction,
             LastUpdate = DateTime.UtcNow.Ticks,
-            TimeToLive = 100
+            TTL = 100
         };
-        _producerP.Produce(_outputTopicP, bullet.Id, bullet);
+        _producerP.Produce(_outputTopicP, msgOut.Id, msgOut);
         
         var players = _redisBroker
-            .GetEntities(bullet.Location.X, bullet.Location.Y)
+            .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<ClassLibrary.Classes.Domain.Player>().ToList();
-        DeltaSync(players, [], [bullet], SyncType.Delta);
+        DeltaSync(players, [], [msgOut], Sync.Delta);
     }
 
     private void DamageAgent(string key, WorldChange value)
@@ -286,6 +284,6 @@ public class WorldService : BackgroundService, IConsumerService
         var players = _redisBroker
             .GetEntities(value.Location.X, value.Location.Y)
             .OfType<ClassLibrary.Classes.Domain.Player>().ToList();
-        DeltaSync(players, [player], [], SyncType.Delete);
+        DeltaSync(players, [player], [], Sync.Delete);
     }
 }

@@ -25,21 +25,22 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgtJbnB1dC5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVm",
-            "Gg1DbGFzc2VzLnByb3RvIrgCCgVJbnB1dBIQCghQbGF5ZXJJZBgBIAEoCRJD",
-            "Cg5QbGF5ZXJMb2NhdGlvbhgCIAEoCzIrLkNsYXNzTGlicmFyeS5NZXNzYWdl",
-            "cy5Qcm90b2J1Zi5Db29yZGluYXRlcxJCCg1Nb3VzZUxvY2F0aW9uGAMgASgL",
-            "MisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVz",
-            "EjkKCEtleUlucHV0GAQgAygOMicuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
-            "b3RvYnVmLkdhbWVLZXkSEAoIR2FtZVRpbWUYBSABKAESDwoHRXZlbnRJZBgG",
-            "IAEoCRI2CgZTb3VyY2UYByABKA4yJi5DbGFzc0xpYnJhcnkuTWVzc2FnZXMu",
-            "UHJvdG9idWYuU291cmNlKkoKB0dhbWVLZXkSBgoCVXAQABIICgREb3duEAES",
-            "CAoETGVmdBACEgkKBVJpZ2h0EAMSCgoGQXR0YWNrEAQSDAoISW50ZXJhY3QQ",
-            "BSocCgZTb3VyY2USCgoGUGxheWVyEAASBgoCQWkQAUIhqgIeQ2xhc3NMaWJy",
-            "YXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
+            "Gg1DbGFzc2VzLnByb3RvIsoCCgVJbnB1dBIPCgdBZ2VudElkGAEgASgJEkIK",
+            "DUFnZW50TG9jYXRpb24YAiABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMu",
+            "UHJvdG9idWYuQ29vcmRpbmF0ZXMSQgoNTW91c2VMb2NhdGlvbhgDIAEoCzIr",
+            "LkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxI5",
+            "CghLZXlJbnB1dBgEIAMoDjInLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90",
+            "b2J1Zi5HYW1lS2V5EhAKCEdhbWVUaW1lGAUgASgBEhIKCkxhc3RVcGRhdGUY",
+            "BiABKAESDwoHRXZlbnRJZBgHIAEoCRI2CgZTb3VyY2UYCCABKA4yJi5DbGFz",
+            "c0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuU291cmNlKkoKB0dhbWVLZXkS",
+            "BgoCVXAQABIICgREb3duEAESCAoETGVmdBACEgkKBVJpZ2h0EAMSCgoGQXR0",
+            "YWNrEAQSDAoISW50ZXJhY3QQBSocCgZTb3VyY2USCgoGUGxheWVyEAASBgoC",
+            "QWkQAUIhqgIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.GameKey), typeof(global::ClassLibrary.Messages.Protobuf.Source), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Input), global::ClassLibrary.Messages.Protobuf.Input.Parser, new[]{ "PlayerId", "PlayerLocation", "MouseLocation", "KeyInput", "GameTime", "EventId", "Source" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Input), global::ClassLibrary.Messages.Protobuf.Input.Parser, new[]{ "AgentId", "AgentLocation", "MouseLocation", "KeyInput", "GameTime", "LastUpdate", "EventId", "Source" }, null, null, null, null)
           }));
     }
     #endregion
@@ -98,11 +99,12 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public Input(Input other) : this() {
-      playerId_ = other.playerId_;
-      playerLocation_ = other.playerLocation_ != null ? other.playerLocation_.Clone() : null;
+      agentId_ = other.agentId_;
+      agentLocation_ = other.agentLocation_ != null ? other.agentLocation_.Clone() : null;
       mouseLocation_ = other.mouseLocation_ != null ? other.mouseLocation_.Clone() : null;
       keyInput_ = other.keyInput_.Clone();
       gameTime_ = other.gameTime_;
+      lastUpdate_ = other.lastUpdate_;
       eventId_ = other.eventId_;
       source_ = other.source_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -114,30 +116,30 @@ namespace ClassLibrary.Messages.Protobuf {
       return new Input(this);
     }
 
-    /// <summary>Field number for the "PlayerId" field.</summary>
-    public const int PlayerIdFieldNumber = 1;
-    private string playerId_ = "";
+    /// <summary>Field number for the "AgentId" field.</summary>
+    public const int AgentIdFieldNumber = 1;
+    private string agentId_ = "";
     /// <summary>
     /// UUIDs are represented as strings in proto
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string PlayerId {
-      get { return playerId_; }
+    public string AgentId {
+      get { return agentId_; }
       set {
-        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        agentId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
-    /// <summary>Field number for the "PlayerLocation" field.</summary>
-    public const int PlayerLocationFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates playerLocation_;
+    /// <summary>Field number for the "AgentLocation" field.</summary>
+    public const int AgentLocationFieldNumber = 2;
+    private global::ClassLibrary.Messages.Protobuf.Coordinates agentLocation_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates PlayerLocation {
-      get { return playerLocation_; }
+    public global::ClassLibrary.Messages.Protobuf.Coordinates AgentLocation {
+      get { return agentLocation_; }
       set {
-        playerLocation_ = value;
+        agentLocation_ = value;
       }
     }
 
@@ -176,8 +178,20 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "LastUpdate" field.</summary>
+    public const int LastUpdateFieldNumber = 6;
+    private double lastUpdate_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double LastUpdate {
+      get { return lastUpdate_; }
+      set {
+        lastUpdate_ = value;
+      }
+    }
+
     /// <summary>Field number for the "EventId" field.</summary>
-    public const int EventIdFieldNumber = 6;
+    public const int EventIdFieldNumber = 7;
     private string eventId_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -189,7 +203,7 @@ namespace ClassLibrary.Messages.Protobuf {
     }
 
     /// <summary>Field number for the "Source" field.</summary>
-    public const int SourceFieldNumber = 7;
+    public const int SourceFieldNumber = 8;
     private global::ClassLibrary.Messages.Protobuf.Source source_ = global::ClassLibrary.Messages.Protobuf.Source.Player;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -215,11 +229,12 @@ namespace ClassLibrary.Messages.Protobuf {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (PlayerId != other.PlayerId) return false;
-      if (!object.Equals(PlayerLocation, other.PlayerLocation)) return false;
+      if (AgentId != other.AgentId) return false;
+      if (!object.Equals(AgentLocation, other.AgentLocation)) return false;
       if (!object.Equals(MouseLocation, other.MouseLocation)) return false;
       if(!keyInput_.Equals(other.keyInput_)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(GameTime, other.GameTime)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(LastUpdate, other.LastUpdate)) return false;
       if (EventId != other.EventId) return false;
       if (Source != other.Source) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -229,11 +244,12 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
-      if (playerLocation_ != null) hash ^= PlayerLocation.GetHashCode();
+      if (AgentId.Length != 0) hash ^= AgentId.GetHashCode();
+      if (agentLocation_ != null) hash ^= AgentLocation.GetHashCode();
       if (mouseLocation_ != null) hash ^= MouseLocation.GetHashCode();
       hash ^= keyInput_.GetHashCode();
       if (GameTime != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(GameTime);
+      if (LastUpdate != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(LastUpdate);
       if (EventId.Length != 0) hash ^= EventId.GetHashCode();
       if (Source != global::ClassLibrary.Messages.Protobuf.Source.Player) hash ^= Source.GetHashCode();
       if (_unknownFields != null) {
@@ -254,13 +270,13 @@ namespace ClassLibrary.Messages.Protobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (PlayerId.Length != 0) {
+      if (AgentId.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(PlayerId);
+        output.WriteString(AgentId);
       }
-      if (playerLocation_ != null) {
+      if (agentLocation_ != null) {
         output.WriteRawTag(18);
-        output.WriteMessage(PlayerLocation);
+        output.WriteMessage(AgentLocation);
       }
       if (mouseLocation_ != null) {
         output.WriteRawTag(26);
@@ -271,12 +287,16 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(41);
         output.WriteDouble(GameTime);
       }
+      if (LastUpdate != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(LastUpdate);
+      }
       if (EventId.Length != 0) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(58);
         output.WriteString(EventId);
       }
       if (Source != global::ClassLibrary.Messages.Protobuf.Source.Player) {
-        output.WriteRawTag(56);
+        output.WriteRawTag(64);
         output.WriteEnum((int) Source);
       }
       if (_unknownFields != null) {
@@ -289,13 +309,13 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (PlayerId.Length != 0) {
+      if (AgentId.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(PlayerId);
+        output.WriteString(AgentId);
       }
-      if (playerLocation_ != null) {
+      if (agentLocation_ != null) {
         output.WriteRawTag(18);
-        output.WriteMessage(PlayerLocation);
+        output.WriteMessage(AgentLocation);
       }
       if (mouseLocation_ != null) {
         output.WriteRawTag(26);
@@ -306,12 +326,16 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(41);
         output.WriteDouble(GameTime);
       }
+      if (LastUpdate != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(LastUpdate);
+      }
       if (EventId.Length != 0) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(58);
         output.WriteString(EventId);
       }
       if (Source != global::ClassLibrary.Messages.Protobuf.Source.Player) {
-        output.WriteRawTag(56);
+        output.WriteRawTag(64);
         output.WriteEnum((int) Source);
       }
       if (_unknownFields != null) {
@@ -324,17 +348,20 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (PlayerId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      if (AgentId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AgentId);
       }
-      if (playerLocation_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PlayerLocation);
+      if (agentLocation_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(AgentLocation);
       }
       if (mouseLocation_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(MouseLocation);
       }
       size += keyInput_.CalculateSize(_repeated_keyInput_codec);
       if (GameTime != 0D) {
+        size += 1 + 8;
+      }
+      if (LastUpdate != 0D) {
         size += 1 + 8;
       }
       if (EventId.Length != 0) {
@@ -355,14 +382,14 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other == null) {
         return;
       }
-      if (other.PlayerId.Length != 0) {
-        PlayerId = other.PlayerId;
+      if (other.AgentId.Length != 0) {
+        AgentId = other.AgentId;
       }
-      if (other.playerLocation_ != null) {
-        if (playerLocation_ == null) {
-          PlayerLocation = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+      if (other.agentLocation_ != null) {
+        if (agentLocation_ == null) {
+          AgentLocation = new global::ClassLibrary.Messages.Protobuf.Coordinates();
         }
-        PlayerLocation.MergeFrom(other.PlayerLocation);
+        AgentLocation.MergeFrom(other.AgentLocation);
       }
       if (other.mouseLocation_ != null) {
         if (mouseLocation_ == null) {
@@ -373,6 +400,9 @@ namespace ClassLibrary.Messages.Protobuf {
       keyInput_.Add(other.keyInput_);
       if (other.GameTime != 0D) {
         GameTime = other.GameTime;
+      }
+      if (other.LastUpdate != 0D) {
+        LastUpdate = other.LastUpdate;
       }
       if (other.EventId.Length != 0) {
         EventId = other.EventId;
@@ -396,14 +426,14 @@ namespace ClassLibrary.Messages.Protobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            PlayerId = input.ReadString();
+            AgentId = input.ReadString();
             break;
           }
           case 18: {
-            if (playerLocation_ == null) {
-              PlayerLocation = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+            if (agentLocation_ == null) {
+              AgentLocation = new global::ClassLibrary.Messages.Protobuf.Coordinates();
             }
-            input.ReadMessage(PlayerLocation);
+            input.ReadMessage(AgentLocation);
             break;
           }
           case 26: {
@@ -422,11 +452,15 @@ namespace ClassLibrary.Messages.Protobuf {
             GameTime = input.ReadDouble();
             break;
           }
-          case 50: {
+          case 49: {
+            LastUpdate = input.ReadDouble();
+            break;
+          }
+          case 58: {
             EventId = input.ReadString();
             break;
           }
-          case 56: {
+          case 64: {
             Source = (global::ClassLibrary.Messages.Protobuf.Source) input.ReadEnum();
             break;
           }
@@ -446,14 +480,14 @@ namespace ClassLibrary.Messages.Protobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            PlayerId = input.ReadString();
+            AgentId = input.ReadString();
             break;
           }
           case 18: {
-            if (playerLocation_ == null) {
-              PlayerLocation = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+            if (agentLocation_ == null) {
+              AgentLocation = new global::ClassLibrary.Messages.Protobuf.Coordinates();
             }
-            input.ReadMessage(PlayerLocation);
+            input.ReadMessage(AgentLocation);
             break;
           }
           case 26: {
@@ -472,11 +506,15 @@ namespace ClassLibrary.Messages.Protobuf {
             GameTime = input.ReadDouble();
             break;
           }
-          case 50: {
+          case 49: {
+            LastUpdate = input.ReadDouble();
+            break;
+          }
+          case 58: {
             EventId = input.ReadString();
             break;
           }
-          case 56: {
+          case 64: {
             Source = (global::ClassLibrary.Messages.Protobuf.Source) input.ReadEnum();
             break;
           }

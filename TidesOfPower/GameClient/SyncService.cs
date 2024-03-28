@@ -10,7 +10,6 @@ using GameClient.Core;
 using GameClient.Entities;
 using Microsoft.Xna.Framework;
 using Projectile = GameClient.Entities.Projectile;
-using SyncType = ClassLibrary.Messages.Protobuf.SyncType;
 
 namespace GameClient;
 
@@ -49,14 +48,14 @@ public class SyncService : BackgroundService
     {
         switch (value.Sync)
         {
-            case SyncType.Full:
+            case Sync.Full:
                 GetLatency(value);
                 FullSync(value);
                 break;
-            case SyncType.Delta:
+            case Sync.Delta:
                 DeltaSync(value);
                 break;
-            case SyncType.Delete:
+            case Sync.Delete:
                 DeleteSync(value);
                 break;
         }

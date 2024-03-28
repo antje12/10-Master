@@ -8,19 +8,21 @@ option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
 message WorldChange {
   string EntityId = 1; // UUIDs are represented as strings in Protobuf
-  ChangeType Change = 2;
+  Change Change = 2;
+  
   ClassLibrary.Messages.Protobuf.Coordinates Location = 3;
   ClassLibrary.Messages.Protobuf.Coordinates Direction = 4;
-  double Timer = 5;
+  
+  double LastUpdate = 5;
   string EventId = 6;
-  double GameTime = 7;
+  double TTL = 7;
 }
 
-enum ChangeType {
+enum Change {
   MovePlayer = 0;
-  SpawnBullet = 1;
+  MoveAi = 1;
   MoveBullet = 2;
-  DamageAgent = 3;
-  SpawnAi = 4;
-  MoveAi = 5;
+  SpawnAi = 3;
+  SpawnBullet = 4;
+  DamageAgent = 5;
 }

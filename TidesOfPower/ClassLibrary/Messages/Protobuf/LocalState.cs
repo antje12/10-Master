@@ -25,18 +25,18 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChBMb2NhbFN0YXRlLnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
-            "dG9idWYaDUNsYXNzZXMucHJvdG8i3AEKCkxvY2FsU3RhdGUSDwoHQWdlbnRJ",
+            "dG9idWYaDUNsYXNzZXMucHJvdG8i2gEKCkxvY2FsU3RhdGUSDwoHQWdlbnRJ",
             "ZBgBIAEoCRIyCgRTeW5jGAIgASgOMiQuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
-            "LlByb3RvYnVmLlN5bmMSNwoHQXZhdGFycxgDIAMoCzImLkNsYXNzTGlicmFy",
-            "eS5NZXNzYWdlcy5Qcm90b2J1Zi5BdmF0YXISPwoLUHJvamVjdGlsZXMYBCAD",
-            "KAsyKi5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuUHJvamVjdGls",
-            "ZRIPCgdFdmVudElkGAUgASgJKicKBFN5bmMSCAoERnVsbBAAEgkKBURlbHRh",
-            "EAESCgoGRGVsZXRlEAJCIaoCHkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90",
-            "b2J1ZmIGcHJvdG8z"));
+            "LlByb3RvYnVmLlN5bmMSNQoGQWdlbnRzGAMgAygLMiUuQ2xhc3NMaWJyYXJ5",
+            "Lk1lc3NhZ2VzLlByb3RvYnVmLkFnZW50Ej8KC1Byb2plY3RpbGVzGAQgAygL",
+            "MiouQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlByb2plY3RpbGUS",
+            "DwoHRXZlbnRJZBgFIAEoCSonCgRTeW5jEggKBEZ1bGwQABIJCgVEZWx0YRAB",
+            "EgoKBkRlbGV0ZRACQiGqAh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
+            "dWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.Sync), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState), global::ClassLibrary.Messages.Protobuf.LocalState.Parser, new[]{ "AgentId", "Sync", "Avatars", "Projectiles", "EventId" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState), global::ClassLibrary.Messages.Protobuf.LocalState.Parser, new[]{ "AgentId", "Sync", "Agents", "Projectiles", "EventId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -89,7 +89,7 @@ namespace ClassLibrary.Messages.Protobuf {
     public LocalState(LocalState other) : this() {
       agentId_ = other.agentId_;
       sync_ = other.sync_;
-      avatars_ = other.avatars_.Clone();
+      agents_ = other.agents_.Clone();
       projectiles_ = other.projectiles_.Clone();
       eventId_ = other.eventId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -128,15 +128,15 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "Avatars" field.</summary>
-    public const int AvatarsFieldNumber = 3;
-    private static readonly pb::FieldCodec<global::ClassLibrary.Messages.Protobuf.Avatar> _repeated_avatars_codec
-        = pb::FieldCodec.ForMessage(26, global::ClassLibrary.Messages.Protobuf.Avatar.Parser);
-    private readonly pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Avatar> avatars_ = new pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Avatar>();
+    /// <summary>Field number for the "Agents" field.</summary>
+    public const int AgentsFieldNumber = 3;
+    private static readonly pb::FieldCodec<global::ClassLibrary.Messages.Protobuf.Agent> _repeated_agents_codec
+        = pb::FieldCodec.ForMessage(26, global::ClassLibrary.Messages.Protobuf.Agent.Parser);
+    private readonly pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Agent> agents_ = new pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Agent>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Avatar> Avatars {
-      get { return avatars_; }
+    public pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Agent> Agents {
+      get { return agents_; }
     }
 
     /// <summary>Field number for the "Projectiles" field.</summary>
@@ -179,7 +179,7 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (AgentId != other.AgentId) return false;
       if (Sync != other.Sync) return false;
-      if(!avatars_.Equals(other.avatars_)) return false;
+      if(!agents_.Equals(other.agents_)) return false;
       if(!projectiles_.Equals(other.projectiles_)) return false;
       if (EventId != other.EventId) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -191,7 +191,7 @@ namespace ClassLibrary.Messages.Protobuf {
       int hash = 1;
       if (AgentId.Length != 0) hash ^= AgentId.GetHashCode();
       if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) hash ^= Sync.GetHashCode();
-      hash ^= avatars_.GetHashCode();
+      hash ^= agents_.GetHashCode();
       hash ^= projectiles_.GetHashCode();
       if (EventId.Length != 0) hash ^= EventId.GetHashCode();
       if (_unknownFields != null) {
@@ -220,7 +220,7 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(16);
         output.WriteEnum((int) Sync);
       }
-      avatars_.WriteTo(output, _repeated_avatars_codec);
+      agents_.WriteTo(output, _repeated_agents_codec);
       projectiles_.WriteTo(output, _repeated_projectiles_codec);
       if (EventId.Length != 0) {
         output.WriteRawTag(42);
@@ -244,7 +244,7 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(16);
         output.WriteEnum((int) Sync);
       }
-      avatars_.WriteTo(ref output, _repeated_avatars_codec);
+      agents_.WriteTo(ref output, _repeated_agents_codec);
       projectiles_.WriteTo(ref output, _repeated_projectiles_codec);
       if (EventId.Length != 0) {
         output.WriteRawTag(42);
@@ -266,7 +266,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Sync);
       }
-      size += avatars_.CalculateSize(_repeated_avatars_codec);
+      size += agents_.CalculateSize(_repeated_agents_codec);
       size += projectiles_.CalculateSize(_repeated_projectiles_codec);
       if (EventId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EventId);
@@ -289,7 +289,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other.Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
         Sync = other.Sync;
       }
-      avatars_.Add(other.avatars_);
+      agents_.Add(other.agents_);
       projectiles_.Add(other.projectiles_);
       if (other.EventId.Length != 0) {
         EventId = other.EventId;
@@ -318,7 +318,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 26: {
-            avatars_.AddEntriesFrom(input, _repeated_avatars_codec);
+            agents_.AddEntriesFrom(input, _repeated_agents_codec);
             break;
           }
           case 34: {
@@ -353,7 +353,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 26: {
-            avatars_.AddEntriesFrom(ref input, _repeated_avatars_codec);
+            agents_.AddEntriesFrom(ref input, _repeated_agents_codec);
             break;
           }
           case 34: {

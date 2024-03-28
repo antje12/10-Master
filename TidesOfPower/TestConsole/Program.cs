@@ -275,7 +275,7 @@ async Task TestKafkaProto()
             return;
         }
 
-        message.AgentLocation = value.Avatars
+        message.AgentLocation = value.Agents
             .First(x => x.Id == testId.ToString()).Location;
 
         count += 1;

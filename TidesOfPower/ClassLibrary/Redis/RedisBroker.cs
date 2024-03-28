@@ -56,8 +56,8 @@ public class RedisBroker
 
     public Profile? GetProfile(Guid profileId)
     {
-        var profile = _json.Get($"profile:{profileId}");
-        return JsonConvert.DeserializeObject<Profile>(profile.ToString());
+        var result = _json.Get($"profile:{profileId}");
+        return result.IsNull ? null : JsonConvert.DeserializeObject<Profile>(result.ToString());
     }
     
     public Profile? GetProfiles(Guid profileId)

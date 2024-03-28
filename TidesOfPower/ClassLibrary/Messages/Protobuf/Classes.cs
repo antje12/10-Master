@@ -25,21 +25,21 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg1DbGFzc2VzLnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
-            "dWYiIwoLQ29vcmRpbmF0ZXMSCQoBWBgBIAEoAhIJCgFZGAIgASgCIpwBCgZB",
-            "dmF0YXISCgoCSWQYASABKAkSPQoITG9jYXRpb24YAiABKAsyKy5DbGFzc0xp",
-            "YnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXMSDAoETmFtZRgD",
-            "IAEoCRIUCgxXYWxraW5nU3BlZWQYBCABKAUSEAoITGlmZVBvb2wYBSABKAUS",
-            "EQoJSW52ZW50b3J5GAYgASgFIrgBCgpQcm9qZWN0aWxlEgoKAklkGAEgASgJ",
-            "Ej0KCExvY2F0aW9uGAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
-            "b3RvYnVmLkNvb3JkaW5hdGVzEj4KCURpcmVjdGlvbhgDIAEoCzIrLkNsYXNz",
-            "TGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxISCgpMYXN0",
-            "VXBkYXRlGAQgASgBEgsKA1RUTBgFIAEoAUIhqgIeQ2xhc3NMaWJyYXJ5Lk1l",
-            "c3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
+            "dWYiIwoLQ29vcmRpbmF0ZXMSCQoBWBgBIAEoAhIJCgFZGAIgASgCIpsBCgVB",
+            "Z2VudBIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEoCzIrLkNsYXNzTGli",
+            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxIMCgROYW1lGAMg",
+            "ASgJEhQKDFdhbGtpbmdTcGVlZBgEIAEoBRIQCghMaWZlUG9vbBgFIAEoBRIR",
+            "CglJbnZlbnRvcnkYBiABKAUiuAEKClByb2plY3RpbGUSCgoCSWQYASABKAkS",
+            "PQoITG9jYXRpb24YAiABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
+            "dG9idWYuQ29vcmRpbmF0ZXMSPgoJRGlyZWN0aW9uGAMgASgLMisuQ2xhc3NM",
+            "aWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEhIKCkxhc3RV",
+            "cGRhdGUYBCABKAESCwoDVFRMGAUgASgBQiGqAh5DbGFzc0xpYnJhcnkuTWVz",
+            "c2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Coordinates), global::ClassLibrary.Messages.Protobuf.Coordinates.Parser, new[]{ "X", "Y" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Avatar), global::ClassLibrary.Messages.Protobuf.Avatar.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Agent), global::ClassLibrary.Messages.Protobuf.Agent.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile), global::ClassLibrary.Messages.Protobuf.Projectile.Parser, new[]{ "Id", "Location", "Direction", "LastUpdate", "TTL" }, null, null, null, null)
           }));
     }
@@ -275,16 +275,16 @@ namespace ClassLibrary.Messages.Protobuf {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Avatar : pb::IMessage<Avatar>
+  public sealed partial class Agent : pb::IMessage<Agent>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<Avatar> _parser = new pb::MessageParser<Avatar>(() => new Avatar());
+    private static readonly pb::MessageParser<Agent> _parser = new pb::MessageParser<Agent>(() => new Agent());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Avatar> Parser { get { return _parser; } }
+    public static pb::MessageParser<Agent> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -300,7 +300,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Avatar() {
+    public Agent() {
       OnConstruction();
     }
 
@@ -308,7 +308,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Avatar(Avatar other) : this() {
+    public Agent(Agent other) : this() {
       id_ = other.id_;
       location_ = other.location_ != null ? other.location_.Clone() : null;
       name_ = other.name_;
@@ -320,8 +320,8 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Avatar Clone() {
-      return new Avatar(this);
+    public Agent Clone() {
+      return new Agent(this);
     }
 
     /// <summary>Field number for the "Id" field.</summary>
@@ -399,12 +399,12 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as Avatar);
+      return Equals(other as Agent);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Avatar other) {
+    public bool Equals(Agent other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -542,7 +542,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Avatar other) {
+    public void MergeFrom(Agent other) {
       if (other == null) {
         return;
       }

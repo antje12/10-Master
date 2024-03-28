@@ -9,7 +9,7 @@ message Coordinates {
   float Y = 2;
 }
 
-message Avatar {
+message Agent {
   string Id = 1;
   
   ClassLibrary.Messages.Protobuf.Coordinates Location = 2;

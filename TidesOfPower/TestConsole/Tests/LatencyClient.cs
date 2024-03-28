@@ -93,7 +93,7 @@ public class LatencyClient
             return;
         }
 
-        _msg.AgentLocation = value.Avatars
+        _msg.AgentLocation = value.Agents
             .First(x => x.Id == _testId.ToString()).Location;
 
         _counter += 1;

@@ -9,6 +9,7 @@ using ClassLibrary.Interfaces;
 using GameClient.Core;
 using GameClient.Entities;
 using Microsoft.Xna.Framework;
+using Agent = GameClient.Entities.Agent;
 using Projectile = GameClient.Entities.Projectile;
 
 namespace GameClient;
@@ -77,7 +78,7 @@ public class SyncService : BackgroundService
     {
         DeltaSync(value);
 
-        var onlineAvatarIds = value.Avatars.Select(x => x.Id).ToList();
+        var onlineAvatarIds = value.Agents.Select(x => x.Id).ToList();
         //var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
 
         if (_game.LocalState.OfType<Agent>().Any(x => !onlineAvatarIds.Contains(x.Id.ToString()))) //||
@@ -95,7 +96,7 @@ public class SyncService : BackgroundService
 
     private void DeltaSync(LocalState value)
     {
-        foreach (var avatar in value.Avatars)
+        foreach (var avatar in value.Agents)
         {
             if (avatar.Id == _game.Player.Id.ToString())
             {
@@ -156,7 +157,7 @@ public class SyncService : BackgroundService
 
     private void DeleteSync(LocalState value)
     {
-        var deleteAvatarIds = value.Avatars.Select(x => x.Id).ToList();
+        var deleteAvatarIds = value.Agents.Select(x => x.Id).ToList();
         var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
 
         if (_game.LocalState.OfType<Agent>().Any(x => deleteAvatarIds.Contains(x.Id.ToString())) ||

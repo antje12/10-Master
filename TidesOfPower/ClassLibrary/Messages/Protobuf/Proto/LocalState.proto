@@ -10,7 +10,7 @@ message LocalState {
   string AgentId = 1; // UUIDs are represented as strings in proto
   Sync Sync = 2;
   
-  repeated ClassLibrary.Messages.Protobuf.Avatar Avatars = 3;
+  repeated ClassLibrary.Messages.Protobuf.Agent Agents = 3;
   repeated ClassLibrary.Messages.Protobuf.Projectile Projectiles = 4;
   
   string EventId = 5;

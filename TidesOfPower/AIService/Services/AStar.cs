@@ -16,7 +16,10 @@ public class AStar
             visited[node.Key()] = node;
 
             if (node.Equals(target))
-                return node.Path().Last();
+            {
+                var path = node.Path();
+                return path[path.Count - 2];
+            }
 
             var children = ExpandNode(node, target, obstacles, fringe, visited);
             foreach (var child in children)

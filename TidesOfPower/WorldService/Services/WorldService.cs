@@ -113,9 +113,19 @@ public class WorldService : BackgroundService, IConsumerService
         });
 
         var entities = _redisBroker.GetEntities(player.Location.X, player.Location.Y);
+        FullSync(key, value, entities);
+
+        var players = entities
+            .OfType<ClassLibrary.Classes.Domain.Player>()
+            .Where(x => x.Id.ToString() != player.Id).ToList();
+        DeltaSync(players, [player], [], SyncType.Delta);
+    }
+
+    private void FullSync(string key, WorldChange value, List<Entity> entities)
+    {
         var output = new LocalState()
         {
-            PlayerId = player.Id,
+            PlayerId = value.EntityId,
             Sync = SyncType.Full,
             EventId = value.EventId
         };
@@ -142,11 +152,6 @@ public class WorldService : BackgroundService, IConsumerService
         output.Avatars.AddRange(avatars);
         output.Projectiles.AddRange(projectiles);
         _producerLS.Produce($"{_outputTopicLS}_{output.PlayerId}", key, output);
-
-        var players = entities
-            .OfType<ClassLibrary.Classes.Domain.Player>()
-            .Where(x => x.Id.ToString() != output.PlayerId).ToList();
-        DeltaSync(players, [player], [], SyncType.Delta);
     }
 
     private void DeltaSync(

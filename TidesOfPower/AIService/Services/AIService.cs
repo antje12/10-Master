@@ -56,10 +56,16 @@ public class AIService : BackgroundService, IConsumerService
 
     private void Process(AiAgent agent)
     {
+        Console.WriteLine("AIService process");
         var targets = _redisBroker.GetEntities(agent.Location.X, agent.Location.Y)
             .OfType<ClassLibrary.Classes.Domain.Player>()
             .Where(x => x.Id.ToString() != agent.Id);
 
+        var from = (long) agent.LastUpdate;
+        var to = DateTime.UtcNow.Ticks;
+        var difference = TimeSpan.FromTicks(to - from);
+        var deltaTime = difference.TotalSeconds;
+        
         var output = new Input()
         {
             PlayerId = agent.Id,
@@ -68,6 +74,7 @@ public class AIService : BackgroundService, IConsumerService
                 X = agent.Location.X,
                 Y = agent.Location.Y
             },
+            GameTime = deltaTime,
             EventId = Guid.NewGuid().ToString(),
             Source = Source.Ai
         };

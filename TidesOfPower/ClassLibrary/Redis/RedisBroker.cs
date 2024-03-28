@@ -93,6 +93,12 @@ public class RedisBroker
     {
         _json.Del($@"entity:{entity.Id}");
     }
+
+    public Entity Get(Guid id)
+    {
+        var result = _json.Get($@"entity:{id}");
+        return JsonConvert.DeserializeObject<Entity>(result.ToString());
+    }
     
     public List<Entity> GetEntities()
     {

@@ -34,10 +34,10 @@ public class KafkaAdministrator : IAdministrator
                         Name = topic, 
                         ReplicationFactor = 1, 
                         NumPartitions = 10,
-                        Configs = new Dictionary<string, string>
-                        {
-                            { "retention.ms", $"{TimeSpan.FromMinutes(1).TotalMilliseconds}" }
-                        }
+                        //Configs = new Dictionary<string, string>
+                        //{
+                        //    { "retention.ms", $"{TimeSpan.FromMinutes(1).TotalMilliseconds}" }
+                        //}
                     }
                 });
             }

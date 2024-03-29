@@ -1,9 +1,13 @@
-﻿namespace AIService.Services;
+﻿using ClassLibrary.GameLogic;
+
+namespace AIService.Services;
 
 public class AStar
 {
-    public static Node Search(Node agent, Node target, HashSet<string> obstacles)
+    public static Node Search(Node agent, Node target, List<Node> obstacles)
     {
+        obstacles.Remove(target);
+        
         var fringe = new Dictionary<string, Node>();
         var visited = new Dictionary<string, Node>();
 
@@ -15,9 +19,11 @@ public class AStar
             fringe.Remove(node.Key());
             visited[node.Key()] = node;
 
-            if (node.Equals(target))
+            if (NodeCollision(node, target))
             {
                 var path = node.Path();
+                if (path.Count == 1)
+                    return SurvivalSearch(agent, obstacles);
                 return path[path.Count - 2];
             }
 
@@ -33,7 +39,7 @@ public class AStar
     }
 
     private static List<Node> ExpandNode(
-        Node node, Node target, HashSet<string> obstacles,
+        Node node, Node target, List<Node> obstacles,
         Dictionary<string, Node> fringe, Dictionary<string, Node> visited)
     {
         var successors = new List<Node>();
@@ -58,27 +64,37 @@ public class AStar
         return successors;
     }
 
-    private static List<Node> GetChildren(Node node, HashSet<string> obstacles)
+    private static List<Node> GetChildren(Node node, List<Node> obstacles)
     {
         var children = new List<Node>();
-        AddIfValid(new Node(node.X, node.Y + 1), children, obstacles); // go north
-        AddIfValid(new Node(node.X, node.Y - 1), children, obstacles); // go south
-        AddIfValid(new Node(node.X + 1, node.Y), children, obstacles); // go east
-        AddIfValid(new Node(node.X - 1, node.Y), children, obstacles); // go west
-        AddIfValid(new Node(node.X + 1, node.Y + 1), children, obstacles); // go north east
-        AddIfValid(new Node(node.X - 1, node.Y + 1), children, obstacles); // go north west
-        AddIfValid(new Node(node.X + 1, node.Y - 1), children, obstacles); // go south east
-        AddIfValid(new Node(node.X - 1, node.Y - 1), children, obstacles); // go south west
+        AddIfValid(new Node(node.X, node.Y + 10), children, obstacles); // go north
+        AddIfValid(new Node(node.X, node.Y - 10), children, obstacles); // go south
+        AddIfValid(new Node(node.X + 10, node.Y), children, obstacles); // go east
+        AddIfValid(new Node(node.X - 10, node.Y), children, obstacles); // go west
+        AddIfValid(new Node(node.X + 10, node.Y + 10), children, obstacles); // go north east
+        AddIfValid(new Node(node.X - 10, node.Y + 10), children, obstacles); // go north west
+        AddIfValid(new Node(node.X + 10, node.Y - 10), children, obstacles); // go south east
+        AddIfValid(new Node(node.X - 10, node.Y - 10), children, obstacles); // go south west
         return children;
     }
 
-    private static void AddIfValid(Node child, List<Node> children, HashSet<string> obstacles)
+    private static void AddIfValid(Node child, List<Node> children, List<Node> obstacles)
     {
-        // ToDo: handle obstacles (circle collision)
-        if (!obstacles.Contains(child.Key()))
+        foreach (var obstacle in obstacles)
         {
-            children.Add(child);
+            if (NodeCollision(child, obstacle))
+            {
+                return;
+            }
         }
+        children.Add(child);
+    }
+
+    private static bool NodeCollision(Node n1, Node n2)
+    {
+        return Collide.Circle(
+            n1.X, n1.Y, 25,
+            n2.X, n2.Y, 25);
     }
 
     private static Node GetCheapestNode(Dictionary<string, Node> fringe)
@@ -113,7 +129,7 @@ public class AStar
         return Math.Sqrt(dx * dx + dy * dy);
     }
 
-    public static Node SurvivalSearch(Node node, HashSet<string> obstacles)
+    public static Node SurvivalSearch(Node node, List<Node> obstacles)
     {
         // Random fallback logic
         var children = GetChildren(node, obstacles);

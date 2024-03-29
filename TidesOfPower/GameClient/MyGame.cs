@@ -109,7 +109,7 @@ public class MyGame : Game
             {
                 var sprite = LocalState[i];
                 sprite.Update(gameTime);
-                if (IsOffScreen(sprite) || sprite is Entities.Projectile {TimeToLive: <= 0})
+                if (sprite is Enemy or Entities.Projectile && IsOffScreen(sprite) || sprite is Entities.Projectile {TimeToLive: <= 0})
                 {
                     LocalState.RemoveAt(i);
                 }

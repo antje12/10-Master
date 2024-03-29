@@ -56,9 +56,14 @@ public class AIService : BackgroundService, IConsumerService
 
     private void Process(AiAgent agent)
     {
-        var targets = _redisBroker.GetEntities(agent.Location.X, agent.Location.Y)
-            .OfType<ClassLibrary.Classes.Domain.Player>()
-            .Where(x => x.Id.ToString() != agent.Id);
+        if (_redisBroker.Get(Guid.Parse(agent.Id)) == null)
+            return;
+        
+        var entities = _redisBroker
+            .GetEntities(agent.Location.X, agent.Location.Y)
+            .Where(x => x.Id.ToString() != agent.Id).ToList();
+        var targets = entities
+            .OfType<ClassLibrary.Classes.Domain.Player>();
 
         var from = (long) agent.LastUpdate;
         var to = DateTime.UtcNow.Ticks;
@@ -80,7 +85,7 @@ public class AIService : BackgroundService, IConsumerService
         };
 
         // ToDo: handle obstacles
-        var obstacles = new HashSet<string>();
+        var obstacles = entities.Select(x => new Node((int) x.Location.X, (int) x.Location.Y)).ToList();
         var start = new Node((int) agent.Location.X, (int) agent.Location.Y);
         var target = targets.MinBy(t =>
             AStar.H((int) agent.Location.X, (int) agent.Location.Y, (int) t.Location.X, (int) t.Location.Y));
@@ -97,7 +102,7 @@ public class AIService : BackgroundService, IConsumerService
             output.KeyInput.Add(GameKey.Up);
         if (start.Y < nextStep.Y)
             output.KeyInput.Add(GameKey.Down);
-
+        
         _producer.Produce(_outputTopic, output.AgentId, output);
     }
 }

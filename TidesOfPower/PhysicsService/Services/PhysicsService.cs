@@ -1,6 +1,6 @@
 ﻿using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.Messages.Avro;
+using ClassLibrary.Messages.Protobuf;
 using PhysicsService.Interfaces;
 
 namespace PhysicsService.Services;
@@ -12,8 +12,8 @@ public class PhysicsService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopic = KafkaTopic.Collision;
 
     private KafkaAdministrator _admin;
-    private KafkaProducer<LocalState> _producer;
-    private KafkaConsumer<Input> _consumer;
+    private ProtoKafkaProducer<LocalState> _producer;
+    private ProtoKafkaConsumer<Input> _consumer;
 
     public bool IsRunning { get; private set; }
 
@@ -22,8 +22,8 @@ public class PhysicsService : BackgroundService, IConsumerService
         Console.WriteLine($"PhysicsService created");
         var config = new KafkaConfig(_groupId);
         _admin = new KafkaAdministrator(config);
-        _producer = new KafkaProducer<LocalState>(config);
-        _consumer = new KafkaConsumer<Input>(config);
+        _producer = new ProtoKafkaProducer<LocalState>(config);
+        _consumer = new ProtoKafkaConsumer<Input>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -34,7 +34,7 @@ public class PhysicsService : BackgroundService, IConsumerService
         Console.WriteLine($"PhysicsService started");
 
         await _admin.CreateTopic(_inputTopic);
-        IConsumer<Input>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<Input>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_inputTopic, action, ct);
 
         IsRunning = false;
@@ -45,7 +45,7 @@ public class PhysicsService : BackgroundService, IConsumerService
     {
         var output = new LocalState()
         {
-            PlayerId = value.PlayerId
+            AgentId = value.AgentId
         };
 
         _producer.Produce(_outputTopic, key, output);

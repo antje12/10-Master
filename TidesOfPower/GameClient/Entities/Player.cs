@@ -22,6 +22,7 @@ public class Player : Agent
     private Coordinates _lastLocation;
     private List<GameKey> _lastKeyInput;
     private bool attacking;
+    private bool interacting;
 
     public int Latency = 0;
     public int Health = 100;
@@ -131,6 +132,17 @@ public class Player : Agent
     private List<GameKey> GetKeyInput()
     {
         var keyInput = new List<GameKey>();
+        
+        var kState = Keyboard.GetState();
+        if (kState.IsKeyDown(Keys.W))
+            keyInput.Add(GameKey.Up);
+        if (kState.IsKeyDown(Keys.S))
+            keyInput.Add(GameKey.Down);
+        if (kState.IsKeyDown(Keys.A))
+            keyInput.Add(GameKey.Left);
+        if (kState.IsKeyDown(Keys.D))
+            keyInput.Add(GameKey.Right);
+        
         var mState = Mouse.GetState();
         if (mState.LeftButton == ButtonState.Pressed &&
             _game.IsActive && _camera.MouseOnScreen(mState.Position.ToVector2()))
@@ -147,18 +159,22 @@ public class Player : Agent
             attacking = false;
             _lastKeyInput.Remove(GameKey.Attack);
         }
-
-        var kState = Keyboard.GetState();
-        if (kState.IsKeyDown(Keys.W))
-            keyInput.Add(GameKey.Up);
-        if (kState.IsKeyDown(Keys.S))
-            keyInput.Add(GameKey.Down);
-        if (kState.IsKeyDown(Keys.A))
-            keyInput.Add(GameKey.Left);
-        if (kState.IsKeyDown(Keys.D))
-            keyInput.Add(GameKey.Right);
-        if (kState.IsKeyDown(Keys.Space))
-            keyInput.Add(GameKey.Interact);
+        
+        if (kState.IsKeyDown(Keys.Space) &&
+            _game.IsActive && _camera.MouseOnScreen(mState.Position.ToVector2()))
+        {
+            if (!interacting)
+            {
+                interacting = true;
+                keyInput.Add(GameKey.Interact);
+            }
+        }
+        else
+        {
+            interacting = false;
+            _lastKeyInput.Remove(GameKey.Interact);
+        }
+        
         return keyInput;
     }
 

@@ -20,7 +20,8 @@ public class Entity
 
 public enum TheEntityType
 {
-    Avatar,
+    Player,
+    AiAgent,
     Projectile,
     Ship,
     Treasure

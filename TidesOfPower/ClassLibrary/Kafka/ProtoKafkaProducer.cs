@@ -29,7 +29,7 @@ public class ProtoKafkaProducer<T> : IProtoProducer<T> where T : class, IMessage
     public void Produce(string topic, string key, T value)
     {
         //Console.WriteLine(
-        //    $"{key} = {value.Get(0)} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+        //    $"{topic}: {key} = {value} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
         var result = _producer.ProduceAsync(topic, new Message<string, T>
         {
             Key = key,

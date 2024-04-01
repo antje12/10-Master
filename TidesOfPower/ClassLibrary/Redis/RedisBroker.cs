@@ -56,8 +56,8 @@ public class RedisBroker
 
     public Profile? GetProfile(Guid profileId)
     {
-        var profile = _json.Get($"profile:{profileId}");
-        return JsonConvert.DeserializeObject<Profile>(profile.ToString());
+        var result = _json.Get($"profile:{profileId}");
+        return result.IsNull ? null : JsonConvert.DeserializeObject<Profile>(result.ToString());
     }
     
     public Profile? GetProfiles(Guid profileId)
@@ -93,6 +93,12 @@ public class RedisBroker
     {
         _json.Del($@"entity:{entity.Id}");
     }
+
+    public Entity? Get(Guid id)
+    {
+        var result = _json.Get($@"entity:{id}");
+        return result.IsNull ? null : JsonConvert.DeserializeObject<Entity>(result.ToString());
+    }
     
     public List<Entity> GetEntities()
     {
@@ -106,8 +112,11 @@ public class RedisBroker
             if (result == null) continue;
             switch (result.Type)
             {
-                case TheEntityType.Avatar:
-                    result = JsonConvert.DeserializeObject<Avatar>(j);
+                case TheEntityType.Player:
+                    result = JsonConvert.DeserializeObject<Player>(j);
+                    break;
+                case TheEntityType.AiAgent:
+                    result = JsonConvert.DeserializeObject<AiAgent>(j);
                     break;
                 case TheEntityType.Projectile:
                     result = JsonConvert.DeserializeObject<Projectile>(j);
@@ -157,8 +166,11 @@ public class RedisBroker
             if (result == null) continue;
             switch (result.Type)
             {
-                case TheEntityType.Avatar:
-                    result = JsonConvert.DeserializeObject<Avatar>(j);
+                case TheEntityType.Player:
+                    result = JsonConvert.DeserializeObject<Player>(j);
+                    break;
+                case TheEntityType.AiAgent:
+                    result = JsonConvert.DeserializeObject<AiAgent>(j);
                     break;
                 case TheEntityType.Projectile:
                     result = JsonConvert.DeserializeObject<Projectile>(j);
@@ -178,7 +190,7 @@ public class RedisBroker
 
     public void UpdateProjectile(Projectile entity)
     {
-        _json.Set($@"entity:{entity.Id}", ".Timer", entity.Timer);
+        _json.Set($@"entity:{entity.Id}", ".TimeToLive", entity.TimeToLive);
         _json.Set($@"entity:{entity.Id}", ".Location.X", entity.Location.X);
         _json.Set($@"entity:{entity.Id}", ".Location.Y", entity.Location.Y);
     }
@@ -243,6 +255,17 @@ public class RedisBroker
         {
             var row = result.GetRow(i);
             Console.WriteLine($"{row["city"]} - {row["count"]}");
+        }
+    }
+
+    public void Clean()
+    {
+        var query = new Query("*").Limit(0, 10000);
+        var results = _ft.Search("idx:entities", query);
+        foreach (var doc in results.Documents)
+        {
+            var key = doc.Id;
+            _json.Del(key);
         }
     }
 }

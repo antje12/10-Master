@@ -2,23 +2,25 @@
 
 package ClassLibrary.Messages.Protobuf;
 
-import "Common.proto";
-import "google/protobuf/timestamp.proto";
+import "Classes.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
 message CollisionCheck {
   string EntityId = 1; // UUIDs are represented as strings in Protobuf
-  EntityType Entity = 2;
+  EntityType EntityType = 2;
+  
   ClassLibrary.Messages.Protobuf.Coordinates FromLocation = 3;
   ClassLibrary.Messages.Protobuf.Coordinates ToLocation = 4;
-  double Timer = 5;
-  string EventId = 6;
-  ClassLibrary.Messages.Protobuf.Coordinates Direction = 7;
-  google.protobuf.Timestamp GameTime = 8;
+  ClassLibrary.Messages.Protobuf.Coordinates Direction = 5;
+  
+  double LastUpdate = 6;
+  string EventId = 7;
+  double TTL = 8;
 }
 
 enum EntityType {
-  Avatar = 0;
-  Projectile = 1;
+  Player = 0;
+  Ai = 1;
+  Bullet = 2;
 }

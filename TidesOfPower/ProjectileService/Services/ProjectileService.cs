@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using ClassLibrary.GameLogic;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Protobuf;
@@ -17,11 +18,12 @@ public class ProjectileService : BackgroundService, IConsumerService
     private ProtoKafkaConsumer<Projectile> _consumer;
 
     public bool IsRunning { get; private set; }
+    private bool localTest = true;
 
     public ProjectileService()
     {
-        Console.WriteLine($"ProjectileService created");
-        var config = new KafkaConfig(_groupId);
+        Console.WriteLine("ProjectileService created");
+        var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
         _producer = new ProtoKafkaProducer<CollisionCheck>(config);
         _consumer = new ProtoKafkaConsumer<Projectile>(config);
@@ -31,55 +33,56 @@ public class ProjectileService : BackgroundService, IConsumerService
     {
         await Task.Yield();
         IsRunning = true;
-        Console.WriteLine($"ProjectileService started");
+        Console.WriteLine("ProjectileService started");
         await _admin.CreateTopic(_inputTopic);
         IProtoConsumer<Projectile>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
-        Console.WriteLine($"ProjectileService stopped");
+        Console.WriteLine("ProjectileService stopped");
     }
 
     private void ProcessMessage(string key, Projectile value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        SendState(value);
+        Process(value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (elapsedTime > 20) Console.WriteLine($"Message processed in {elapsedTime} ms");
+        Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
-    private void SendState(Projectile projectile)
+    private void Process(Projectile projectile)
     {
         var output = new CollisionCheck()
         {
             EntityId = projectile.Id,
-            Entity = EntityType.Projectile,
+            EntityType = EntityType.Bullet,
             FromLocation = new Coordinates()
             {
                 X = projectile.Location.X,
                 Y = projectile.Location.Y
             },
-            ToLocation = new Coordinates()
-            {
-                X = projectile.Location.X,
-                Y = projectile.Location.Y
-            },
-            Timer = projectile.Timer - 1,
+            TTL = projectile.TTL,
             Direction = projectile.Direction,
-            GameTime = projectile.GameTime
+            LastUpdate = projectile.LastUpdate
         };
-        
-        var from = output.GameTime.ToDateTime();
-        var to = DateTime.UtcNow;
-        TimeSpan difference = to - from;
-        
+
+        var from = (long) output.LastUpdate;
+        var to = DateTime.UtcNow.Ticks;
+        var difference = TimeSpan.FromTicks(to - from);
         var deltaTime = difference.TotalSeconds;
-        var speed = 200;
 
-        output.ToLocation.X += projectile.Direction.X * speed * (float) deltaTime;
-        output.ToLocation.Y += projectile.Direction.Y * speed * (float) deltaTime;
+        Move.Projectile(projectile.Location.X, projectile.Location.Y, projectile.Direction.X,
+            projectile.Direction.Y, deltaTime,
+            out var time, out var toX, out var toY);
 
-        _producer.Produce(_outputTopic, output.EntityId.ToString(), output);
+        output.TTL -= time;
+        output.ToLocation = new Coordinates()
+        {
+            X = toX,
+            Y = toY
+        };
+        output.LastUpdate = to;
+        _producer.Produce(_outputTopic, output.EntityId, output);
     }
 }

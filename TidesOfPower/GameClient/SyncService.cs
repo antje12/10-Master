@@ -9,8 +9,8 @@ using ClassLibrary.Interfaces;
 using GameClient.Core;
 using GameClient.Entities;
 using Microsoft.Xna.Framework;
+using Agent = GameClient.Entities.Agent;
 using Projectile = GameClient.Entities.Projectile;
-using SyncType = ClassLibrary.Messages.Protobuf.SyncType;
 
 namespace GameClient;
 
@@ -49,14 +49,14 @@ public class SyncService : BackgroundService
     {
         switch (value.Sync)
         {
-            case SyncType.Full:
+            case Sync.Full:
                 GetLatency(value);
                 FullSync(value);
                 break;
-            case SyncType.Delta:
+            case Sync.Delta:
                 DeltaSync(value);
                 break;
-            case SyncType.Delete:
+            case Sync.Delete:
                 DeleteSync(value);
                 break;
         }
@@ -78,7 +78,7 @@ public class SyncService : BackgroundService
     {
         DeltaSync(value);
 
-        var onlineAvatarIds = value.Avatars.Select(x => x.Id).ToList();
+        var onlineAvatarIds = value.Agents.Select(x => x.Id).ToList();
         //var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
 
         if (_game.LocalState.OfType<Agent>().Any(x => !onlineAvatarIds.Contains(x.Id.ToString()))) //||
@@ -88,18 +88,22 @@ public class SyncService : BackgroundService
             {
                 _game.LocalState.RemoveAll(x => x is Agent y && !onlineAvatarIds.Contains(y.Id.ToString()));
                 //game.LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
-                Console.WriteLine($"LocalState count {_game.LocalState.Count}");
+                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
             }
         }
     }
 
     private void DeltaSync(LocalState value)
     {
-        foreach (var avatar in value.Avatars)
+        foreach (var avatar in value.Agents)
         {
             if (avatar.Id == _game.Player.Id.ToString())
             {
-                _game.Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
+                var xDiff = Math.Abs(_game.Player.Position.X - avatar.Location.X);
+                var yDiff = Math.Abs(_game.Player.Position.Y - avatar.Location.Y);
+                if (xDiff > 50 || yDiff > 50)
+                    _game.Player.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
                 continue;
             }
 
@@ -110,13 +114,21 @@ public class SyncService : BackgroundService
                 {
                     _game.LocalState.Add(
                         new Enemy(Guid.Parse(avatar.Id), new Vector2(avatar.Location.X, avatar.Location.Y),
-                            _game.AvatarTexture));
-                    Console.WriteLine($"LocalState count {_game.LocalState.Count}");
+                            _game.EnemyTexture));
+                    string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                    Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }
             }
             else
             {
-                localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
+                if (localAvatar is Enemy la)
+                {
+                    la.SetPosition(new Vector2(avatar.Location.X, avatar.Location.Y));
+                }
+                else
+                {
+                    localAvatar.Position = new Vector2(avatar.Location.X, avatar.Location.Y);
+                }
             }
         }
 
@@ -130,8 +142,10 @@ public class SyncService : BackgroundService
                     _game.LocalState.Add(
                         new Projectile(Guid.Parse(projectile.Id),
                             new Vector2(projectile.Location.X, projectile.Location.Y),
+                            new Vector2(projectile.Direction.X, projectile.Direction.Y),
                             _game.ProjectileTexture));
-                    Console.WriteLine($"LocalState count {_game.LocalState.Count}");
+                    string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                    Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }
             }
             else
@@ -143,7 +157,7 @@ public class SyncService : BackgroundService
 
     private void DeleteSync(LocalState value)
     {
-        var deleteAvatarIds = value.Avatars.Select(x => x.Id).ToList();
+        var deleteAvatarIds = value.Agents.Select(x => x.Id).ToList();
         var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
 
         if (_game.LocalState.OfType<Agent>().Any(x => deleteAvatarIds.Contains(x.Id.ToString())) ||
@@ -153,7 +167,8 @@ public class SyncService : BackgroundService
             {
                 _game.LocalState.RemoveAll(x => x is Agent y && deleteAvatarIds.Contains(y.Id.ToString()));
                 _game.LocalState.RemoveAll(x => x is Projectile y && deleteProjectileIds.Contains(y.Id.ToString()));
-                Console.WriteLine($"LocalState count {_game.LocalState.Count}");
+                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
             }
         }
 

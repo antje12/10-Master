@@ -1,17 +1,27 @@
 // See https://aka.ms/new-console-template for more information
 
 using System.Diagnostics;
-using ClassLibrary.Classes.Data;
 using ClassLibrary.Classes.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.Messages.Avro;
+using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
+using TestConsole.Tests;
+using Avatar = ClassLibrary.Classes.Domain.Avatar;
+using Coordinates = ClassLibrary.Classes.Data.Coordinates;
+using Input = ClassLibrary.Messages.Avro.Input;
+using LocalState = ClassLibrary.Messages.Avro.LocalState;
 
 Console.WriteLine("Hello, World!");
-MongoDbBroker mongoBroker = new MongoDbBroker(true);
 RedisBroker redisBroker = new RedisBroker(true);
+redisBroker.Clean();
+
+var latency = new Latency();
+await latency.Test();
+return;
+
+MongoDbBroker mongoBroker = new MongoDbBroker(true);
 
 redisBroker.InitEntity();
 var avatar = new Avatar()
@@ -237,8 +247,8 @@ async Task TestKafkaProto()
 
     var message = new ClassLibrary.Messages.Protobuf.Input()
     {
-        PlayerId = testId.ToString(),
-        PlayerLocation = new ClassLibrary.Messages.Protobuf.Coordinates() {X = 0, Y = 0},
+        AgentId = testId.ToString(),
+        AgentLocation = new ClassLibrary.Messages.Protobuf.Coordinates() {X = 0, Y = 0},
         GameTime = 0.5
     };
     message.KeyInput.Add(ClassLibrary.Messages.Protobuf.GameKey.Right);
@@ -265,7 +275,8 @@ async Task TestKafkaProto()
             return;
         }
 
-        message.PlayerLocation = value.Avatars.First().Location;
+        message.AgentLocation = value.Agents
+            .First(x => x.Id == testId.ToString()).Location;
 
         count += 1;
         stopwatch.Restart();

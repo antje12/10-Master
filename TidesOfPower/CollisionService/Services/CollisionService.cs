@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using ClassLibrary.Classes.Domain;
+using ClassLibrary.GameLogic;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.MongoDB;
@@ -12,147 +14,145 @@ public class CollisionService : BackgroundService, IConsumerService
 {
     private string _groupId = "collision-group";
     private KafkaTopic _inputTopic = KafkaTopic.Collision;
-    private KafkaTopic _outputTopic = KafkaTopic.World;
+    private KafkaTopic _outputTopicW = KafkaTopic.World;
+    private KafkaTopic _outputTopicA = KafkaTopic.Ai;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<WorldChange> _producer;
+    private ProtoKafkaProducer<WorldChange> _producerW;
+    private ProtoKafkaProducer<ClassLibrary.Messages.Protobuf.AiAgent> _producerA;
     private ProtoKafkaConsumer<CollisionCheck> _consumer;
 
     private MongoDbBroker _mongoBroker;
     private RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
+    private bool localTest = true;
 
     public CollisionService()
     {
-        Console.WriteLine($"CollisionService created");
-        var config = new KafkaConfig(_groupId);
+        Console.WriteLine("CollisionService created");
+        var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producer = new ProtoKafkaProducer<WorldChange>(config);
+        _producerW = new ProtoKafkaProducer<WorldChange>(config);
+        _producerA = new ProtoKafkaProducer<ClassLibrary.Messages.Protobuf.AiAgent>(config);
         _consumer = new ProtoKafkaConsumer<CollisionCheck>(config);
-        _mongoBroker = new MongoDbBroker();
-        _redisBroker = new RedisBroker();
+        _mongoBroker = new MongoDbBroker(localTest);
+        _redisBroker = new RedisBroker(localTest);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         await Task.Yield();
         IsRunning = true;
-        Console.WriteLine($"CollisionService started");
+        Console.WriteLine("CollisionService started");
         await _admin.CreateTopic(_inputTopic);
         IProtoConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
-        Console.WriteLine($"CollisionService stopped");
+        Console.WriteLine("CollisionService stopped");
     }
 
     private void ProcessMessage(string key, CollisionCheck value)
     {
         var stopwatch = new Stopwatch();
-        var s2 = new Stopwatch();
         stopwatch.Start();
-        
-        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-        Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
-        
-        s2.Start();
+        Process(key, value);
+        stopwatch.Stop();
+        var elapsedTime = stopwatch.ElapsedMilliseconds;
+        Console.WriteLine($"Message processed in {elapsedTime} ms");
+    }
+
+    private void Process(string key, CollisionCheck value)
+    {
+        var blocked = false;
         var entities = _redisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
-        s2.Stop();
         foreach (var entity in entities)
         {
             if (value.EntityId == entity.Id.ToString())
-            {
                 continue;
-            }
 
             var w1 =
-                value.Entity is EntityType.Projectile ? 5 :
-                value.Entity is EntityType.Avatar ? 25 : 0;
+                value.EntityType is EntityType.Bullet ? 5 :
+                value.EntityType is EntityType.Player or EntityType.Ai ? 25 : 0;
             var w2 =
                 entity is ClassLibrary.Classes.Domain.Projectile ? 5 :
                 entity is ClassLibrary.Classes.Domain.Avatar ? 25 : 0;
-
-            if (circleCollision(value.ToLocation, w1, entity.Location, w2))
+            if (Collide.Circle(
+                    value.ToLocation.X, value.ToLocation.Y, w1,
+                    entity.Location.X, entity.Location.Y, w2))
             {
-                if (value.Entity is EntityType.Avatar && entity is ClassLibrary.Classes.Domain.Avatar)
+                switch (value.EntityType)
                 {
-                    return;
-                }
-
-                //if (value.Entity is EntityType.Avatar && entity is ClassLibrary.Classes.Domain.Projectile)
-                //{
-                //    Damage(Guid.Parse(value.EntityId), value.ToLocation);
-                //    return;
-                //}
-
-                if (value.Entity is EntityType.Projectile && entity is ClassLibrary.Classes.Domain.Avatar)
-                {
-                    var coordinates = new Coordinates();
-                    coordinates.X = entity.Location.X;
-                    coordinates.Y = entity.Location.Y;
-                    Damage(entity.Id, coordinates);
+                    case EntityType.Player:
+                    case EntityType.Ai:
+                        if (entity is ClassLibrary.Classes.Domain.Avatar)
+                            blocked = true;
+                        break;
+                    case EntityType.Bullet:
+                        if (entity is ClassLibrary.Classes.Domain.Avatar)
+                            DamageAvatar(entity);
+                        break;
                 }
             }
         }
 
-        if (value.Entity is EntityType.Avatar)
+        var msgOut = new WorldChange()
         {
-            var output = new WorldChange()
-            {
-                EntityId = value.EntityId,
-                Change = ChangeType.MovePlayer,
-                Location = value.ToLocation,
-                EventId = value.EventId
-            };
-
-            _producer.Produce(_outputTopic, key, output);
-            timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-            Console.WriteLine($"Send {output.EventId} at {timestampWithMs}");
-        }
-        else if (value.Entity is EntityType.Projectile)
+            EntityId = value.EntityId,
+            Location = value.ToLocation
+        };
+        switch (value.EntityType)
         {
-            var output = new WorldChange()
-            {
-                EntityId = value.EntityId,
-                Change = ChangeType.MoveBullet,
-                Location = value.ToLocation,
-                Timer = value.Timer,
-                Direction = value.Direction,
-                GameTime = value.GameTime
-            };
-
-            _producer.Produce(_outputTopic, key, output);
+            case EntityType.Player:
+                if (blocked)
+                {
+                    return;
+                }
+                msgOut.Change = Change.MovePlayer;
+                msgOut.EventId = value.EventId;
+                break;
+            case EntityType.Ai:
+                if (blocked)
+                {
+                    KeepAiAlive(key, value);
+                    return;
+                }
+                msgOut.Change = Change.MoveAi;
+                msgOut.LastUpdate = value.LastUpdate;
+                break;
+            case EntityType.Bullet:
+                msgOut.Change = Change.MoveBullet;
+                msgOut.Direction = value.Direction;
+                msgOut.LastUpdate = value.LastUpdate;
+                msgOut.TTL = value.TTL;
+                break;
         }
-        
-        stopwatch.Stop();
-        var elapsedTime = stopwatch.ElapsedMilliseconds;
-        if (value.EventId != "") Console.WriteLine($"Message processed in {elapsedTime} ms with {s2.ElapsedMilliseconds} ms DB time -- {value.EventId}");
+        _producerW.Produce(_outputTopicW, key, msgOut);
     }
 
-    private bool circleCollision(Coordinates e1, int w1, ClassLibrary.Classes.Data.Coordinates e2, int w2)
+    private void KeepAiAlive(string key, CollisionCheck value)
     {
-        float dx = e1.X - e2.X;
-        float dy = e1.Y - e2.Y;
-        // a^2 + b^2 = c^2
-        // c = sqrt(a^2 + b^2)
-        double distance = Math.Sqrt(dx * dx + dy * dy);
-        // if radius overlap
-        if (distance < w1 + w2)
+        var msgOut = new ClassLibrary.Messages.Protobuf.AiAgent()
         {
-            // Collision!
-            return true;
-        }
-        return false;
+            Id = value.EntityId,
+            Location = value.FromLocation,
+            LastUpdate = value.LastUpdate
+        };
+        _producerA.Produce(_outputTopicA, key, msgOut);
     }
 
-    private void Damage(Guid entityId, Coordinates entityLocation)
+    private void DamageAvatar(Entity entity)
     {
         var output = new WorldChange()
         {
-            EntityId = entityId.ToString(),
-            Change = ChangeType.DamagePlayer,
-            Location = entityLocation
+            EntityId = entity.Id.ToString(),
+            Change = Change.DamageAgent,
+            Location = new Coordinates()
+            {
+                X = entity.Location.X,
+                Y = entity.Location.Y
+            }
         };
-        _producer.Produce(_outputTopic, entityId.ToString(), output);
+        _producerW.Produce(_outputTopicW, output.EntityId, output);
     }
 }

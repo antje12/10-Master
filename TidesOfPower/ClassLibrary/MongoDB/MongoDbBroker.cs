@@ -100,7 +100,7 @@ public class MongoDbBroker
         var update = Builders<Entity>.Update
             .Set(x => x.Location.X, entity.Location.X)
             .Set(x => x.Location.Y, entity.Location.Y)
-            .Set("timer", entity.Timer);
+            .Set("timetolive", entity.TimeToLive);
         var result = _mongoDbContext.Entities.UpdateOneAsync(filter, update).GetAwaiter().GetResult();
         if (!result.IsAcknowledged || result.ModifiedCount == 0)
         {

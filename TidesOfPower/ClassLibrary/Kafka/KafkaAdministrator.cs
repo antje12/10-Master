@@ -29,7 +29,16 @@ public class KafkaAdministrator : IAdministrator
             {
                 await _adminClient.CreateTopicsAsync(new TopicSpecification[]
                 {
-                    new() {Name = topic, ReplicationFactor = 1, NumPartitions = 10}
+                    new()
+                    {
+                        Name = topic, 
+                        ReplicationFactor = 1, 
+                        NumPartitions = 10,
+                        Configs = new Dictionary<string, string>
+                        {
+                            { "retention.ms", $"{TimeSpan.FromMinutes(1).TotalMilliseconds}" }
+                        }
+                    }
                 });
             }
         }

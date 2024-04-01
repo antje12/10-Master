@@ -25,36 +25,25 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChBMb2NhbFN0YXRlLnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
-            "dG9idWYaDENvbW1vbi5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVzdGFt",
-            "cC5wcm90byLhAQoKTG9jYWxTdGF0ZRIQCghQbGF5ZXJJZBgBIAEoCRI2CgRT",
-            "eW5jGAIgASgOMiguQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlN5",
-            "bmNUeXBlEjcKB0F2YXRhcnMYAyADKAsyJi5DbGFzc0xpYnJhcnkuTWVzc2Fn",
-            "ZXMuUHJvdG9idWYuQXZhdGFyEj8KC1Byb2plY3RpbGVzGAQgAygLMiouQ2xh",
-            "c3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlByb2plY3RpbGUSDwoHRXZl",
-            "bnRJZBgFIAEoCSKcAQoGQXZhdGFyEgoKAklkGAEgASgJEj0KCExvY2F0aW9u",
-            "GAIgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3Jk",
-            "aW5hdGVzEgwKBE5hbWUYAyABKAkSFAoMV2Fsa2luZ1NwZWVkGAQgASgFEhAK",
-            "CExpZmVQb29sGAUgASgFEhEKCUludmVudG9yeRgGIAEoBSLUAQoKUHJvamVj",
-            "dGlsZRIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEoCzIrLkNsYXNzTGli",
-            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxI+CglEaXJlY3Rp",
-            "b24YAyABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29v",
-            "cmRpbmF0ZXMSDQoFVGltZXIYBCABKAESLAoIR2FtZVRpbWUYBSABKAsyGi5n",
-            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wKisKCFN5bmNUeXBlEggKBEZ1bGwQ",
-            "ABIJCgVEZWx0YRABEgoKBkRlbGV0ZRACQiGqAh5DbGFzc0xpYnJhcnkuTWVz",
-            "c2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
+            "dG9idWYaDUNsYXNzZXMucHJvdG8i2gEKCkxvY2FsU3RhdGUSDwoHQWdlbnRJ",
+            "ZBgBIAEoCRIyCgRTeW5jGAIgASgOMiQuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
+            "LlByb3RvYnVmLlN5bmMSNQoGQWdlbnRzGAMgAygLMiUuQ2xhc3NMaWJyYXJ5",
+            "Lk1lc3NhZ2VzLlByb3RvYnVmLkFnZW50Ej8KC1Byb2plY3RpbGVzGAQgAygL",
+            "MiouQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlByb2plY3RpbGUS",
+            "DwoHRXZlbnRJZBgFIAEoCSonCgRTeW5jEggKBEZ1bGwQABIJCgVEZWx0YRAB",
+            "EgoKBkRlbGV0ZRACQiGqAh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
+            "dWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.CommonReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.SyncType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState), global::ClassLibrary.Messages.Protobuf.LocalState.Parser, new[]{ "PlayerId", "Sync", "Avatars", "Projectiles", "EventId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Avatar), global::ClassLibrary.Messages.Protobuf.Avatar.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile), global::ClassLibrary.Messages.Protobuf.Projectile.Parser, new[]{ "Id", "Location", "Direction", "Timer", "GameTime" }, null, null, null, null)
+          new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.Sync), }, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState), global::ClassLibrary.Messages.Protobuf.LocalState.Parser, new[]{ "AgentId", "Sync", "Agents", "Projectiles", "EventId" }, null, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Enums
-  public enum SyncType {
+  public enum Sync {
     [pbr::OriginalName("Full")] Full = 0,
     [pbr::OriginalName("Delta")] Delta = 1,
     [pbr::OriginalName("Delete")] Delete = 2,
@@ -98,9 +87,9 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LocalState(LocalState other) : this() {
-      playerId_ = other.playerId_;
+      agentId_ = other.agentId_;
       sync_ = other.sync_;
-      avatars_ = other.avatars_.Clone();
+      agents_ = other.agents_.Clone();
       projectiles_ = other.projectiles_.Clone();
       eventId_ = other.eventId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -112,42 +101,42 @@ namespace ClassLibrary.Messages.Protobuf {
       return new LocalState(this);
     }
 
-    /// <summary>Field number for the "PlayerId" field.</summary>
-    public const int PlayerIdFieldNumber = 1;
-    private string playerId_ = "";
+    /// <summary>Field number for the "AgentId" field.</summary>
+    public const int AgentIdFieldNumber = 1;
+    private string agentId_ = "";
     /// <summary>
     /// UUIDs are represented as strings in proto
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string PlayerId {
-      get { return playerId_; }
+    public string AgentId {
+      get { return agentId_; }
       set {
-        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        agentId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
     /// <summary>Field number for the "Sync" field.</summary>
     public const int SyncFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.SyncType sync_ = global::ClassLibrary.Messages.Protobuf.SyncType.Full;
+    private global::ClassLibrary.Messages.Protobuf.Sync sync_ = global::ClassLibrary.Messages.Protobuf.Sync.Full;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.SyncType Sync {
+    public global::ClassLibrary.Messages.Protobuf.Sync Sync {
       get { return sync_; }
       set {
         sync_ = value;
       }
     }
 
-    /// <summary>Field number for the "Avatars" field.</summary>
-    public const int AvatarsFieldNumber = 3;
-    private static readonly pb::FieldCodec<global::ClassLibrary.Messages.Protobuf.Avatar> _repeated_avatars_codec
-        = pb::FieldCodec.ForMessage(26, global::ClassLibrary.Messages.Protobuf.Avatar.Parser);
-    private readonly pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Avatar> avatars_ = new pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Avatar>();
+    /// <summary>Field number for the "Agents" field.</summary>
+    public const int AgentsFieldNumber = 3;
+    private static readonly pb::FieldCodec<global::ClassLibrary.Messages.Protobuf.Agent> _repeated_agents_codec
+        = pb::FieldCodec.ForMessage(26, global::ClassLibrary.Messages.Protobuf.Agent.Parser);
+    private readonly pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Agent> agents_ = new pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Agent>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Avatar> Avatars {
-      get { return avatars_; }
+    public pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Agent> Agents {
+      get { return agents_; }
     }
 
     /// <summary>Field number for the "Projectiles" field.</summary>
@@ -188,9 +177,9 @@ namespace ClassLibrary.Messages.Protobuf {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (PlayerId != other.PlayerId) return false;
+      if (AgentId != other.AgentId) return false;
       if (Sync != other.Sync) return false;
-      if(!avatars_.Equals(other.avatars_)) return false;
+      if(!agents_.Equals(other.agents_)) return false;
       if(!projectiles_.Equals(other.projectiles_)) return false;
       if (EventId != other.EventId) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -200,9 +189,9 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
-      if (Sync != global::ClassLibrary.Messages.Protobuf.SyncType.Full) hash ^= Sync.GetHashCode();
-      hash ^= avatars_.GetHashCode();
+      if (AgentId.Length != 0) hash ^= AgentId.GetHashCode();
+      if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) hash ^= Sync.GetHashCode();
+      hash ^= agents_.GetHashCode();
       hash ^= projectiles_.GetHashCode();
       if (EventId.Length != 0) hash ^= EventId.GetHashCode();
       if (_unknownFields != null) {
@@ -223,15 +212,15 @@ namespace ClassLibrary.Messages.Protobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (PlayerId.Length != 0) {
+      if (AgentId.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(PlayerId);
+        output.WriteString(AgentId);
       }
-      if (Sync != global::ClassLibrary.Messages.Protobuf.SyncType.Full) {
+      if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Sync);
       }
-      avatars_.WriteTo(output, _repeated_avatars_codec);
+      agents_.WriteTo(output, _repeated_agents_codec);
       projectiles_.WriteTo(output, _repeated_projectiles_codec);
       if (EventId.Length != 0) {
         output.WriteRawTag(42);
@@ -247,15 +236,15 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (PlayerId.Length != 0) {
+      if (AgentId.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(PlayerId);
+        output.WriteString(AgentId);
       }
-      if (Sync != global::ClassLibrary.Messages.Protobuf.SyncType.Full) {
+      if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Sync);
       }
-      avatars_.WriteTo(ref output, _repeated_avatars_codec);
+      agents_.WriteTo(ref output, _repeated_agents_codec);
       projectiles_.WriteTo(ref output, _repeated_projectiles_codec);
       if (EventId.Length != 0) {
         output.WriteRawTag(42);
@@ -271,13 +260,13 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (PlayerId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      if (AgentId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AgentId);
       }
-      if (Sync != global::ClassLibrary.Messages.Protobuf.SyncType.Full) {
+      if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Sync);
       }
-      size += avatars_.CalculateSize(_repeated_avatars_codec);
+      size += agents_.CalculateSize(_repeated_agents_codec);
       size += projectiles_.CalculateSize(_repeated_projectiles_codec);
       if (EventId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EventId);
@@ -294,13 +283,13 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other == null) {
         return;
       }
-      if (other.PlayerId.Length != 0) {
-        PlayerId = other.PlayerId;
+      if (other.AgentId.Length != 0) {
+        AgentId = other.AgentId;
       }
-      if (other.Sync != global::ClassLibrary.Messages.Protobuf.SyncType.Full) {
+      if (other.Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
         Sync = other.Sync;
       }
-      avatars_.Add(other.avatars_);
+      agents_.Add(other.agents_);
       projectiles_.Add(other.projectiles_);
       if (other.EventId.Length != 0) {
         EventId = other.EventId;
@@ -321,15 +310,15 @@ namespace ClassLibrary.Messages.Protobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            PlayerId = input.ReadString();
+            AgentId = input.ReadString();
             break;
           }
           case 16: {
-            Sync = (global::ClassLibrary.Messages.Protobuf.SyncType) input.ReadEnum();
+            Sync = (global::ClassLibrary.Messages.Protobuf.Sync) input.ReadEnum();
             break;
           }
           case 26: {
-            avatars_.AddEntriesFrom(input, _repeated_avatars_codec);
+            agents_.AddEntriesFrom(input, _repeated_agents_codec);
             break;
           }
           case 34: {
@@ -356,15 +345,15 @@ namespace ClassLibrary.Messages.Protobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            PlayerId = input.ReadString();
+            AgentId = input.ReadString();
             break;
           }
           case 16: {
-            Sync = (global::ClassLibrary.Messages.Protobuf.SyncType) input.ReadEnum();
+            Sync = (global::ClassLibrary.Messages.Protobuf.Sync) input.ReadEnum();
             break;
           }
           case 26: {
-            avatars_.AddEntriesFrom(ref input, _repeated_avatars_codec);
+            agents_.AddEntriesFrom(ref input, _repeated_agents_codec);
             break;
           }
           case 34: {
@@ -373,755 +362,6 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 42: {
             EventId = input.ReadString();
-            break;
-          }
-        }
-      }
-    }
-    #endif
-
-  }
-
-  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Avatar : pb::IMessage<Avatar>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<Avatar> _parser = new pb::MessageParser<Avatar>(() => new Avatar());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Avatar> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClassLibrary.Messages.Protobuf.LocalStateReflection.Descriptor.MessageTypes[1]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Avatar() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Avatar(Avatar other) : this() {
-      id_ = other.id_;
-      location_ = other.location_ != null ? other.location_.Clone() : null;
-      name_ = other.name_;
-      walkingSpeed_ = other.walkingSpeed_;
-      lifePool_ = other.lifePool_;
-      inventory_ = other.inventory_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Avatar Clone() {
-      return new Avatar(this);
-    }
-
-    /// <summary>Field number for the "Id" field.</summary>
-    public const int IdFieldNumber = 1;
-    private string id_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Id {
-      get { return id_; }
-      set {
-        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "Location" field.</summary>
-    public const int LocationFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates location_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Location {
-      get { return location_; }
-      set {
-        location_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Name" field.</summary>
-    public const int NameFieldNumber = 3;
-    private string name_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Name {
-      get { return name_; }
-      set {
-        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "WalkingSpeed" field.</summary>
-    public const int WalkingSpeedFieldNumber = 4;
-    private int walkingSpeed_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int WalkingSpeed {
-      get { return walkingSpeed_; }
-      set {
-        walkingSpeed_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "LifePool" field.</summary>
-    public const int LifePoolFieldNumber = 5;
-    private int lifePool_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int LifePool {
-      get { return lifePool_; }
-      set {
-        lifePool_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Inventory" field.</summary>
-    public const int InventoryFieldNumber = 6;
-    private int inventory_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int Inventory {
-      get { return inventory_; }
-      set {
-        inventory_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override bool Equals(object other) {
-      return Equals(other as Avatar);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Avatar other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (Id != other.Id) return false;
-      if (!object.Equals(Location, other.Location)) return false;
-      if (Name != other.Name) return false;
-      if (WalkingSpeed != other.WalkingSpeed) return false;
-      if (LifePool != other.LifePool) return false;
-      if (Inventory != other.Inventory) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (Id.Length != 0) hash ^= Id.GetHashCode();
-      if (location_ != null) hash ^= Location.GetHashCode();
-      if (Name.Length != 0) hash ^= Name.GetHashCode();
-      if (WalkingSpeed != 0) hash ^= WalkingSpeed.GetHashCode();
-      if (LifePool != 0) hash ^= LifePool.GetHashCode();
-      if (Inventory != 0) hash ^= Inventory.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
-      if (Id.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Id);
-      }
-      if (location_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Location);
-      }
-      if (Name.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(Name);
-      }
-      if (WalkingSpeed != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(WalkingSpeed);
-      }
-      if (LifePool != 0) {
-        output.WriteRawTag(40);
-        output.WriteInt32(LifePool);
-      }
-      if (Inventory != 0) {
-        output.WriteRawTag(48);
-        output.WriteInt32(Inventory);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Id.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Id);
-      }
-      if (location_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Location);
-      }
-      if (Name.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(Name);
-      }
-      if (WalkingSpeed != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(WalkingSpeed);
-      }
-      if (LifePool != 0) {
-        output.WriteRawTag(40);
-        output.WriteInt32(LifePool);
-      }
-      if (Inventory != 0) {
-        output.WriteRawTag(48);
-        output.WriteInt32(Inventory);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int CalculateSize() {
-      int size = 0;
-      if (Id.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
-      }
-      if (location_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Location);
-      }
-      if (Name.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
-      }
-      if (WalkingSpeed != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(WalkingSpeed);
-      }
-      if (LifePool != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(LifePool);
-      }
-      if (Inventory != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Inventory);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Avatar other) {
-      if (other == null) {
-        return;
-      }
-      if (other.Id.Length != 0) {
-        Id = other.Id;
-      }
-      if (other.location_ != null) {
-        if (location_ == null) {
-          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-        }
-        Location.MergeFrom(other.Location);
-      }
-      if (other.Name.Length != 0) {
-        Name = other.Name;
-      }
-      if (other.WalkingSpeed != 0) {
-        WalkingSpeed = other.WalkingSpeed;
-      }
-      if (other.LifePool != 0) {
-        LifePool = other.LifePool;
-      }
-      if (other.Inventory != 0) {
-        Inventory = other.Inventory;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 10: {
-            Id = input.ReadString();
-            break;
-          }
-          case 18: {
-            if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-            }
-            input.ReadMessage(Location);
-            break;
-          }
-          case 26: {
-            Name = input.ReadString();
-            break;
-          }
-          case 32: {
-            WalkingSpeed = input.ReadInt32();
-            break;
-          }
-          case 40: {
-            LifePool = input.ReadInt32();
-            break;
-          }
-          case 48: {
-            Inventory = input.ReadInt32();
-            break;
-          }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            Id = input.ReadString();
-            break;
-          }
-          case 18: {
-            if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-            }
-            input.ReadMessage(Location);
-            break;
-          }
-          case 26: {
-            Name = input.ReadString();
-            break;
-          }
-          case 32: {
-            WalkingSpeed = input.ReadInt32();
-            break;
-          }
-          case 40: {
-            LifePool = input.ReadInt32();
-            break;
-          }
-          case 48: {
-            Inventory = input.ReadInt32();
-            break;
-          }
-        }
-      }
-    }
-    #endif
-
-  }
-
-  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Projectile : pb::IMessage<Projectile>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<Projectile> _parser = new pb::MessageParser<Projectile>(() => new Projectile());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Projectile> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClassLibrary.Messages.Protobuf.LocalStateReflection.Descriptor.MessageTypes[2]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Projectile() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Projectile(Projectile other) : this() {
-      id_ = other.id_;
-      location_ = other.location_ != null ? other.location_.Clone() : null;
-      direction_ = other.direction_ != null ? other.direction_.Clone() : null;
-      timer_ = other.timer_;
-      gameTime_ = other.gameTime_ != null ? other.gameTime_.Clone() : null;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Projectile Clone() {
-      return new Projectile(this);
-    }
-
-    /// <summary>Field number for the "Id" field.</summary>
-    public const int IdFieldNumber = 1;
-    private string id_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Id {
-      get { return id_; }
-      set {
-        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "Location" field.</summary>
-    public const int LocationFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates location_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Location {
-      get { return location_; }
-      set {
-        location_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Direction" field.</summary>
-    public const int DirectionFieldNumber = 3;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates direction_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Direction {
-      get { return direction_; }
-      set {
-        direction_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Timer" field.</summary>
-    public const int TimerFieldNumber = 4;
-    private double timer_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double Timer {
-      get { return timer_; }
-      set {
-        timer_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "GameTime" field.</summary>
-    public const int GameTimeFieldNumber = 5;
-    private global::Google.Protobuf.WellKnownTypes.Timestamp gameTime_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Google.Protobuf.WellKnownTypes.Timestamp GameTime {
-      get { return gameTime_; }
-      set {
-        gameTime_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override bool Equals(object other) {
-      return Equals(other as Projectile);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Projectile other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (Id != other.Id) return false;
-      if (!object.Equals(Location, other.Location)) return false;
-      if (!object.Equals(Direction, other.Direction)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Timer, other.Timer)) return false;
-      if (!object.Equals(GameTime, other.GameTime)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (Id.Length != 0) hash ^= Id.GetHashCode();
-      if (location_ != null) hash ^= Location.GetHashCode();
-      if (direction_ != null) hash ^= Direction.GetHashCode();
-      if (Timer != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Timer);
-      if (gameTime_ != null) hash ^= GameTime.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
-      if (Id.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Id);
-      }
-      if (location_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Location);
-      }
-      if (direction_ != null) {
-        output.WriteRawTag(26);
-        output.WriteMessage(Direction);
-      }
-      if (Timer != 0D) {
-        output.WriteRawTag(33);
-        output.WriteDouble(Timer);
-      }
-      if (gameTime_ != null) {
-        output.WriteRawTag(42);
-        output.WriteMessage(GameTime);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Id.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Id);
-      }
-      if (location_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Location);
-      }
-      if (direction_ != null) {
-        output.WriteRawTag(26);
-        output.WriteMessage(Direction);
-      }
-      if (Timer != 0D) {
-        output.WriteRawTag(33);
-        output.WriteDouble(Timer);
-      }
-      if (gameTime_ != null) {
-        output.WriteRawTag(42);
-        output.WriteMessage(GameTime);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int CalculateSize() {
-      int size = 0;
-      if (Id.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
-      }
-      if (location_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Location);
-      }
-      if (direction_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Direction);
-      }
-      if (Timer != 0D) {
-        size += 1 + 8;
-      }
-      if (gameTime_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(GameTime);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Projectile other) {
-      if (other == null) {
-        return;
-      }
-      if (other.Id.Length != 0) {
-        Id = other.Id;
-      }
-      if (other.location_ != null) {
-        if (location_ == null) {
-          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-        }
-        Location.MergeFrom(other.Location);
-      }
-      if (other.direction_ != null) {
-        if (direction_ == null) {
-          Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-        }
-        Direction.MergeFrom(other.Direction);
-      }
-      if (other.Timer != 0D) {
-        Timer = other.Timer;
-      }
-      if (other.gameTime_ != null) {
-        if (gameTime_ == null) {
-          GameTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-        }
-        GameTime.MergeFrom(other.GameTime);
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 10: {
-            Id = input.ReadString();
-            break;
-          }
-          case 18: {
-            if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-            }
-            input.ReadMessage(Location);
-            break;
-          }
-          case 26: {
-            if (direction_ == null) {
-              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-            }
-            input.ReadMessage(Direction);
-            break;
-          }
-          case 33: {
-            Timer = input.ReadDouble();
-            break;
-          }
-          case 42: {
-            if (gameTime_ == null) {
-              GameTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(GameTime);
-            break;
-          }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            Id = input.ReadString();
-            break;
-          }
-          case 18: {
-            if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-            }
-            input.ReadMessage(Location);
-            break;
-          }
-          case 26: {
-            if (direction_ == null) {
-              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-            }
-            input.ReadMessage(Direction);
-            break;
-          }
-          case 33: {
-            Timer = input.ReadDouble();
-            break;
-          }
-          case 42: {
-            if (gameTime_ == null) {
-              GameTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(GameTime);
             break;
           }
         }

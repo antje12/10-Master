@@ -1,6 +1,7 @@
 ﻿using Avro;
 using Avro.Specific;
-using ClassLibrary.Classes.Data;
+using ClassLibrary.Messages.Protobuf;
+using Coordinates = ClassLibrary.Classes.Data.Coordinates;
 
 namespace ClassLibrary.Messages.Avro;
 
@@ -47,7 +48,7 @@ public class Input : ISpecificRecord
                     }}
                 }}
             }},
-            {{ ""name"": ""Timer"", ""type"": ""double"" }}
+            {{ ""name"": ""GameTime"", ""type"": ""double"" }}
         ]
     }}");
 

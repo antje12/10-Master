@@ -84,7 +84,6 @@ public class AIService : BackgroundService, IConsumerService
             LastUpdate = to
         };
 
-        // ToDo: handle obstacles
         var obstacles = entities.Select(x => new Node((int) x.Location.X, (int) x.Location.Y)).ToList();
         var start = new Node((int) agent.Location.X, (int) agent.Location.Y);
         var target = targets.MinBy(t =>
@@ -94,6 +93,17 @@ public class AIService : BackgroundService, IConsumerService
             ? AStar.Search(start, new Node((int) target.Location.X, (int) target.Location.Y), obstacles)
             : AStar.SurvivalSearch(start, obstacles);
 
+        if (target != null && 
+            AStar.H((int) agent.Location.X, (int) agent.Location.Y, (int) target.Location.X, (int) target.Location.Y) < 150)
+        {
+            output.MouseLocation = new Coordinates()
+            {
+                X = target.Location.X,
+                Y = target.Location.Y
+            };
+            output.KeyInput.Add(GameKey.Attack);
+        }
+        
         if (nextStep.X < start.X)
             output.KeyInput.Add(GameKey.Left);
         if (start.X < nextStep.X)

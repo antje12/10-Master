@@ -20,6 +20,8 @@ public class InputService : BackgroundService, IConsumerService
     private ProtoKafkaProducer<WorldChange> _producerW;
     private ProtoKafkaConsumer<Input> _consumer;
 
+    private Dictionary<string, DateTime> ClientAttacks = new();
+    
     public bool IsRunning { get; private set; }
     private bool localTest = true;
 
@@ -58,6 +60,13 @@ public class InputService : BackgroundService, IConsumerService
 
     private void Process(string key, Input value)
     {
+        var oldKeys = ClientAttacks.Where(x => x.Value < DateTime.Now)
+            .Select(x => x.Key);
+        foreach (var oldKey in oldKeys)
+        {
+            ClientAttacks.Remove(oldKey);
+        }
+        
         if (value.KeyInput.Any(x => x is GameKey.Up or GameKey.Down or GameKey.Left or GameKey.Right))
             Move(key, value);
         if (value.KeyInput.Any(x => x is GameKey.Attack))
@@ -91,6 +100,11 @@ public class InputService : BackgroundService, IConsumerService
 
     private void Attack(string key, Input value)
     {
+        if (ClientAttacks.ContainsKey(key))
+            return;
+        
+        ClientAttacks.Add(key, DateTime.Now.AddSeconds(1));
+        
         var x = value.MouseLocation.X - value.AgentLocation.X;
         var y = value.MouseLocation.Y - value.AgentLocation.Y;
         var length = (float) Math.Sqrt(x * x + y * y);

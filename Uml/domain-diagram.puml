@@ -4,56 +4,44 @@ skinparam shadowing false
 'skinparam nodesep 5
 'skinparam ranksep 5
 
-'class Admin
-'class Game_World
 class Ocean{
     wind direction
 }
 class Island{
-    shoreline
+    shorelines
 }
 class Ship{
-    coordinates
     lifepool
+    coordinates
 }
-'class Obstacle
 class Player{
-    profile
-    coordinates
-    walk speed
-    lifepool
     name
+    lifepool
+    walk speed
+    coordinates
 }
 class Treasure{
-    coordinates
     value
+    coordinates
 }
 class Weapon{
-    damage
     range
-    type
+    damage
 }
 class Projectile{
-    coordinates
     direction
-    timer
+    coordinates
 }
 class Enemy{
     agent policy
-    coordinates
-    walk speed
     lifepool
+    walk speed
+    coordinates
 }
-
-'Admin "1..*" -- "*" Enemy : starts
-
-'Game_World "1" -- "1" Ocean : consists of >
 
 Ocean "1" -- "*" Ship : sailed by >
 Ocean "1" -- "1..*" Island : contains >
-'Ocean "1" -- "*" Obstacle : contains >
 
-'Island "1" -- "*" Obstacle : contains >
 Island "1" -- "*" Player : roamed by >
 Island "1" -- "*" Treasure : hides >
 Island "1" -- "*" Enemy : roamed by >

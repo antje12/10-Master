@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>110</y>
+      <w>60</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Ocean
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>210</x>
+      <y>110</y>
+      <w>80</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Ship
+--
+lifepool
+coordinates</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>150</x>
+      <y>270</y>
+      <w>80</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>Island
+--
+shorelines</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>440</x>
+      <y>110</y>
+      <w>80</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Player
+--
+name
+lifepool
+walk speed
+coordinates</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>540</x>
+      <y>240</y>
+      <w>60</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Weapon
+--
+range
+damage</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>330</x>
+      <y>270</y>
+      <w>80</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Treasure
+--
+value
+coordinates</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>430</x>
+      <y>430</y>
+      <w>90</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>Enemy
+--
+agent policy
+lifepool
+walk speed
+coordinates</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>680</x>
+      <y>240</y>
+      <w>80</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Projectile
+--
+direction
+coordinates</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>90</x>
+      <y>110</y>
+      <w>140</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=*
+&lt; sails on</panel_attributes>
+    <additional_attributes>10.0;20.0;120.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>60</x>
+      <y>140</y>
+      <w>110</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=1..*
+contains &gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;90.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>170</x>
+      <y>140</y>
+      <w>290</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=0..1
+m2=*
+&lt; is on</panel_attributes>
+    <additional_attributes>10.0;130.0;10.0;50.0;200.0;50.0;200.0;10.0;270.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>110</y>
+      <w>180</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=0..1
+m2=0..1
+&lt; controls</panel_attributes>
+    <additional_attributes>160.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>370</x>
+      <y>190</y>
+      <w>100</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=*
+m2=*
+&lt; collects</panel_attributes>
+    <additional_attributes>80.0;10.0;80.0;50.0;10.0;50.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>370</x>
+      <y>320</y>
+      <w>110</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=*
+m2=*
+&lt; collects</panel_attributes>
+    <additional_attributes>70.0;110.0;70.0;40.0;10.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>470</x>
+      <y>190</y>
+      <w>70</w>
+      <h>260</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=*
+m2=*
+chases</panel_attributes>
+    <additional_attributes>10.0;240.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>220</x>
+      <y>270</y>
+      <w>130</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=*
+contains &gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;110.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>510</x>
+      <y>120</y>
+      <w>170</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=1..2
+attacks with v</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;10.0;60.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>510</x>
+      <y>290</y>
+      <w>170</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=1..2
+attacks with ^</panel_attributes>
+    <additional_attributes>10.0;150.0;60.0;150.0;60.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>590</x>
+      <y>240</y>
+      <w>110</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=*
+fires &gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;90.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>170</x>
+      <y>310</y>
+      <w>280</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=*
+&lt; is on</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0;160.0;90.0;160.0;130.0;260.0;130.0</additional_attributes>
+  </element>
+</diagram>

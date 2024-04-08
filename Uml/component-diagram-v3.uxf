@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>330</x>
+      <y>350</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+&lt;&lt;service&gt;&gt;
+Input</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>360</x>
+      <y>520</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+&lt;&lt;service&gt;&gt;
+Collision</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>140</x>
+      <y>210</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+&lt;&lt;service&gt;&gt;
+AI</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>180</x>
+      <y>410</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+&lt;&lt;service&gt;&gt;
+Projectile</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>540</x>
+      <y>630</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+&lt;&lt;service&gt;&gt;
+World</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>10</x>
+      <y>360</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+&lt;&lt;service&gt;&gt;
+Profile</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>680</x>
+      <y>210</y>
+      <w>50</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>// Text Element
+// DB Symbol
+Cache
+_umletcode=
+fg='#a41e11';
+bg='#a41e11';
+drawArc(0,0,width,height*2/5,0,180,true) //Parameters (x, y, width, height, start, extent, open)
+bg='bg';
+drawArc(0,0,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+
+fg='#d2908a';
+bg='#a41e11';
+drawRectangle(0,(height+0.5)/5,width,(height)*3/5-1)  //Parameters (x, y, width, height)
+fg='#a41e11'
+drawLine(0,height/5,0,height*4/5) //Parameters (x1, y1, x2, y2)
+drawLine(width,height/5,width,height*4/5) //Parameters (x1, y1, x2, y2)
+
+bg='bg';
+drawArc(0,height*1/5,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+drawArc(0,height*2/5,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+
+bg='#a41e11'
+drawArc(0,height*3/5,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>350</x>
+      <y>160</y>
+      <w>50</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=)-[v]
+bg=gray</panel_attributes>
+    <additional_attributes>20.0;130.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>310</x>
+      <y>120</y>
+      <w>120</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;computer&gt;&gt;
+Client</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>0</x>
+      <y>180</y>
+      <w>750</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=-
+fg=orange</panel_attributes>
+    <additional_attributes>10.0;10.0;730.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>0</x>
+      <y>190</y>
+      <w>750</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=   Firewall
+fg=orange</panel_attributes>
+    <additional_attributes>10.0;10.0;730.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>90</x>
+      <y>140</y>
+      <w>240</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=)-[&lt;]
+bg=gray</panel_attributes>
+    <additional_attributes>20.0;160.0;20.0;10.0;220.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>140</y>
+      <w>70</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=()-[&lt;]
+bg=green</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>300</y>
+      <w>30</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=[v]-()
+bg=green</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>100</x>
+      <y>310</y>
+      <w>30</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=[v]-()
+bg=green</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>470</x>
+      <y>130</y>
+      <w>150</w>
+      <h>520</h>
+    </coordinates>
+    <panel_attributes>lt=[^]-(
+bg=gray</panel_attributes>
+    <additional_attributes>130.0;500.0;130.0;20.0;20.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>400</y>
+      <w>50</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=)-[v]
+bg=gray</panel_attributes>
+    <additional_attributes>20.0;60.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>370</x>
+      <y>470</y>
+      <w>30</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=[v]-()
+bg=green</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>470</x>
+      <y>550</y>
+      <w>120</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=)-[&gt;]
+bg=gray</panel_attributes>
+    <additional_attributes>90.0;20.0;90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>550</x>
+      <y>580</y>
+      <w>30</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=[v]-()
+bg=green</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>440</x>
+      <y>380</y>
+      <w>150</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>lt=)-[&gt;]
+bg=gray</panel_attributes>
+    <additional_attributes>120.0;190.0;120.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>680</x>
+      <y>630</y>
+      <w>50</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>// Text Element
+// DB Symbol
+   DB
+_umletcode=
+fg='blue';
+bg='blue';
+drawArc(0,0,width,height*2/5,0,180,true) //Parameters (x, y, width, height, start, extent, open)
+bg='bg';
+drawArc(0,0,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+fg='#8282fe';
+bg='blue';
+drawRectangle(0,(height+0.5)/5,width,(height)*3/5-1)  //Parameters (x, y, width, height)
+fg='blue'
+drawLine(0,height/5,0,height*4/5) //Parameters (x1, y1, x2, y2)
+drawLine(width,height/5,width,height*4/5) //Parameters (x1, y1, x2, y2)
+bg='bg';
+drawArc(0,height*1/5,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+drawArc(0,height*2/5,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+bg='blue'
+drawArc(0,height*3/5,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>180</x>
+      <y>510</y>
+      <w>400</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>lt=)-[v]
+bg=gray</panel_attributes>
+    <additional_attributes>20.0;20.0;20.0;200.0;380.0;200.0;380.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>190</x>
+      <y>460</y>
+      <w>30</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=[^]-()
+bg=green</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>150</x>
+      <y>310</y>
+      <w>470</w>
+      <h>440</h>
+    </coordinates>
+    <panel_attributes>lt=)-[v]
+bg=gray</panel_attributes>
+    <additional_attributes>20.0;20.0;20.0;420.0;450.0;420.0;450.0;380.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>160</x>
+      <y>260</y>
+      <w>30</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=[^]-()
+bg=green</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>250</x>
+      <y>240</y>
+      <w>150</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=[&gt;]-(
+bg=gray</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;10.0;120.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>290</x>
+      <y>440</y>
+      <w>120</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=)-[&gt;]
+bg=gray</panel_attributes>
+    <additional_attributes>90.0;20.0;90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>10</x>
+      <y>330</y>
+      <w>30</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=blue</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>650</x>
+      <y>640</y>
+      <w>50</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=blue</panel_attributes>
+    <additional_attributes>30.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>640</x>
+      <y>220</y>
+      <w>60</w>
+      <h>430</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=red</panel_attributes>
+    <additional_attributes>40.0;10.0;10.0;10.0;10.0;410.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>460</x>
+      <y>220</y>
+      <w>240</w>
+      <h>320</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=red</panel_attributes>
+    <additional_attributes>220.0;10.0;10.0;10.0;10.0;300.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>250</x>
+      <y>220</y>
+      <w>450</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=red</panel_attributes>
+    <additional_attributes>430.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>10</x>
+      <y>280</y>
+      <w>50</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>// Text Element
+// DB Symbol
+   DB
+_umletcode=
+fg='blue';
+bg='blue';
+drawArc(0,0,width,height*2/5,0,180,true) //Parameters (x, y, width, height, start, extent, open)
+bg='bg';
+drawArc(0,0,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+fg='#8282fe';
+bg='blue';
+drawRectangle(0,(height+0.5)/5,width,(height)*3/5-1)  //Parameters (x, y, width, height)
+fg='blue'
+drawLine(0,height/5,0,height*4/5) //Parameters (x1, y1, x2, y2)
+drawLine(width,height/5,width,height*4/5) //Parameters (x1, y1, x2, y2)
+bg='bg';
+drawArc(0,height*1/5,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+drawArc(0,height*2/5,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+bg='blue'
+drawArc(0,height*3/5,width,height*2/5,180,180,true)  //Parameters (x, y, width, height, start, extent, open)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>310</x>
+      <y>790</y>
+      <w>120</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;library&gt;&gt;
+Commons</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>740</y>
+      <w>30</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+fg=magenta</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>460</y>
+      <w>30</w>
+      <h>310</h>
+    </coordinates>
+    <panel_attributes>lt=.
+fg=magenta</panel_attributes>
+    <additional_attributes>10.0;290.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>330</x>
+      <y>400</y>
+      <w>30</w>
+      <h>370</h>
+    </coordinates>
+    <panel_attributes>lt=.
+fg=magenta</panel_attributes>
+    <additional_attributes>10.0;350.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>570</y>
+      <w>30</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=.
+fg=magenta</panel_attributes>
+    <additional_attributes>10.0;180.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>640</x>
+      <y>680</y>
+      <w>30</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=.
+fg=magenta</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>140</x>
+      <y>260</y>
+      <w>30</w>
+      <h>510</h>
+    </coordinates>
+    <panel_attributes>lt=.
+fg=magenta</panel_attributes>
+    <additional_attributes>10.0;490.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>310</x>
+      <y>160</y>
+      <w>30</w>
+      <h>610</h>
+    </coordinates>
+    <panel_attributes>lt=.
+fg=magenta</panel_attributes>
+    <additional_attributes>10.0;590.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>110</x>
+      <y>410</y>
+      <w>30</w>
+      <h>360</h>
+    </coordinates>
+    <panel_attributes>lt=.
+fg=magenta</panel_attributes>
+    <additional_attributes>10.0;340.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>110</x>
+      <y>740</y>
+      <w>560</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=.
+fg=magenta</panel_attributes>
+    <additional_attributes>10.0;10.0;540.0;10.0</additional_attributes>
+  </element>
+</diagram>

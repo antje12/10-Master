@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using GameClient;
+using GameClient.Services;
 using Microsoft.Extensions.Logging;
 
 MyGame gameInstance = new MyGame();

@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 using Agent = GameClient.Entities.Agent;
 using Projectile = GameClient.Entities.Projectile;
 
-namespace GameClient;
+namespace GameClient.Services;
 
 public class SyncService : BackgroundService
 {

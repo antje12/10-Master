@@ -10,10 +10,18 @@ public class Entity
     [BsonElement("location")] public Coordinates Location { get; set; }
     public EntityType Type { get; set; }
     
-    public Entity()
+    public Entity(Guid id, Coordinates location, EntityType type)
     {
-        Location = new Coordinates();
+        Id = id;
+        Location = location;
+        Type = type;
     }
+    
+    // ToDo: put back in?
+    //public Entity()
+    //{
+    //    Location = new Coordinates();
+    //}
 }
 
 public enum EntityType

@@ -1,43 +1,53 @@
 ﻿using System;
+using ClassLibrary.Classes.Domain;
 using ClassLibrary.Messages.Protobuf;
 using GameClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Coordinates = ClassLibrary.Classes.Domain.Coordinates;
 
-namespace GameClient.Entities;
+namespace GameClient.Sprites;
 
-public class Enemy : Agent
+public class Enemy_S : Enemy, Sprite
 {
+    public Texture2D Texture { get; set; }
+    private int Width { get; set; }
+    private int Height { get; set; }
+    
     private readonly AnimationManager _anims = new();
-    private Vector2 LastPosition;
+    private Coordinates LastPosition;
     private DateTime LastUpdate;
 
-    public Enemy(Guid agentId, Vector2 position, Texture2D texture) : base(agentId, position, texture)
+    public Enemy_S(Texture2D texture, Enemy e) 
+        : base(e.Id, e.Location, e.LifePool, e.WalkingSpeed)
     {
+        Texture = texture;
+        Width = texture.Width / 3;
+        Height = texture.Height / 4;
         _anims.AddAnimation(GameKey.Up, new(texture, 3, 4, 0.2f, 1));
         _anims.AddAnimation(GameKey.Right, new(texture, 3, 4, 0.2f, 2));
         _anims.AddAnimation(GameKey.Down, new(texture, 3, 4, 0.2f, 3));
         _anims.AddAnimation(GameKey.Left, new(texture,3, 4, 0.2f, 4));
-        LastPosition = position;
+        LastPosition = Location;
         LastUpdate = DateTime.Now;
     }
 
-    public void SetPosition(Vector2 newPosition)
+    public void SetPosition(Coordinates newPosition)
     {
-        LastPosition = Position;
-        Position = newPosition;
+        LastPosition = Location;
+        Location = newPosition;
         LastUpdate = DateTime.Now;
     }
     
-    public override void Update(GameTime gameTime)
+    public void Update(GameTime gameTime)
     {
-        if (Position.X < LastPosition.X)
+        if (Location.X < LastPosition.X)
             _anims.Update(gameTime, GameKey.Left);
-        else if (Position.X > LastPosition.X)
+        else if (Location.X > LastPosition.X)
             _anims.Update(gameTime, GameKey.Right);
-        else if (Position.Y < LastPosition.Y)
+        else if (Location.Y < LastPosition.Y)
             _anims.Update(gameTime, GameKey.Up);
-        else if (Position.Y > LastPosition.Y)
+        else if (Location.Y > LastPosition.Y)
             _anims.Update(gameTime, GameKey.Down);
 
         TimeSpan timeSpan = DateTime.Now - LastUpdate;
@@ -45,11 +55,9 @@ public class Enemy : Agent
             _anims.Update(gameTime, new());
     }
 
-    public override void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch)
     {
-        var offset = new Vector2(Position.X - (48 / 2), Position.Y - (64 / 2));
+        var offset = new Vector2(Location.X - Width / 2, Location.Y - Height / 2);
         _anims.Draw(spriteBatch, offset);
-        //var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
-        //spriteBatch.Draw(Texture, offset, Color.Red);
     }
 }

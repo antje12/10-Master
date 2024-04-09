@@ -2,9 +2,9 @@
 
 public class Enemy : Agent
 {
-    public Enemy()
+    public Enemy(Guid id, Coordinates location, int lifePool, int walkingSpeed) 
+        : base(id, location, EntityType.Enemy, lifePool, walkingSpeed)
     {
-        Type = EntityType.Enemy;
     }
     
     public void TakePolicyAction()

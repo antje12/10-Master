@@ -9,8 +9,10 @@ public class Player : Agent
 
     public Profile Profile { get; set; }
 
-    public Player()
+    public Player(string name, int score, Guid id, Coordinates location, int lifePool, int walkingSpeed) 
+        : base(id, location, EntityType.Player, lifePool, walkingSpeed)
     {
-        Type = EntityType.Player;
+        Name = name;
+        Score = score;
     }
 }

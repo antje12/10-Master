@@ -1,23 +1,26 @@
 ﻿using System.Collections.Generic;
+using ClassLibrary.Classes.Domain;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using GameClient.Core;
 
-namespace GameClient.Entities;
+namespace GameClient.Sprites;
 
-public class Island : Sprite
+public class Island_S : Island, Sprite
 {
+    public Coordinates Location { get; set; } // Not used
+    public Texture2D Texture { get; set; }
+    
     private List<Rectangle> _subTexture = new();
     // 0 1 2
     // 3 4 5
     // 6 7 8
     
-    private int _fromX;
-    private int _toX;
-    private int _fromY;
-    private int _toY;
-    
-    public Island(Vector2 position, Texture2D texture) : base(position, texture)
+    public Island_S(Texture2D texture, Island i) 
+        : base(i.FromX, i.ToX, i.FromY, i.ToY)
     {
+        Texture = texture;
+        
         var framesX = 3;
         var framesY = 3;
         
@@ -31,18 +34,13 @@ public class Island : Sprite
                 _subTexture.Add(new(x * frameWidth, y * frameHeight, frameWidth, frameHeight));
             }
         }
-        
-        _fromX = 64;
-        _toX = 64 + (64 * 5);
-        _fromY = 64;
-        _toY = 64 + (64 * 5);
     }
 
-    public override void Update(GameTime gameTime)
+    public void Update(GameTime gameTime)
     {
     }
 
-    public override void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch)
     {
         DrawCorners(spriteBatch);
         DrawBorders(spriteBatch);
@@ -51,42 +49,41 @@ public class Island : Sprite
 
     private void DrawCorners(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(Texture, new Vector2(_fromX, _fromY), _subTexture[0], Color.White);
-        spriteBatch.Draw(Texture, new Vector2(_toX-64, _fromY), _subTexture[2], Color.White);
-        spriteBatch.Draw(Texture, new Vector2(_fromX, _toY-64), _subTexture[6], Color.White);
-        spriteBatch.Draw(Texture, new Vector2(_toX-64, _toY-64), _subTexture[8], Color.White);
+        spriteBatch.Draw(Texture, new Vector2(FromX, FromY), _subTexture[0], Color.White);
+        spriteBatch.Draw(Texture, new Vector2(ToX-64, FromY), _subTexture[2], Color.White);
+        spriteBatch.Draw(Texture, new Vector2(FromX, ToY-64), _subTexture[6], Color.White);
+        spriteBatch.Draw(Texture, new Vector2(ToX-64, ToY-64), _subTexture[8], Color.White);
     }
 
     private void DrawBorders(SpriteBatch spriteBatch)
     {
-        var startX = _fromX+64;
-        var endX = _toX-64;
+        var startX = FromX+64;
+        var endX = ToX-64;
         for (int x = startX; x < endX; x += _subTexture[0].Width)
         {
             // North
-            spriteBatch.Draw(Texture, new Vector2(x, _fromY), _subTexture[1], Color.White);
+            spriteBatch.Draw(Texture, new Vector2(x, FromY), _subTexture[1], Color.White);
             // South
-            spriteBatch.Draw(Texture, new Vector2(x, _toY-64), _subTexture[7], Color.White);
+            spriteBatch.Draw(Texture, new Vector2(x, ToY-64), _subTexture[7], Color.White);
         }
         
-        var startY = _fromY+64;
-        var endY = _toY-64;
+        var startY = FromY+64;
+        var endY = ToY-64;
         for (int y = startY; y < endY; y += _subTexture[0].Height)
         {
             // East
-            spriteBatch.Draw(Texture, new Vector2(_fromX, y), _subTexture[3], Color.White);
+            spriteBatch.Draw(Texture, new Vector2(FromX, y), _subTexture[3], Color.White);
             // West
-            spriteBatch.Draw(Texture, new Vector2(_toX-64, y), _subTexture[5], Color.White);
+            spriteBatch.Draw(Texture, new Vector2(ToX-64, y), _subTexture[5], Color.White);
         }
     }
     
-    
     private void DrawCenter(SpriteBatch spriteBatch)
     {
-        var startX = _fromX+64;
-        var endX = _toX-64;
-        var startY = _fromY+64;
-        var endY = _toY-64;
+        var startX = FromX+64;
+        var endX = ToX-64;
+        var startY = FromY+64;
+        var endY = ToY-64;
         
         for (int y = startY; y < endY; y += _subTexture[0].Height)
         {

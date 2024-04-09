@@ -1,18 +1,24 @@
 using System;
+using GameClient.Core;
 using System.Collections.Generic;
 using System.Linq;
+using ClassLibrary.Classes.Domain;
 using ClassLibrary.GameLogic;
 using ClassLibrary.Kafka;
-using GameClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ClassLibrary.Messages.Protobuf;
+using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
 
-namespace GameClient.Entities;
+namespace GameClient.Sprites;
 
-public class Player : Agent
+public class Player_S : Player, Sprite
 {
+    public Texture2D Texture { get; set; }
+    private int Width { get; set; }
+    private int Height { get; set; }
+    
     private MyGame _game;
     private Camera _camera;
     private Vector2 _mousePosition;
@@ -21,17 +27,16 @@ public class Player : Agent
 
     private Coordinates _lastLocation;
     private List<GameKey> _lastKeyInput;
-    private bool attacking;
-    private bool interacting;
+    private bool _attacking;
+    private bool _interacting;
 
-    public int Latency = 0;
-    public int Health = 100;
-    public int Score = 0;
-
-    public Player(MyGame game, Guid agentId, Vector2 position, Texture2D texture, Camera camera,
-        ProtoKafkaProducer<Input> producer)
-        : base(agentId, position, texture)
+    public Player_S(MyGame game, Texture2D texture, Camera camera, ProtoKafkaProducer<Input> producer, Player p) 
+        : base(p.Name, p.Score, p.Id, p.Location, p.LifePool, p.WalkingSpeed)
     {
+        Texture = texture;
+        Width = texture.Width / 3;
+        Height = texture.Height / 4;
+        
         _game = game;
         _camera = camera;
         _producer = producer;
@@ -44,9 +49,9 @@ public class Player : Agent
         _anims.AddAnimation(GameKey.Left, new(texture,3, 4, 0.2f, 4));
     }
 
-    public override void Update(GameTime gameTime)
+    public void Update(GameTime gameTime)
     {
-        _camera.Follow(Position);
+        _camera.Follow(Location);
         var keyInput = GetKeyInput();
         if (!keyInput.Any())
         {
@@ -68,8 +73,8 @@ public class Player : Agent
             AgentId = Id.ToString(),
             AgentLocation = new Coordinates()
             {
-                X = Position.X,
-                Y = Position.Y
+                X = Location.X,
+                Y = Location.Y
             },
             MouseLocation = new Coordinates()
             {
@@ -101,25 +106,25 @@ public class Player : Agent
 
     private void LocalMovement(List<GameKey> keyInput, double gameTime)
     {
-        Move.Avatar(Position.X, Position.Y, keyInput, gameTime, out float toX, out float toY);
-        var to = new Vector2(toX, toY);
+        Move.Avatar(Location.X, Location.Y, keyInput, gameTime, out float toX, out float toY);
+        var to = new ClassLibrary.Classes.Domain.Coordinates(toX,toY);
         if (IsLocationFree(to))
-            Position = to;
+            Location = to;
     }
 
-    private bool IsLocationFree(Vector2 to)
+    private bool IsLocationFree(ClassLibrary.Classes.Domain.Coordinates to)
     {
         foreach (var sprite in _game.LocalState)
         {
             var w1 = 25;
             var w2 =
-                sprite is Projectile ? 5 :
-                sprite is Agent ? 25 : 0;
+                sprite is Projectile_S ? 5 :
+                sprite is Enemy_S ? 25 : 0;
 
             if (Collide.Circle(to.X, to.Y, w1, 
-                    sprite.Position.X, sprite.Position.Y, w2))
+                    Location.X, Location.Y, w2))
             {
-                if (sprite is Agent)
+                if (sprite is Enemy_S)
                 {
                     return false;
                 }
@@ -147,42 +152,40 @@ public class Player : Agent
         if (mState.LeftButton == ButtonState.Pressed &&
             _game.IsActive && _camera.MouseOnScreen(mState.Position.ToVector2()))
         {
-            if (!attacking)
+            if (!_attacking)
             {
-                attacking = true;
+                _attacking = true;
                 keyInput.Add(GameKey.Attack);
                 _mousePosition = _camera.MouseInWorld(mState.Position.ToVector2());
             }
         }
         else
         {
-            attacking = false;
+            _attacking = false;
             _lastKeyInput.Remove(GameKey.Attack);
         }
         
         if (kState.IsKeyDown(Keys.Space) &&
             _game.IsActive && _camera.MouseOnScreen(mState.Position.ToVector2()))
         {
-            if (!interacting)
+            if (!_interacting)
             {
-                interacting = true;
+                _interacting = true;
                 keyInput.Add(GameKey.Interact);
             }
         }
         else
         {
-            interacting = false;
+            _interacting = false;
             _lastKeyInput.Remove(GameKey.Interact);
         }
         
         return keyInput;
     }
 
-    public override void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch)
     {
-        var offset = new Vector2(Position.X - (48 / 2), Position.Y - (64 / 2));
+        var offset = new Vector2(Location.X - Width / 2, Location.Y - Height / 2);
         _anims.Draw(spriteBatch, offset);
-        //var offset = new Vector2(Position.X - (Texture.Width / 2), Position.Y - (Texture.Height / 2));
-        //spriteBatch.Draw(Texture, offset, Color.Green);
     }
 }

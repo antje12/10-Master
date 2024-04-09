@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassLibrary.Classes.Domain;
 using ClassLibrary.Kafka;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using GameClient.Core;
-using GameClient.Entities;
 using ClassLibrary.Messages.Protobuf;
+using GameClient.Sprites;
+using Coordinates = ClassLibrary.Classes.Domain.Coordinates;
 
 namespace GameClient;
 
@@ -39,15 +41,17 @@ public class MyGame : Game
     public int ScreenHeight; //480
     public int ScreenWidth; //800
 
-    public Player Player;
+    public Player_S Player;
     public List<Sprite> LocalState = new();
     public readonly object LockObject = new();
     public Dictionary<string, long> EventTimes = new();
 
-    private Coin _coin;
-    private Chest _chest;
-    private Ship _ship;
+    private Treasure_S _coin;
+    private Treasure_S _chest;
+    private Ship_S _shipS;
 
+    public int Latency = 0;
+    
     public MyGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -81,18 +85,21 @@ public class MyGame : Game
         base.Initialize(); // Runs LoadContent
 
         _camera = new Camera(this);
-        var playerPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
-        Player = new Player(this, Guid.NewGuid(), playerPosition, PlayerTexture, _camera, _producer);
-        _ui = new UI(_font, Player, this);
+        var playerLocation = new Coordinates(ScreenWidth / 2, ScreenHeight / 2);
+        Player = new Player_S(this, PlayerTexture, _camera, _producer, new Player("Player", 0, Guid.NewGuid(), playerLocation, 100, 100));
+        _ui = new UI(_font, this);
 
-        _coin = new Coin(new Vector2(300, 300), CoinTexture);
-        _chest = new Chest(new Vector2(100, 100), TreasureTexture);
-        _ship = new Ship(new Vector2(200, 200), ShipTexture);
+        _coin = new Treasure_S(CoinTexture, 6, new Treasure(10, Guid.NewGuid(), new Coordinates(300, 300)));
+        _chest = new Treasure_S(TreasureTexture, 4, new Treasure(100, Guid.NewGuid(), new Coordinates(300, 300)));
+        _shipS = new Ship_S(ShipTexture, new Ship(100, Guid.NewGuid(), new Coordinates(200, 200)));
 
-        var oceanPosition = new Vector2(0, 0);
-        var ocean = new Ocean(oceanPosition, OceanTexture, Player, this);
-        var islandPosition = new Vector2(ScreenWidth / 2, ScreenHeight / 2);
-        var island = new Island(islandPosition, IslandTexture);
+        var ocean = new Ocean_S(this, OceanTexture, null);
+        
+        int fromX = 64;
+        var toX = 64 + (64 * 5);
+        var fromY = 64;
+        var toY = 64 + (64 * 5);
+        var island = new Island_S(IslandTexture, new Island(fromX, toX, fromY, toY));
 
         LocalState.Add(ocean);
         LocalState.Add(island);
@@ -109,7 +116,7 @@ public class MyGame : Game
             {
                 var sprite = LocalState[i];
                 sprite.Update(gameTime);
-                if (sprite is Enemy or Entities.Projectile && IsOffScreen(sprite) || sprite is Entities.Projectile {TimeToLive: <= 0})
+                if (sprite is Enemy_S or Projectile_S && IsOffScreen(sprite) || sprite is Projectile_S {TimeToLive: <= 0})
                 {
                     LocalState.RemoveAt(i);
                 }
@@ -119,19 +126,19 @@ public class MyGame : Game
         Player.Update(gameTime);
         _coin.Update(gameTime);
         _chest.Update(gameTime);
-        _ship.Update(gameTime);
+        _shipS.Update(gameTime);
         base.Update(gameTime);
     }
 
     private bool IsOffScreen(Sprite sprite)
     {
-        var startX = Player.Position.X - ScreenWidth / 2 + 1;
-        var endX = Player.Position.X + ScreenWidth / 2 - 1;
-        var startY = Player.Position.Y - ScreenHeight / 2 + 1;
-        var endY = Player.Position.Y + ScreenHeight / 2 - 1;
+        var startX = Player.Location.X - ScreenWidth / 2 + 1;
+        var endX = Player.Location.X + ScreenWidth / 2 - 1;
+        var startY = Player.Location.Y - ScreenHeight / 2 + 1;
+        var endY = Player.Location.Y + ScreenHeight / 2 - 1;
 
-        if (sprite.Position.X <= startX || endX <= sprite.Position.X ||
-            sprite.Position.Y <= startY || endY <= sprite.Position.Y)
+        if (sprite.Location.X <= startX || endX <= sprite.Location.X ||
+            sprite.Location.Y <= startY || endY <= sprite.Location.Y)
         {
             return true;
         }
@@ -154,7 +161,7 @@ public class MyGame : Game
         Player.Draw(_spriteBatch);
         _coin.Draw(_spriteBatch);
         _chest.Draw(_spriteBatch);
-        _ship.Draw(_spriteBatch);
+        _shipS.Draw(_spriteBatch);
         _ui.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);

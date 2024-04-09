@@ -6,9 +6,10 @@ public class Treasure : Entity
 {
     [BsonElement("value")] public int Value { get; set; }
 
-    public Treasure()
+    public Treasure(int value, Guid id, Coordinates location) 
+        : base(id, location, EntityType.Treasure)
     {
-        Type = EntityType.Treasure;
+        Value = value;
     }
     
     public void Collect()

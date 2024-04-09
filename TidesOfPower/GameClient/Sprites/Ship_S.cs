@@ -1,19 +1,28 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ClassLibrary.Classes.Domain;
+using GameClient.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GameClient.Entities;
+namespace GameClient.Sprites;
 
-public class Ship : Sprite
+public class Ship_S : Ship, Sprite
 {
+    public Texture2D Texture { get; set; }
     private float rotation;
+    private int Width { get; set; }
+    private int Height { get; set; }
 
-    public Ship(Vector2 position, Texture2D texture) : base(position, texture)
+    public Ship_S(Texture2D texture, Ship s) 
+        : base(s.LifePool, s.Id, s.Location)
     {
+        Texture = texture;
         rotation = 0f;
+        Width = texture.Width / 1;
+        Height = texture.Height / 1;
     }
 
-    public override void Update(GameTime gameTime)
+    public void Update(GameTime gameTime)
     {
         var kState = Keyboard.GetState();
 
@@ -35,9 +44,10 @@ public class Ship : Sprite
             rotation = 6 * MathHelper.PiOver4;
     }
 
-    public override void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch)
     {
-        Vector2 origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
-        spriteBatch.Draw(Texture, Position, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 0f);
+        Vector2 origin = new Vector2(Width / 2, Height / 2);
+        spriteBatch.Draw(Texture, new Vector2(Location.X, Location.Y),
+            null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 0f);
     }
 }

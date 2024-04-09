@@ -8,8 +8,11 @@ public class Projectile : Entity
     [BsonElement("time-to-live")] public double TimeToLive { get; set; }
     [BsonElement("damage")] public int Damage { get; set; }
     
-    public Projectile()
+    public Projectile(Coordinates direction, double timeToLive, int damage, Guid id, Coordinates location) 
+        : base(id, location, EntityType.Projectile)
     {
-        Type = EntityType.Projectile;
+        Direction = direction;
+        TimeToLive = timeToLive;
+        Damage = damage;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using ClassLibrary.Classes.Data;
 using ClassLibrary.Messages.Protobuf;
 using GameClient.Core;
 using Microsoft.Xna.Framework;

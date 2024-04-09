@@ -7,6 +7,7 @@ using ClassLibrary.MongoDB;
 using CollisionService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.Redis;
+using EntityType = ClassLibrary.Messages.Protobuf.EntityType;
 
 namespace CollisionService.Services;
 
@@ -76,7 +77,7 @@ public class CollisionService : BackgroundService, IConsumerService
                 value.EntityType is EntityType.Player or EntityType.Ai ? 25 : 0;
             var w2 =
                 entity is ClassLibrary.Classes.Domain.Projectile ? 5 :
-                entity is ClassLibrary.Classes.Domain.Avatar ? 25 : 0;
+                entity is ClassLibrary.Classes.Domain.Agent ? 25 : 0;
             if (Collide.Circle(
                     value.ToLocation.X, value.ToLocation.Y, w1,
                     entity.Location.X, entity.Location.Y, w2))
@@ -85,11 +86,11 @@ public class CollisionService : BackgroundService, IConsumerService
                 {
                     case EntityType.Player:
                     case EntityType.Ai:
-                        if (entity is ClassLibrary.Classes.Domain.Avatar)
+                        if (entity is ClassLibrary.Classes.Domain.Agent)
                             blocked = true;
                         break;
                     case EntityType.Bullet:
-                        if (entity is ClassLibrary.Classes.Domain.Avatar)
+                        if (entity is ClassLibrary.Classes.Domain.Agent)
                             DamageAvatar(entity);
                         break;
                 }
@@ -147,7 +148,7 @@ public class CollisionService : BackgroundService, IConsumerService
         {
             EntityId = entity.Id.ToString(),
             Change = Change.DamageAgent,
-            Location = new Coordinates()
+            Location = new ClassLibrary.Messages.Protobuf.Coordinates()
             {
                 X = entity.Location.X,
                 Y = entity.Location.Y

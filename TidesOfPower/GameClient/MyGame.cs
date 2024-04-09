@@ -45,7 +45,7 @@ public class MyGame : Game
     public Dictionary<string, long> EventTimes = new();
 
     private Coin _coin;
-    private Treasure _treasure;
+    private Chest _chest;
     private Ship _ship;
 
     public MyGame()
@@ -86,7 +86,7 @@ public class MyGame : Game
         _ui = new UI(_font, Player, this);
 
         _coin = new Coin(new Vector2(300, 300), CoinTexture);
-        _treasure = new Treasure(new Vector2(100, 100), TreasureTexture);
+        _chest = new Chest(new Vector2(100, 100), TreasureTexture);
         _ship = new Ship(new Vector2(200, 200), ShipTexture);
 
         var oceanPosition = new Vector2(0, 0);
@@ -118,7 +118,7 @@ public class MyGame : Game
 
         Player.Update(gameTime);
         _coin.Update(gameTime);
-        _treasure.Update(gameTime);
+        _chest.Update(gameTime);
         _ship.Update(gameTime);
         base.Update(gameTime);
     }
@@ -153,7 +153,7 @@ public class MyGame : Game
 
         Player.Draw(_spriteBatch);
         _coin.Draw(_spriteBatch);
-        _treasure.Draw(_spriteBatch);
+        _chest.Draw(_spriteBatch);
         _ship.Draw(_spriteBatch);
         _ui.Draw(_spriteBatch);
         _spriteBatch.End();

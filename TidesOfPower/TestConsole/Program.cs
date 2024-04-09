@@ -4,14 +4,9 @@ using System.Diagnostics;
 using ClassLibrary.Classes.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
 using TestConsole.Tests;
-using Avatar = ClassLibrary.Classes.Domain.Avatar;
-using Coordinates = ClassLibrary.Classes.Data.Coordinates;
-using Input = ClassLibrary.Messages.Avro.Input;
-using LocalState = ClassLibrary.Messages.Avro.LocalState;
 
 Console.WriteLine("Hello, World!");
 RedisBroker redisBroker = new RedisBroker(true);
@@ -24,18 +19,16 @@ return;
 MongoDbBroker mongoBroker = new MongoDbBroker(true);
 
 redisBroker.InitEntity();
-var avatar = new Avatar()
+var avatar = new Agent()
 {
     Id = Guid.NewGuid(),
-    Location = new Coordinates()
+    Location = new ClassLibrary.Classes.Domain.Coordinates()
     {
         X = 50.123f,
         Y = 100.456f
     },
-    Name = "Mr.Test",
     WalkingSpeed = 10,
-    LifePool = 100,
-    Inventory = 0
+    LifePool = 100
 };
 redisBroker.Insert(avatar);
 redisBroker.GetEntities(avatar.Location.X, avatar.Location.Y);
@@ -159,70 +152,6 @@ async Task TestHTTP()
     {
         Console.WriteLine("HTTP Response was invalid or could not be deserialized.");
     }
-}
-
-async Task TestKafkaAvro()
-{
-    mongoBroker.CleanDB();
-    var testId = Guid.NewGuid();
-    var testTopic = $"{KafkaTopic.LocalState}_{testId}";
-
-    var cts = new CancellationTokenSource();
-    var config = new KafkaConfig("test", true);
-    var admin = new KafkaAdministrator(config);
-
-    await admin.CreateTopic(KafkaTopic.Input);
-    await admin.CreateTopic(testTopic);
-
-    var producer = new KafkaProducer<Input>(config);
-    var consumer = new KafkaConsumer<LocalState>(config);
-
-    var count = 0;
-    var testCount = 1000;
-    var results = new List<long>();
-
-    var message = new Input()
-    {
-        PlayerId = testId,
-        PlayerLocation = new Coordinates() {X = 0, Y = 0},
-        KeyInput = new List<GameKey>() {GameKey.Right},
-        GameTime = 0.5
-    };
-
-    var stopwatch = new Stopwatch();
-    stopwatch.Start();
-
-    void ProcessMessage(string key, LocalState value)
-    {
-        stopwatch.Stop();
-        var elapsedTime = stopwatch.ElapsedMilliseconds;
-        //Console.WriteLine($"Kafka result in {elapsedTime} ms");
-
-        if (count > 0)
-        {
-            results.Add(elapsedTime);
-        }
-
-        if (count >= testCount)
-        {
-            Console.WriteLine(
-                $"Kafka results {results.Count}, avg {results.Average()} ms, min {results.Min()} ms, max {results.Max()} ms");
-            cts.Cancel();
-            return;
-        }
-
-        message.PlayerLocation = value.Avatars.First().Location;
-
-        count += 1;
-        stopwatch.Restart();
-        producer.Produce(KafkaTopic.Input, "a", message);
-    }
-
-    stopwatch.Restart();
-    producer.Produce(KafkaTopic.Input, "tester", message);
-
-    IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
-    await Task.Run(() => consumer.Consume(testTopic, action, cts.Token), cts.Token);
 }
 
 async Task TestKafkaProto()

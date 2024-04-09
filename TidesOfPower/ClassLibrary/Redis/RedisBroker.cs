@@ -112,19 +112,19 @@ public class RedisBroker
             if (result == null) continue;
             switch (result.Type)
             {
-                case TheEntityType.Player:
+                case EntityType.Player:
                     result = JsonConvert.DeserializeObject<Player>(j);
                     break;
-                case TheEntityType.AiAgent:
-                    result = JsonConvert.DeserializeObject<AiAgent>(j);
+                case EntityType.Enemy:
+                    result = JsonConvert.DeserializeObject<Enemy>(j);
                     break;
-                case TheEntityType.Projectile:
+                case EntityType.Projectile:
                     result = JsonConvert.DeserializeObject<Projectile>(j);
                     break;
-                case TheEntityType.Ship:
+                case EntityType.Ship:
                     result = JsonConvert.DeserializeObject<Ship>(j);
                     break;
-                case TheEntityType.Treasure:
+                case EntityType.Treasure:
                     result = JsonConvert.DeserializeObject<Treasure>(j);
                     break;
             }
@@ -166,19 +166,19 @@ public class RedisBroker
             if (result == null) continue;
             switch (result.Type)
             {
-                case TheEntityType.Player:
+                case EntityType.Player:
                     result = JsonConvert.DeserializeObject<Player>(j);
                     break;
-                case TheEntityType.AiAgent:
-                    result = JsonConvert.DeserializeObject<AiAgent>(j);
+                case EntityType.Enemy:
+                    result = JsonConvert.DeserializeObject<Enemy>(j);
                     break;
-                case TheEntityType.Projectile:
+                case EntityType.Projectile:
                     result = JsonConvert.DeserializeObject<Projectile>(j);
                     break;
-                case TheEntityType.Ship:
+                case EntityType.Ship:
                     result = JsonConvert.DeserializeObject<Ship>(j);
                     break;
-                case TheEntityType.Treasure:
+                case EntityType.Treasure:
                     result = JsonConvert.DeserializeObject<Treasure>(j);
                     break;
             }
@@ -195,7 +195,7 @@ public class RedisBroker
         _json.Set($@"entity:{entity.Id}", ".Location.Y", entity.Location.Y);
     }
 
-    public void UpsertAvatarLocation(Avatar entity)
+    public void UpsertAvatarLocation(Agent entity)
     {        
         _json.Set($@"entity:{entity.Id}", "$", entity);
     }

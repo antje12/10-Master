@@ -4,11 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameClient.Entities;
 
-public class Treasure : Sprite
+public class Chest : Sprite
 {
     private Animation _anim;
     
-    public Treasure(Vector2 position, Texture2D texture) : base(position, texture)
+    public Chest(Vector2 position, Texture2D texture) : base(position, texture)
     {
         _anim = new Animation(texture, 4, 1, 0.2);
     }

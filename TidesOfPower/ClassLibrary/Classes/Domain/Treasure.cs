@@ -1,13 +1,17 @@
-﻿using ClassLibrary.Classes.Data;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
 namespace ClassLibrary.Classes.Domain;
 
 public class Treasure : Entity
 {
-    public int Value { get; set; }
+    [BsonElement("value")] public int Value { get; set; }
 
     public Treasure()
     {
-        Type = TheEntityType.Treasure;
+        Type = EntityType.Treasure;
+    }
+    
+    public void Collect()
+    {
     }
 }

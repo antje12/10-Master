@@ -6,6 +6,7 @@ using ClassLibrary.MongoDB;
 using WorldService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.Redis;
+using Agent = ClassLibrary.Messages.Protobuf.Agent;
 using AiAgent = ClassLibrary.Messages.Protobuf.AiAgent;
 using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
 using Projectile = ClassLibrary.Messages.Protobuf.Projectile;
@@ -102,7 +103,7 @@ public class WorldService : BackgroundService, IConsumerService
         _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.Player()
         {
             Id = Guid.Parse(agent.Id),
-            Location = new ClassLibrary.Classes.Data.Coordinates()
+            Location = new ClassLibrary.Classes.Domain.Coordinates()
             {
                 X = agent.Location.X,
                 Y = agent.Location.Y
@@ -126,7 +127,7 @@ public class WorldService : BackgroundService, IConsumerService
             Sync = Sync.Full,
             EventId = value.EventId
         };
-        var agents = entities.OfType<ClassLibrary.Classes.Domain.Avatar>()
+        var agents = entities.OfType<ClassLibrary.Classes.Domain.Agent>()
             .Select(a => new Agent()
             {
                 Id = a.Id.ToString(),
@@ -181,10 +182,10 @@ public class WorldService : BackgroundService, IConsumerService
             Location = value.Location,
             LastUpdate = value.LastUpdate
         };
-        _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.AiAgent()
+        _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.Enemy()
         {
             Id = Guid.Parse(msgOut.Id),
-            Location = new ClassLibrary.Classes.Data.Coordinates()
+            Location = new ClassLibrary.Classes.Domain.Coordinates()
             {
                 X = msgOut.Location.X,
                 Y = msgOut.Location.Y
@@ -240,10 +241,10 @@ public class WorldService : BackgroundService, IConsumerService
             Location = new Coordinates() {X = value.Location.X, Y = value.Location.Y},
             LastUpdate = DateTime.UtcNow.Ticks,
         };
-        _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.AiAgent()
+        _redisBroker.UpsertAvatarLocation(new ClassLibrary.Classes.Domain.Enemy()
         {
             Id = Guid.Parse(msgOut.Id),
-            Location = new ClassLibrary.Classes.Data.Coordinates()
+            Location = new ClassLibrary.Classes.Domain.Coordinates()
             {
                 X = msgOut.Location.X,
                 Y = msgOut.Location.Y
@@ -287,7 +288,7 @@ public class WorldService : BackgroundService, IConsumerService
         {
             Id = value.EntityId
         };
-        _redisBroker.Delete(new ClassLibrary.Classes.Domain.Avatar()
+        _redisBroker.Delete(new ClassLibrary.Classes.Domain.Agent()
         {
             Id = Guid.Parse(agent.Id)
         });

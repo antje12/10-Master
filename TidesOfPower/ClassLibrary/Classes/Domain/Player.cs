@@ -1,11 +1,16 @@
-﻿namespace ClassLibrary.Classes.Domain;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
-public class Player : Avatar
+namespace ClassLibrary.Classes.Domain;
+
+public class Player : Agent
 {
+    [BsonElement("name")] public string Name { get; set; }
+    [BsonElement("score")] public int Score { get; set; }
+
     public Profile Profile { get; set; }
 
     public Player()
     {
-        Type = TheEntityType.Player;
+        Type = EntityType.Player;
     }
 }

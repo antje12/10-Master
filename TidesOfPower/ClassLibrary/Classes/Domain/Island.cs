@@ -1,13 +1,12 @@
-﻿using ClassLibrary.Classes.Data;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
 namespace ClassLibrary.Classes.Domain;
 
 public class Island
 {
-    public List<Coordinates> NorthShoreline { get; set; }
-    public List<Coordinates> SouthShoreline { get; set; }
-    public List<Coordinates> EastShoreline { get; set; }
-    public List<Coordinates> WestShoreline { get; set; }
-    public List<Avatar> Avatars { get; set; }
-    public List<Treasure> Treasures { get; set; }
+    [BsonElement("from-x")] public int fromX { get; set; }
+    [BsonElement("to-x")] public int toX { get; set; }
+    [BsonElement("from-y")] public int fromY { get; set; }
+    [BsonElement("to-y")] public int toY { get; set; }
+    public List<Entity> Entities { get; set; }
 }

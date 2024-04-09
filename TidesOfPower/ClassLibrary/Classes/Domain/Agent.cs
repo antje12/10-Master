@@ -2,20 +2,13 @@
 
 namespace ClassLibrary.Classes.Domain;
 
-public class Ship : Entity
+public class Agent : Entity
 {
     [BsonElement("life-pool")] public int LifePool { get; set; }
-
-    public Ship()
-    {
-        Type = EntityType.Ship;
-    }
+    [BsonElement("walking-speed")] public int WalkingSpeed { get; set; }
+    public Weapon Weapon { get; set; }
     
-    public void Embark()
-    {
-    }
-    
-    public void DisEmbark()
+    public void TakeDamage()
     {
     }
 }

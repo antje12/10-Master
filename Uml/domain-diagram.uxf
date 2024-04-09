@@ -190,13 +190,13 @@ m2=*
     <coordinates>
       <x>370</x>
       <y>320</y>
-      <w>110</w>
+      <w>100</w>
       <h>130</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=*
 m2=*
-&lt; collects</panel_attributes>
+&lt; drops</panel_attributes>
     <additional_attributes>70.0;110.0;70.0;40.0;10.0;40.0;10.0;10.0</additional_attributes>
   </element>
   <element>

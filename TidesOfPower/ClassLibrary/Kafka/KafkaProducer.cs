@@ -1,12 +1,12 @@
-﻿using Avro.Specific;
-using ClassLibrary.Interfaces;
+﻿using ClassLibrary.Interfaces;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
+using Google.Protobuf;
 
 namespace ClassLibrary.Kafka;
 
-public class KafkaProducer<T> : IProducer<T> where T : ISpecificRecord
+public class KafkaProducer<T> : IProtoProducer<T> where T : class, IMessage<T>, new()
 {
     private CachedSchemaRegistryClient _schemaRegistry;
     private IProducer<string, T> _producer;
@@ -15,10 +15,9 @@ public class KafkaProducer<T> : IProducer<T> where T : ISpecificRecord
     {
         _schemaRegistry = new CachedSchemaRegistryClient(config.SchemaRegistryConfig);
         _producer = new ProducerBuilder<string, T>(config.ProducerConfig)
-            .SetValueSerializer(new AvroSerializer<T>(_schemaRegistry, config.AvroSerializerConfig))
+            .SetValueSerializer(new ProtobufSerializer<T>(_schemaRegistry))
             .SetErrorHandler((_, e) => Console.WriteLine($"Error producing to topic: {e.Reason}"))
             .Build();
-        //_producer = new ProducerBuilder<string, T>(producerConfig).Build();
     }
 
     public void Produce(KafkaTopic topic, string key, T value)
@@ -28,8 +27,6 @@ public class KafkaProducer<T> : IProducer<T> where T : ISpecificRecord
 
     public void Produce(string topic, string key, T value)
     {
-        //Console.WriteLine(
-        //    $"{key} = {value.Get(0)} produced - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
         var result = _producer.ProduceAsync(topic, new Message<string, T>
         {
             Key = key,

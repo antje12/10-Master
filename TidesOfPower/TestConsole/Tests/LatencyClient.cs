@@ -13,8 +13,8 @@ public class LatencyClient
 
     private KafkaConfig _config;
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<Input_M> _producer;
-    private ProtoKafkaConsumer<LocalState_M> _consumer;
+    private KafkaProducer<Input_M> _producer;
+    private KafkaConsumer<LocalState_M> _consumer;
 
     private int _index;
     private Stopwatch _sw;
@@ -34,8 +34,8 @@ public class LatencyClient
     {
         _config = new KafkaConfig(_groupId, true);
         _admin = new KafkaAdministrator(_config);
-        _producer = new ProtoKafkaProducer<Input_M>(_config);
-        _consumer = new ProtoKafkaConsumer<LocalState_M>(_config);
+        _producer = new KafkaProducer<Input_M>(_config);
+        _consumer = new KafkaConsumer<LocalState_M>(_config);
 
         _index = index;
         _sw = new Stopwatch();

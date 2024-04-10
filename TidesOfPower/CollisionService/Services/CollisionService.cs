@@ -3,7 +3,6 @@ using ClassLibrary.Domain;
 using ClassLibrary.GameLogic;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.MongoDB;
 using CollisionService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.Redis;
@@ -19,11 +18,10 @@ public class CollisionService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicA = KafkaTopic.Ai;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<World_M> _producerW;
-    private ProtoKafkaProducer<Ai_M> _producerA;
-    private ProtoKafkaConsumer<Collision_M> _consumer;
+    private KafkaProducer<World_M> _producerW;
+    private KafkaProducer<Ai_M> _producerA;
+    private KafkaConsumer<Collision_M> _consumer;
 
-    private MongoDbBroker _mongoBroker;
     private RedisBroker _redisBroker;
 
     public bool IsRunning { get; private set; }
@@ -34,10 +32,9 @@ public class CollisionService : BackgroundService, IConsumerService
         Console.WriteLine("CollisionService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producerW = new ProtoKafkaProducer<World_M>(config);
-        _producerA = new ProtoKafkaProducer<Ai_M>(config);
-        _consumer = new ProtoKafkaConsumer<Collision_M>(config);
-        _mongoBroker = new MongoDbBroker(localTest);
+        _producerW = new KafkaProducer<World_M>(config);
+        _producerA = new KafkaProducer<Ai_M>(config);
+        _consumer = new KafkaConsumer<Collision_M>(config);
         _redisBroker = new RedisBroker(localTest);
     }
 
@@ -60,16 +57,11 @@ public class CollisionService : BackgroundService, IConsumerService
         Process(key, value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        //Console.WriteLine($"Message processed in {elapsedTime} ms");
+        Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(string key, Collision_M value)
     {
-        if (!string.IsNullOrEmpty(value.EventId))
-        {
-            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-            Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
-        }
         var blocked = false;
         var entities = _redisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
         foreach (var entity in entities)
@@ -77,15 +69,15 @@ public class CollisionService : BackgroundService, IConsumerService
             if (value.EntityId == entity.Id.ToString())
                 continue;
 
-            var w1 =
-                value.EntityType is EntityType.Bullet ? 5 :
-                value.EntityType is EntityType.Player or EntityType.Ai ? 25 : 0;
-            var w2 =
-                entity is Projectile ? 5 :
-                entity is Agent ? 25 : 0;
+            var r1 =
+                value.EntityType is EntityType.Bullet ? Projectile.Rad :
+                value.EntityType is EntityType.Player or EntityType.Ai ? Agent.Rad : 0;
+            var r2 = entity.Radius;
+                //entity is Projectile ? 5 :
+                //entity is Agent ? 25 : 0;
             if (Collide.Circle(
-                    value.ToLocation.X, value.ToLocation.Y, w1,
-                    entity.Location.X, entity.Location.Y, w2))
+                    value.ToLocation.X, value.ToLocation.Y, r1,
+                    entity.Location.X, entity.Location.Y, r2))
             {
                 switch (value.EntityType)
                 {
@@ -134,11 +126,6 @@ public class CollisionService : BackgroundService, IConsumerService
                 break;
         }
         _producerW.Produce(_outputTopicW, key, msgOut);
-        if (!string.IsNullOrEmpty(value.EventId))
-        {
-            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-            Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
-        }
     }
 
     private void KeepAiAlive(string key, Collision_M value)

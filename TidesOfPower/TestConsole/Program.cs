@@ -158,8 +158,8 @@ async Task TestKafkaProto()
     await admin.CreateTopic(KafkaTopic.Input);
     await admin.CreateTopic(testTopic);
 
-    var producer = new ProtoKafkaProducer<Input_M>(config);
-    var consumer = new ProtoKafkaConsumer<LocalState_M>(config);
+    var producer = new KafkaProducer<Input_M>(config);
+    var consumer = new KafkaConsumer<LocalState_M>(config);
 
     var count = 0;
     var testCount = 1000;

@@ -14,8 +14,8 @@ public class AIService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopic = KafkaTopic.Input;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<Input_M> _producer;
-    private ProtoKafkaConsumer<Ai_M> _consumer;
+    private KafkaProducer<Input_M> _producer;
+    private KafkaConsumer<Ai_M> _consumer;
 
     private RedisBroker _redisBroker;
 
@@ -27,8 +27,8 @@ public class AIService : BackgroundService, IConsumerService
         Console.WriteLine("AIService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producer = new ProtoKafkaProducer<Input_M>(config);
-        _consumer = new ProtoKafkaConsumer<Ai_M>(config);
+        _producer = new KafkaProducer<Input_M>(config);
+        _consumer = new KafkaConsumer<Ai_M>(config);
         _redisBroker = new RedisBroker(localTest);
     }
 
@@ -51,7 +51,7 @@ public class AIService : BackgroundService, IConsumerService
         Process(value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        //Console.WriteLine($"Message processed in {elapsedTime} ms");
+        Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(Ai_M agent)
@@ -79,7 +79,6 @@ public class AIService : BackgroundService, IConsumerService
                 Y = agent.Location.Y
             },
             GameTime = deltaTime,
-            //EventId = Guid.NewGuid().ToString(),
             Source = Source.Ai,
             LastUpdate = to
         };

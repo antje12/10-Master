@@ -18,7 +18,7 @@ public class SyncService : BackgroundService
     private KafkaTopic _inputTopic = KafkaTopic.LocalState;
     private KafkaConfig _config;
     private KafkaAdministrator _admin;
-    private ProtoKafkaConsumer<LocalState_M> _consumer;
+    private KafkaConsumer<LocalState_M> _consumer;
 
     private MyGame _game;
     private LatencyList _latency = new(100);
@@ -28,7 +28,7 @@ public class SyncService : BackgroundService
         Console.WriteLine("SyncService Created!");
         _config = new KafkaConfig(_groupId, true);
         _admin = new KafkaAdministrator(_config);
-        _consumer = new ProtoKafkaConsumer<LocalState_M>(_config);
+        _consumer = new KafkaConsumer<LocalState_M>(_config);
         _game = game;
     }
 

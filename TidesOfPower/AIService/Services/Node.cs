@@ -10,7 +10,10 @@ public class Node
     public double F;
 
 
-    public Node(int x, int y, Node? parent = null, int depth = 0, int cost = 0, double f = 0)
+    public Node(
+        int x, int y, 
+        Node? parent = null, 
+        int depth = 0, int cost = 0, double f = 0)
     {
         X = x;
         Y = y;

@@ -21,7 +21,7 @@ public class Player_S : Player, Sprite
     private MyGame _game;
     private Camera _camera;
     private Vector2 _mouseLocation;
-    private ProtoKafkaProducer<Input_M> _producer;
+    private KafkaProducer<Input_M> _producer;
     private AnimationManager _anims = new();
 
     private Coordinates_M _lastLocation;
@@ -29,7 +29,7 @@ public class Player_S : Player, Sprite
     private bool _attacking;
     private bool _interacting;
 
-    public Player_S(MyGame game, Texture2D texture, Camera camera, ProtoKafkaProducer<Input_M> producer, Player p) 
+    public Player_S(MyGame game, Texture2D texture, Camera camera, KafkaProducer<Input_M> producer, Player p) 
         : base(p.Name, p.Score, p.Id, p.Location, p.LifePool, p.WalkingSpeed)
     {
         Texture = texture;
@@ -103,7 +103,7 @@ public class Player_S : Player, Sprite
 
     private void LocalMovement(List<GameKey> keyInput, double gameTime)
     {
-        Move.Avatar(Location.X, Location.Y, keyInput, gameTime, out float toX, out float toY);
+        Move.Avatar(Location.X, Location.Y, keyInput, gameTime, 100, out float toX, out float toY);
         var to = new Coordinates(toX,toY);
         if (IsLocationFree(to))
             Location = to;
@@ -112,15 +112,16 @@ public class Player_S : Player, Sprite
     private bool IsLocationFree(Coordinates to)
     {
         var entities = _game.LocalState.Where(x => x is Entity);
-        foreach (var entity in entities)
+        foreach (var sprite in entities)
         {
-            var w1 = 25;
-            var w2 =
-                entity is Projectile_S ? 5 :
-                entity is Enemy_S ? 25 : 0;
+            var entity = (Entity) sprite;
+            var r1 = Radius;
+            var r2 = entity.Radius;
+                //entity is Projectile_S ? 5 :
+                //entity is Enemy_S ? 25 : 0;
 
-            if (Collide.Circle(to.X, to.Y, w1, 
-                    entity.Location.X, entity.Location.Y, w2))
+            if (Collide.Circle(to.X, to.Y, r1, 
+                    entity.Location.X, entity.Location.Y, r2))
             {
                 if (entity is Enemy_S)
                 {

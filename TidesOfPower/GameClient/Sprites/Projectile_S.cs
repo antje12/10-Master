@@ -28,7 +28,7 @@ public class Projectile_S : Projectile, Sprite
     private void LocalMovement(double gameTime)
     {
         Move.Projectile(
-            Location.X, Location.Y, Direction.X, Direction.Y, gameTime,
+            Location.X, Location.Y, Direction.X, Direction.Y, gameTime, 200,
             out double time, out float toX, out float toY);
         Location = new Coordinates(toX, toY);
         TimeToLive -= time;

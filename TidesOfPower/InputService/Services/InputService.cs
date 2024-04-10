@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using ClassLibrary.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using InputService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
+using EntityType = ClassLibrary.Messages.Protobuf.EntityType;
 
 namespace InputService.Services;
 
@@ -16,9 +18,9 @@ public class InputService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicW = KafkaTopic.World;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<Collision_M> _producerC;
-    private ProtoKafkaProducer<World_M> _producerW;
-    private ProtoKafkaConsumer<Input_M> _consumer;
+    private KafkaProducer<Collision_M> _producerC;
+    private KafkaProducer<World_M> _producerW;
+    private KafkaConsumer<Input_M> _consumer;
 
     private Dictionary<string, DateTime> ClientAttacks = new();
     
@@ -30,9 +32,9 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine("InputService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producerC = new ProtoKafkaProducer<Collision_M>(config);
-        _producerW = new ProtoKafkaProducer<World_M>(config);
-        _consumer = new ProtoKafkaConsumer<Input_M>(config);
+        _producerC = new KafkaProducer<Collision_M>(config);
+        _producerW = new KafkaProducer<World_M>(config);
+        _consumer = new KafkaConsumer<Input_M>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -55,16 +57,11 @@ public class InputService : BackgroundService, IConsumerService
         Process(key, value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        //Console.WriteLine($"Message processed in {elapsedTime} ms");
+        Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(string key, Input_M value)
     {
-        if (!string.IsNullOrEmpty(value.EventId))
-        {
-            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-            Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
-        }
         var oldKeys = ClientAttacks.Where(x => x.Value < DateTime.Now)
             .Select(x => x.Key);
         foreach (var oldKey in oldKeys)
@@ -83,7 +80,7 @@ public class InputService : BackgroundService, IConsumerService
     private void Move(string key, Input_M value)
     {
         ClassLibrary.GameLogic.Move.Avatar(value.AgentLocation.X, value.AgentLocation.Y, value.KeyInput.ToList(),
-            value.GameTime,
+            value.GameTime, 100,
             out float toX, out float toY);
 
         var msgOut = new Collision_M()
@@ -101,11 +98,6 @@ public class InputService : BackgroundService, IConsumerService
             EventId = value.EventId
         };
         _producerC.Produce(_outputTopicC, key, msgOut);
-        if (!string.IsNullOrEmpty(value.EventId))
-        {
-            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-            Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
-        }
     }
 
     private void Attack(string key, Input_M value)
@@ -124,8 +116,9 @@ public class InputService : BackgroundService, IConsumerService
             y /= length;
         }
 
-        var spawnX = value.AgentLocation.X + x * (25 + 5 + 1);
-        var spawnY = value.AgentLocation.Y + y * (25 + 5 + 1);
+        var offset = Agent.Rad + Projectile.Rad + 3;
+        var spawnX = value.AgentLocation.X + x * offset;
+        var spawnY = value.AgentLocation.Y + y * offset;
 
         var msgOut = new World_M()
         {

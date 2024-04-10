@@ -14,8 +14,8 @@ public class ProjectileService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopic = KafkaTopic.Collision;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<Collision_M> _producer;
-    private ProtoKafkaConsumer<Projectile_M> _consumer;
+    private KafkaProducer<Collision_M> _producer;
+    private KafkaConsumer<Projectile_M> _consumer;
 
     public bool IsRunning { get; private set; }
     private bool localTest = true;
@@ -25,8 +25,8 @@ public class ProjectileService : BackgroundService, IConsumerService
         Console.WriteLine("ProjectileService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producer = new ProtoKafkaProducer<Collision_M>(config);
-        _consumer = new ProtoKafkaConsumer<Projectile_M>(config);
+        _producer = new KafkaProducer<Collision_M>(config);
+        _consumer = new KafkaConsumer<Projectile_M>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -48,7 +48,7 @@ public class ProjectileService : BackgroundService, IConsumerService
         Process(value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        //Console.WriteLine($"Message processed in {elapsedTime} ms");
+        Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(Projectile_M projectile)
@@ -73,7 +73,7 @@ public class ProjectileService : BackgroundService, IConsumerService
         var deltaTime = difference.TotalSeconds;
 
         Move.Projectile(projectile.Location.X, projectile.Location.Y, projectile.Direction.X,
-            projectile.Direction.Y, deltaTime,
+            projectile.Direction.Y, deltaTime, 200,
             out var time, out var toX, out var toY);
 
         output.TTL -= time;

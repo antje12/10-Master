@@ -16,7 +16,7 @@ public class MyGame : Game
     private string _groupId = "output-group";
     public KafkaTopic OutputTopic = KafkaTopic.Input;
     private KafkaConfig _config;
-    private ProtoKafkaProducer<Input_M> _producer;
+    private KafkaProducer<Input_M> _producer;
 
     private SpriteFont _font;
 
@@ -58,7 +58,7 @@ public class MyGame : Game
         IsMouseVisible = true;
 
         _config = new KafkaConfig(_groupId, true);
-        _producer = new ProtoKafkaProducer<Input_M>(_config);
+        _producer = new KafkaProducer<Input_M>(_config);
     }
 
     protected override void LoadContent()

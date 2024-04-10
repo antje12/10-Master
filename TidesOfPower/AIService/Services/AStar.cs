@@ -1,4 +1,5 @@
-﻿using ClassLibrary.GameLogic;
+﻿using ClassLibrary.Domain;
+using ClassLibrary.GameLogic;
 
 namespace AIService.Services;
 
@@ -93,8 +94,8 @@ public class AStar
     private static bool NodeCollision(Node n1, Node n2)
     {
         return Collide.Circle(
-            n1.X, n1.Y, 25,
-            n2.X, n2.Y, 25);
+            n1.X, n1.Y, Agent.Rad,
+            n2.X, n2.Y, Agent.Rad);
     }
 
     private static Node GetCheapestNode(Dictionary<string, Node> fringe)

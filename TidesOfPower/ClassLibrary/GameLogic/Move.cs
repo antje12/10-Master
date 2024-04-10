@@ -4,12 +4,9 @@ namespace ClassLibrary.GameLogic;
 
 public static class Move
 {
-    //ToDo: remove these
-    private static int _avatarSpeed = 100;
-    private static int _projectileSpeed = 200;
-
     public static void Avatar(
-        float x, float y, List<GameKey> input, double gameTime, 
+        float x, float y, List<GameKey> input, 
+        double gameTime, int speed,
         out float toX, out float toY)
     {
         toX = x;
@@ -19,30 +16,31 @@ public static class Move
             switch (i)
             {
                 case GameKey.Up:
-                    toY -= _avatarSpeed * (float) gameTime;
+                    toY -= speed * (float) gameTime;
                     break;
                 case GameKey.Down:
-                    toY += _avatarSpeed * (float) gameTime;
+                    toY += speed * (float) gameTime;
                     break;
                 case GameKey.Left:
-                    toX -= _avatarSpeed * (float) gameTime;
+                    toX -= speed * (float) gameTime;
                     break;
                 case GameKey.Right:
-                    toX += _avatarSpeed * (float) gameTime;
+                    toX += speed * (float) gameTime;
                     break;
             }
         }
     }
 
     public static void Projectile(
-        float x, float y, float dirX, float dirY, double gameTime, 
+        float x, float y, float dirX, float dirY, 
+        double gameTime, int speed,
         out double time, out float toX, out float toY)
     {
         toX = x;
         toY = y;
         
-        time = gameTime * _projectileSpeed;
-        toX += dirX * _projectileSpeed * (float) gameTime;
-        toY += dirY * _projectileSpeed * (float) gameTime;
+        time = gameTime * speed;
+        toX += dirX * speed * (float) gameTime;
+        toY += dirY * speed * (float) gameTime;
     }
 }

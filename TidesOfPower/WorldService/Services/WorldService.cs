@@ -18,10 +18,10 @@ public class WorldService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicA = KafkaTopic.Ai;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<LocalState_M> _producerLS;
-    private ProtoKafkaProducer<Projectile_M> _producerP;
-    private ProtoKafkaProducer<Ai_M> _producerA;
-    private ProtoKafkaConsumer<World_M> _consumer;
+    private KafkaProducer<LocalState_M> _producerLS;
+    private KafkaProducer<Projectile_M> _producerP;
+    private KafkaProducer<Ai_M> _producerA;
+    private KafkaConsumer<World_M> _consumer;
 
     private MongoDbBroker _mongoBroker;
     private RedisBroker _redisBroker;
@@ -34,10 +34,10 @@ public class WorldService : BackgroundService, IConsumerService
         Console.WriteLine("WorldService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producerLS = new ProtoKafkaProducer<LocalState_M>(config);
-        _producerP = new ProtoKafkaProducer<Projectile_M>(config);
-        _producerA = new ProtoKafkaProducer<Ai_M>(config);
-        _consumer = new ProtoKafkaConsumer<World_M>(config);
+        _producerLS = new KafkaProducer<LocalState_M>(config);
+        _producerP = new KafkaProducer<Projectile_M>(config);
+        _producerA = new KafkaProducer<Ai_M>(config);
+        _consumer = new KafkaConsumer<World_M>(config);
         _mongoBroker = new MongoDbBroker(localTest);
         _redisBroker = new RedisBroker(localTest);
     }
@@ -61,16 +61,11 @@ public class WorldService : BackgroundService, IConsumerService
         Process(key, value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        //Console.WriteLine($"Message processed in {elapsedTime} ms");
+        Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(string key, World_M value)
     {
-        if (!string.IsNullOrEmpty(value.EventId))
-        {
-            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-            Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
-        }
         switch (value.Change)
         {
             case Change.MovePlayer:
@@ -111,11 +106,6 @@ public class WorldService : BackgroundService, IConsumerService
 
         var entities = _redisBroker.GetEntities(agent.Location.X, agent.Location.Y);
         FullSync(key, value, entities);
-        if (!string.IsNullOrEmpty(value.EventId))
-        {
-            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-            Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
-        }
 
         var players = entities
             .OfType<Player>()

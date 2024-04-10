@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Classes.Domain;
+﻿using ClassLibrary.Domain;
 using MongoDB.Driver;
 
 namespace ClassLibrary.MongoDB;

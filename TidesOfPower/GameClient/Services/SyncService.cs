@@ -2,15 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Protobuf;
 using Microsoft.Extensions.Hosting;
 using ClassLibrary.Interfaces;
 using GameClient.Core;
 using GameClient.Sprites;
-using Projectile = ClassLibrary.Classes.Domain.Projectile;
-using Coordinates = ClassLibrary.Classes.Domain.Coordinates;
 
 namespace GameClient.Services;
 
@@ -20,7 +18,7 @@ public class SyncService : BackgroundService
     private KafkaTopic _inputTopic = KafkaTopic.LocalState;
     private KafkaConfig _config;
     private KafkaAdministrator _admin;
-    private ProtoKafkaConsumer<LocalState> _consumer;
+    private ProtoKafkaConsumer<LocalState_M> _consumer;
 
     private MyGame _game;
     private LatencyList _latency = new(100);
@@ -30,7 +28,7 @@ public class SyncService : BackgroundService
         Console.WriteLine("SyncService Created!");
         _config = new KafkaConfig(_groupId, true);
         _admin = new KafkaAdministrator(_config);
-        _consumer = new ProtoKafkaConsumer<LocalState>(_config);
+        _consumer = new ProtoKafkaConsumer<LocalState_M>(_config);
         _game = game;
     }
 
@@ -40,12 +38,12 @@ public class SyncService : BackgroundService
         await Task.Yield();
         Console.WriteLine($"SyncService started");
         await _admin.CreateTopic($"{_inputTopic}_{_game.Player.Id}");
-        IProtoConsumer<LocalState>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<LocalState_M>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume($"{_inputTopic}_{_game.Player.Id}", action, ct);
         Console.WriteLine($"SyncService stopped");
     }
 
-    private void ProcessMessage(string key, LocalState value)
+    private void ProcessMessage(string key, LocalState_M value)
     {
         switch (value.Sync)
         {
@@ -62,7 +60,7 @@ public class SyncService : BackgroundService
         }
     }
 
-    private void GetLatency(LocalState value)
+    private void GetLatency(LocalState_M value)
     {
         var startTime = _game.EventTimes[value.EventId];
         _game.EventTimes.Remove(value.EventId);
@@ -74,7 +72,7 @@ public class SyncService : BackgroundService
         Console.WriteLine($"Got {value.EventId} Latency = {timeDiff} ms - stamp: {timestampWithMs}");
     }
 
-    private void FullSync(LocalState value)
+    private void FullSync(LocalState_M value)
     {
         var player = value.Agents.FirstOrDefault(x => x.Id == _game.Player.Id.ToString());
         if (player != null)
@@ -104,7 +102,7 @@ public class SyncService : BackgroundService
         }
     }
 
-    private void DeltaSync(LocalState value)
+    private void DeltaSync(LocalState_M value)
     {
         foreach (var avatar in value.Agents)
         {
@@ -159,7 +157,7 @@ public class SyncService : BackgroundService
         }
     }
 
-    private void DeleteSync(LocalState value)
+    private void DeleteSync(LocalState_M value)
     {
         var deleteAvatarIds = value.Agents.Select(x => x.Id).ToList();
         var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();

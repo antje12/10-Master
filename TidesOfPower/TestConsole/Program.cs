@@ -1,12 +1,14 @@
 // See https://aka.ms/new-console-template for more information
 
 using System.Diagnostics;
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
+using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
 using TestConsole.Tests;
+using EntityType = ClassLibrary.Domain.EntityType;
 
 Console.WriteLine("Hello, World!");
 RedisBroker redisBroker = new RedisBroker(true);
@@ -21,7 +23,7 @@ MongoDbBroker mongoBroker = new MongoDbBroker(true);
 redisBroker.InitEntity();
 var avatar = new Agent(
     Guid.NewGuid(),
-    new ClassLibrary.Classes.Domain.Coordinates(50.123f, 100.456f),
+    new Coordinates(50.123f, 100.456f),
     EntityType.Player, 100, 100);
 redisBroker.Insert(avatar);
 redisBroker.GetEntities(avatar.Location.X, avatar.Location.Y);
@@ -156,25 +158,25 @@ async Task TestKafkaProto()
     await admin.CreateTopic(KafkaTopic.Input);
     await admin.CreateTopic(testTopic);
 
-    var producer = new ProtoKafkaProducer<ClassLibrary.Messages.Protobuf.Input>(config);
-    var consumer = new ProtoKafkaConsumer<ClassLibrary.Messages.Protobuf.LocalState>(config);
+    var producer = new ProtoKafkaProducer<Input_M>(config);
+    var consumer = new ProtoKafkaConsumer<LocalState_M>(config);
 
     var count = 0;
     var testCount = 1000;
     var results = new List<long>();
 
-    var message = new ClassLibrary.Messages.Protobuf.Input()
+    var message = new Input_M
     {
         AgentId = testId.ToString(),
-        AgentLocation = new ClassLibrary.Messages.Protobuf.Coordinates() {X = 0, Y = 0},
+        AgentLocation = new Coordinates_M {X = 0, Y = 0},
         GameTime = 0.5
     };
-    message.KeyInput.Add(ClassLibrary.Messages.Protobuf.GameKey.Right);
+    message.KeyInput.Add(GameKey.Right);
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
 
-    void ProcessMessage(string key, ClassLibrary.Messages.Protobuf.LocalState value)
+    void ProcessMessage(string key, LocalState_M value)
     {
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
@@ -204,6 +206,6 @@ async Task TestKafkaProto()
     stopwatch.Restart();
     producer.Produce(KafkaTopic.Input, "init", message);
 
-    IProtoConsumer<ClassLibrary.Messages.Protobuf.LocalState>.ProcessMessage action = ProcessMessage;
+    IProtoConsumer<LocalState_M>.ProcessMessage action = ProcessMessage;
     await Task.Run(() => consumer.Consume(testTopic, action, cts.Token), cts.Token);
 }

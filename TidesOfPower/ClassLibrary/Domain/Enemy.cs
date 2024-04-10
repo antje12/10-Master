@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary.Classes.Domain;
+﻿namespace ClassLibrary.Domain;
 
 public class Enemy : Agent
 {

@@ -13,8 +13,8 @@ public class LatencyClient
 
     private KafkaConfig _config;
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<Input> _producer;
-    private ProtoKafkaConsumer<LocalState> _consumer;
+    private ProtoKafkaProducer<Input_M> _producer;
+    private ProtoKafkaConsumer<LocalState_M> _consumer;
 
     private int _index;
     private Stopwatch _sw;
@@ -28,14 +28,14 @@ public class LatencyClient
     private Guid _testId;
     private string _testTopic;
 
-    private Input _msg;
+    private Input_M _msg;
 
     public LatencyClient(int index)
     {
         _config = new KafkaConfig(_groupId, true);
         _admin = new KafkaAdministrator(_config);
-        _producer = new ProtoKafkaProducer<Input>(_config);
-        _consumer = new ProtoKafkaConsumer<LocalState>(_config);
+        _producer = new ProtoKafkaProducer<Input_M>(_config);
+        _consumer = new ProtoKafkaConsumer<LocalState_M>(_config);
 
         _index = index;
         _sw = new Stopwatch();
@@ -45,10 +45,10 @@ public class LatencyClient
         _testId = Guid.NewGuid();
         _testTopic = $"{KafkaTopic.LocalState}_{_testId}";
 
-        _msg = new Input()
+        _msg = new Input_M()
         {
             AgentId = _testId.ToString(),
-            AgentLocation = new Coordinates() {X = _index * 1000, Y = _index * 1000},
+            AgentLocation = new Coordinates_M() {X = _index * 1000, Y = _index * 1000},
             GameTime = 0.0166667, // monogame = 60 updates a second
             EventId = Guid.NewGuid().ToString(),
             Source = Source.Player
@@ -64,11 +64,11 @@ public class LatencyClient
         _sw.Start();
         _producer.Produce(KafkaTopic.Input, _testId.ToString(), _msg);
 
-        IProtoConsumer<LocalState>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<LocalState_M>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_testTopic, action, _cts.Token);
     }
 
-    void ProcessMessage(string key, LocalState value)
+    void ProcessMessage(string key, LocalState_M value)
     {
         if (value.Sync != Sync.Full)
             return;

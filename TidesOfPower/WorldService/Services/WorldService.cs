@@ -1,15 +1,11 @@
 ﻿using System.Diagnostics;
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.MongoDB;
-using WorldService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
+using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
-using Agent = ClassLibrary.Messages.Protobuf.Agent;
-using AiAgent = ClassLibrary.Messages.Protobuf.AiAgent;
-using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
-using Projectile = ClassLibrary.Messages.Protobuf.Projectile;
+using WorldService.Interfaces;
 
 namespace WorldService.Services;
 
@@ -22,10 +18,10 @@ public class WorldService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicA = KafkaTopic.Ai;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<LocalState> _producerLS;
-    private ProtoKafkaProducer<Projectile> _producerP;
-    private ProtoKafkaProducer<AiAgent> _producerA;
-    private ProtoKafkaConsumer<WorldChange> _consumer;
+    private ProtoKafkaProducer<LocalState_M> _producerLS;
+    private ProtoKafkaProducer<Projectile_M> _producerP;
+    private ProtoKafkaProducer<Ai_M> _producerA;
+    private ProtoKafkaConsumer<World_M> _consumer;
 
     private MongoDbBroker _mongoBroker;
     private RedisBroker _redisBroker;
@@ -38,10 +34,10 @@ public class WorldService : BackgroundService, IConsumerService
         Console.WriteLine("WorldService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producerLS = new ProtoKafkaProducer<LocalState>(config);
-        _producerP = new ProtoKafkaProducer<Projectile>(config);
-        _producerA = new ProtoKafkaProducer<AiAgent>(config);
-        _consumer = new ProtoKafkaConsumer<WorldChange>(config);
+        _producerLS = new ProtoKafkaProducer<LocalState_M>(config);
+        _producerP = new ProtoKafkaProducer<Projectile_M>(config);
+        _producerA = new ProtoKafkaProducer<Ai_M>(config);
+        _consumer = new ProtoKafkaConsumer<World_M>(config);
         _mongoBroker = new MongoDbBroker(localTest);
         _redisBroker = new RedisBroker(localTest);
     }
@@ -52,13 +48,13 @@ public class WorldService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine("WorldService started");
         await _admin.CreateTopic(_inputTopic);
-        IProtoConsumer<WorldChange>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<World_M>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("WorldService stopped");
     }
 
-    private void ProcessMessage(string key, WorldChange value)
+    private void ProcessMessage(string key, World_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -68,7 +64,7 @@ public class WorldService : BackgroundService, IConsumerService
         //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
-    private void Process(string key, WorldChange value)
+    private void Process(string key, World_M value)
     {
         if (!string.IsNullOrEmpty(value.EventId))
         {
@@ -98,9 +94,9 @@ public class WorldService : BackgroundService, IConsumerService
         }
     }
 
-    private void MovePlayer(string key, WorldChange value)
+    private void MovePlayer(string key, World_M value)
     {
-        var agent = new Agent()
+        var agent = new Agent_M
         {
             Id = value.EntityId,
             Location = value.Location
@@ -109,7 +105,7 @@ public class WorldService : BackgroundService, IConsumerService
             "",
             0,
             Guid.Parse(agent.Id),
-            new ClassLibrary.Classes.Domain.Coordinates(agent.Location.X, agent.Location.Y),
+            new Coordinates(agent.Location.X, agent.Location.Y),
             100,
             100));
 
@@ -127,29 +123,29 @@ public class WorldService : BackgroundService, IConsumerService
         DeltaSync(players, [agent], [], Sync.Delta);
     }
 
-    private void FullSync(string key, WorldChange value, List<Entity> entities)
+    private void FullSync(string key, World_M value, List<Entity> entities)
     {
-        var msgOut = new LocalState()
+        var msgOut = new LocalState_M
         {
             AgentId = value.EntityId,
             Sync = Sync.Full,
             EventId = value.EventId
         };
-        var agents = entities.OfType<ClassLibrary.Classes.Domain.Agent>()
-            .Select(a => new Agent()
+        var agents = entities.OfType<Agent>()
+            .Select(a => new Agent_M
             {
                 Id = a.Id.ToString(),
-                Location = new Coordinates()
+                Location = new Coordinates_M
                 {
                     X = a.Location.X,
                     Y = a.Location.Y,
                 }
             }).ToList();
-        var projectiles = entities.OfType<ClassLibrary.Classes.Domain.Projectile>()
-            .Select(p => new Projectile()
+        var projectiles = entities.OfType<Projectile>()
+            .Select(p => new Projectile_M
             {
                 Id = p.Id.ToString(),
-                Location = new Coordinates()
+                Location = new Coordinates_M
                 {
                     X = p.Location.X,
                     Y = p.Location.Y,
@@ -162,13 +158,13 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void DeltaSync(
         List<Player> players,
-        List<Agent> agents,
-        List<Projectile> projectiles,
+        List<Agent_M> agents,
+        List<Projectile_M> projectiles,
         Sync sync)
     {
         foreach (var player in players)
         {
-            var msgOut = new LocalState()
+            var msgOut = new LocalState_M
             {
                 AgentId = player.Id.ToString(),
                 Sync = sync
@@ -179,12 +175,12 @@ public class WorldService : BackgroundService, IConsumerService
         }
     }
 
-    private void MoveAi(string key, WorldChange value)
+    private void MoveAi(string key, World_M value)
     {
         if (_redisBroker.Get(Guid.Parse(value.EntityId)) == null)
             return;
 
-        var msgOut = new AiAgent()
+        var msgOut = new Ai_M
         {
             Id = value.EntityId,
             Location = value.Location,
@@ -192,12 +188,12 @@ public class WorldService : BackgroundService, IConsumerService
         };
         _redisBroker.UpsertAvatarLocation(new Enemy(
             Guid.Parse(msgOut.Id),
-            new ClassLibrary.Classes.Domain.Coordinates(msgOut.Location.X, msgOut.Location.Y),
+            new Coordinates(msgOut.Location.X, msgOut.Location.Y),
             100,
             100));
         _producerA.Produce(_outputTopicA, msgOut.Id, msgOut);
 
-        var agent = new Agent()
+        var agent = new Agent_M
         {
             Id = value.EntityId,
             Location = value.Location
@@ -209,9 +205,9 @@ public class WorldService : BackgroundService, IConsumerService
         DeltaSync(players, [agent], [], Sync.Delta);
     }
 
-    private void MoveBullet(string key, WorldChange value)
+    private void MoveBullet(string key, World_M value)
     {
-        var msgOut = new Projectile()
+        var msgOut = new Projectile_M
         {
             Id = value.EntityId,
             Location = value.Location,
@@ -237,22 +233,22 @@ public class WorldService : BackgroundService, IConsumerService
         DeltaSync(players, [], [msgOut], sync);
     }
 
-    private void SpawnAi(string key, WorldChange value)
+    private void SpawnAi(string key, World_M value)
     {
-        var msgOut = new AiAgent()
+        var msgOut = new Ai_M
         {
             Id = Guid.NewGuid().ToString(),
-            Location = new Coordinates() {X = value.Location.X, Y = value.Location.Y},
+            Location = new Coordinates_M {X = value.Location.X, Y = value.Location.Y},
             LastUpdate = DateTime.UtcNow.Ticks,
         };
         _redisBroker.UpsertAvatarLocation(new Enemy(
             Guid.Parse(msgOut.Id),
-            new ClassLibrary.Classes.Domain.Coordinates(msgOut.Location.X, msgOut.Location.Y),
+            new Coordinates(msgOut.Location.X, msgOut.Location.Y),
             100,
             100));
         _producerA.Produce(_outputTopicA, msgOut.Id, msgOut);
 
-        var agent = new Agent()
+        var agent = new Agent_M
         {
             Id = msgOut.Id,
             Location = msgOut.Location
@@ -264,9 +260,9 @@ public class WorldService : BackgroundService, IConsumerService
         DeltaSync(players, [agent], [], Sync.Delta);
     }
 
-    private void SpawnBullet(string key, WorldChange value)
+    private void SpawnBullet(string key, World_M value)
     {
-        var msgOut = new Projectile()
+        var msgOut = new Projectile_M
         {
             Id = value.EntityId,
             Location = value.Location,
@@ -282,9 +278,9 @@ public class WorldService : BackgroundService, IConsumerService
         DeltaSync(players, [], [msgOut], Sync.Delta);
     }
 
-    private void DamageAgent(string key, WorldChange value)
+    private void DamageAgent(string key, World_M value)
     {
-        var agent = new Agent()
+        var agent = new Agent_M
         {
             Id = value.EntityId
         };

@@ -6,12 +6,12 @@ import "Classes.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
-message LocalState {
+message LocalState_M {
   string AgentId = 1; // UUIDs are represented as strings in proto
   Sync Sync = 2;
   
-  repeated ClassLibrary.Messages.Protobuf.Agent Agents = 3;
-  repeated ClassLibrary.Messages.Protobuf.Projectile Projectiles = 4;
+  repeated ClassLibrary.Messages.Protobuf.Agent_M Agents = 3;
+  repeated ClassLibrary.Messages.Protobuf.Projectile_M Projectiles = 4;
   
   string EventId = 5;
 }

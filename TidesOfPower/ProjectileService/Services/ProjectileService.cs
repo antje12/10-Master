@@ -14,8 +14,8 @@ public class ProjectileService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopic = KafkaTopic.Collision;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<CollisionCheck> _producer;
-    private ProtoKafkaConsumer<Projectile> _consumer;
+    private ProtoKafkaProducer<Collision_M> _producer;
+    private ProtoKafkaConsumer<Projectile_M> _consumer;
 
     public bool IsRunning { get; private set; }
     private bool localTest = true;
@@ -25,8 +25,8 @@ public class ProjectileService : BackgroundService, IConsumerService
         Console.WriteLine("ProjectileService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producer = new ProtoKafkaProducer<CollisionCheck>(config);
-        _consumer = new ProtoKafkaConsumer<Projectile>(config);
+        _producer = new ProtoKafkaProducer<Collision_M>(config);
+        _consumer = new ProtoKafkaConsumer<Projectile_M>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -35,13 +35,13 @@ public class ProjectileService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine("ProjectileService started");
         await _admin.CreateTopic(_inputTopic);
-        IProtoConsumer<Projectile>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<Projectile_M>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("ProjectileService stopped");
     }
 
-    private void ProcessMessage(string key, Projectile value)
+    private void ProcessMessage(string key, Projectile_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -51,13 +51,13 @@ public class ProjectileService : BackgroundService, IConsumerService
         //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
-    private void Process(Projectile projectile)
+    private void Process(Projectile_M projectile)
     {
-        var output = new CollisionCheck()
+        var output = new Collision_M()
         {
             EntityId = projectile.Id,
             EntityType = EntityType.Bullet,
-            FromLocation = new Coordinates()
+            FromLocation = new Coordinates_M()
             {
                 X = projectile.Location.X,
                 Y = projectile.Location.Y
@@ -77,7 +77,7 @@ public class ProjectileService : BackgroundService, IConsumerService
             out var time, out var toX, out var toY);
 
         output.TTL -= time;
-        output.ToLocation = new Coordinates()
+        output.ToLocation = new Coordinates_M()
         {
             X = toX,
             Y = toY

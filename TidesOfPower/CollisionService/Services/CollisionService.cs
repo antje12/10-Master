@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using ClassLibrary.GameLogic;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
@@ -19,9 +19,9 @@ public class CollisionService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicA = KafkaTopic.Ai;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<WorldChange> _producerW;
-    private ProtoKafkaProducer<ClassLibrary.Messages.Protobuf.AiAgent> _producerA;
-    private ProtoKafkaConsumer<CollisionCheck> _consumer;
+    private ProtoKafkaProducer<World_M> _producerW;
+    private ProtoKafkaProducer<Ai_M> _producerA;
+    private ProtoKafkaConsumer<Collision_M> _consumer;
 
     private MongoDbBroker _mongoBroker;
     private RedisBroker _redisBroker;
@@ -34,9 +34,9 @@ public class CollisionService : BackgroundService, IConsumerService
         Console.WriteLine("CollisionService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producerW = new ProtoKafkaProducer<WorldChange>(config);
-        _producerA = new ProtoKafkaProducer<ClassLibrary.Messages.Protobuf.AiAgent>(config);
-        _consumer = new ProtoKafkaConsumer<CollisionCheck>(config);
+        _producerW = new ProtoKafkaProducer<World_M>(config);
+        _producerA = new ProtoKafkaProducer<Ai_M>(config);
+        _consumer = new ProtoKafkaConsumer<Collision_M>(config);
         _mongoBroker = new MongoDbBroker(localTest);
         _redisBroker = new RedisBroker(localTest);
     }
@@ -47,13 +47,13 @@ public class CollisionService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine("CollisionService started");
         await _admin.CreateTopic(_inputTopic);
-        IProtoConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<Collision_M>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("CollisionService stopped");
     }
 
-    private void ProcessMessage(string key, CollisionCheck value)
+    private void ProcessMessage(string key, Collision_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -63,7 +63,7 @@ public class CollisionService : BackgroundService, IConsumerService
         //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
-    private void Process(string key, CollisionCheck value)
+    private void Process(string key, Collision_M value)
     {
         if (!string.IsNullOrEmpty(value.EventId))
         {
@@ -81,8 +81,8 @@ public class CollisionService : BackgroundService, IConsumerService
                 value.EntityType is EntityType.Bullet ? 5 :
                 value.EntityType is EntityType.Player or EntityType.Ai ? 25 : 0;
             var w2 =
-                entity is ClassLibrary.Classes.Domain.Projectile ? 5 :
-                entity is ClassLibrary.Classes.Domain.Agent ? 25 : 0;
+                entity is Projectile ? 5 :
+                entity is Agent ? 25 : 0;
             if (Collide.Circle(
                     value.ToLocation.X, value.ToLocation.Y, w1,
                     entity.Location.X, entity.Location.Y, w2))
@@ -91,18 +91,18 @@ public class CollisionService : BackgroundService, IConsumerService
                 {
                     case EntityType.Player:
                     case EntityType.Ai:
-                        if (entity is ClassLibrary.Classes.Domain.Agent)
+                        if (entity is Agent)
                             blocked = true;
                         break;
                     case EntityType.Bullet:
-                        if (entity is ClassLibrary.Classes.Domain.Agent)
+                        if (entity is Agent)
                             DamageAvatar(entity);
                         break;
                 }
             }
         }
 
-        var msgOut = new WorldChange()
+        var msgOut = new World_M()
         {
             EntityId = value.EntityId,
             Location = value.ToLocation
@@ -141,9 +141,9 @@ public class CollisionService : BackgroundService, IConsumerService
         }
     }
 
-    private void KeepAiAlive(string key, CollisionCheck value)
+    private void KeepAiAlive(string key, Collision_M value)
     {
-        var msgOut = new ClassLibrary.Messages.Protobuf.AiAgent()
+        var msgOut = new Ai_M()
         {
             Id = value.EntityId,
             Location = value.FromLocation,
@@ -154,11 +154,11 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void DamageAvatar(Entity entity)
     {
-        var output = new WorldChange()
+        var output = new World_M()
         {
             EntityId = entity.Id.ToString(),
             Change = Change.DamageAgent,
-            Location = new ClassLibrary.Messages.Protobuf.Coordinates()
+            Location = new Coordinates_M()
             {
                 X = entity.Location.X,
                 Y = entity.Location.Y

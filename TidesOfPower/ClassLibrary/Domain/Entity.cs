@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace ClassLibrary.Classes.Domain;
+namespace ClassLibrary.Domain;
 
 [BsonDiscriminator(RootClass = true)]
 [BsonKnownTypes(typeof(Agent), typeof(Projectile), typeof(Ship), typeof(Treasure))]
@@ -20,9 +20,9 @@ public class Entity
 
 public enum EntityType
 {
+    Projectile,
+    Treasure,
     Player,
     Enemy,
-    Projectile,
-    Ship,
-    Treasure
+    Ship
 }

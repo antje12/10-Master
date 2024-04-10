@@ -1,5 +1,5 @@
 using System.Globalization;
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using Newtonsoft.Json;
 using NRedisStack;
 using NRedisStack.RedisStackCommands;

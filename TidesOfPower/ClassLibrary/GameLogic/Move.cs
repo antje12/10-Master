@@ -4,6 +4,7 @@ namespace ClassLibrary.GameLogic;
 
 public static class Move
 {
+    //ToDo: remove these
     private static int _avatarSpeed = 100;
     private static int _projectileSpeed = 200;
 

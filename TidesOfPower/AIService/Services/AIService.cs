@@ -14,8 +14,8 @@ public class AIService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopic = KafkaTopic.Input;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<Input> _producer;
-    private ProtoKafkaConsumer<AiAgent> _consumer;
+    private ProtoKafkaProducer<Input_M> _producer;
+    private ProtoKafkaConsumer<Ai_M> _consumer;
 
     private RedisBroker _redisBroker;
 
@@ -27,8 +27,8 @@ public class AIService : BackgroundService, IConsumerService
         Console.WriteLine("AIService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producer = new ProtoKafkaProducer<Input>(config);
-        _consumer = new ProtoKafkaConsumer<AiAgent>(config);
+        _producer = new ProtoKafkaProducer<Input_M>(config);
+        _consumer = new ProtoKafkaConsumer<Ai_M>(config);
         _redisBroker = new RedisBroker(localTest);
     }
 
@@ -38,13 +38,13 @@ public class AIService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine("AIService started");
         await _admin.CreateTopic(_inputTopic);
-        IProtoConsumer<AiAgent>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<Ai_M>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("AIService stopped");
     }
 
-    private void ProcessMessage(string key, AiAgent value)
+    private void ProcessMessage(string key, Ai_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -54,7 +54,7 @@ public class AIService : BackgroundService, IConsumerService
         //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
-    private void Process(AiAgent agent)
+    private void Process(Ai_M agent)
     {
         if (_redisBroker.Get(Guid.Parse(agent.Id)) == null)
             return;
@@ -63,17 +63,17 @@ public class AIService : BackgroundService, IConsumerService
             .GetEntities(agent.Location.X, agent.Location.Y)
             .Where(x => x.Id.ToString() != agent.Id).ToList();
         var targets = entities
-            .OfType<ClassLibrary.Classes.Domain.Player>();
+            .OfType<ClassLibrary.Domain.Player>();
 
         var from = (long) agent.LastUpdate;
         var to = DateTime.UtcNow.Ticks;
         var difference = TimeSpan.FromTicks(to - from);
         var deltaTime = difference.TotalSeconds;
         
-        var output = new Input()
+        var output = new Input_M()
         {
             AgentId = agent.Id,
-            AgentLocation = new Coordinates()
+            AgentLocation = new Coordinates_M()
             {
                 X = agent.Location.X,
                 Y = agent.Location.Y
@@ -96,7 +96,7 @@ public class AIService : BackgroundService, IConsumerService
         if (target != null && 
             AStar.H((int) agent.Location.X, (int) agent.Location.Y, (int) target.Location.X, (int) target.Location.Y) < 150)
         {
-            output.MouseLocation = new Coordinates()
+            output.MouseLocation = new Coordinates_M()
             {
                 X = target.Location.X,
                 Y = target.Location.Y

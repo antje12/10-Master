@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Classes.Domain;
+﻿using ClassLibrary.Domain;
 using GameClient.Core;
 using ClassLibrary.GameLogic;
 using Microsoft.Xna.Framework;

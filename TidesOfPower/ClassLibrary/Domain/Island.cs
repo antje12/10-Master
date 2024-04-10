@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace ClassLibrary.Classes.Domain;
+namespace ClassLibrary.Domain;
 
 public class Island
 {

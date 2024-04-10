@@ -16,9 +16,9 @@ public class InputService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicW = KafkaTopic.World;
 
     private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<CollisionCheck> _producerC;
-    private ProtoKafkaProducer<WorldChange> _producerW;
-    private ProtoKafkaConsumer<Input> _consumer;
+    private ProtoKafkaProducer<Collision_M> _producerC;
+    private ProtoKafkaProducer<World_M> _producerW;
+    private ProtoKafkaConsumer<Input_M> _consumer;
 
     private Dictionary<string, DateTime> ClientAttacks = new();
     
@@ -30,9 +30,9 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine("InputService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _producerC = new ProtoKafkaProducer<CollisionCheck>(config);
-        _producerW = new ProtoKafkaProducer<WorldChange>(config);
-        _consumer = new ProtoKafkaConsumer<Input>(config);
+        _producerC = new ProtoKafkaProducer<Collision_M>(config);
+        _producerW = new ProtoKafkaProducer<World_M>(config);
+        _consumer = new ProtoKafkaConsumer<Input_M>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -42,13 +42,13 @@ public class InputService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine("InputService started");
         await _admin.CreateTopic(_inputTopic);
-        IProtoConsumer<Input>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<Input_M>.ProcessMessage action = ProcessMessage;
         await _consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("InputService stopped");
     }
 
-    private void ProcessMessage(string key, Input value)
+    private void ProcessMessage(string key, Input_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -58,7 +58,7 @@ public class InputService : BackgroundService, IConsumerService
         //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
-    private void Process(string key, Input value)
+    private void Process(string key, Input_M value)
     {
         if (!string.IsNullOrEmpty(value.EventId))
         {
@@ -80,13 +80,13 @@ public class InputService : BackgroundService, IConsumerService
             Interact(key, value);
     }
 
-    private void Move(string key, Input value)
+    private void Move(string key, Input_M value)
     {
         ClassLibrary.GameLogic.Move.Avatar(value.AgentLocation.X, value.AgentLocation.Y, value.KeyInput.ToList(),
             value.GameTime,
             out float toX, out float toY);
 
-        var msgOut = new CollisionCheck()
+        var msgOut = new Collision_M()
         {
             EntityId = value.AgentId,
             EntityType = value.Source == Source.Ai ? EntityType.Ai : EntityType.Player,
@@ -108,7 +108,7 @@ public class InputService : BackgroundService, IConsumerService
         }
     }
 
-    private void Attack(string key, Input value)
+    private void Attack(string key, Input_M value)
     {
         if (ClientAttacks.ContainsKey(key))
             return;
@@ -127,19 +127,19 @@ public class InputService : BackgroundService, IConsumerService
         var spawnX = value.AgentLocation.X + x * (25 + 5 + 1);
         var spawnY = value.AgentLocation.Y + y * (25 + 5 + 1);
 
-        var msgOut = new WorldChange()
+        var msgOut = new World_M()
         {
             EntityId = Guid.NewGuid().ToString(),
             Change = Change.SpawnBullet,
-            Location = new Coordinates() {X = spawnX, Y = spawnY},
-            Direction = new Coordinates() {X = x, Y = y}
+            Location = new Coordinates_M() {X = spawnX, Y = spawnY},
+            Direction = new Coordinates_M() {X = x, Y = y}
         };
         _producerW.Produce(_outputTopicW, key, msgOut);
     }
 
-    private void Interact(string key, Input value)
+    private void Interact(string key, Input_M value)
     {
-        var msgOut = new WorldChange()
+        var msgOut = new World_M()
         {
             EntityId = Guid.NewGuid().ToString(),
             Change = Change.SpawnAi,

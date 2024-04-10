@@ -6,13 +6,13 @@ import "Classes.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
-message CollisionCheck {
+message Collision_M {
   string EntityId = 1; // UUIDs are represented as strings in Protobuf
   EntityType EntityType = 2;
   
-  ClassLibrary.Messages.Protobuf.Coordinates FromLocation = 3;
-  ClassLibrary.Messages.Protobuf.Coordinates ToLocation = 4;
-  ClassLibrary.Messages.Protobuf.Coordinates Direction = 5;
+  ClassLibrary.Messages.Protobuf.Coordinates_M FromLocation = 3;
+  ClassLibrary.Messages.Protobuf.Coordinates_M ToLocation = 4;
+  ClassLibrary.Messages.Protobuf.Coordinates_M Direction = 5;
   
   double LastUpdate = 6;
   string EventId = 7;
@@ -21,6 +21,6 @@ message CollisionCheck {
 
 enum EntityType {
   Player = 0;
-  Ai = 1;
-  Bullet = 2;
+  Bullet = 1;
+  Ai = 2;
 }

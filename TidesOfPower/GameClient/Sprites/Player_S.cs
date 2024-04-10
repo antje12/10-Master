@@ -1,15 +1,14 @@
 using System;
-using GameClient.Core;
 using System.Collections.Generic;
 using System.Linq;
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using ClassLibrary.GameLogic;
 using ClassLibrary.Kafka;
+using ClassLibrary.Messages.Protobuf;
+using GameClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using ClassLibrary.Messages.Protobuf;
-using Coordinates = ClassLibrary.Messages.Protobuf.Coordinates;
 
 namespace GameClient.Sprites;
 
@@ -22,15 +21,15 @@ public class Player_S : Player, Sprite
     private MyGame _game;
     private Camera _camera;
     private Vector2 _mouseLocation;
-    private ProtoKafkaProducer<Input> _producer;
+    private ProtoKafkaProducer<Input_M> _producer;
     private AnimationManager _anims = new();
 
-    private Coordinates _lastLocation;
+    private Coordinates_M _lastLocation;
     private List<GameKey> _lastKeyInput;
     private bool _attacking;
     private bool _interacting;
 
-    public Player_S(MyGame game, Texture2D texture, Camera camera, ProtoKafkaProducer<Input> producer, Player p) 
+    public Player_S(MyGame game, Texture2D texture, Camera camera, ProtoKafkaProducer<Input_M> producer, Player p) 
         : base(p.Name, p.Score, p.Id, p.Location, p.LifePool, p.WalkingSpeed)
     {
         Texture = texture;
@@ -40,10 +39,10 @@ public class Player_S : Player, Sprite
         _game = game;
         _camera = camera;
         _producer = producer;
-        _lastLocation = new Coordinates();
+        _lastLocation = new Coordinates_M();
         _lastKeyInput = new List<GameKey>();
         
-        _anims.AddAnimation(GameKey.Up, new(texture, 3, 4, 0.2f, 1));
+        _anims.AddAnimation(GameKey.Up, new(texture, 3, 4, 0.2f));
         _anims.AddAnimation(GameKey.Right, new(texture, 3, 4, 0.2f, 2));
         _anims.AddAnimation(GameKey.Down, new(texture, 3, 4, 0.2f, 3));
         _anims.AddAnimation(GameKey.Left, new(texture,3, 4, 0.2f, 4));
@@ -68,15 +67,15 @@ public class Player_S : Player, Sprite
         else if (keyInput.Contains(GameKey.Down))
             _anims.Update(gameTime, GameKey.Down);
 
-        var msgOut = new Input()
+        var msgOut = new Input_M
         {
             AgentId = Id.ToString(),
-            AgentLocation = new Coordinates()
+            AgentLocation = new Coordinates_M
             {
                 X = Location.X,
                 Y = Location.Y
             },
-            MouseLocation = new Coordinates()
+            MouseLocation = new Coordinates_M
             {
                 X = _mouseLocation.X,
                 Y = _mouseLocation.Y
@@ -105,12 +104,12 @@ public class Player_S : Player, Sprite
     private void LocalMovement(List<GameKey> keyInput, double gameTime)
     {
         Move.Avatar(Location.X, Location.Y, keyInput, gameTime, out float toX, out float toY);
-        var to = new ClassLibrary.Classes.Domain.Coordinates(toX,toY);
+        var to = new Coordinates(toX,toY);
         if (IsLocationFree(to))
             Location = to;
     }
 
-    private bool IsLocationFree(ClassLibrary.Classes.Domain.Coordinates to)
+    private bool IsLocationFree(Coordinates to)
     {
         var entities = _game.LocalState.Where(x => x is Entity);
         foreach (var entity in entities)

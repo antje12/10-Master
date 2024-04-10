@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using ClassLibrary.Kafka;
+using ClassLibrary.Messages.Protobuf;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using GameClient.Core;
-using ClassLibrary.Messages.Protobuf;
 using GameClient.Sprites;
-using Coordinates = ClassLibrary.Classes.Domain.Coordinates;
 
 namespace GameClient;
 
@@ -17,7 +16,7 @@ public class MyGame : Game
     private string _groupId = "output-group";
     public KafkaTopic OutputTopic = KafkaTopic.Input;
     private KafkaConfig _config;
-    private ProtoKafkaProducer<Input> _producer;
+    private ProtoKafkaProducer<Input_M> _producer;
 
     private SpriteFont _font;
 
@@ -59,7 +58,7 @@ public class MyGame : Game
         IsMouseVisible = true;
 
         _config = new KafkaConfig(_groupId, true);
-        _producer = new ProtoKafkaProducer<Input>(_config);
+        _producer = new ProtoKafkaProducer<Input_M>(_config);
     }
 
     protected override void LoadContent()
@@ -87,7 +86,7 @@ public class MyGame : Game
         _camera = new Camera(this);
         var playerLocation = new Coordinates(ScreenWidth / 2, ScreenHeight / 2);
         Player = new Player_S(this, PlayerTexture, _camera, _producer, new Player("Player", 0, Guid.NewGuid(), playerLocation, 100, 100));
-        _ui = new UI(_font, this);
+        _ui = new UI(_font, _camera, this);
 
         _coin = new Treasure_S(CoinTexture, 6, new Treasure(10, Guid.NewGuid(), new Coordinates(300, 300)));
         _chest = new Treasure_S(TreasureTexture, 4, new Treasure(100, Guid.NewGuid(), new Coordinates(100, 100)));

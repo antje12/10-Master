@@ -1,4 +1,4 @@
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;

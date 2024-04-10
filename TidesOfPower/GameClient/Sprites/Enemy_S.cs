@@ -1,10 +1,9 @@
 ﻿using System;
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using ClassLibrary.Messages.Protobuf;
 using GameClient.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Coordinates = ClassLibrary.Classes.Domain.Coordinates;
 
 namespace GameClient.Sprites;
 

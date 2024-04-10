@@ -25,22 +25,22 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg1DbGFzc2VzLnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
-            "dWYiIwoLQ29vcmRpbmF0ZXMSCQoBWBgBIAEoAhIJCgFZGAIgASgCIpsBCgVB",
-            "Z2VudBIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEoCzIrLkNsYXNzTGli",
-            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxIMCgROYW1lGAMg",
-            "ASgJEhQKDFdhbGtpbmdTcGVlZBgEIAEoBRIQCghMaWZlUG9vbBgFIAEoBRIR",
-            "CglJbnZlbnRvcnkYBiABKAUiuAEKClByb2plY3RpbGUSCgoCSWQYASABKAkS",
-            "PQoITG9jYXRpb24YAiABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
-            "dG9idWYuQ29vcmRpbmF0ZXMSPgoJRGlyZWN0aW9uGAMgASgLMisuQ2xhc3NM",
-            "aWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEhIKCkxhc3RV",
-            "cGRhdGUYBCABKAESCwoDVFRMGAUgASgBQiGqAh5DbGFzc0xpYnJhcnkuTWVz",
-            "c2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
+            "dWYiJQoNQ29vcmRpbmF0ZXNfTRIJCgFYGAEgASgCEgkKAVkYAiABKAIinwEK",
+            "B0FnZW50X00SCgoCSWQYASABKAkSPwoITG9jYXRpb24YAiABKAsyLS5DbGFz",
+            "c0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXNfTRIMCgRO",
+            "YW1lGAMgASgJEhQKDFdhbGtpbmdTcGVlZBgEIAEoBRIQCghMaWZlUG9vbBgF",
+            "IAEoBRIRCglJbnZlbnRvcnkYBiABKAUivgEKDFByb2plY3RpbGVfTRIKCgJJ",
+            "ZBgBIAEoCRI/CghMb2NhdGlvbhgCIAEoCzItLkNsYXNzTGlicmFyeS5NZXNz",
+            "YWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlc19NEkAKCURpcmVjdGlvbhgDIAEo",
+            "CzItLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRl",
+            "c19NEhIKCkxhc3RVcGRhdGUYBCABKAESCwoDVFRMGAUgASgBQiGqAh5DbGFz",
+            "c0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Coordinates), global::ClassLibrary.Messages.Protobuf.Coordinates.Parser, new[]{ "X", "Y" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Agent), global::ClassLibrary.Messages.Protobuf.Agent.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile), global::ClassLibrary.Messages.Protobuf.Projectile.Parser, new[]{ "Id", "Location", "Direction", "LastUpdate", "TTL" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Coordinates_M), global::ClassLibrary.Messages.Protobuf.Coordinates_M.Parser, new[]{ "X", "Y" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Agent_M), global::ClassLibrary.Messages.Protobuf.Agent_M.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile_M), global::ClassLibrary.Messages.Protobuf.Projectile_M.Parser, new[]{ "Id", "Location", "Direction", "LastUpdate", "TTL" }, null, null, null, null)
           }));
     }
     #endregion
@@ -48,16 +48,16 @@ namespace ClassLibrary.Messages.Protobuf {
   }
   #region Messages
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Coordinates : pb::IMessage<Coordinates>
+  public sealed partial class Coordinates_M : pb::IMessage<Coordinates_M>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<Coordinates> _parser = new pb::MessageParser<Coordinates>(() => new Coordinates());
+    private static readonly pb::MessageParser<Coordinates_M> _parser = new pb::MessageParser<Coordinates_M>(() => new Coordinates_M());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Coordinates> Parser { get { return _parser; } }
+    public static pb::MessageParser<Coordinates_M> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -73,7 +73,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Coordinates() {
+    public Coordinates_M() {
       OnConstruction();
     }
 
@@ -81,7 +81,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Coordinates(Coordinates other) : this() {
+    public Coordinates_M(Coordinates_M other) : this() {
       x_ = other.x_;
       y_ = other.y_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -89,8 +89,8 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Coordinates Clone() {
-      return new Coordinates(this);
+    public Coordinates_M Clone() {
+      return new Coordinates_M(this);
     }
 
     /// <summary>Field number for the "X" field.</summary>
@@ -120,12 +120,12 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as Coordinates);
+      return Equals(other as Coordinates_M);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Coordinates other) {
+    public bool Equals(Coordinates_M other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -211,7 +211,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Coordinates other) {
+    public void MergeFrom(Coordinates_M other) {
       if (other == null) {
         return;
       }
@@ -275,16 +275,16 @@ namespace ClassLibrary.Messages.Protobuf {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Agent : pb::IMessage<Agent>
+  public sealed partial class Agent_M : pb::IMessage<Agent_M>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<Agent> _parser = new pb::MessageParser<Agent>(() => new Agent());
+    private static readonly pb::MessageParser<Agent_M> _parser = new pb::MessageParser<Agent_M>(() => new Agent_M());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Agent> Parser { get { return _parser; } }
+    public static pb::MessageParser<Agent_M> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -300,7 +300,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Agent() {
+    public Agent_M() {
       OnConstruction();
     }
 
@@ -308,7 +308,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Agent(Agent other) : this() {
+    public Agent_M(Agent_M other) : this() {
       id_ = other.id_;
       location_ = other.location_ != null ? other.location_.Clone() : null;
       name_ = other.name_;
@@ -320,8 +320,8 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Agent Clone() {
-      return new Agent(this);
+    public Agent_M Clone() {
+      return new Agent_M(this);
     }
 
     /// <summary>Field number for the "Id" field.</summary>
@@ -338,10 +338,10 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "Location" field.</summary>
     public const int LocationFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates location_;
+    private global::ClassLibrary.Messages.Protobuf.Coordinates_M location_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Location {
+    public global::ClassLibrary.Messages.Protobuf.Coordinates_M Location {
       get { return location_; }
       set {
         location_ = value;
@@ -399,12 +399,12 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as Agent);
+      return Equals(other as Agent_M);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Agent other) {
+    public bool Equals(Agent_M other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -542,7 +542,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Agent other) {
+    public void MergeFrom(Agent_M other) {
       if (other == null) {
         return;
       }
@@ -551,7 +551,7 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (other.location_ != null) {
         if (location_ == null) {
-          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
         }
         Location.MergeFrom(other.Location);
       }
@@ -588,7 +588,7 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 18: {
             if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Location);
             break;
@@ -630,7 +630,7 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 18: {
             if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Location);
             break;
@@ -659,16 +659,16 @@ namespace ClassLibrary.Messages.Protobuf {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Projectile : pb::IMessage<Projectile>
+  public sealed partial class Projectile_M : pb::IMessage<Projectile_M>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<Projectile> _parser = new pb::MessageParser<Projectile>(() => new Projectile());
+    private static readonly pb::MessageParser<Projectile_M> _parser = new pb::MessageParser<Projectile_M>(() => new Projectile_M());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Projectile> Parser { get { return _parser; } }
+    public static pb::MessageParser<Projectile_M> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -684,7 +684,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Projectile() {
+    public Projectile_M() {
       OnConstruction();
     }
 
@@ -692,7 +692,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Projectile(Projectile other) : this() {
+    public Projectile_M(Projectile_M other) : this() {
       id_ = other.id_;
       location_ = other.location_ != null ? other.location_.Clone() : null;
       direction_ = other.direction_ != null ? other.direction_.Clone() : null;
@@ -703,8 +703,8 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Projectile Clone() {
-      return new Projectile(this);
+    public Projectile_M Clone() {
+      return new Projectile_M(this);
     }
 
     /// <summary>Field number for the "Id" field.</summary>
@@ -721,10 +721,10 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "Location" field.</summary>
     public const int LocationFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates location_;
+    private global::ClassLibrary.Messages.Protobuf.Coordinates_M location_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Location {
+    public global::ClassLibrary.Messages.Protobuf.Coordinates_M Location {
       get { return location_; }
       set {
         location_ = value;
@@ -733,10 +733,10 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "Direction" field.</summary>
     public const int DirectionFieldNumber = 3;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates direction_;
+    private global::ClassLibrary.Messages.Protobuf.Coordinates_M direction_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Direction {
+    public global::ClassLibrary.Messages.Protobuf.Coordinates_M Direction {
       get { return direction_; }
       set {
         direction_ = value;
@@ -770,12 +770,12 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as Projectile);
+      return Equals(other as Projectile_M);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Projectile other) {
+    public bool Equals(Projectile_M other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -900,7 +900,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Projectile other) {
+    public void MergeFrom(Projectile_M other) {
       if (other == null) {
         return;
       }
@@ -909,13 +909,13 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (other.location_ != null) {
         if (location_ == null) {
-          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
         }
         Location.MergeFrom(other.Location);
       }
       if (other.direction_ != null) {
         if (direction_ == null) {
-          Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+          Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
         }
         Direction.MergeFrom(other.Direction);
       }
@@ -946,14 +946,14 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 18: {
             if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Location);
             break;
           }
           case 26: {
             if (direction_ == null) {
-              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Direction);
             break;
@@ -987,14 +987,14 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 18: {
             if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Location);
             break;
           }
           case 26: {
             if (direction_ == null) {
-              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Direction);
             break;

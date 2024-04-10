@@ -6,12 +6,12 @@ import "Classes.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
-message WorldChange {
+message World_M {
   string EntityId = 1; // UUIDs are represented as strings in Protobuf
   Change Change = 2;
   
-  ClassLibrary.Messages.Protobuf.Coordinates Location = 3;
-  ClassLibrary.Messages.Protobuf.Coordinates Direction = 4;
+  ClassLibrary.Messages.Protobuf.Coordinates_M Location = 3;
+  ClassLibrary.Messages.Protobuf.Coordinates_M Direction = 4;
   
   double LastUpdate = 5;
   string EventId = 6;
@@ -19,10 +19,10 @@ message WorldChange {
 }
 
 enum Change {
-  MovePlayer = 0;
-  MoveAi = 1;
+  DamageAgent = 0;
+  SpawnBullet = 1;
   MoveBullet = 2;
-  SpawnAi = 3;
-  SpawnBullet = 4;
-  DamageAgent = 5;
+  MovePlayer = 3;
+  SpawnAi = 4;
+  MoveAi = 5;
 }

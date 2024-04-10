@@ -6,10 +6,10 @@ import "Classes.proto";
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
-message AiAgent {
+message Ai_M {
   string Id = 1;
   
-  ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
+  ClassLibrary.Messages.Protobuf.Coordinates_M Location = 2;
   
   double LastUpdate = 3;
 }

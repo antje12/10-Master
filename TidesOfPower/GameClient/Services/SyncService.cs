@@ -9,9 +9,8 @@ using Microsoft.Extensions.Hosting;
 using ClassLibrary.Interfaces;
 using GameClient.Core;
 using GameClient.Sprites;
-using Microsoft.Xna.Framework;
-using Coordinates = ClassLibrary.Classes.Domain.Coordinates;
 using Projectile = ClassLibrary.Classes.Domain.Projectile;
+using Coordinates = ClassLibrary.Classes.Domain.Coordinates;
 
 namespace GameClient.Services;
 
@@ -72,11 +71,21 @@ public class SyncService : BackgroundService
         string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
         _latency.Add(timeDiff);
         _game.Latency = _latency.GetAverage();
-        Console.WriteLine($"Latency = {timeDiff} ms - stamp: {timestampWithMs}");
+        Console.WriteLine($"Got {value.EventId} Latency = {timeDiff} ms - stamp: {timestampWithMs}");
     }
 
     private void FullSync(LocalState value)
     {
+        var player = value.Agents.FirstOrDefault(x => x.Id == _game.Player.Id.ToString());
+        if (player != null)
+        {
+            var xDiff = Math.Abs(_game.Player.Location.X - player.Location.X);
+            var yDiff = Math.Abs(_game.Player.Location.Y - player.Location.Y);
+            if (xDiff > 50 || yDiff > 50)
+                _game.Player.Location = new Coordinates(player.Location.X, player.Location.Y);
+            value.Agents.Remove(player);
+        }
+        
         DeltaSync(value);
 
         var onlineAvatarIds = value.Agents.Select(x => x.Id).ToList();
@@ -101,13 +110,9 @@ public class SyncService : BackgroundService
         {
             if (avatar.Id == _game.Player.Id.ToString())
             {
-                var xDiff = Math.Abs(_game.Player.Location.X - avatar.Location.X);
-                var yDiff = Math.Abs(_game.Player.Location.Y - avatar.Location.Y);
-                if (xDiff > 50 || yDiff > 50)
-                    _game.Player.Location = new Coordinates(avatar.Location.X, avatar.Location.Y);
-                continue;
+                throw new Exception("Major error!!!");
             }
-
+            
             var localAvatar = _game.LocalState.FirstOrDefault(x => x is Enemy_S y && y.Id.ToString() == avatar.Id);
             if (localAvatar == null)
             {
@@ -123,7 +128,7 @@ public class SyncService : BackgroundService
             {
                 if (localAvatar is Enemy_S la)
                 {
-                    la.SetPosition(new Coordinates(avatar.Location.X, avatar.Location.Y));
+                    la.SetLocation(new Coordinates(avatar.Location.X, avatar.Location.Y));
                 }
                 else
                 {

@@ -48,7 +48,7 @@ public class ProjectileService : BackgroundService, IConsumerService
         Process(value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        Console.WriteLine($"Message processed in {elapsedTime} ms");
+        //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(Projectile projectile)

@@ -55,11 +55,16 @@ public class InputService : BackgroundService, IConsumerService
         Process(key, value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        Console.WriteLine($"Message processed in {elapsedTime} ms");
+        //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(string key, Input value)
     {
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        }
         var oldKeys = ClientAttacks.Where(x => x.Value < DateTime.Now)
             .Select(x => x.Key);
         foreach (var oldKey in oldKeys)
@@ -96,6 +101,11 @@ public class InputService : BackgroundService, IConsumerService
             EventId = value.EventId
         };
         _producerC.Produce(_outputTopicC, key, msgOut);
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
+        }
     }
 
     private void Attack(string key, Input value)

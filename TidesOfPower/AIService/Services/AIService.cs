@@ -51,7 +51,7 @@ public class AIService : BackgroundService, IConsumerService
         Process(value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        Console.WriteLine($"Message processed in {elapsedTime} ms");
+        //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(AiAgent agent)
@@ -79,7 +79,7 @@ public class AIService : BackgroundService, IConsumerService
                 Y = agent.Location.Y
             },
             GameTime = deltaTime,
-            EventId = Guid.NewGuid().ToString(),
+            //EventId = Guid.NewGuid().ToString(),
             Source = Source.Ai,
             LastUpdate = to
         };

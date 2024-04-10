@@ -60,11 +60,16 @@ public class CollisionService : BackgroundService, IConsumerService
         Process(key, value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        Console.WriteLine($"Message processed in {elapsedTime} ms");
+        //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(string key, CollisionCheck value)
     {
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        }
         var blocked = false;
         var entities = _redisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
         foreach (var entity in entities)
@@ -129,6 +134,11 @@ public class CollisionService : BackgroundService, IConsumerService
                 break;
         }
         _producerW.Produce(_outputTopicW, key, msgOut);
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
+        }
     }
 
     private void KeepAiAlive(string key, CollisionCheck value)

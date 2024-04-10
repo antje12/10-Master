@@ -21,7 +21,7 @@ public class Player_S : Player, Sprite
     
     private MyGame _game;
     private Camera _camera;
-    private Vector2 _mousePosition;
+    private Vector2 _mouseLocation;
     private ProtoKafkaProducer<Input> _producer;
     private AnimationManager _anims = new();
 
@@ -78,8 +78,8 @@ public class Player_S : Player, Sprite
             },
             MouseLocation = new Coordinates()
             {
-                X = _mousePosition.X,
-                Y = _mousePosition.Y
+                X = _mouseLocation.X,
+                Y = _mouseLocation.Y
             },
             GameTime = gameTime.ElapsedGameTime.TotalSeconds,
             EventId = Guid.NewGuid().ToString(),
@@ -99,8 +99,6 @@ public class Player_S : Player, Sprite
         _lastLocation = msgOut.AgentLocation;
         _lastKeyInput = msgOut.KeyInput.ToList();
         
-        Console.WriteLine($"Mouse: {_mousePosition.X}:{_mousePosition.Y}");
-
         LocalMovement(keyInput, msgOut.GameTime);
     }
 
@@ -114,17 +112,18 @@ public class Player_S : Player, Sprite
 
     private bool IsLocationFree(ClassLibrary.Classes.Domain.Coordinates to)
     {
-        foreach (var sprite in _game.LocalState)
+        var entities = _game.LocalState.Where(x => x is Entity);
+        foreach (var entity in entities)
         {
             var w1 = 25;
             var w2 =
-                sprite is Projectile_S ? 5 :
-                sprite is Enemy_S ? 25 : 0;
+                entity is Projectile_S ? 5 :
+                entity is Enemy_S ? 25 : 0;
 
             if (Collide.Circle(to.X, to.Y, w1, 
-                    Location.X, Location.Y, w2))
+                    entity.Location.X, entity.Location.Y, w2))
             {
-                if (sprite is Enemy_S)
+                if (entity is Enemy_S)
                 {
                     return false;
                 }
@@ -156,7 +155,7 @@ public class Player_S : Player, Sprite
             {
                 _attacking = true;
                 keyInput.Add(GameKey.Attack);
-                _mousePosition = _camera.MouseInWorld(mState.Position.ToVector2());
+                _mouseLocation = _camera.MouseInWorld(mState.Position.ToVector2());
             }
         }
         else

@@ -16,12 +16,6 @@ public class Entity
         Location = location;
         Type = type;
     }
-    
-    // ToDo: put back in?
-    //public Entity()
-    //{
-    //    Location = new Coordinates();
-    //}
 }
 
 public enum EntityType

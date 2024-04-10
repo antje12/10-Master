@@ -65,11 +65,16 @@ public class WorldService : BackgroundService, IConsumerService
         Process(key, value);
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
-        Console.WriteLine($"Message processed in {elapsedTime} ms");
+        //Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
     private void Process(string key, WorldChange value)
     {
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        }
         switch (value.Change)
         {
             case Change.MovePlayer:
@@ -110,6 +115,11 @@ public class WorldService : BackgroundService, IConsumerService
 
         var entities = _redisBroker.GetEntities(agent.Location.X, agent.Location.Y);
         FullSync(key, value, entities);
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
+        }
 
         var players = entities
             .OfType<Player>()
@@ -278,11 +288,11 @@ public class WorldService : BackgroundService, IConsumerService
         {
             Id = value.EntityId
         };
-        _redisBroker.DeleteEntity(Guid.Parse(agent.Id));
 
         var players = _redisBroker
             .GetEntities(value.Location.X, value.Location.Y)
             .OfType<Player>().ToList();
+        _redisBroker.DeleteEntity(Guid.Parse(agent.Id));
         DeltaSync(players, [agent], [], Sync.Delete);
     }
 }

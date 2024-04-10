@@ -90,7 +90,7 @@ public class MyGame : Game
         _ui = new UI(_font, this);
 
         _coin = new Treasure_S(CoinTexture, 6, new Treasure(10, Guid.NewGuid(), new Coordinates(300, 300)));
-        _chest = new Treasure_S(TreasureTexture, 4, new Treasure(100, Guid.NewGuid(), new Coordinates(300, 300)));
+        _chest = new Treasure_S(TreasureTexture, 4, new Treasure(100, Guid.NewGuid(), new Coordinates(100, 100)));
         _shipS = new Ship_S(ShipTexture, new Ship(100, Guid.NewGuid(), new Coordinates(200, 200)));
 
         var ocean = new Ocean_S(this, OceanTexture, null);

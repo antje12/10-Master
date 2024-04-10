@@ -15,7 +15,7 @@ public class Enemy_S : Enemy, Sprite
     private int Height { get; set; }
     
     private readonly AnimationManager _anims = new();
-    private Coordinates LastPosition;
+    private Coordinates LastLocation;
     private DateTime LastUpdate;
 
     public Enemy_S(Texture2D texture, Enemy e) 
@@ -28,26 +28,26 @@ public class Enemy_S : Enemy, Sprite
         _anims.AddAnimation(GameKey.Right, new(texture, 3, 4, 0.2f, 2));
         _anims.AddAnimation(GameKey.Down, new(texture, 3, 4, 0.2f, 3));
         _anims.AddAnimation(GameKey.Left, new(texture,3, 4, 0.2f, 4));
-        LastPosition = Location;
+        LastLocation = Location;
         LastUpdate = DateTime.Now;
     }
 
-    public void SetPosition(Coordinates newPosition)
+    public void SetLocation(Coordinates newLocation)
     {
-        LastPosition = Location;
-        Location = newPosition;
+        LastLocation = Location;
+        Location = newLocation;
         LastUpdate = DateTime.Now;
     }
     
     public void Update(GameTime gameTime)
     {
-        if (Location.X < LastPosition.X)
+        if (Location.X < LastLocation.X)
             _anims.Update(gameTime, GameKey.Left);
-        else if (Location.X > LastPosition.X)
+        else if (Location.X > LastLocation.X)
             _anims.Update(gameTime, GameKey.Right);
-        else if (Location.Y < LastPosition.Y)
+        else if (Location.Y < LastLocation.Y)
             _anims.Update(gameTime, GameKey.Up);
-        else if (Location.Y > LastPosition.Y)
+        else if (Location.Y > LastLocation.Y)
             _anims.Update(gameTime, GameKey.Down);
 
         TimeSpan timeSpan = DateTime.Now - LastUpdate;

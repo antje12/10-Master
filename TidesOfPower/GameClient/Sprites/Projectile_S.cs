@@ -12,7 +12,7 @@ public class Projectile_S : Projectile, Sprite
     private int Width { get; set; }
     private int Height { get; set; }
 
-    public Projectile_S(Texture2D texture, Projectile p) 
+    public Projectile_S(Texture2D texture, Projectile p)
         : base(p.Direction, p.TimeToLive, p.Damage, p.Id, p.Location)
     {
         Texture = texture;
@@ -30,7 +30,7 @@ public class Projectile_S : Projectile, Sprite
         Move.Projectile(
             Location.X, Location.Y, Direction.X, Direction.Y, gameTime,
             out double time, out float toX, out float toY);
-        Location = new Coordinates(toX,toY);
+        Location = new Coordinates(toX, toY);
         TimeToLive -= time;
     }
 

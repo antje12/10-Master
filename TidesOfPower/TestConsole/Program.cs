@@ -19,17 +19,10 @@ return;
 MongoDbBroker mongoBroker = new MongoDbBroker(true);
 
 redisBroker.InitEntity();
-var avatar = new Agent()
-{
-    Id = Guid.NewGuid(),
-    Location = new ClassLibrary.Classes.Domain.Coordinates()
-    {
-        X = 50.123f,
-        Y = 100.456f
-    },
-    WalkingSpeed = 10,
-    LifePool = 100
-};
+var avatar = new Agent(
+    Guid.NewGuid(),
+    new ClassLibrary.Classes.Domain.Coordinates(50.123f, 100.456f),
+    EntityType.Player, 100, 100);
 redisBroker.Insert(avatar);
 redisBroker.GetEntities(avatar.Location.X, avatar.Location.Y);
 
@@ -49,12 +42,10 @@ for (int i = 0; i < 10; i++)
 
 void TestMongoDB()
 {
-    var profile = new Profile()
-    {
-        Id = Guid.NewGuid(),
-        Email = "mail@live.dk",
-        Password = "secret"
-    };
+    var profile = new Profile(
+        Guid.NewGuid(),
+        "mail@live.dk",
+        "secret");
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
@@ -89,12 +80,10 @@ void TestMongoDB()
 
 void TestRedis()
 {
-    var profile = new Profile()
-    {
-        Id = Guid.NewGuid(),
-        Email = "mail@live.dk",
-        Password = "secret"
-    };
+    var profile = new Profile(
+        Guid.NewGuid(),
+        "mail@live.dk",
+        "secret");
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();

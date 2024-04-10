@@ -89,9 +89,9 @@ public class RedisBroker
         _json.Set($@"entity:{entity.Id}", "$", entity);
     }
 
-    public void Delete(Entity entity)
+    public void DeleteEntity(Guid id)
     {
-        _json.Del($@"entity:{entity.Id}");
+        _json.Del($@"entity:{id}");
     }
 
     public Entity? Get(Guid id)

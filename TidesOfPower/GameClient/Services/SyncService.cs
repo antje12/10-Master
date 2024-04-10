@@ -142,24 +142,14 @@ public class SyncService : BackgroundService
                 {
                     _game.LocalState.Add(
                         new Projectile_S(_game.ProjectileTexture,
-                            new Projectile(new Coordinates(projectile.Direction.X, projectile.Direction.Y), ));
-                            
-                            
-                            Guid.Parse(projectile.Id),
-                            new Vector2(projectile.Location.X, projectile.Location.Y),
-                            new Vector2(projectile.Direction.X, projectile.Direction.Y),
-                            _game.ProjectileTexture));
+                            new Projectile(new Coordinates(projectile.Direction.X, projectile.Direction.Y), 100, 100,  Guid.Parse(projectile.Id), new Coordinates(projectile.Location.X, projectile.Location.Y))));
                     string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
                     Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }
             }
             else
             {
-                localAvatar.Location = new Coordinates()
-                {
-                    X = projectile.Location.X,
-                    Y = projectile.Location.Y
-                };
+                localAvatar.Location = new Coordinates(projectile.Location.X,projectile.Location.Y);
             }
         }
     }

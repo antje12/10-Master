@@ -145,7 +145,7 @@ public class SyncService : BackgroundService
                 {
                     _game.LocalState.Add(
                         new Projectile_S(_game.ProjectileTexture,
-                            new Projectile(new Coordinates(projectile.Direction.X, projectile.Direction.Y), 100, 100,  Guid.Parse(projectile.Id), new Coordinates(projectile.Location.X, projectile.Location.Y))));
+                            new Projectile(new Coordinates(projectile.Direction.X, projectile.Direction.Y), 100, 100, 100,  Guid.Parse(projectile.Id), new Coordinates(projectile.Location.X, projectile.Location.Y))));
                     string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
                     Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }

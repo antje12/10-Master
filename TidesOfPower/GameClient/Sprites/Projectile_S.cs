@@ -13,7 +13,7 @@ public class Projectile_S : Projectile, Sprite
     private int Height { get; set; }
 
     public Projectile_S(Texture2D texture, Projectile p)
-        : base(p.Direction, p.TimeToLive, p.Damage, p.Id, p.Location)
+        : base(p.Direction, p.FlyingSpeed, p.TimeToLive, p.Damage, p.Id, p.Location)
     {
         Texture = texture;
         Width = texture.Width / 1;

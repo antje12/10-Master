@@ -260,7 +260,7 @@ public class RedisBroker
 
     public void Clean()
     {
-        var query = new Query("*").Limit(0, 10000);
+        var query = new Query("*").Limit(0, 10000); // 10000 max
         var results = _ft.Search("idx:entities", query);
         foreach (var doc in results.Documents)
         {

@@ -62,10 +62,10 @@
       <x>336</x>
       <y>248</y>
       <w>24</w>
-      <h>136</h>
+      <h>128</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;150.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
@@ -152,7 +152,7 @@ UpdateLocalState(full)</panel_attributes>
       <x>336</x>
       <y>264</y>
       <w>16</w>
-      <h>96</h>
+      <h>88</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>

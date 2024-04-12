@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="15.1">
-  <zoom_level>10</zoom_level>
+  <zoom_level>8</zoom_level>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>60</x>
-      <y>190</y>
-      <w>100</w>
-      <h>30</h>
+      <x>64</x>
+      <y>232</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>_:Client_</panel_attributes>
     <additional_attributes/>
@@ -15,21 +15,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>100</x>
-      <y>210</y>
-      <w>30</w>
-      <h>260</h>
+      <x>96</x>
+      <y>248</y>
+      <w>24</w>
+      <h>256</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;240.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;300.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>200</x>
-      <y>190</y>
-      <w>100</w>
-      <h>30</h>
+      <x>176</x>
+      <y>232</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>_:Input Serv_</panel_attributes>
     <additional_attributes/>
@@ -37,10 +37,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>240</x>
-      <y>210</y>
-      <w>30</w>
-      <h>120</h>
+      <x>208</x>
+      <y>248</y>
+      <w>24</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
@@ -48,10 +48,10 @@
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>360</x>
-      <y>190</y>
-      <w>100</w>
-      <h>30</h>
+      <x>304</x>
+      <y>232</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>_:Collision Serv_</panel_attributes>
     <additional_attributes/>
@@ -59,21 +59,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>400</x>
-      <y>210</y>
-      <w>30</w>
-      <h>120</h>
+      <x>336</x>
+      <y>248</y>
+      <w>24</w>
+      <h>136</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>540</x>
-      <y>190</y>
-      <w>100</w>
-      <h>30</h>
+      <x>448</x>
+      <y>232</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>_:World Serv_</panel_attributes>
     <additional_attributes/>
@@ -81,21 +81,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
-      <y>210</y>
-      <w>30</w>
-      <h>260</h>
+      <x>480</x>
+      <y>248</y>
+      <w>24</w>
+      <h>256</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;240.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;300.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>100</x>
-      <y>230</y>
-      <w>20</w>
-      <h>210</h>
+      <x>96</x>
+      <y>264</y>
+      <w>16</w>
+      <h>216</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -103,10 +103,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>110</x>
-      <y>230</y>
-      <w>150</w>
-      <h>40</h>
+      <x>104</x>
+      <y>264</y>
+      <w>120</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 HandleInput()</panel_attributes>
@@ -115,10 +115,10 @@ HandleInput()</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>110</x>
-      <y>340</y>
-      <w>490</w>
-      <h>40</h>
+      <x>104</x>
+      <y>400</y>
+      <w>392</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 UpdateLocalState(full)</panel_attributes>
@@ -127,10 +127,10 @@ UpdateLocalState(full)</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>240</x>
-      <y>230</y>
-      <w>20</w>
-      <h>70</h>
+      <x>208</x>
+      <y>264</y>
+      <w>16</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -138,10 +138,10 @@ UpdateLocalState(full)</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>580</x>
-      <y>230</y>
-      <w>20</w>
-      <h>210</h>
+      <x>480</x>
+      <y>328</y>
+      <w>16</w>
+      <h>152</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -149,10 +149,10 @@ UpdateLocalState(full)</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>400</x>
-      <y>230</y>
-      <w>20</w>
-      <h>70</h>
+      <x>336</x>
+      <y>264</y>
+      <w>16</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -160,10 +160,10 @@ UpdateLocalState(full)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>250</x>
-      <y>240</y>
-      <w>170</w>
-      <h>40</h>
+      <x>216</x>
+      <y>272</y>
+      <w>136</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 CheckIfCollision()</panel_attributes>
@@ -172,10 +172,10 @@ CheckIfCollision()</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>410</x>
-      <y>250</y>
-      <w>190</w>
-      <h>40</h>
+      <x>344</x>
+      <y>328</y>
+      <w>152</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 ChangeWorld(update)</panel_attributes>
@@ -184,10 +184,10 @@ ChangeWorld(update)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>110</x>
-      <y>390</y>
-      <w>490</w>
-      <h>40</h>
+      <x>104</x>
+      <y>440</y>
+      <w>392</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 UpdateLocalState(delta)</panel_attributes>
@@ -196,10 +196,10 @@ UpdateLocalState(delta)</panel_attributes>
   <element>
     <id>UMLFrame</id>
     <coordinates>
-      <x>0</x>
-      <y>380</y>
-      <w>610</w>
-      <h>50</h>
+      <x>16</x>
+      <y>432</y>
+      <w>488</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>loop [clients]</panel_attributes>
     <additional_attributes/>
@@ -207,10 +207,10 @@ UpdateLocalState(delta)</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>710</x>
-      <y>190</y>
-      <w>100</w>
-      <h>30</h>
+      <x>584</x>
+      <y>232</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>_:Cache_</panel_attributes>
     <additional_attributes/>
@@ -218,21 +218,21 @@ UpdateLocalState(delta)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>750</x>
-      <y>210</y>
-      <w>30</w>
-      <h>260</h>
+      <x>616</x>
+      <y>248</y>
+      <w>24</w>
+      <h>256</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;240.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;300.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>750</x>
-      <y>230</y>
-      <w>20</w>
-      <h>200</h>
+      <x>616</x>
+      <y>264</y>
+      <w>16</w>
+      <h>216</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -240,10 +240,10 @@ UpdateLocalState(delta)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>590</x>
-      <y>260</y>
-      <w>180</w>
-      <h>40</h>
+      <x>488</x>
+      <y>336</y>
+      <w>144</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 UpdateAgent()</panel_attributes>
@@ -252,10 +252,10 @@ UpdateAgent()</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>590</x>
-      <y>320</y>
-      <w>180</w>
-      <h>40</h>
+      <x>488</x>
+      <y>384</y>
+      <w>144</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 clients</panel_attributes>
@@ -264,10 +264,10 @@ clients</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>590</x>
-      <y>290</y>
-      <w>180</w>
-      <h>40</h>
+      <x>488</x>
+      <y>360</y>
+      <w>144</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 GetAffectedClients()</panel_attributes>
@@ -276,13 +276,37 @@ GetAffectedClients()</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>0</x>
-      <y>220</y>
-      <w>120</w>
-      <h>40</h>
+      <x>16</x>
+      <y>256</y>
+      <w>96</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 KeyPress</panel_attributes>
     <additional_attributes>100.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>344</x>
+      <y>280</y>
+      <w>288</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+GetLocalState()</panel_attributes>
+    <additional_attributes>340.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>344</x>
+      <y>304</y>
+      <w>288</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+localState</panel_attributes>
+    <additional_attributes>10.0;20.0;340.0;20.0</additional_attributes>
   </element>
 </diagram>

@@ -123,7 +123,7 @@ bg=orange</panel_attributes>
       <w>130</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>Projectile
+    <panel_attributes>Projectile_Sprite
 --
 
 --
@@ -171,7 +171,7 @@ bg=orange</panel_attributes>
       <w>130</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>Player
+    <panel_attributes>Player_Sprite
 --
 
 --

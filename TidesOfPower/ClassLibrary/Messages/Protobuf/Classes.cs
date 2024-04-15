@@ -25,24 +25,24 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg1DbGFzc2VzLnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
-            "dWYiJQoNQ29vcmRpbmF0ZXNfTRIJCgFYGAEgASgCEgkKAVkYAiABKAIinwEK",
+            "dWYiJQoNQ29vcmRpbmF0ZXNfTRIJCgFYGAEgASgCEgkKAVkYAiABKAIimwEK",
             "B0FnZW50X00SCgoCSWQYASABKAkSPwoITG9jYXRpb24YAiABKAsyLS5DbGFz",
             "c0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXNfTRIMCgRO",
             "YW1lGAMgASgJEhQKDFdhbGtpbmdTcGVlZBgEIAEoBRIQCghMaWZlUG9vbBgF",
-            "IAEoBRIRCglJbnZlbnRvcnkYBiABKAUivgEKDFByb2plY3RpbGVfTRIKCgJJ",
-            "ZBgBIAEoCRI/CghMb2NhdGlvbhgCIAEoCzItLkNsYXNzTGlicmFyeS5NZXNz",
-            "YWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlc19NEkAKCURpcmVjdGlvbhgDIAEo",
-            "CzItLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRl",
-            "c19NEhIKCkxhc3RVcGRhdGUYBCABKAESCwoDVFRMGAUgASgBImgKClRyZWFz",
-            "dXJlX00SCgoCSWQYASABKAkSPwoITG9jYXRpb24YAiABKAsyLS5DbGFzc0xp",
-            "YnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXNfTRINCgVWYWx1",
-            "ZRgDIAEoBUIhqgIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZw",
-            "cm90bzM="));
+            "IAEoBRINCgVTY29yZRgGIAEoBSK+AQoMUHJvamVjdGlsZV9NEgoKAklkGAEg",
+            "ASgJEj8KCExvY2F0aW9uGAIgASgLMi0uQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
+            "LlByb3RvYnVmLkNvb3JkaW5hdGVzX00SQAoJRGlyZWN0aW9uGAMgASgLMi0u",
+            "Q2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzX00S",
+            "EgoKTGFzdFVwZGF0ZRgEIAEoARILCgNUVEwYBSABKAEiaAoKVHJlYXN1cmVf",
+            "TRIKCgJJZBgBIAEoCRI/CghMb2NhdGlvbhgCIAEoCzItLkNsYXNzTGlicmFy",
+            "eS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlc19NEg0KBVZhbHVlGAMg",
+            "ASgFQiGqAh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWZiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Coordinates_M), global::ClassLibrary.Messages.Protobuf.Coordinates_M.Parser, new[]{ "X", "Y" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Agent_M), global::ClassLibrary.Messages.Protobuf.Agent_M.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Agent_M), global::ClassLibrary.Messages.Protobuf.Agent_M.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Score" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile_M), global::ClassLibrary.Messages.Protobuf.Projectile_M.Parser, new[]{ "Id", "Location", "Direction", "LastUpdate", "TTL" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Treasure_M), global::ClassLibrary.Messages.Protobuf.Treasure_M.Parser, new[]{ "Id", "Location", "Value" }, null, null, null, null)
           }));
@@ -318,7 +318,7 @@ namespace ClassLibrary.Messages.Protobuf {
       name_ = other.name_;
       walkingSpeed_ = other.walkingSpeed_;
       lifePool_ = other.lifePool_;
-      inventory_ = other.inventory_;
+      score_ = other.score_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -388,15 +388,15 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "Inventory" field.</summary>
-    public const int InventoryFieldNumber = 6;
-    private int inventory_;
+    /// <summary>Field number for the "Score" field.</summary>
+    public const int ScoreFieldNumber = 6;
+    private int score_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int Inventory {
-      get { return inventory_; }
+    public int Score {
+      get { return score_; }
       set {
-        inventory_ = value;
+        score_ = value;
       }
     }
 
@@ -420,7 +420,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Name != other.Name) return false;
       if (WalkingSpeed != other.WalkingSpeed) return false;
       if (LifePool != other.LifePool) return false;
-      if (Inventory != other.Inventory) return false;
+      if (Score != other.Score) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -433,7 +433,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (WalkingSpeed != 0) hash ^= WalkingSpeed.GetHashCode();
       if (LifePool != 0) hash ^= LifePool.GetHashCode();
-      if (Inventory != 0) hash ^= Inventory.GetHashCode();
+      if (Score != 0) hash ^= Score.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -472,9 +472,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(40);
         output.WriteInt32(LifePool);
       }
-      if (Inventory != 0) {
+      if (Score != 0) {
         output.WriteRawTag(48);
-        output.WriteInt32(Inventory);
+        output.WriteInt32(Score);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -506,9 +506,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(40);
         output.WriteInt32(LifePool);
       }
-      if (Inventory != 0) {
+      if (Score != 0) {
         output.WriteRawTag(48);
-        output.WriteInt32(Inventory);
+        output.WriteInt32(Score);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -535,8 +535,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (LifePool != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(LifePool);
       }
-      if (Inventory != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Inventory);
+      if (Score != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Score);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -568,8 +568,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other.LifePool != 0) {
         LifePool = other.LifePool;
       }
-      if (other.Inventory != 0) {
-        Inventory = other.Inventory;
+      if (other.Score != 0) {
+        Score = other.Score;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -610,7 +610,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 48: {
-            Inventory = input.ReadInt32();
+            Score = input.ReadInt32();
             break;
           }
         }
@@ -652,7 +652,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 48: {
-            Inventory = input.ReadInt32();
+            Score = input.ReadInt32();
             break;
           }
         }

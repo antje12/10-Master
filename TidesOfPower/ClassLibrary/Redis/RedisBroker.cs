@@ -96,8 +96,25 @@ public class RedisBroker
 
     public Entity? Get(Guid id)
     {
-        var result = _json.Get($@"entity:{id}");
-        return result.IsNull ? null : JsonConvert.DeserializeObject<Entity>(result.ToString());
+        var get = _json.Get($@"entity:{id}");
+        var result = get.IsNull ? null : JsonConvert.DeserializeObject<Entity>(get.ToString());
+        if (result != null)
+        {
+            switch (result.Type)
+            {
+                case EntityType.Player:
+                    return JsonConvert.DeserializeObject<Player>(get.ToString());
+                case EntityType.Enemy:
+                    return JsonConvert.DeserializeObject<Enemy>(get.ToString());
+                case EntityType.Projectile:
+                    return JsonConvert.DeserializeObject<Projectile>(get.ToString());
+                case EntityType.Ship:
+                    return JsonConvert.DeserializeObject<Ship>(get.ToString());
+                case EntityType.Treasure:
+                    return JsonConvert.DeserializeObject<Treasure>(get.ToString());
+            }
+        }
+        return result;
     }
     
     public List<Entity> GetEntities()
@@ -267,5 +284,4 @@ public class RedisBroker
             Console.WriteLine($"{row["city"]} - {row["count"]}");
         }
     }
-
 }

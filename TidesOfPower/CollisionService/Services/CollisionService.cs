@@ -62,36 +62,15 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void Process(string key, Collision_M value)
     {
-        var blocked = false;
+        var treasure = 0;
         var entities = _redisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
-        foreach (var entity in entities)
-        {
-            if (value.EntityId == entity.Id.ToString())
-                continue;
+        var stopFlow = HandleCollisions(value, entities, out treasure);
 
-            var r1 =
-                value.EntityType is EntityType.Bullet ? Projectile.TypeRadius :
-                value.EntityType is EntityType.Player or EntityType.Ai ? Agent.TypeRadius : 0;
-            var r2 = entity.Radius;
-                //entity is Projectile ? 5 :
-                //entity is Agent ? 25 : 0;
-            if (Collide.Circle(
-                    value.ToLocation.X, value.ToLocation.Y, r1,
-                    entity.Location.X, entity.Location.Y, r2))
-            {
-                switch (value.EntityType)
-                {
-                    case EntityType.Player:
-                    case EntityType.Ai:
-                        if (entity is Agent)
-                            blocked = true;
-                        break;
-                    case EntityType.Bullet:
-                        if (entity is Agent)
-                            DamageAgent(entity);
-                        break;
-                }
-            }
+        if (stopFlow)
+        {
+            if (value.EntityType == EntityType.Ai)
+                KeepAiAlive(key, value);
+            return;
         }
 
         var msgOut = new World_M()
@@ -102,23 +81,11 @@ public class CollisionService : BackgroundService, IConsumerService
         switch (value.EntityType)
         {
             case EntityType.Player:
-                if (blocked)
-                {
-                    Console.WriteLine("player blocked");
-                    return;
-                }
-                Console.WriteLine($"player move from {value.FromLocation.X}:{value.FromLocation.Y} to {msgOut.Location.X}:{msgOut.Location.Y}");
                 msgOut.Change = Change.MovePlayer;
                 msgOut.EventId = value.EventId;
+                msgOut.Value = treasure;
                 break;
             case EntityType.Ai:
-                if (blocked)
-                {
-                    Console.WriteLine("ai blocked");
-                    KeepAiAlive(key, value);
-                    return;
-                }
-                Console.WriteLine("ai move");
                 msgOut.Change = Change.MoveAi;
                 msgOut.LastUpdate = value.LastUpdate;
                 break;
@@ -129,7 +96,70 @@ public class CollisionService : BackgroundService, IConsumerService
                 msgOut.TTL = value.TTL;
                 break;
         }
+
         _producerW.Produce(_outputTopicW, key, msgOut);
+    }
+
+    private bool HandleCollisions(Collision_M value, List<Entity> entities, out int treasure)
+    {
+        treasure = 0;
+        var stopFlow = false;
+        var valueRadius =
+            value.EntityType is EntityType.Bullet ? Projectile.TypeRadius :
+            value.EntityType is EntityType.Player or EntityType.Ai ? Agent.TypeRadius : 0;
+
+        foreach (var entity in entities)
+        {
+            if (value.EntityId == entity.Id.ToString())
+                continue;
+
+            if (Collide.Circle(
+                    value.ToLocation.X, value.ToLocation.Y, valueRadius,
+                    entity.Location.X, entity.Location.Y, entity.Radius))
+            {
+                switch (value.EntityType)
+                {
+                    case EntityType.Player:
+                        stopFlow |= PlayerCollision(entity, out treasure);
+                        break;
+                    case EntityType.Ai:
+                        stopFlow |= AICollision(entity);
+                        break;
+                    case EntityType.Bullet:
+                        stopFlow |= ProjectileCollision(entity);
+                        break;
+                }
+            }
+        }
+
+        return stopFlow;
+    }
+
+    private bool PlayerCollision(Entity entity, out int treasure)
+    {
+        treasure = 0;
+        if (entity is Treasure t)
+        {
+            treasure = t.Value;
+            CollectTreasure(entity);
+        }
+        else if (entity is Agent)
+            return true;
+        return false;
+    }
+
+    private bool AICollision(Entity entity)
+    {
+        if (entity is Agent)
+            return true;
+        return false;
+    }
+
+    private bool ProjectileCollision(Entity entity)
+    {
+        if (entity is Agent)
+            DamageAgent(entity);
+        return false;
     }
 
     private void KeepAiAlive(string key, Collision_M value)
@@ -163,7 +193,7 @@ public class CollisionService : BackgroundService, IConsumerService
         var output = new World_M()
         {
             EntityId = entity.Id.ToString(),
-            Change = Change.DamageAgent,
+            Change = Change.CollectTreasure,
             Location = new Coordinates_M()
             {
                 X = entity.Location.X,

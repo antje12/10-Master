@@ -18,10 +18,11 @@ message World_M {
 }
 
 enum Change {
-  DamageAgent = 0;
-  SpawnBullet = 1;
-  MoveBullet = 2;
-  MovePlayer = 3;
-  SpawnAi = 4;
-  MoveAi = 5;
+  CollectTreasure = 0;
+  DamageAgent = 1;
+  SpawnBullet = 2;
+  MoveBullet = 3;
+  MovePlayer = 4;
+  SpawnAi = 5;
+  MoveAi = 6;
 }

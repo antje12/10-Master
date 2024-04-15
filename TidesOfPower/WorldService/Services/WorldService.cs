@@ -86,19 +86,29 @@ public class WorldService : BackgroundService, IConsumerService
             case Change.DamageAgent:
                 DamageAgent(key, value);
                 break;
+            case Change.CollectTreasure:
+                CollectTreasure(key, value);
+                break;
         }
     }
 
     private void MovePlayer(string key, World_M value)
     {
+        var db = _redisBroker.Get(Guid.Parse(value.EntityId));
+        
         var agent = new Agent_M
         {
             Id = value.EntityId,
-            Location = value.Location
+            Location = value.Location,
+            Name = db is Player p ? p.Name : "Player",
+            WalkingSpeed = db is Player p2 ? p2.WalkingSpeed : 0,
+            LifePool = db is Player p3 ? p3.LifePool : 0,
+            Score = db is Player p4 ? p4.Score : 0
         };
+        agent.Score += value.Value;
         _redisBroker.UpsertAgentLocation(new Player(
             "",
-            0,
+            agent.Score,
             Guid.Parse(agent.Id),
             new Coordinates(agent.Location.X, agent.Location.Y),
             100,
@@ -128,7 +138,11 @@ public class WorldService : BackgroundService, IConsumerService
                 {
                     X = a.Location.X,
                     Y = a.Location.Y,
-                }
+                },
+                Name = a is Player p ? p.Name : "AI",
+                WalkingSpeed = a is Player p2 ? p2.WalkingSpeed : 0,
+                LifePool = a is Player p3 ? p3.LifePool : 0,
+                Score = a is Player p4 ? p4.Score : 0
             }).ToList();
         var projectiles = entities.OfType<Projectile>()
             .Select(p => new Projectile_M
@@ -179,7 +193,8 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void MoveAi(string key, World_M value)
     {
-        if (_redisBroker.Get(Guid.Parse(value.EntityId)) == null)
+        var db = _redisBroker.Get(Guid.Parse(value.EntityId));
+        if (db == null)
             return;
 
         var msgOut = new Ai_M
@@ -198,7 +213,11 @@ public class WorldService : BackgroundService, IConsumerService
         var agent = new Agent_M
         {
             Id = value.EntityId,
-            Location = value.Location
+            Location = value.Location,
+            Name = "AI",
+            WalkingSpeed = 100,
+            LifePool = db is Enemy e ? e.LifePool : 0,
+            Score = 0
         };
 
         var players = _redisBroker
@@ -253,7 +272,11 @@ public class WorldService : BackgroundService, IConsumerService
         var agent = new Agent_M
         {
             Id = msgOut.Id,
-            Location = msgOut.Location
+            Location = msgOut.Location,
+            Name = "AI",
+            WalkingSpeed = 100,
+            LifePool = 100,
+            Score = 0
         };
 
         var players = _redisBroker
@@ -282,8 +305,8 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void DamageAgent(string key, World_M value)
     {
-        var player = _redisBroker.Get(Guid.Parse(value.EntityId));
-        if (player is Player t && t.Score > 0)
+        var db = _redisBroker.Get(Guid.Parse(value.EntityId));
+        if (db is Player t)
         {
             value.Value = t.Score;
         }

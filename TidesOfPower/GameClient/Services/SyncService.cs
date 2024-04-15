@@ -77,6 +77,7 @@ public class SyncService : BackgroundService
         var player = value.Agents.FirstOrDefault(x => x.Id == _game.Player.Id.ToString());
         if (player != null)
         {
+            _game.Player.Score = player.Score;
             //var xDiff = Math.Abs(_game.Player.Location.X - player.Location.X);
             //var yDiff = Math.Abs(_game.Player.Location.Y - player.Location.Y);
             //if (xDiff > 50 || yDiff > 50)
@@ -198,6 +199,12 @@ public class SyncService : BackgroundService
         if (deleteAgentIds.Contains(_game.Player.Id.ToString()))
         {
             Console.WriteLine("Player Died!");
+            lock (_game.LockObject)
+            {
+                _game.LocalState.RemoveAll(x => x is Enemy_S or Projectile_S or Treasure_S);
+                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
+            }
         }
     }
 }

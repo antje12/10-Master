@@ -15,7 +15,7 @@ message Agent_M {
   string Name = 3;
   int32 WalkingSpeed = 4;
   int32 LifePool = 5;
-  int32 Inventory = 6;
+  int32 Score = 6;
 }
 
 message Projectile_M {

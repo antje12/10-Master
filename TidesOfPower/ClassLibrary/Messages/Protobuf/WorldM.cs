@@ -31,10 +31,11 @@ namespace ClassLibrary.Messages.Protobuf {
             "eS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlc19NEkAKCURpcmVjdGlv",
             "bhgEIAEoCzItLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29y",
             "ZGluYXRlc19NEhIKCkxhc3RVcGRhdGUYBSABKAESDwoHRXZlbnRJZBgGIAEo",
-            "CRILCgNUVEwYByABKAESDQoFVmFsdWUYCCABKAUqYwoGQ2hhbmdlEg8KC0Rh",
-            "bWFnZUFnZW50EAASDwoLU3Bhd25CdWxsZXQQARIOCgpNb3ZlQnVsbGV0EAIS",
-            "DgoKTW92ZVBsYXllchADEgsKB1NwYXduQWkQBBIKCgZNb3ZlQWkQBUIhqgIe",
-            "Q2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
+            "CRILCgNUVEwYByABKAESDQoFVmFsdWUYCCABKAUqeAoGQ2hhbmdlEhMKD0Nv",
+            "bGxlY3RUcmVhc3VyZRAAEg8KC0RhbWFnZUFnZW50EAESDwoLU3Bhd25CdWxs",
+            "ZXQQAhIOCgpNb3ZlQnVsbGV0EAMSDgoKTW92ZVBsYXllchAEEgsKB1NwYXdu",
+            "QWkQBRIKCgZNb3ZlQWkQBkIhqgIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
+            "b3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.Change), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -46,12 +47,13 @@ namespace ClassLibrary.Messages.Protobuf {
   }
   #region Enums
   public enum Change {
-    [pbr::OriginalName("DamageAgent")] DamageAgent = 0,
-    [pbr::OriginalName("SpawnBullet")] SpawnBullet = 1,
-    [pbr::OriginalName("MoveBullet")] MoveBullet = 2,
-    [pbr::OriginalName("MovePlayer")] MovePlayer = 3,
-    [pbr::OriginalName("SpawnAi")] SpawnAi = 4,
-    [pbr::OriginalName("MoveAi")] MoveAi = 5,
+    [pbr::OriginalName("CollectTreasure")] CollectTreasure = 0,
+    [pbr::OriginalName("DamageAgent")] DamageAgent = 1,
+    [pbr::OriginalName("SpawnBullet")] SpawnBullet = 2,
+    [pbr::OriginalName("MoveBullet")] MoveBullet = 3,
+    [pbr::OriginalName("MovePlayer")] MovePlayer = 4,
+    [pbr::OriginalName("SpawnAi")] SpawnAi = 5,
+    [pbr::OriginalName("MoveAi")] MoveAi = 6,
   }
 
   #endregion
@@ -126,7 +128,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "Change" field.</summary>
     public const int ChangeFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.Change change_ = global::ClassLibrary.Messages.Protobuf.Change.DamageAgent;
+    private global::ClassLibrary.Messages.Protobuf.Change change_ = global::ClassLibrary.Messages.Protobuf.Change.CollectTreasure;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::ClassLibrary.Messages.Protobuf.Change Change {
@@ -239,7 +241,7 @@ namespace ClassLibrary.Messages.Protobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (EntityId.Length != 0) hash ^= EntityId.GetHashCode();
-      if (Change != global::ClassLibrary.Messages.Protobuf.Change.DamageAgent) hash ^= Change.GetHashCode();
+      if (Change != global::ClassLibrary.Messages.Protobuf.Change.CollectTreasure) hash ^= Change.GetHashCode();
       if (location_ != null) hash ^= Location.GetHashCode();
       if (direction_ != null) hash ^= Direction.GetHashCode();
       if (LastUpdate != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(LastUpdate);
@@ -268,7 +270,7 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(10);
         output.WriteString(EntityId);
       }
-      if (Change != global::ClassLibrary.Messages.Protobuf.Change.DamageAgent) {
+      if (Change != global::ClassLibrary.Messages.Protobuf.Change.CollectTreasure) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Change);
       }
@@ -310,7 +312,7 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(10);
         output.WriteString(EntityId);
       }
-      if (Change != global::ClassLibrary.Messages.Protobuf.Change.DamageAgent) {
+      if (Change != global::ClassLibrary.Messages.Protobuf.Change.CollectTreasure) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Change);
       }
@@ -351,7 +353,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (EntityId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EntityId);
       }
-      if (Change != global::ClassLibrary.Messages.Protobuf.Change.DamageAgent) {
+      if (Change != global::ClassLibrary.Messages.Protobuf.Change.CollectTreasure) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Change);
       }
       if (location_ != null) {
@@ -387,7 +389,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other.EntityId.Length != 0) {
         EntityId = other.EntityId;
       }
-      if (other.Change != global::ClassLibrary.Messages.Protobuf.Change.DamageAgent) {
+      if (other.Change != global::ClassLibrary.Messages.Protobuf.Change.CollectTreasure) {
         Change = other.Change;
       }
       if (other.location_ != null) {

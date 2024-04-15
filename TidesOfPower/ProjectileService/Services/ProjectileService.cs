@@ -73,7 +73,7 @@ public class ProjectileService : BackgroundService, IConsumerService
         var deltaTime = difference.TotalSeconds;
 
         Move.Projectile(projectile.Location.X, projectile.Location.Y, projectile.Direction.X,
-            projectile.Direction.Y, deltaTime, 200,
+            projectile.Direction.Y, deltaTime,
             out var time, out var toX, out var toY);
 
         output.TTL -= time;

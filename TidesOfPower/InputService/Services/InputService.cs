@@ -79,8 +79,8 @@ public class InputService : BackgroundService, IConsumerService
 
     private void Move(string key, Input_M value)
     {
-        ClassLibrary.GameLogic.Move.Avatar(value.AgentLocation.X, value.AgentLocation.Y, value.KeyInput.ToList(),
-            value.GameTime, 100,
+        ClassLibrary.GameLogic.Move.Agent(value.AgentLocation.X, value.AgentLocation.Y, value.KeyInput.ToList(),
+            value.GameTime,
             out float toX, out float toY);
 
         var msgOut = new Collision_M()
@@ -116,7 +116,7 @@ public class InputService : BackgroundService, IConsumerService
             y /= length;
         }
 
-        var offset = Agent.Rad + Projectile.Rad + 3;
+        var offset = Agent.TypeRadius + Projectile.TypeRadius + 3;
         var spawnX = value.AgentLocation.X + x * offset;
         var spawnY = value.AgentLocation.Y + y * offset;
 

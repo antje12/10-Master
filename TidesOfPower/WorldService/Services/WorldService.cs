@@ -110,7 +110,7 @@ public class WorldService : BackgroundService, IConsumerService
         var players = entities
             .OfType<Player>()
             .Where(x => x.Id.ToString() != agent.Id).ToList();
-        DeltaSync(players, [agent], [], Sync.Delta);
+        DeltaSync(players, new List<Agent_M>(){agent}, new List<Projectile_M>(), Sync.Delta);
     }
 
     private void FullSync(string key, World_M value, List<Entity> entities)
@@ -192,7 +192,7 @@ public class WorldService : BackgroundService, IConsumerService
         var players = _redisBroker
             .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<Player>().ToList();
-        DeltaSync(players, [agent], [], Sync.Delta);
+        DeltaSync(players, new List<Agent_M>(){agent}, new List<Projectile_M>(), Sync.Delta);
     }
 
     private void MoveBullet(string key, World_M value)
@@ -220,7 +220,7 @@ public class WorldService : BackgroundService, IConsumerService
         var players = _redisBroker
             .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<Player>().ToList();
-        DeltaSync(players, [], [msgOut], sync);
+        DeltaSync(players, new List<Agent_M>(), new List<Projectile_M>(){msgOut}, sync);
     }
 
     private void SpawnAi(string key, World_M value)
@@ -247,7 +247,7 @@ public class WorldService : BackgroundService, IConsumerService
         var players = _redisBroker
             .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<Player>().ToList();
-        DeltaSync(players, [agent], [], Sync.Delta);
+        DeltaSync(players, new List<Agent_M>(){agent}, new List<Projectile_M>(), Sync.Delta);
     }
 
     private void SpawnBullet(string key, World_M value)
@@ -265,7 +265,7 @@ public class WorldService : BackgroundService, IConsumerService
         var players = _redisBroker
             .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<Player>().ToList();
-        DeltaSync(players, [], [msgOut], Sync.Delta);
+        DeltaSync(players, new List<Agent_M>(), new List<Projectile_M>(){msgOut}, Sync.Delta);
     }
 
     private void DamageAgent(string key, World_M value)
@@ -279,6 +279,6 @@ public class WorldService : BackgroundService, IConsumerService
             .GetEntities(value.Location.X, value.Location.Y)
             .OfType<Player>().ToList();
         _redisBroker.DeleteEntity(Guid.Parse(agent.Id));
-        DeltaSync(players, [agent], [], Sync.Delete);
+        DeltaSync(players, new List<Agent_M>(){agent}, new List<Projectile_M>(), Sync.Delete);
     }
 }

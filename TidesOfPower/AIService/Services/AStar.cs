@@ -94,8 +94,8 @@ public class AStar
     private static bool NodeCollision(Node n1, Node n2)
     {
         return Collide.Circle(
-            n1.X, n1.Y, Agent.Rad,
-            n2.X, n2.Y, Agent.Rad);
+            n1.X, n1.Y, Agent.TypeRadius,
+            n2.X, n2.Y, Agent.TypeRadius);
     }
 
     private static Node GetCheapestNode(Dictionary<string, Node> fringe)

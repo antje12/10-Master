@@ -51,7 +51,7 @@ public class Enemy_S : Enemy, Sprite
 
         TimeSpan timeSpan = DateTime.Now - LastUpdate;
         if (timeSpan.Milliseconds > 100)
-            _anims.Update(gameTime, new());
+            _anims.Update(gameTime, new()); // reset animation
     }
 
     public void Draw(SpriteBatch spriteBatch)

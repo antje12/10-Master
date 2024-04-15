@@ -70,8 +70,8 @@ public class CollisionService : BackgroundService, IConsumerService
                 continue;
 
             var r1 =
-                value.EntityType is EntityType.Bullet ? Projectile.Rad :
-                value.EntityType is EntityType.Player or EntityType.Ai ? Agent.Rad : 0;
+                value.EntityType is EntityType.Bullet ? Projectile.TypeRadius :
+                value.EntityType is EntityType.Player or EntityType.Ai ? Agent.TypeRadius : 0;
             var r2 = entity.Radius;
                 //entity is Projectile ? 5 :
                 //entity is Agent ? 25 : 0;

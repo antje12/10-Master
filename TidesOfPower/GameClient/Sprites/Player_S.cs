@@ -103,7 +103,7 @@ public class Player_S : Player, Sprite
 
     private void LocalMovement(List<GameKey> keyInput, double gameTime)
     {
-        Move.Avatar(Location.X, Location.Y, keyInput, gameTime, 100, out float toX, out float toY);
+        Move.Agent(Location.X, Location.Y, keyInput, gameTime, out float toX, out float toY);
         var to = new Coordinates(toX,toY);
         if (IsLocationFree(to))
             Location = to;

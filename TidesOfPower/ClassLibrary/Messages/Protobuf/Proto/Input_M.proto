@@ -8,11 +8,9 @@ option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
 message Input_M {
   string AgentId = 1; // UUIDs are represented as strings in proto
-  
   ClassLibrary.Messages.Protobuf.Coordinates_M AgentLocation = 2;
   ClassLibrary.Messages.Protobuf.Coordinates_M MouseLocation = 3;
   repeated GameKey KeyInput = 4;
-  
   double GameTime = 5;
   double LastUpdate = 6;
   string EventId = 7;

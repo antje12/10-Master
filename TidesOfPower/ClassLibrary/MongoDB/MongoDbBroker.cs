@@ -111,50 +111,50 @@ public class MongoDbBroker
         }
     }
 
-    public Agent? GetAvatar(Guid avatarId)
+    public Agent? GetAgent(Guid agentId)
     {
         var filterBuilder = Builders<Agent>.Filter;
-        var filter = filterBuilder.Eq(x => x.Id, avatarId);
-        var avatars = _mongoDbContext.Avatars.OfType<Agent>().Find(filter).ToListAsync().GetAwaiter().GetResult();
-        var avatar = avatars.FirstOrDefault();
-        return avatar;
+        var filter = filterBuilder.Eq(x => x.Id, agentId);
+        var agents = _mongoDbContext.Agents.OfType<Agent>().Find(filter).ToListAsync().GetAwaiter().GetResult();
+        var agent = agents.FirstOrDefault();
+        return agent;
     }
 
-    public void UpdateAvatarLocation(Agent agent)
+    public void UpdateAgentLocation(Agent agent)
     {
         var filter = Builders<Agent>.Filter.Eq(x => x.Id, agent.Id);
         var update = Builders<Agent>.Update
             .Set(x => x.Location.X, agent.Location.X)
             .Set(x => x.Location.Y, agent.Location.Y);
-        var result = _mongoDbContext.Avatars.UpdateOneAsync(filter, update).GetAwaiter().GetResult();
+        var result = _mongoDbContext.Agents.UpdateOneAsync(filter, update).GetAwaiter().GetResult();
         if (!result.IsAcknowledged || result.ModifiedCount == 0)
         {
-            Console.WriteLine("Avatar update failed!");
+            Console.WriteLine("Agent update failed!");
         }
         else
         {
-            //Console.WriteLine("Avatar update succeeded!");
+            //Console.WriteLine("Agent update succeeded!");
         }
     }
 
-    public void UpsertAvatarLocation(Agent agent)
+    public void UpsertAgentLocation(Agent agent)
     {
         var filter = Builders<Entity>.Filter.Eq(x => x.Id, agent.Id);
         var update = Builders<Entity>.Update
             .Set(x => x.Id, agent.Id)
             .Set(x => x.Location, agent.Location)
-            .SetOnInsert("_t", new[] { "Entity", "Avatar" }); // Specify both base and derived types
+            .SetOnInsert("_t", new[] { "Entity", "Agent" }); // Specify both base and derived types
         var options = new UpdateOptions {IsUpsert = true};
         var result = _mongoDbContext.Entities.UpdateOneAsync(filter, update, options).GetAwaiter().GetResult();
         if (result.IsAcknowledged)
         {
             //Console.WriteLine(result.UpsertedId != null
-            //    ? $"Avatar upserted with ID: {result.UpsertedId}"
-            //    : "Avatar updated successfully!");
+            //    ? $"Agent upserted with ID: {result.UpsertedId}"
+            //    : "Agent updated successfully!");
         }
         else
         {
-            Console.WriteLine("Avatar upsert failed!");
+            Console.WriteLine("Agent upsert failed!");
         }
     }
 

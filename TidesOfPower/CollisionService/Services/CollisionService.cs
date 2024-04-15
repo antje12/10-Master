@@ -88,7 +88,7 @@ public class CollisionService : BackgroundService, IConsumerService
                         break;
                     case EntityType.Bullet:
                         if (entity is Agent)
-                            DamageAvatar(entity);
+                            DamageAgent(entity);
                         break;
                 }
             }
@@ -104,17 +104,21 @@ public class CollisionService : BackgroundService, IConsumerService
             case EntityType.Player:
                 if (blocked)
                 {
+                    Console.WriteLine("player blocked");
                     return;
                 }
+                Console.WriteLine($"player move from {value.FromLocation.X}:{value.FromLocation.Y} to {msgOut.Location.X}:{msgOut.Location.Y}");
                 msgOut.Change = Change.MovePlayer;
                 msgOut.EventId = value.EventId;
                 break;
             case EntityType.Ai:
                 if (blocked)
                 {
+                    Console.WriteLine("ai blocked");
                     KeepAiAlive(key, value);
                     return;
                 }
+                Console.WriteLine("ai move");
                 msgOut.Change = Change.MoveAi;
                 msgOut.LastUpdate = value.LastUpdate;
                 break;
@@ -139,7 +143,22 @@ public class CollisionService : BackgroundService, IConsumerService
         _producerA.Produce(_outputTopicA, key, msgOut);
     }
 
-    private void DamageAvatar(Entity entity)
+    private void DamageAgent(Entity entity)
+    {
+        var output = new World_M()
+        {
+            EntityId = entity.Id.ToString(),
+            Change = Change.DamageAgent,
+            Location = new Coordinates_M()
+            {
+                X = entity.Location.X,
+                Y = entity.Location.Y
+            }
+        };
+        _producerW.Produce(_outputTopicW, output.EntityId, output);
+    }
+
+    private void CollectTreasure(Entity entity)
     {
         var output = new World_M()
         {

@@ -9,13 +9,12 @@ option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 message World_M {
   string EntityId = 1; // UUIDs are represented as strings in Protobuf
   Change Change = 2;
-  
   ClassLibrary.Messages.Protobuf.Coordinates_M Location = 3;
   ClassLibrary.Messages.Protobuf.Coordinates_M Direction = 4;
-  
   double LastUpdate = 5;
   string EventId = 6;
   double TTL = 7;
+  int32 Value = 8;
 }
 
 enum Change {

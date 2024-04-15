@@ -25,20 +25,20 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg1Xb3JsZF9NLnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
-            "dWYaDUNsYXNzZXMucHJvdG8iiAIKB1dvcmxkX00SEAoIRW50aXR5SWQYASAB",
+            "dWYaDUNsYXNzZXMucHJvdG8ilwIKB1dvcmxkX00SEAoIRW50aXR5SWQYASAB",
             "KAkSNgoGQ2hhbmdlGAIgASgOMiYuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlBy",
             "b3RvYnVmLkNoYW5nZRI/CghMb2NhdGlvbhgDIAEoCzItLkNsYXNzTGlicmFy",
             "eS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlc19NEkAKCURpcmVjdGlv",
             "bhgEIAEoCzItLkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29y",
             "ZGluYXRlc19NEhIKCkxhc3RVcGRhdGUYBSABKAESDwoHRXZlbnRJZBgGIAEo",
-            "CRILCgNUVEwYByABKAEqYwoGQ2hhbmdlEg8KC0RhbWFnZUFnZW50EAASDwoL",
-            "U3Bhd25CdWxsZXQQARIOCgpNb3ZlQnVsbGV0EAISDgoKTW92ZVBsYXllchAD",
-            "EgsKB1NwYXduQWkQBBIKCgZNb3ZlQWkQBUIhqgIeQ2xhc3NMaWJyYXJ5Lk1l",
-            "c3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
+            "CRILCgNUVEwYByABKAESDQoFVmFsdWUYCCABKAUqYwoGQ2hhbmdlEg8KC0Rh",
+            "bWFnZUFnZW50EAASDwoLU3Bhd25CdWxsZXQQARIOCgpNb3ZlQnVsbGV0EAIS",
+            "DgoKTW92ZVBsYXllchADEgsKB1NwYXduQWkQBBIKCgZNb3ZlQWkQBUIhqgIe",
+            "Q2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.Change), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.World_M), global::ClassLibrary.Messages.Protobuf.World_M.Parser, new[]{ "EntityId", "Change", "Location", "Direction", "LastUpdate", "EventId", "TTL" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.World_M), global::ClassLibrary.Messages.Protobuf.World_M.Parser, new[]{ "EntityId", "Change", "Location", "Direction", "LastUpdate", "EventId", "TTL", "Value" }, null, null, null, null)
           }));
     }
     #endregion
@@ -99,6 +99,7 @@ namespace ClassLibrary.Messages.Protobuf {
       lastUpdate_ = other.lastUpdate_;
       eventId_ = other.eventId_;
       tTL_ = other.tTL_;
+      value_ = other.value_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -195,6 +196,18 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "Value" field.</summary>
+    public const int ValueFieldNumber = 8;
+    private int value_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int Value {
+      get { return value_; }
+      set {
+        value_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -217,6 +230,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(LastUpdate, other.LastUpdate)) return false;
       if (EventId != other.EventId) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TTL, other.TTL)) return false;
+      if (Value != other.Value) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -231,6 +245,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (LastUpdate != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(LastUpdate);
       if (EventId.Length != 0) hash ^= EventId.GetHashCode();
       if (TTL != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TTL);
+      if (Value != 0) hash ^= Value.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -277,6 +292,10 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(57);
         output.WriteDouble(TTL);
       }
+      if (Value != 0) {
+        output.WriteRawTag(64);
+        output.WriteInt32(Value);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -315,6 +334,10 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(57);
         output.WriteDouble(TTL);
       }
+      if (Value != 0) {
+        output.WriteRawTag(64);
+        output.WriteInt32(Value);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -345,6 +368,9 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (TTL != 0D) {
         size += 1 + 8;
+      }
+      if (Value != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Value);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -384,6 +410,9 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (other.TTL != 0D) {
         TTL = other.TTL;
+      }
+      if (other.Value != 0) {
+        Value = other.Value;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -434,6 +463,10 @@ namespace ClassLibrary.Messages.Protobuf {
             TTL = input.ReadDouble();
             break;
           }
+          case 64: {
+            Value = input.ReadInt32();
+            break;
+          }
         }
       }
     #endif
@@ -481,6 +514,10 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 57: {
             TTL = input.ReadDouble();
+            break;
+          }
+          case 64: {
+            Value = input.ReadInt32();
             break;
           }
         }

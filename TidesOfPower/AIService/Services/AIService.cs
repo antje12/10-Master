@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
+using AIService.Interfaces;
+using ClassLibrary.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using AIService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.Redis;
 
@@ -63,17 +64,17 @@ public class AIService : BackgroundService, IConsumerService
             .GetEntities(agent.Location.X, agent.Location.Y)
             .Where(x => x.Id.ToString() != agent.Id).ToList();
         var targets = entities
-            .OfType<ClassLibrary.Domain.Player>();
+            .OfType<Player>();
 
         var from = (long) agent.LastUpdate;
         var to = DateTime.UtcNow.Ticks;
         var difference = TimeSpan.FromTicks(to - from);
         var deltaTime = difference.TotalSeconds;
         
-        var output = new Input_M()
+        var output = new Input_M
         {
             AgentId = agent.Id,
-            AgentLocation = new Coordinates_M()
+            AgentLocation = new Coordinates_M
             {
                 X = agent.Location.X,
                 Y = agent.Location.Y
@@ -83,7 +84,9 @@ public class AIService : BackgroundService, IConsumerService
             LastUpdate = to
         };
 
-        var obstacles = entities.Select(x => new Node((int) x.Location.X, (int) x.Location.Y)).ToList();
+        var obstacles = entities
+            .OfType<Enemy>()
+            .Select(x => new Node((int) x.Location.X, (int) x.Location.Y)).ToList();
         var start = new Node((int) agent.Location.X, (int) agent.Location.Y);
         var target = targets.MinBy(t =>
             AStar.H((int) agent.Location.X, (int) agent.Location.Y, (int) t.Location.X, (int) t.Location.Y));
@@ -95,7 +98,7 @@ public class AIService : BackgroundService, IConsumerService
         if (target != null && 
             AStar.H((int) agent.Location.X, (int) agent.Location.Y, (int) target.Location.X, (int) target.Location.Y) < 150)
         {
-            output.MouseLocation = new Coordinates_M()
+            output.MouseLocation = new Coordinates_M
             {
                 X = target.Location.X,
                 Y = target.Location.Y
@@ -111,6 +114,11 @@ public class AIService : BackgroundService, IConsumerService
             output.KeyInput.Add(GameKey.Up);
         if (start.Y < nextStep.Y)
             output.KeyInput.Add(GameKey.Down);
+
+        if (!output.KeyInput.Any())
+        {
+            Console.WriteLine("AI dead!");
+        }
         
         _producer.Produce(_outputTopic, output.AgentId, output);
     }

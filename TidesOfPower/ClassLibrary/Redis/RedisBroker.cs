@@ -195,9 +195,19 @@ public class RedisBroker
         _json.Set($@"entity:{entity.Id}", ".Location.Y", entity.Location.Y);
     }
 
-    public void UpsertAvatarLocation(Agent entity)
+    public void UpsertAgentLocation(Agent entity)
     {        
         _json.Set($@"entity:{entity.Id}", "$", entity);
+    }
+    public void Clean()
+    {
+        var query = new Query("*").Limit(0, 10000); // 10000 max
+        var results = _ft.Search("idx:entities", query);
+        foreach (var doc in results.Documents)
+        {
+            var key = doc.Id;
+            _json.Del(key);
+        }
     }
 
     public void Test()
@@ -258,14 +268,4 @@ public class RedisBroker
         }
     }
 
-    public void Clean()
-    {
-        var query = new Query("*").Limit(0, 10000); // 10000 max
-        var results = _ft.Search("idx:entities", query);
-        foreach (var doc in results.Documents)
-        {
-            var key = doc.Id;
-            _json.Del(key);
-        }
-    }
 }

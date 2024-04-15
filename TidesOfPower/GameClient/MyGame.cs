@@ -44,9 +44,7 @@ public class MyGame : Game
     public List<Sprite> LocalState = new();
     public readonly object LockObject = new();
     public Dictionary<string, long> EventTimes = new();
-
-    private Treasure_S _coin;
-    private Treasure_S _chest;
+    
     private Ship_S _shipS;
 
     public int Latency = 0;
@@ -87,9 +85,7 @@ public class MyGame : Game
         var playerLocation = new Coordinates(ScreenWidth / 2, ScreenHeight / 2);
         Player = new Player_S(this, PlayerTexture, _camera, _producer, new Player("Player", 0, Guid.NewGuid(), playerLocation, 100, 100));
         _ui = new UI(_font, _camera, this);
-
-        _coin = new Treasure_S(CoinTexture, 6, new Treasure(10, Guid.NewGuid(), new Coordinates(300, 300)));
-        _chest = new Treasure_S(TreasureTexture, 4, new Treasure(100, Guid.NewGuid(), new Coordinates(100, 100)));
+        
         _shipS = new Ship_S(ShipTexture, new Ship(100, Guid.NewGuid(), new Coordinates(200, 200)));
 
         var ocean = new Ocean_S(this, OceanTexture, null);
@@ -115,7 +111,7 @@ public class MyGame : Game
             {
                 var sprite = LocalState[i];
                 sprite.Update(gameTime);
-                if (sprite is Enemy_S or Projectile_S && IsOffScreen(sprite) || sprite is Projectile_S {TimeToLive: <= 0})
+                if (sprite is Enemy_S or Projectile_S or Treasure_S && IsOffScreen(sprite) || sprite is Projectile_S {TimeToLive: <= 0})
                 {
                     LocalState.RemoveAt(i);
                 }
@@ -123,8 +119,6 @@ public class MyGame : Game
         }
 
         Player.Update(gameTime);
-        _coin.Update(gameTime);
-        _chest.Update(gameTime);
         _shipS.Update(gameTime);
         base.Update(gameTime);
     }
@@ -158,8 +152,6 @@ public class MyGame : Game
         }
 
         Player.Draw(_spriteBatch);
-        _coin.Draw(_spriteBatch);
-        _chest.Draw(_spriteBatch);
         _shipS.Draw(_spriteBatch);
         _ui.Draw(_spriteBatch);
         _spriteBatch.End();

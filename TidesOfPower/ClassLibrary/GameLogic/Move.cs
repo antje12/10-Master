@@ -4,8 +4,8 @@ namespace ClassLibrary.GameLogic;
 
 public static class Move
 {
-    private static int _agentSpeed { get; set; }
-    private static int _projectileSpeed { get; set; }
+    private static int _agentSpeed = 100;
+    private static int _projectileSpeed = 200;
     
     public static void Agent(
         float x, float y, List<GameKey> input, double gameTime,

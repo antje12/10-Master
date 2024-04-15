@@ -77,69 +77,69 @@ public class SyncService : BackgroundService
         var player = value.Agents.FirstOrDefault(x => x.Id == _game.Player.Id.ToString());
         if (player != null)
         {
-            var xDiff = Math.Abs(_game.Player.Location.X - player.Location.X);
-            var yDiff = Math.Abs(_game.Player.Location.Y - player.Location.Y);
-            if (xDiff > 50 || yDiff > 50)
+            //var xDiff = Math.Abs(_game.Player.Location.X - player.Location.X);
+            //var yDiff = Math.Abs(_game.Player.Location.Y - player.Location.Y);
+            //if (xDiff > 50 || yDiff > 50)
                 _game.Player.Location = new Coordinates(player.Location.X, player.Location.Y);
             value.Agents.Remove(player);
         }
         
         DeltaSync(value);
 
-        var onlineAvatarIds = value.Agents.Select(x => x.Id).ToList();
-        //var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
-
-        if (_game.LocalState.OfType<Enemy_S>().Any(x => !onlineAvatarIds.Contains(x.Id.ToString()))) //||
-            //game.LocalState.OfType<Projectile>().Any(x => !onlineProjectileIds.Contains(x._id.ToString())))
-        {
-            lock (_game.LockObject)
-            {
-                _game.LocalState.RemoveAll(x => x is Enemy_S y && !onlineAvatarIds.Contains(y.Id.ToString()));
-                //game.LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
-                string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-                Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
-            }
-        }
+        //var onlineAgentIds = value.Agents.Select(x => x.Id).ToList();
+        ////var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
+        //
+        //if (_game.LocalState.OfType<Enemy_S>().Any(x => !onlineAgentIds.Contains(x.Id.ToString()))) //||
+        //    //game.LocalState.OfType<Projectile>().Any(x => !onlineProjectileIds.Contains(x._id.ToString())))
+        //{
+        //    lock (_game.LockObject)
+        //    {
+        //        _game.LocalState.RemoveAll(x => x is Enemy_S y && !onlineAgentIds.Contains(y.Id.ToString()));
+        //        //game.LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
+        //        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        //        Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
+        //    }
+        //}
     }
 
     private void DeltaSync(LocalState_M value)
     {
-        foreach (var avatar in value.Agents)
+        foreach (var agent in value.Agents)
         {
-            if (avatar.Id == _game.Player.Id.ToString())
+            if (agent.Id == _game.Player.Id.ToString())
             {
                 throw new Exception("Major error!!!");
             }
             
-            var localAvatar = _game.LocalState.FirstOrDefault(x => x is Enemy_S y && y.Id.ToString() == avatar.Id);
-            if (localAvatar == null)
+            var localAgent = _game.LocalState.FirstOrDefault(x => x is Enemy_S y && y.Id.ToString() == agent.Id);
+            if (localAgent == null)
             {
                 lock (_game.LockObject)
                 {
                     _game.LocalState.Add(
-                        new Enemy_S(_game.EnemyTexture, new Enemy(Guid.Parse(avatar.Id), new Coordinates(avatar.Location.X, avatar.Location.Y), 100, 100)));
+                        new Enemy_S(_game.EnemyTexture, new Enemy(Guid.Parse(agent.Id), new Coordinates(agent.Location.X, agent.Location.Y), 100, 100)));
                     string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
                     Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }
             }
             else
             {
-                if (localAvatar is Enemy_S la)
+                if (localAgent is Enemy_S la)
                 {
-                    la.SetLocation(new Coordinates(avatar.Location.X, avatar.Location.Y));
+                    la.SetLocation(new Coordinates(agent.Location.X, agent.Location.Y));
                 }
                 else
                 {
-                    localAvatar.Location = new Coordinates(avatar.Location.X, avatar.Location.Y);
+                    localAgent.Location = new Coordinates(agent.Location.X, agent.Location.Y);
                 }
             }
         }
 
         foreach (var projectile in value.Projectiles)
         {
-            var localAvatar =
+            var localAgent =
                 _game.LocalState.FirstOrDefault(x => x is Projectile_S y && y.Id.ToString() == projectile.Id);
-            if (localAvatar == null)
+            if (localAgent == null)
             {
                 lock (_game.LockObject)
                 {
@@ -152,29 +152,50 @@ public class SyncService : BackgroundService
             }
             else
             {
-                localAvatar.Location = new Coordinates(projectile.Location.X,projectile.Location.Y);
+                localAgent.Location = new Coordinates(projectile.Location.X,projectile.Location.Y);
             }
+        }
+
+        foreach (var treasure in value.Treasures)
+        {
+            var localTreasure =
+                _game.LocalState.FirstOrDefault(x => x is Treasure_S y && y.Id.ToString() == treasure.Id);
+            if (localTreasure != null) continue;
+            
+            lock (_game.LockObject)
+            {
+                if (treasure.Value > 100)
+                {
+                    _game.LocalState.Add(new Treasure_S(_game.TreasureTexture, 4, 
+                        new Treasure(treasure.Value, Guid.Parse(treasure.Id), new Coordinates(treasure.Location.X, treasure.Location.Y))));
+                    continue;
+                }
+                _game.LocalState.Add(new Treasure_S(_game.CoinTexture, 6, 
+                    new Treasure(treasure.Value, Guid.Parse(treasure.Id), new Coordinates(treasure.Location.X, treasure.Location.Y))));}
         }
     }
 
     private void DeleteSync(LocalState_M value)
     {
-        var deleteAvatarIds = value.Agents.Select(x => x.Id).ToList();
+        var deleteAgentIds = value.Agents.Select(x => x.Id).ToList();
         var deleteProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
+        var deleteTreasureIds = value.Treasures.Select(x => x.Id).ToList();
 
-        if (_game.LocalState.OfType<Enemy_S>().Any(x => deleteAvatarIds.Contains(x.Id.ToString())) ||
-            _game.LocalState.OfType<Projectile_S>().Any(x => deleteProjectileIds.Contains(x.Id.ToString())))
+        if (_game.LocalState.OfType<Enemy_S>().Any(x => deleteAgentIds.Contains(x.Id.ToString())) ||
+            _game.LocalState.OfType<Projectile_S>().Any(x => deleteProjectileIds.Contains(x.Id.ToString())) ||
+            _game.LocalState.OfType<Treasure_S>().Any(x => deleteTreasureIds.Contains(x.Id.ToString())))
         {
             lock (_game.LockObject)
             {
-                _game.LocalState.RemoveAll(x => x is Enemy_S y && deleteAvatarIds.Contains(y.Id.ToString()));
+                _game.LocalState.RemoveAll(x => x is Enemy_S y && deleteAgentIds.Contains(y.Id.ToString()));
                 _game.LocalState.RemoveAll(x => x is Projectile_S y && deleteProjectileIds.Contains(y.Id.ToString()));
+                _game.LocalState.RemoveAll(x => x is Treasure_S y && deleteTreasureIds.Contains(y.Id.ToString()));
                 string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
                 Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
             }
         }
 
-        if (deleteAvatarIds.Contains(_game.Player.Id.ToString()))
+        if (deleteAgentIds.Contains(_game.Player.Id.ToString()))
         {
             Console.WriteLine("Player Died!");
         }

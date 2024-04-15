@@ -21,12 +21,12 @@ return;
 MongoDbBroker mongoBroker = new MongoDbBroker(true);
 
 redisBroker.InitEntity();
-var avatar = new Agent(
+var agent = new Agent(
     Guid.NewGuid(),
     new Coordinates(50.123f, 100.456f),
     EntityType.Player, 100, 100);
-redisBroker.Insert(avatar);
-redisBroker.GetEntities(avatar.Location.X, avatar.Location.Y);
+redisBroker.Insert(agent);
+redisBroker.GetEntities(agent.Location.X, agent.Location.Y);
 
 //redisBroker.InitProfile();
 //TestRedis();

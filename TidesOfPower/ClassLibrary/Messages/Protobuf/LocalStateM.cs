@@ -25,18 +25,19 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChJMb2NhbFN0YXRlX00ucHJvdG8SHkNsYXNzTGlicmFyeS5NZXNzYWdlcy5Q",
-            "cm90b2J1ZhoNQ2xhc3Nlcy5wcm90byLgAQoMTG9jYWxTdGF0ZV9NEg8KB0Fn",
-            "ZW50SWQYASABKAkSMgoEU3luYxgCIAEoDjIkLkNsYXNzTGlicmFyeS5NZXNz",
-            "YWdlcy5Qcm90b2J1Zi5TeW5jEjcKBkFnZW50cxgDIAMoCzInLkNsYXNzTGli",
-            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5BZ2VudF9NEkEKC1Byb2plY3RpbGVz",
-            "GAQgAygLMiwuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlByb2pl",
-            "Y3RpbGVfTRIPCgdFdmVudElkGAUgASgJKicKBFN5bmMSCAoERnVsbBAAEgkK",
-            "BURlbHRhEAESCgoGRGVsZXRlEAJCIaoCHkNsYXNzTGlicmFyeS5NZXNzYWdl",
-            "cy5Qcm90b2J1ZmIGcHJvdG8z"));
+            "cm90b2J1ZhoNQ2xhc3Nlcy5wcm90byKOAgoMTG9jYWxTdGF0ZV9NEjIKBFN5",
+            "bmMYASABKA4yJC5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuU3lu",
+            "YxI3CgZBZ2VudHMYAiADKAsyJy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
+            "dG9idWYuQWdlbnRfTRJBCgtQcm9qZWN0aWxlcxgDIAMoCzIsLkNsYXNzTGli",
+            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Qcm9qZWN0aWxlX00SPQoJVHJlYXN1",
+            "cmVzGAQgAygLMiouQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLlRy",
+            "ZWFzdXJlX00SDwoHRXZlbnRJZBgFIAEoCSonCgRTeW5jEggKBEZ1bGwQABIJ",
+            "CgVEZWx0YRABEgoKBkRlbGV0ZRACQiGqAh5DbGFzc0xpYnJhcnkuTWVzc2Fn",
+            "ZXMuUHJvdG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.Sync), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState_M), global::ClassLibrary.Messages.Protobuf.LocalState_M.Parser, new[]{ "AgentId", "Sync", "Agents", "Projectiles", "EventId" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.LocalState_M), global::ClassLibrary.Messages.Protobuf.LocalState_M.Parser, new[]{ "Sync", "Agents", "Projectiles", "Treasures", "EventId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -87,10 +88,10 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LocalState_M(LocalState_M other) : this() {
-      agentId_ = other.agentId_;
       sync_ = other.sync_;
       agents_ = other.agents_.Clone();
       projectiles_ = other.projectiles_.Clone();
+      treasures_ = other.treasures_.Clone();
       eventId_ = other.eventId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -101,23 +102,8 @@ namespace ClassLibrary.Messages.Protobuf {
       return new LocalState_M(this);
     }
 
-    /// <summary>Field number for the "AgentId" field.</summary>
-    public const int AgentIdFieldNumber = 1;
-    private string agentId_ = "";
-    /// <summary>
-    /// UUIDs are represented as strings in proto
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string AgentId {
-      get { return agentId_; }
-      set {
-        agentId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     /// <summary>Field number for the "Sync" field.</summary>
-    public const int SyncFieldNumber = 2;
+    public const int SyncFieldNumber = 1;
     private global::ClassLibrary.Messages.Protobuf.Sync sync_ = global::ClassLibrary.Messages.Protobuf.Sync.Full;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -129,9 +115,9 @@ namespace ClassLibrary.Messages.Protobuf {
     }
 
     /// <summary>Field number for the "Agents" field.</summary>
-    public const int AgentsFieldNumber = 3;
+    public const int AgentsFieldNumber = 2;
     private static readonly pb::FieldCodec<global::ClassLibrary.Messages.Protobuf.Agent_M> _repeated_agents_codec
-        = pb::FieldCodec.ForMessage(26, global::ClassLibrary.Messages.Protobuf.Agent_M.Parser);
+        = pb::FieldCodec.ForMessage(18, global::ClassLibrary.Messages.Protobuf.Agent_M.Parser);
     private readonly pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Agent_M> agents_ = new pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Agent_M>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -140,14 +126,25 @@ namespace ClassLibrary.Messages.Protobuf {
     }
 
     /// <summary>Field number for the "Projectiles" field.</summary>
-    public const int ProjectilesFieldNumber = 4;
+    public const int ProjectilesFieldNumber = 3;
     private static readonly pb::FieldCodec<global::ClassLibrary.Messages.Protobuf.Projectile_M> _repeated_projectiles_codec
-        = pb::FieldCodec.ForMessage(34, global::ClassLibrary.Messages.Protobuf.Projectile_M.Parser);
+        = pb::FieldCodec.ForMessage(26, global::ClassLibrary.Messages.Protobuf.Projectile_M.Parser);
     private readonly pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Projectile_M> projectiles_ = new pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Projectile_M>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Projectile_M> Projectiles {
       get { return projectiles_; }
+    }
+
+    /// <summary>Field number for the "Treasures" field.</summary>
+    public const int TreasuresFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::ClassLibrary.Messages.Protobuf.Treasure_M> _repeated_treasures_codec
+        = pb::FieldCodec.ForMessage(34, global::ClassLibrary.Messages.Protobuf.Treasure_M.Parser);
+    private readonly pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Treasure_M> treasures_ = new pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Treasure_M>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::ClassLibrary.Messages.Protobuf.Treasure_M> Treasures {
+      get { return treasures_; }
     }
 
     /// <summary>Field number for the "EventId" field.</summary>
@@ -177,10 +174,10 @@ namespace ClassLibrary.Messages.Protobuf {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (AgentId != other.AgentId) return false;
       if (Sync != other.Sync) return false;
       if(!agents_.Equals(other.agents_)) return false;
       if(!projectiles_.Equals(other.projectiles_)) return false;
+      if(!treasures_.Equals(other.treasures_)) return false;
       if (EventId != other.EventId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -189,10 +186,10 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (AgentId.Length != 0) hash ^= AgentId.GetHashCode();
       if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) hash ^= Sync.GetHashCode();
       hash ^= agents_.GetHashCode();
       hash ^= projectiles_.GetHashCode();
+      hash ^= treasures_.GetHashCode();
       if (EventId.Length != 0) hash ^= EventId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -212,16 +209,13 @@ namespace ClassLibrary.Messages.Protobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (AgentId.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(AgentId);
-      }
       if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
-        output.WriteRawTag(16);
+        output.WriteRawTag(8);
         output.WriteEnum((int) Sync);
       }
       agents_.WriteTo(output, _repeated_agents_codec);
       projectiles_.WriteTo(output, _repeated_projectiles_codec);
+      treasures_.WriteTo(output, _repeated_treasures_codec);
       if (EventId.Length != 0) {
         output.WriteRawTag(42);
         output.WriteString(EventId);
@@ -236,16 +230,13 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (AgentId.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(AgentId);
-      }
       if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
-        output.WriteRawTag(16);
+        output.WriteRawTag(8);
         output.WriteEnum((int) Sync);
       }
       agents_.WriteTo(ref output, _repeated_agents_codec);
       projectiles_.WriteTo(ref output, _repeated_projectiles_codec);
+      treasures_.WriteTo(ref output, _repeated_treasures_codec);
       if (EventId.Length != 0) {
         output.WriteRawTag(42);
         output.WriteString(EventId);
@@ -260,14 +251,12 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (AgentId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(AgentId);
-      }
       if (Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Sync);
       }
       size += agents_.CalculateSize(_repeated_agents_codec);
       size += projectiles_.CalculateSize(_repeated_projectiles_codec);
+      size += treasures_.CalculateSize(_repeated_treasures_codec);
       if (EventId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EventId);
       }
@@ -283,14 +272,12 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other == null) {
         return;
       }
-      if (other.AgentId.Length != 0) {
-        AgentId = other.AgentId;
-      }
       if (other.Sync != global::ClassLibrary.Messages.Protobuf.Sync.Full) {
         Sync = other.Sync;
       }
       agents_.Add(other.agents_);
       projectiles_.Add(other.projectiles_);
+      treasures_.Add(other.treasures_);
       if (other.EventId.Length != 0) {
         EventId = other.EventId;
       }
@@ -309,20 +296,20 @@ namespace ClassLibrary.Messages.Protobuf {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 10: {
-            AgentId = input.ReadString();
-            break;
-          }
-          case 16: {
+          case 8: {
             Sync = (global::ClassLibrary.Messages.Protobuf.Sync) input.ReadEnum();
             break;
           }
-          case 26: {
+          case 18: {
             agents_.AddEntriesFrom(input, _repeated_agents_codec);
             break;
           }
-          case 34: {
+          case 26: {
             projectiles_.AddEntriesFrom(input, _repeated_projectiles_codec);
+            break;
+          }
+          case 34: {
+            treasures_.AddEntriesFrom(input, _repeated_treasures_codec);
             break;
           }
           case 42: {
@@ -344,20 +331,20 @@ namespace ClassLibrary.Messages.Protobuf {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
-          case 10: {
-            AgentId = input.ReadString();
-            break;
-          }
-          case 16: {
+          case 8: {
             Sync = (global::ClassLibrary.Messages.Protobuf.Sync) input.ReadEnum();
             break;
           }
-          case 26: {
+          case 18: {
             agents_.AddEntriesFrom(ref input, _repeated_agents_codec);
             break;
           }
-          case 34: {
+          case 26: {
             projectiles_.AddEntriesFrom(ref input, _repeated_projectiles_codec);
+            break;
+          }
+          case 34: {
+            treasures_.AddEntriesFrom(ref input, _repeated_treasures_codec);
             break;
           }
           case 42: {

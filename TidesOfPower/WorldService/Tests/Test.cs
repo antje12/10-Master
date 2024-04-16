@@ -43,19 +43,12 @@ public class Test
                 It.IsAny<IProtoConsumer<World_M>.ProcessMessage>(),
                 It.IsAny<CancellationToken>()))
             .Returns(async () => { await Task.Delay(500); });
-
-        var producerLS = new Mock<IProtoProducer<LocalState_M>>();
-        var producerP = new Mock<IProtoProducer<Projectile_M>>();
-        var producerA = new Mock<IProtoProducer<Ai_M>>();
         
         var redis = new Mock<RedisBroker>(false);
         redis.Setup(x => x.Connect());
 
         var service = new Services.WorldService();
         service.Admin = admin.Object;
-        service.ProducerLS = producerLS.Object;
-        service.ProducerP = producerP.Object;
-        service.ProducerA = producerA.Object;
         service.Consumer = consumer.Object;
         service.RedisBroker = redis.Object;
 

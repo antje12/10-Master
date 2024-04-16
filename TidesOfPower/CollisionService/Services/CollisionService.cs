@@ -69,9 +69,8 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void Process(string key, Collision_M value)
     {
-        var treasure = 0;
         var entities = RedisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
-        var stopFlow = HandleCollisions(value, entities, out treasure);
+        var stopFlow = HandleCollisions(value, entities, out var treasure);
 
         if (stopFlow)
         {
@@ -107,7 +106,7 @@ public class CollisionService : BackgroundService, IConsumerService
         ProducerW.Produce(_outputTopicW, key, msgOut);
     }
 
-    private bool HandleCollisions(Collision_M value, List<Entity> entities, out int treasure)
+    internal bool HandleCollisions(Collision_M value, List<Entity> entities, out int treasure)
     {
         treasure = 0;
         var stopFlow = false;

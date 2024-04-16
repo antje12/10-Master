@@ -42,12 +42,9 @@ public class Test
                 It.IsAny<IProtoConsumer<Ai_M>.ProcessMessage>(),
                 It.IsAny<CancellationToken>()))
             .Returns(async () => { await Task.Delay(500); });
-
-        var producer = new Mock<IProtoProducer<Input_M>>();
-
+        
         var service = new Services.AIService();
         service.Admin = admin.Object;
-        service.Producer = producer.Object;
         service.Consumer = consumer.Object;
 
         var executeTask =  service.ExecuteAsync();

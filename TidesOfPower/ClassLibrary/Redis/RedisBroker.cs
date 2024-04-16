@@ -154,7 +154,7 @@ public class RedisBroker
         return results;
     }
 
-    public List<Entity> GetCloseEntities(float x, float y)
+    public virtual List<Entity> GetCloseEntities(float x, float y)
     {
         var xFrom = (x - 50).ToString(CultureInfo.InvariantCulture);
         var xTo = (x + 50).ToString(CultureInfo.InvariantCulture);

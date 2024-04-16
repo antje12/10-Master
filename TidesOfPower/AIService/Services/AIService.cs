@@ -14,9 +14,9 @@ public class AIService : BackgroundService, IConsumerService
     private KafkaTopic _inputTopic = KafkaTopic.Ai;
     private KafkaTopic _outputTopic = KafkaTopic.Input;
 
-    private KafkaAdministrator _admin;
-    private KafkaProducer<Input_M> _producer;
-    private KafkaConsumer<Ai_M> _consumer;
+    internal IAdministrator Admin;
+    internal IProtoProducer<Input_M> Producer;
+    internal IProtoConsumer<Ai_M> Consumer;
 
     private RedisBroker _redisBroker;
 
@@ -27,10 +27,16 @@ public class AIService : BackgroundService, IConsumerService
     {
         Console.WriteLine("AIService created");
         var config = new KafkaConfig(_groupId, localTest);
-        _admin = new KafkaAdministrator(config);
-        _producer = new KafkaProducer<Input_M>(config);
-        _consumer = new KafkaConsumer<Ai_M>(config);
+        Admin = new KafkaAdministrator(config);
+        Producer = new KafkaProducer<Input_M>(config);
+        Consumer = new KafkaConsumer<Ai_M>(config);
         _redisBroker = new RedisBroker(localTest);
+    }
+
+    internal async Task ExecuteAsync()
+    {
+        var cts = new CancellationTokenSource();
+        await ExecuteAsync(cts.Token);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -38,14 +44,14 @@ public class AIService : BackgroundService, IConsumerService
         await Task.Yield();
         IsRunning = true;
         Console.WriteLine("AIService started");
-        await _admin.CreateTopic(_inputTopic);
+        await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<Ai_M>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(_inputTopic, action, ct);
+        await Consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("AIService stopped");
     }
 
-    private void ProcessMessage(string key, Ai_M value)
+    internal void ProcessMessage(string key, Ai_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -120,6 +126,6 @@ public class AIService : BackgroundService, IConsumerService
             Console.WriteLine("AI dead!");
         }
         
-        _producer.Produce(_outputTopic, output.AgentId, output);
+        Producer.Produce(_outputTopic, output.AgentId, output);
     }
 }

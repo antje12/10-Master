@@ -14,10 +14,10 @@ public class RedisBroker
 {
     //https://redis.io/docs/connect/clients/dotnet/
     private string nodes = "redis-stack";
-    private readonly ConnectionMultiplexer _redis;
-    private readonly IDatabase _database;
-    private readonly SearchCommands _ft;
-    private readonly JsonCommands _json;
+    private ConnectionMultiplexer _redis;
+    private IDatabase _database;
+    private SearchCommands _ft;
+    private JsonCommands _json;
 
     public RedisBroker(bool isClient = false)
     {
@@ -25,7 +25,10 @@ public class RedisBroker
         {
             nodes = "localhost";
         }
+    }
 
+    public virtual void Connect()
+    {
         _redis = ConnectionMultiplexer.Connect(nodes);
         _database = _redis.GetDatabase();
         _ft = _database.FT();

@@ -17,14 +17,14 @@ public class WorldService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicP = KafkaTopic.Projectile;
     private KafkaTopic _outputTopicA = KafkaTopic.Ai;
 
-    private KafkaAdministrator _admin;
-    private KafkaProducer<LocalState_M> _producerLS;
-    private KafkaProducer<Projectile_M> _producerP;
-    private KafkaProducer<Ai_M> _producerA;
-    private KafkaConsumer<World_M> _consumer;
+    internal IAdministrator Admin;
+    internal IProtoProducer<LocalState_M> ProducerLS;
+    internal IProtoProducer<Projectile_M> ProducerP;
+    internal IProtoProducer<Ai_M> ProducerA;
+    internal IProtoConsumer<World_M> Consumer;
 
-    private MongoDbBroker _mongoBroker;
-    private RedisBroker _redisBroker;
+    internal MongoDbBroker MongoBroker;
+    internal RedisBroker RedisBroker;
 
     public bool IsRunning { get; private set; }
     private bool localTest = true;
@@ -33,28 +33,35 @@ public class WorldService : BackgroundService, IConsumerService
     {
         Console.WriteLine("WorldService created");
         var config = new KafkaConfig(_groupId, localTest);
-        _admin = new KafkaAdministrator(config);
-        _producerLS = new KafkaProducer<LocalState_M>(config);
-        _producerP = new KafkaProducer<Projectile_M>(config);
-        _producerA = new KafkaProducer<Ai_M>(config);
-        _consumer = new KafkaConsumer<World_M>(config);
-        _mongoBroker = new MongoDbBroker(localTest);
-        _redisBroker = new RedisBroker(localTest);
+        Admin = new KafkaAdministrator(config);
+        ProducerLS = new KafkaProducer<LocalState_M>(config);
+        ProducerP = new KafkaProducer<Projectile_M>(config);
+        ProducerA = new KafkaProducer<Ai_M>(config);
+        Consumer = new KafkaConsumer<World_M>(config);
+        MongoBroker = new MongoDbBroker(localTest);
+        RedisBroker = new RedisBroker(localTest);
+    }
+
+    internal async Task ExecuteAsync()
+    {
+        var cts = new CancellationTokenSource();
+        await ExecuteAsync(cts.Token);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         await Task.Yield();
         IsRunning = true;
+        RedisBroker.Connect();
         Console.WriteLine("WorldService started");
-        await _admin.CreateTopic(_inputTopic);
+        await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<World_M>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(_inputTopic, action, ct);
+        await Consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("WorldService stopped");
     }
 
-    private void ProcessMessage(string key, World_M value)
+    internal void ProcessMessage(string key, World_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -94,7 +101,7 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void MovePlayer(string key, World_M value)
     {
-        var db = _redisBroker.Get(Guid.Parse(value.EntityId));
+        var db = RedisBroker.Get(Guid.Parse(value.EntityId));
         
         var agent = new Agent_M
         {
@@ -106,7 +113,7 @@ public class WorldService : BackgroundService, IConsumerService
             Score = db is Player p4 ? p4.Score : 0
         };
         agent.Score += value.Value;
-        _redisBroker.UpsertAgentLocation(new Player(
+        RedisBroker.UpsertAgentLocation(new Player(
             "",
             agent.Score,
             Guid.Parse(agent.Id),
@@ -114,7 +121,7 @@ public class WorldService : BackgroundService, IConsumerService
             100,
             100));
 
-        var entities = _redisBroker.GetEntities(agent.Location.X, agent.Location.Y);
+        var entities = RedisBroker.GetEntities(agent.Location.X, agent.Location.Y);
         FullSync(key, value, entities);
 
         var otherPlayers = entities
@@ -168,7 +175,7 @@ public class WorldService : BackgroundService, IConsumerService
         msgOut.Agents.AddRange(agents);
         msgOut.Projectiles.AddRange(projectiles);
         msgOut.Treasures.AddRange(treasures);
-        _producerLS.Produce($"{_outputTopicLS}_{value.EntityId}", key, msgOut);
+        ProducerLS.Produce($"{_outputTopicLS}_{value.EntityId}", key, msgOut);
     }
 
     private void DeltaSync(
@@ -187,13 +194,13 @@ public class WorldService : BackgroundService, IConsumerService
             msgOut.Agents.AddRange(agents);
             msgOut.Projectiles.AddRange(projectiles);
             msgOut.Treasures.AddRange(treasures);
-            _producerLS.Produce($"{_outputTopicLS}_{player.Id}", player.Id.ToString(), msgOut);
+            ProducerLS.Produce($"{_outputTopicLS}_{player.Id}", player.Id.ToString(), msgOut);
         }
     }
 
     private void MoveAi(string key, World_M value)
     {
-        var db = _redisBroker.Get(Guid.Parse(value.EntityId));
+        var db = RedisBroker.Get(Guid.Parse(value.EntityId));
         if (db == null)
             return;
 
@@ -203,12 +210,12 @@ public class WorldService : BackgroundService, IConsumerService
             Location = value.Location,
             LastUpdate = value.LastUpdate
         };
-        _redisBroker.UpsertAgentLocation(new Enemy(
+        RedisBroker.UpsertAgentLocation(new Enemy(
             Guid.Parse(msgOut.Id),
             new Coordinates(msgOut.Location.X, msgOut.Location.Y),
             100,
             100));
-        _producerA.Produce(_outputTopicA, msgOut.Id, msgOut);
+        ProducerA.Produce(_outputTopicA, msgOut.Id, msgOut);
 
         var agent = new Agent_M
         {
@@ -220,7 +227,7 @@ public class WorldService : BackgroundService, IConsumerService
             Score = 0
         };
 
-        var players = _redisBroker
+        var players = RedisBroker
             .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<Player>().ToList();
         DeltaSync(players, new List<Agent_M>(){agent}, new List<Projectile_M>(), new List<Treasure_M>(), Sync.Delta);
@@ -244,11 +251,11 @@ public class WorldService : BackgroundService, IConsumerService
         }
         else
         {
-            _producerP.Produce(_outputTopicP, msgOut.Id, msgOut);
+            ProducerP.Produce(_outputTopicP, msgOut.Id, msgOut);
             sync = Sync.Delta;
         }
 
-        var players = _redisBroker
+        var players = RedisBroker
             .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<Player>().ToList();
         DeltaSync(players, new List<Agent_M>(), new List<Projectile_M>(){msgOut}, new List<Treasure_M>(), sync);
@@ -262,12 +269,12 @@ public class WorldService : BackgroundService, IConsumerService
             Location = new Coordinates_M {X = value.Location.X, Y = value.Location.Y},
             LastUpdate = DateTime.UtcNow.Ticks,
         };
-        _redisBroker.UpsertAgentLocation(new Enemy(
+        RedisBroker.UpsertAgentLocation(new Enemy(
             Guid.Parse(msgOut.Id),
             new Coordinates(msgOut.Location.X, msgOut.Location.Y),
             100,
             100));
-        _producerA.Produce(_outputTopicA, msgOut.Id, msgOut);
+        ProducerA.Produce(_outputTopicA, msgOut.Id, msgOut);
 
         var agent = new Agent_M
         {
@@ -279,7 +286,7 @@ public class WorldService : BackgroundService, IConsumerService
             Score = 0
         };
 
-        var players = _redisBroker
+        var players = RedisBroker
             .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<Player>().ToList();
         DeltaSync(players, new List<Agent_M>(){agent}, new List<Projectile_M>(), new List<Treasure_M>(), Sync.Delta);
@@ -295,9 +302,9 @@ public class WorldService : BackgroundService, IConsumerService
             LastUpdate = DateTime.UtcNow.Ticks,
             TTL = 100
         };
-        _producerP.Produce(_outputTopicP, msgOut.Id, msgOut);
+        ProducerP.Produce(_outputTopicP, msgOut.Id, msgOut);
 
-        var players = _redisBroker
+        var players = RedisBroker
             .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<Player>().ToList();
         DeltaSync(players, new List<Agent_M>(), new List<Projectile_M>(){msgOut}, new List<Treasure_M>(), Sync.Delta);
@@ -305,7 +312,7 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void DamageAgent(string key, World_M value)
     {
-        var db = _redisBroker.Get(Guid.Parse(value.EntityId));
+        var db = RedisBroker.Get(Guid.Parse(value.EntityId));
         if (db is Player t)
         {
             value.Value = t.Score;
@@ -321,10 +328,10 @@ public class WorldService : BackgroundService, IConsumerService
             Id = value.EntityId
         };
 
-        var players = _redisBroker
+        var players = RedisBroker
             .GetEntities(value.Location.X, value.Location.Y)
             .OfType<Player>().ToList();
-        _redisBroker.DeleteEntity(Guid.Parse(msgOut.Id));
+        RedisBroker.DeleteEntity(Guid.Parse(msgOut.Id));
         DeltaSync(players, new List<Agent_M>(){msgOut}, new List<Projectile_M>(), new List<Treasure_M>(), Sync.Delete);
     }
     
@@ -332,7 +339,7 @@ public class WorldService : BackgroundService, IConsumerService
     {
         Console.WriteLine($"SpawnTreasure: {value.Value}");
         var treasure = new Treasure(value.Value, Guid.NewGuid(), new Coordinates(value.Location.X, value.Location.Y));
-        _redisBroker.Insert(treasure);
+        RedisBroker.Insert(treasure);
 
         var msgOut = new Treasure_M()
         {
@@ -345,7 +352,7 @@ public class WorldService : BackgroundService, IConsumerService
             Value = treasure.Value
         };
 
-        var players = _redisBroker
+        var players = RedisBroker
             .GetEntities(msgOut.Location.X, msgOut.Location.Y)
             .OfType<Player>().ToList();
         DeltaSync(players, new List<Agent_M>(), new List<Projectile_M>(), new List<Treasure_M>(){msgOut}, Sync.Delta);
@@ -358,10 +365,10 @@ public class WorldService : BackgroundService, IConsumerService
             Id = value.EntityId
         };
 
-        var players = _redisBroker
+        var players = RedisBroker
             .GetEntities(value.Location.X, value.Location.Y)
             .OfType<Player>().ToList();
-        _redisBroker.DeleteEntity(Guid.Parse(msgOut.Id));
+        RedisBroker.DeleteEntity(Guid.Parse(msgOut.Id));
         DeltaSync(players, new List<Agent_M>(), new List<Projectile_M>(), new List<Treasure_M>(){msgOut}, Sync.Delete);
     }
 }

@@ -13,9 +13,9 @@ public class ProjectileService : BackgroundService, IConsumerService
     private KafkaTopic _inputTopic = KafkaTopic.Projectile;
     private KafkaTopic _outputTopic = KafkaTopic.Collision;
 
-    private KafkaAdministrator _admin;
-    private KafkaProducer<Collision_M> _producer;
-    private KafkaConsumer<Projectile_M> _consumer;
+    internal IAdministrator Admin;
+    internal IProtoProducer<Collision_M> Producer;
+    internal IProtoConsumer<Projectile_M> Consumer;
 
     public bool IsRunning { get; private set; }
     private bool localTest = true;
@@ -24,9 +24,9 @@ public class ProjectileService : BackgroundService, IConsumerService
     {
         Console.WriteLine("ProjectileService created");
         var config = new KafkaConfig(_groupId, localTest);
-        _admin = new KafkaAdministrator(config);
-        _producer = new KafkaProducer<Collision_M>(config);
-        _consumer = new KafkaConsumer<Projectile_M>(config);
+        Admin = new KafkaAdministrator(config);
+        Producer = new KafkaProducer<Collision_M>(config);
+        Consumer = new KafkaConsumer<Projectile_M>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -34,14 +34,20 @@ public class ProjectileService : BackgroundService, IConsumerService
         await Task.Yield();
         IsRunning = true;
         Console.WriteLine("ProjectileService started");
-        await _admin.CreateTopic(_inputTopic);
+        await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<Projectile_M>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(_inputTopic, action, ct);
+        await Consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("ProjectileService stopped");
     }
 
-    private void ProcessMessage(string key, Projectile_M value)
+    internal async Task ExecuteAsync()
+    {
+        var cts = new CancellationTokenSource();
+        await ExecuteAsync(cts.Token);
+    }
+
+    internal void ProcessMessage(string key, Projectile_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -83,6 +89,6 @@ public class ProjectileService : BackgroundService, IConsumerService
             Y = toY
         };
         output.LastUpdate = to;
-        _producer.Produce(_outputTopic, output.EntityId, output);
+        Producer.Produce(_outputTopic, output.EntityId, output);
     }
 }

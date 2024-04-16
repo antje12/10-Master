@@ -17,10 +17,10 @@ public class InputService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicC = KafkaTopic.Collision;
     private KafkaTopic _outputTopicW = KafkaTopic.World;
 
-    private KafkaAdministrator _admin;
-    private KafkaProducer<Collision_M> _producerC;
-    private KafkaProducer<World_M> _producerW;
-    private KafkaConsumer<Input_M> _consumer;
+    internal IAdministrator Admin;
+    internal IProtoProducer<Collision_M> ProducerC;
+    internal IProtoProducer<World_M> ProducerW;
+    internal IProtoConsumer<Input_M> Consumer;
 
     private Dictionary<string, DateTime> ClientAttacks = new();
     
@@ -31,26 +31,32 @@ public class InputService : BackgroundService, IConsumerService
     {
         Console.WriteLine("InputService created");
         var config = new KafkaConfig(_groupId, localTest);
-        _admin = new KafkaAdministrator(config);
-        _producerC = new KafkaProducer<Collision_M>(config);
-        _producerW = new KafkaProducer<World_M>(config);
-        _consumer = new KafkaConsumer<Input_M>(config);
+        Admin = new KafkaAdministrator(config);
+        ProducerC = new KafkaProducer<Collision_M>(config);
+        ProducerW = new KafkaProducer<World_M>(config);
+        Consumer = new KafkaConsumer<Input_M>(config);
     }
 
+    internal async Task ExecuteAsync()
+    {
+        var cts = new CancellationTokenSource();
+        await ExecuteAsync(cts.Token);
+    }
+    
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         IsRunning = true;
         Console.WriteLine("InputService started");
-        await _admin.CreateTopic(_inputTopic);
+        await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<Input_M>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(_inputTopic, action, ct);
+        await Consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("InputService stopped");
     }
 
-    private void ProcessMessage(string key, Input_M value)
+    internal void ProcessMessage(string key, Input_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -97,7 +103,7 @@ public class InputService : BackgroundService, IConsumerService
             LastUpdate = value.LastUpdate,
             EventId = value.EventId
         };
-        _producerC.Produce(_outputTopicC, key, msgOut);
+        ProducerC.Produce(_outputTopicC, key, msgOut);
     }
 
     private void Attack(string key, Input_M value)
@@ -127,7 +133,7 @@ public class InputService : BackgroundService, IConsumerService
             Location = new Coordinates_M() {X = spawnX, Y = spawnY},
             Direction = new Coordinates_M() {X = x, Y = y}
         };
-        _producerW.Produce(_outputTopicW, key, msgOut);
+        ProducerW.Produce(_outputTopicW, key, msgOut);
     }
 
     private void Interact(string key, Input_M value)
@@ -138,6 +144,6 @@ public class InputService : BackgroundService, IConsumerService
             Change = Change.SpawnAi,
             Location = value.MouseLocation,
         };
-        _producerW.Produce(_outputTopicW, key, msgOut);
+        ProducerW.Produce(_outputTopicW, key, msgOut);
     }
 }

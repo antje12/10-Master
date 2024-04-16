@@ -17,12 +17,12 @@ public class CollisionService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicW = KafkaTopic.World;
     private KafkaTopic _outputTopicA = KafkaTopic.Ai;
 
-    private KafkaAdministrator _admin;
-    private KafkaProducer<World_M> _producerW;
-    private KafkaProducer<Ai_M> _producerA;
-    private KafkaConsumer<Collision_M> _consumer;
+    internal IAdministrator Admin;
+    internal IProtoProducer<World_M> ProducerW;
+    internal IProtoProducer<Ai_M> ProducerA;
+    internal IProtoConsumer<Collision_M> Consumer;
 
-    private RedisBroker _redisBroker;
+    internal RedisBroker RedisBroker;
 
     public bool IsRunning { get; private set; }
     private bool localTest = true;
@@ -31,26 +31,33 @@ public class CollisionService : BackgroundService, IConsumerService
     {
         Console.WriteLine("CollisionService created");
         var config = new KafkaConfig(_groupId, localTest);
-        _admin = new KafkaAdministrator(config);
-        _producerW = new KafkaProducer<World_M>(config);
-        _producerA = new KafkaProducer<Ai_M>(config);
-        _consumer = new KafkaConsumer<Collision_M>(config);
-        _redisBroker = new RedisBroker(localTest);
+        Admin = new KafkaAdministrator(config);
+        ProducerW = new KafkaProducer<World_M>(config);
+        ProducerA = new KafkaProducer<Ai_M>(config);
+        Consumer = new KafkaConsumer<Collision_M>(config);
+        RedisBroker = new RedisBroker(localTest);
+    }
+
+    internal async Task ExecuteAsync()
+    {
+        var cts = new CancellationTokenSource();
+        await ExecuteAsync(cts.Token);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         await Task.Yield();
         IsRunning = true;
+        RedisBroker.Connect();
         Console.WriteLine("CollisionService started");
-        await _admin.CreateTopic(_inputTopic);
+        await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<Collision_M>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(_inputTopic, action, ct);
+        await Consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("CollisionService stopped");
     }
 
-    private void ProcessMessage(string key, Collision_M value)
+    internal void ProcessMessage(string key, Collision_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -63,7 +70,7 @@ public class CollisionService : BackgroundService, IConsumerService
     private void Process(string key, Collision_M value)
     {
         var treasure = 0;
-        var entities = _redisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
+        var entities = RedisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
         var stopFlow = HandleCollisions(value, entities, out treasure);
 
         if (stopFlow)
@@ -97,7 +104,7 @@ public class CollisionService : BackgroundService, IConsumerService
                 break;
         }
 
-        _producerW.Produce(_outputTopicW, key, msgOut);
+        ProducerW.Produce(_outputTopicW, key, msgOut);
     }
 
     private bool HandleCollisions(Collision_M value, List<Entity> entities, out int treasure)
@@ -170,7 +177,7 @@ public class CollisionService : BackgroundService, IConsumerService
             Location = value.FromLocation,
             LastUpdate = value.LastUpdate
         };
-        _producerA.Produce(_outputTopicA, key, msgOut);
+        ProducerA.Produce(_outputTopicA, key, msgOut);
     }
 
     private void DamageAgent(Entity entity)
@@ -185,7 +192,7 @@ public class CollisionService : BackgroundService, IConsumerService
                 Y = entity.Location.Y
             }
         };
-        _producerW.Produce(_outputTopicW, output.EntityId, output);
+        ProducerW.Produce(_outputTopicW, output.EntityId, output);
     }
 
     private void CollectTreasure(Entity entity)
@@ -200,6 +207,6 @@ public class CollisionService : BackgroundService, IConsumerService
                 Y = entity.Location.Y
             }
         };
-        _producerW.Produce(_outputTopicW, output.EntityId, output);
+        ProducerW.Produce(_outputTopicW, output.EntityId, output);
     }
 }

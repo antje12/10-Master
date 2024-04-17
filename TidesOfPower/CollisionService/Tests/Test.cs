@@ -94,7 +94,7 @@ public class Test
             EventId = key
         };
         
-        World_M temp = null;
+        World_M? temp = null;
         producerW.Setup(x => 
                 x.Produce(KafkaTopic.World, key, It.IsAny<World_M>()))
             .Callback<KafkaTopic, string, World_M>((topic, entityId, msg) => temp = msg);
@@ -153,12 +153,12 @@ public class Test
             EventId = key
         };
         
-        World_M temp1 = null;
+        World_M? temp1 = null;
         producerW.Setup(x => 
                 x.Produce(KafkaTopic.World, key, It.IsAny<World_M>()))
             .Callback<KafkaTopic, string, World_M>((topic, entityId, msg) => temp1 = msg);
         
-        Ai_M temp2 = null;
+        Ai_M? temp2 = null;
         producerA.Setup(x => 
                 x.Produce(KafkaTopic.Ai, key, It.IsAny<Ai_M>()))
             .Callback<KafkaTopic, string, Ai_M>((topic, entityId, msg) => temp2 = msg);

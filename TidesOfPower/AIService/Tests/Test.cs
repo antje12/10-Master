@@ -85,7 +85,7 @@ public class Test
             LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks
         };
 
-        Input_M state = null;
+        Input_M? state = null;
         producer.Setup(x =>
                 x.Produce(KafkaTopic.Input, key, It.IsAny<Input_M>()))
             .Callback<KafkaTopic, string, Input_M>((topic, entityId, msg) => state = msg);

@@ -67,7 +67,7 @@ public class Test
             LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks,
             TTL = 100
         };
-        Collision_M state = null;
+        Collision_M? state = null;
         producer.Setup(x => 
                 x.Produce(KafkaTopic.Collision, key, It.IsAny<Collision_M>()))
             .Callback<KafkaTopic, string, Collision_M>((topic, entityId, msg) => state = msg);

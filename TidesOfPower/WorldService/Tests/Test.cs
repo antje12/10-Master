@@ -112,11 +112,11 @@ public class Test
             Value = 100
         };
         
-        Player player = null;
+        Player? player = null;
         redis.Setup(x => 
                 x.UpsertAgentLocation(It.IsAny<Agent>()))
             .Callback<Agent>((agent) => player = (Player) agent);
-        LocalState_M state = null;
+        LocalState_M? state = null;
         producerLS.Setup(x => 
                 x.Produce(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<LocalState_M>()))
             .Callback<string, string, LocalState_M>((topic, entityId, msg) => state = msg);
@@ -159,11 +159,11 @@ public class Test
             LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks
         };
         
-        Enemy enemy = null;
+        Enemy? enemy = null;
         redis.Setup(x => 
                 x.UpsertAgentLocation(It.IsAny<Agent>()))
             .Callback<Agent>((agent) => enemy = (Enemy) agent);
-        LocalState_M state = null;
+        LocalState_M? state = null;
         producerLS.Setup(x => 
                 x.Produce(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<LocalState_M>()))
             .Callback<string, string, LocalState_M>((topic, entityId, msg) => state = msg);
@@ -213,7 +213,7 @@ public class Test
             TTL = 100
         };
         
-        LocalState_M state = null;
+        LocalState_M? state = null;
         producerLS.Setup(x => 
                 x.Produce(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<LocalState_M>()))
             .Callback<string, string, LocalState_M>((topic, entityId, msg) => state = msg);
@@ -265,11 +265,11 @@ public class Test
             Change = Change.SpawnAi
         };
         
-        Enemy enemy = null;
+        Enemy? enemy = null;
         redis.Setup(x => 
                 x.UpsertAgentLocation(It.IsAny<Agent>()))
             .Callback<Agent>((agent) => enemy = (Enemy) agent);
-        LocalState_M state = null;
+        LocalState_M? state = null;
         producerLS.Setup(x => 
                 x.Produce(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<LocalState_M>()))
             .Callback<string, string, LocalState_M>((topic, entityId, msg) => state = msg);
@@ -308,7 +308,7 @@ public class Test
             Change = Change.SpawnBullet
         };
         
-        LocalState_M state = null;
+        LocalState_M? state = null;
         producerLS.Setup(x => 
                 x.Produce(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<LocalState_M>()))
             .Callback<string, string, LocalState_M>((topic, entityId, msg) => state = msg);
@@ -339,7 +339,7 @@ public class Test
             Change = Change.DamageAgent
         };
         
-        LocalState_M state = null;
+        LocalState_M? state = null;
         producerLS.Setup(x => 
                 x.Produce(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<LocalState_M>()))
             .Callback<string, string, LocalState_M>((topic, entityId, msg) => state = msg);
@@ -373,7 +373,7 @@ public class Test
             Change = Change.CollectTreasure
         };
         
-        LocalState_M state = null;
+        LocalState_M? state = null;
         producerLS.Setup(x => 
                 x.Produce(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<LocalState_M>()))
             .Callback<string, string, LocalState_M>((topic, entityId, msg) => state = msg);

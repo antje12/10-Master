@@ -139,7 +139,7 @@ public class Test
         };
         value.KeyInput.AddRange(keys);
         
-        World_M msgOut = null;
+        World_M? msgOut = null;
         producerW.Setup(x => 
                 x.Produce(KafkaTopic.World, key, It.IsAny<World_M>()))
             .Callback<KafkaTopic, string, World_M>((topic, entityId, msg) => msgOut = msg);

@@ -21,11 +21,6 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '8.0.x'
-      - name: Install Arial font
-        run: |
-          sudo mkdir -p /usr/share/fonts/truetype/custom
-          sudo cp arial.ttf /usr/share/fonts/truetype/custom/arial.ttf
-          sudo fc-cache -f -v
       - name: Install dependencies
         run: dotnet restore
         working-directory: TidesOfPower

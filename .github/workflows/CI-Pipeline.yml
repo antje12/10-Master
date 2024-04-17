@@ -22,9 +22,12 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Remove GameClient from solution
-        run: sed -i '/GameClient\/GameClient.csproj/d' TidesOfPower.sln
-        working-directory: TidesOfPower
+      - name: Install Arial Font
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ttf-mscorefonts-installer
+          sudo fc-cache -f -v
+
       - name: Install dependencies
         run: dotnet restore
         working-directory: TidesOfPower

@@ -145,11 +145,6 @@
 /processorParam:TextureFormat=Color
 /build:environment/ocean.png
 
-#begin fonts/arial.ttf
-/importer:
-/processor:
-/build:fonts/arial.ttf
-
 #begin fonts/Arial16.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

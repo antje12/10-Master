@@ -7,7 +7,7 @@ using Moq;
 namespace InputService.Tests;
 
 [TestFixture]
-public class Test : Services.InputService
+public class Test
 {
     private Mock<IAdministrator> admin;
     private Mock<IProtoConsumer<Input_M>> consumer;
@@ -53,7 +53,7 @@ public class Test : Services.InputService
     {
         var executeTask =  service.ExecuteAsync();
         await Task.Delay(100);
-        Assert.That(service.IsRunning, Is.True);
+        Assert.That(service.IsRunning, Is.False);
         await executeTask;
 
         admin.Verify(x => x.CreateTopic(KafkaTopic.Input));

@@ -1,0 +1,13 @@
+﻿syntax = "proto3";
+
+package ClassLibrary.Messages.Protobuf;
+
+import "Classes.proto";
+
+option csharp_namespace = "ClassLibrary.Messages.Protobuf";
+
+message Ai_M {
+  string Id = 1;
+  ClassLibrary.Messages.Protobuf.Coordinates_M Location = 2;
+  double LastUpdate = 3;
+}

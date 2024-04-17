@@ -1,0 +1,32 @@
+﻿syntax = "proto3";
+
+package ClassLibrary.Messages.Protobuf;
+
+import "Classes.proto";
+
+option csharp_namespace = "ClassLibrary.Messages.Protobuf";
+
+message Input_M {
+  string AgentId = 1; // UUIDs are represented as strings in proto
+  ClassLibrary.Messages.Protobuf.Coordinates_M AgentLocation = 2;
+  ClassLibrary.Messages.Protobuf.Coordinates_M MouseLocation = 3;
+  repeated GameKey KeyInput = 4;
+  double GameTime = 5;
+  double LastUpdate = 6;
+  string EventId = 7;
+  Source Source = 8;
+}
+
+enum GameKey {
+  Up = 0;
+  Down = 1;
+  Left = 2;
+  Right = 3;
+  Attack = 4;
+  Interact = 5;
+}
+
+enum Source {
+  Player = 0;
+  Ai = 1;
+}

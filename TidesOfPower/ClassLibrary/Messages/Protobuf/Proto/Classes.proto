@@ -4,28 +4,30 @@ package ClassLibrary.Messages.Protobuf;
 
 option csharp_namespace = "ClassLibrary.Messages.Protobuf";
 
-message Coordinates {
+message Coordinates_M {
   float X = 1;
   float Y = 2;
 }
 
-message Agent {
+message Agent_M {
   string Id = 1;
-  
-  ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
-  
+  ClassLibrary.Messages.Protobuf.Coordinates_M Location = 2;
   string Name = 3;
   int32 WalkingSpeed = 4;
   int32 LifePool = 5;
-  int32 Inventory = 6;
+  int32 Score = 6;
 }
 
-message Projectile {
+message Projectile_M {
   string Id = 1;
-  
-  ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
-  ClassLibrary.Messages.Protobuf.Coordinates Direction = 3;
-  
+  ClassLibrary.Messages.Protobuf.Coordinates_M Location = 2;
+  ClassLibrary.Messages.Protobuf.Coordinates_M Direction = 3;
   double LastUpdate = 4;
   double TTL = 5;
+}
+
+message Treasure_M {
+  string Id = 1;
+  ClassLibrary.Messages.Protobuf.Coordinates_M Location = 2;
+  int32 Value = 3;
 }

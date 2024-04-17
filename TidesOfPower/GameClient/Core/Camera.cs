@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ClassLibrary.Domain;
+using Microsoft.Xna.Framework;
 
 namespace GameClient.Core;
 
@@ -12,11 +13,11 @@ public class Camera
         _game = game;
     }
 
-    public void Follow(Vector2 playerPosition)
+    public void Follow(Coordinates playerLocation)
     {
-        var position = Matrix.CreateTranslation(
-            -playerPosition.X,
-            -playerPosition.Y,
+        var location = Matrix.CreateTranslation(
+            -playerLocation.X,
+            -playerLocation.Y,
             0);
 
         var offset = Matrix.CreateTranslation(
@@ -24,7 +25,7 @@ public class Camera
             _game.ScreenHeight / 2,
             0);
 
-        Transform = position * offset;
+        Transform = location * offset;
     }
     
     public bool MouseOnScreen(Vector2 mouse)
@@ -33,11 +34,11 @@ public class Camera
                0 <= mouse.Y && mouse.Y <= _game.ScreenHeight;
     }
     
-    public Vector2 MouseInWorld(Vector2 screenPosition)
+    public Vector2 MouseInWorld(Vector2 screenLocation)
     {
         Matrix inverseTransform = Matrix.Invert(Transform);
-        Vector3 screenPosition3 = new Vector3(screenPosition, 0);
-        Vector3 worldPosition = Vector3.Transform(screenPosition3, inverseTransform);
-        return new Vector2(worldPosition.X, worldPosition.Y);
+        Vector3 screenLocation3 = new Vector3(screenLocation, 0);
+        Vector3 worldLocation = Vector3.Transform(screenLocation3, inverseTransform);
+        return new Vector2(worldLocation.X, worldLocation.Y);
     }
 }

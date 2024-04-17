@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
+using AIService.Interfaces;
+using ClassLibrary.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using AIService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.Redis;
 
@@ -13,11 +14,11 @@ public class AIService : BackgroundService, IConsumerService
     private KafkaTopic _inputTopic = KafkaTopic.Ai;
     private KafkaTopic _outputTopic = KafkaTopic.Input;
 
-    private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<Input> _producer;
-    private ProtoKafkaConsumer<AiAgent> _consumer;
+    internal IAdministrator Admin;
+    internal IProtoProducer<Input_M> Producer;
+    internal IProtoConsumer<Ai_M> Consumer;
 
-    private RedisBroker _redisBroker;
+    internal RedisBroker RedisBroker;
 
     public bool IsRunning { get; private set; }
     private bool localTest = true;
@@ -26,25 +27,32 @@ public class AIService : BackgroundService, IConsumerService
     {
         Console.WriteLine("AIService created");
         var config = new KafkaConfig(_groupId, localTest);
-        _admin = new KafkaAdministrator(config);
-        _producer = new ProtoKafkaProducer<Input>(config);
-        _consumer = new ProtoKafkaConsumer<AiAgent>(config);
-        _redisBroker = new RedisBroker(localTest);
+        Admin = new KafkaAdministrator(config);
+        Producer = new KafkaProducer<Input_M>(config);
+        Consumer = new KafkaConsumer<Ai_M>(config);
+        RedisBroker = new RedisBroker();
+    }
+
+    internal async Task ExecuteAsync()
+    {
+        var cts = new CancellationTokenSource();
+        await ExecuteAsync(cts.Token);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         await Task.Yield();
         IsRunning = true;
+        RedisBroker.Connect();
         Console.WriteLine("AIService started");
-        await _admin.CreateTopic(_inputTopic);
-        IProtoConsumer<AiAgent>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(_inputTopic, action, ct);
+        await Admin.CreateTopic(_inputTopic);
+        IProtoConsumer<Ai_M>.ProcessMessage action = ProcessMessage;
+        await Consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("AIService stopped");
     }
 
-    private void ProcessMessage(string key, AiAgent value)
+    internal void ProcessMessage(string key, Ai_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -54,37 +62,38 @@ public class AIService : BackgroundService, IConsumerService
         Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
-    private void Process(AiAgent agent)
+    private void Process(Ai_M agent)
     {
-        if (_redisBroker.Get(Guid.Parse(agent.Id)) == null)
+        if (RedisBroker.Get(Guid.Parse(agent.Id)) == null)
             return;
         
-        var entities = _redisBroker
+        var entities = RedisBroker
             .GetEntities(agent.Location.X, agent.Location.Y)
             .Where(x => x.Id.ToString() != agent.Id).ToList();
         var targets = entities
-            .OfType<ClassLibrary.Classes.Domain.Player>();
+            .OfType<Player>();
 
         var from = (long) agent.LastUpdate;
         var to = DateTime.UtcNow.Ticks;
         var difference = TimeSpan.FromTicks(to - from);
         var deltaTime = difference.TotalSeconds;
         
-        var output = new Input()
+        var output = new Input_M
         {
             AgentId = agent.Id,
-            AgentLocation = new Coordinates()
+            AgentLocation = new Coordinates_M
             {
                 X = agent.Location.X,
                 Y = agent.Location.Y
             },
             GameTime = deltaTime,
-            EventId = Guid.NewGuid().ToString(),
             Source = Source.Ai,
             LastUpdate = to
         };
 
-        var obstacles = entities.Select(x => new Node((int) x.Location.X, (int) x.Location.Y)).ToList();
+        var obstacles = entities
+            .OfType<Enemy>()
+            .Select(x => new Node((int) x.Location.X, (int) x.Location.Y)).ToList();
         var start = new Node((int) agent.Location.X, (int) agent.Location.Y);
         var target = targets.MinBy(t =>
             AStar.H((int) agent.Location.X, (int) agent.Location.Y, (int) t.Location.X, (int) t.Location.Y));
@@ -96,23 +105,30 @@ public class AIService : BackgroundService, IConsumerService
         if (target != null && 
             AStar.H((int) agent.Location.X, (int) agent.Location.Y, (int) target.Location.X, (int) target.Location.Y) < 150)
         {
-            output.MouseLocation = new Coordinates()
+            output.MouseLocation = new Coordinates_M
             {
                 X = target.Location.X,
                 Y = target.Location.Y
             };
             output.KeyInput.Add(GameKey.Attack);
         }
+        else
+        {
+            if (nextStep.X < start.X)
+                output.KeyInput.Add(GameKey.Left);
+            if (start.X < nextStep.X)
+                output.KeyInput.Add(GameKey.Right);
+            if (nextStep.Y < start.Y)
+                output.KeyInput.Add(GameKey.Up);
+            if (start.Y < nextStep.Y)
+                output.KeyInput.Add(GameKey.Down);
+        }
+
+        if (!output.KeyInput.Any())
+        {
+            Console.WriteLine("AI dead!");
+        }
         
-        if (nextStep.X < start.X)
-            output.KeyInput.Add(GameKey.Left);
-        if (start.X < nextStep.X)
-            output.KeyInput.Add(GameKey.Right);
-        if (nextStep.Y < start.Y)
-            output.KeyInput.Add(GameKey.Up);
-        if (start.Y < nextStep.Y)
-            output.KeyInput.Add(GameKey.Down);
-        
-        _producer.Produce(_outputTopic, output.AgentId, output);
+        Producer.Produce(_outputTopic, output.AgentId, output);
     }
 }

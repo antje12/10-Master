@@ -30,8 +30,8 @@ public class AnimationManager
         }
     }
 
-    public void Draw(SpriteBatch spriteBatch, Vector2 position)
+    public void Draw(SpriteBatch spriteBatch, Vector2 location)
     {
-        _anims[_lastKey].Draw(spriteBatch, position);
+        _anims[_lastKey].Draw(spriteBatch, location);
     }
 }

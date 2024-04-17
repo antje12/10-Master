@@ -1,14 +1,13 @@
-﻿using ClassLibrary.Classes.Data;
-using ClassLibrary.Classes.Domain;
+﻿using ClassLibrary.Domain;
 using MongoDB.Driver;
 
 namespace ClassLibrary.MongoDB;
 
 public class MongoDbBroker
 {
-    private readonly MongoDbContext _mongoDbContext;
-
-    public MongoDbBroker(bool isClient = false)
+    private MongoDbContext _mongoDbContext;
+    
+    public virtual void Connect(bool isClient = false)
     {
         _mongoDbContext = new MongoDbContext(isClient);
     }
@@ -112,50 +111,50 @@ public class MongoDbBroker
         }
     }
 
-    public Avatar? GetAvatar(Guid avatarId)
+    public Agent? GetAgent(Guid agentId)
     {
-        var filterBuilder = Builders<Avatar>.Filter;
-        var filter = filterBuilder.Eq(x => x.Id, avatarId);
-        var avatars = _mongoDbContext.Avatars.OfType<Avatar>().Find(filter).ToListAsync().GetAwaiter().GetResult();
-        var avatar = avatars.FirstOrDefault();
-        return avatar;
+        var filterBuilder = Builders<Agent>.Filter;
+        var filter = filterBuilder.Eq(x => x.Id, agentId);
+        var agents = _mongoDbContext.Agents.OfType<Agent>().Find(filter).ToListAsync().GetAwaiter().GetResult();
+        var agent = agents.FirstOrDefault();
+        return agent;
     }
 
-    public void UpdateAvatarLocation(Avatar avatar)
+    public void UpdateAgentLocation(Agent agent)
     {
-        var filter = Builders<Avatar>.Filter.Eq(x => x.Id, avatar.Id);
-        var update = Builders<Avatar>.Update
-            .Set(x => x.Location.X, avatar.Location.X)
-            .Set(x => x.Location.Y, avatar.Location.Y);
-        var result = _mongoDbContext.Avatars.UpdateOneAsync(filter, update).GetAwaiter().GetResult();
+        var filter = Builders<Agent>.Filter.Eq(x => x.Id, agent.Id);
+        var update = Builders<Agent>.Update
+            .Set(x => x.Location.X, agent.Location.X)
+            .Set(x => x.Location.Y, agent.Location.Y);
+        var result = _mongoDbContext.Agents.UpdateOneAsync(filter, update).GetAwaiter().GetResult();
         if (!result.IsAcknowledged || result.ModifiedCount == 0)
         {
-            Console.WriteLine("Avatar update failed!");
+            Console.WriteLine("Agent update failed!");
         }
         else
         {
-            //Console.WriteLine("Avatar update succeeded!");
+            //Console.WriteLine("Agent update succeeded!");
         }
     }
 
-    public void UpsertAvatarLocation(Avatar avatar)
+    public void UpsertAgentLocation(Agent agent)
     {
-        var filter = Builders<Entity>.Filter.Eq(x => x.Id, avatar.Id);
+        var filter = Builders<Entity>.Filter.Eq(x => x.Id, agent.Id);
         var update = Builders<Entity>.Update
-            .Set(x => x.Id, avatar.Id)
-            .Set(x => x.Location, avatar.Location)
-            .SetOnInsert("_t", new[] { "Entity", "Avatar" }); // Specify both base and derived types
+            .Set(x => x.Id, agent.Id)
+            .Set(x => x.Location, agent.Location)
+            .SetOnInsert("_t", new[] { "Entity", "Agent" }); // Specify both base and derived types
         var options = new UpdateOptions {IsUpsert = true};
         var result = _mongoDbContext.Entities.UpdateOneAsync(filter, update, options).GetAwaiter().GetResult();
         if (result.IsAcknowledged)
         {
             //Console.WriteLine(result.UpsertedId != null
-            //    ? $"Avatar upserted with ID: {result.UpsertedId}"
-            //    : "Avatar updated successfully!");
+            //    ? $"Agent upserted with ID: {result.UpsertedId}"
+            //    : "Agent updated successfully!");
         }
         else
         {
-            Console.WriteLine("Avatar upsert failed!");
+            Console.WriteLine("Agent upsert failed!");
         }
     }
 

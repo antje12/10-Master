@@ -2,11 +2,10 @@
 
 public enum KafkaTopic
 {
-    Input,
     LocalState,
+    Projectile,
     Collision,
-    Physics,
+    Input,
     World,
-    Ai,
-    Projectile
+    Ai
 }

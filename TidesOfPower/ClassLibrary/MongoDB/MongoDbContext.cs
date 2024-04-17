@@ -1,4 +1,4 @@
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -34,8 +34,8 @@ public class MongoDbContext
                 ReadPreference = ReadPreference.SecondaryPreferred
             }); // Always read from a secondary, read from the primary if no secondary is available (https://severalnines.com/blog/become-mongodb-dba-how-scale-reads)
 
-    public IMongoCollection<Avatar> Avatars =>
-        _database.GetCollection<Avatar>("Avatars",
+    public IMongoCollection<Agent> Agents =>
+        _database.GetCollection<Agent>("Agents",
             new MongoCollectionSettings
             {
                 ReadPreference = ReadPreference.SecondaryPreferred

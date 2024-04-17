@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using ClassLibrary.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using InputService.Interfaces;
 using ClassLibrary.Messages.Protobuf;
+using EntityType = ClassLibrary.Messages.Protobuf.EntityType;
 
 namespace InputService.Services;
 
@@ -15,10 +17,10 @@ public class InputService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicC = KafkaTopic.Collision;
     private KafkaTopic _outputTopicW = KafkaTopic.World;
 
-    private KafkaAdministrator _admin;
-    private ProtoKafkaProducer<CollisionCheck> _producerC;
-    private ProtoKafkaProducer<WorldChange> _producerW;
-    private ProtoKafkaConsumer<Input> _consumer;
+    internal IAdministrator Admin;
+    internal IProtoProducer<Collision_M> ProducerC;
+    internal IProtoProducer<World_M> ProducerW;
+    internal IProtoConsumer<Input_M> Consumer;
 
     private Dictionary<string, DateTime> ClientAttacks = new();
     
@@ -29,26 +31,32 @@ public class InputService : BackgroundService, IConsumerService
     {
         Console.WriteLine("InputService created");
         var config = new KafkaConfig(_groupId, localTest);
-        _admin = new KafkaAdministrator(config);
-        _producerC = new ProtoKafkaProducer<CollisionCheck>(config);
-        _producerW = new ProtoKafkaProducer<WorldChange>(config);
-        _consumer = new ProtoKafkaConsumer<Input>(config);
+        Admin = new KafkaAdministrator(config);
+        ProducerC = new KafkaProducer<Collision_M>(config);
+        ProducerW = new KafkaProducer<World_M>(config);
+        Consumer = new KafkaConsumer<Input_M>(config);
     }
 
+    internal async Task ExecuteAsync()
+    {
+        var cts = new CancellationTokenSource();
+        await ExecuteAsync(cts.Token);
+    }
+    
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         IsRunning = true;
         Console.WriteLine("InputService started");
-        await _admin.CreateTopic(_inputTopic);
-        IProtoConsumer<Input>.ProcessMessage action = ProcessMessage;
-        await _consumer.Consume(_inputTopic, action, ct);
+        await Admin.CreateTopic(_inputTopic);
+        IProtoConsumer<Input_M>.ProcessMessage action = ProcessMessage;
+        await Consumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("InputService stopped");
     }
 
-    private void ProcessMessage(string key, Input value)
+    internal void ProcessMessage(string key, Input_M value)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -58,7 +66,7 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine($"Message processed in {elapsedTime} ms");
     }
 
-    private void Process(string key, Input value)
+    private void Process(string key, Input_M value)
     {
         var oldKeys = ClientAttacks.Where(x => x.Value < DateTime.Now)
             .Select(x => x.Key);
@@ -75,13 +83,13 @@ public class InputService : BackgroundService, IConsumerService
             Interact(key, value);
     }
 
-    private void Move(string key, Input value)
+    private void Move(string key, Input_M value)
     {
-        ClassLibrary.GameLogic.Move.Avatar(value.AgentLocation.X, value.AgentLocation.Y, value.KeyInput.ToList(),
+        ClassLibrary.GameLogic.Move.Agent(value.AgentLocation.X, value.AgentLocation.Y, value.KeyInput.ToList(),
             value.GameTime,
             out float toX, out float toY);
 
-        var msgOut = new CollisionCheck()
+        var msgOut = new Collision_M()
         {
             EntityId = value.AgentId,
             EntityType = value.Source == Source.Ai ? EntityType.Ai : EntityType.Player,
@@ -95,10 +103,10 @@ public class InputService : BackgroundService, IConsumerService
             LastUpdate = value.LastUpdate,
             EventId = value.EventId
         };
-        _producerC.Produce(_outputTopicC, key, msgOut);
+        ProducerC.Produce(_outputTopicC, key, msgOut);
     }
 
-    private void Attack(string key, Input value)
+    private void Attack(string key, Input_M value)
     {
         if (ClientAttacks.ContainsKey(key))
             return;
@@ -114,27 +122,28 @@ public class InputService : BackgroundService, IConsumerService
             y /= length;
         }
 
-        var spawnX = value.AgentLocation.X + x * (25 + 5 + 1);
-        var spawnY = value.AgentLocation.Y + y * (25 + 5 + 1);
+        var offset = Agent.TypeRadius + Projectile.TypeRadius + 3;
+        var spawnX = value.AgentLocation.X + x * offset;
+        var spawnY = value.AgentLocation.Y + y * offset;
 
-        var msgOut = new WorldChange()
+        var msgOut = new World_M()
         {
             EntityId = Guid.NewGuid().ToString(),
             Change = Change.SpawnBullet,
-            Location = new Coordinates() {X = spawnX, Y = spawnY},
-            Direction = new Coordinates() {X = x, Y = y}
+            Location = new Coordinates_M() {X = spawnX, Y = spawnY},
+            Direction = new Coordinates_M() {X = x, Y = y}
         };
-        _producerW.Produce(_outputTopicW, key, msgOut);
+        ProducerW.Produce(_outputTopicW, key, msgOut);
     }
 
-    private void Interact(string key, Input value)
+    private void Interact(string key, Input_M value)
     {
-        var msgOut = new WorldChange()
+        var msgOut = new World_M()
         {
             EntityId = Guid.NewGuid().ToString(),
             Change = Change.SpawnAi,
             Location = value.MouseLocation,
         };
-        _producerW.Produce(_outputTopicW, key, msgOut);
+        ProducerW.Produce(_outputTopicW, key, msgOut);
     }
 }

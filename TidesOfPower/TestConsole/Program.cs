@@ -1,44 +1,34 @@
 // See https://aka.ms/new-console-template for more information
 
 using System.Diagnostics;
-using ClassLibrary.Classes.Domain;
+using ClassLibrary.Domain;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
 using TestConsole.Tests;
-using Avatar = ClassLibrary.Classes.Domain.Avatar;
-using Coordinates = ClassLibrary.Classes.Data.Coordinates;
-using Input = ClassLibrary.Messages.Avro.Input;
-using LocalState = ClassLibrary.Messages.Avro.LocalState;
+using EntityType = ClassLibrary.Domain.EntityType;
 
 Console.WriteLine("Hello, World!");
-RedisBroker redisBroker = new RedisBroker(true);
+RedisBroker redisBroker = new RedisBroker();
+redisBroker.Connect(true);
 redisBroker.Clean();
 
 var latency = new Latency();
 await latency.Test();
 return;
 
-MongoDbBroker mongoBroker = new MongoDbBroker(true);
+MongoDbBroker mongoBroker = new MongoDbBroker();
+mongoBroker.Connect(true);
 
 redisBroker.InitEntity();
-var avatar = new Avatar()
-{
-    Id = Guid.NewGuid(),
-    Location = new Coordinates()
-    {
-        X = 50.123f,
-        Y = 100.456f
-    },
-    Name = "Mr.Test",
-    WalkingSpeed = 10,
-    LifePool = 100,
-    Inventory = 0
-};
-redisBroker.Insert(avatar);
-redisBroker.GetEntities(avatar.Location.X, avatar.Location.Y);
+var agent = new Agent(
+    Guid.NewGuid(),
+    new Coordinates(50.123f, 100.456f),
+    EntityType.Player, 100, 100);
+redisBroker.Insert(agent);
+redisBroker.GetEntities(agent.Location.X, agent.Location.Y);
 
 //redisBroker.InitProfile();
 //TestRedis();
@@ -56,12 +46,10 @@ for (int i = 0; i < 10; i++)
 
 void TestMongoDB()
 {
-    var profile = new Profile()
-    {
-        Id = Guid.NewGuid(),
-        Email = "mail@live.dk",
-        Password = "secret"
-    };
+    var profile = new Profile(
+        Guid.NewGuid(),
+        "mail@live.dk",
+        "secret");
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
@@ -96,12 +84,10 @@ void TestMongoDB()
 
 void TestRedis()
 {
-    var profile = new Profile()
-    {
-        Id = Guid.NewGuid(),
-        Email = "mail@live.dk",
-        Password = "secret"
-    };
+    var profile = new Profile(
+        Guid.NewGuid(),
+        "mail@live.dk",
+        "secret");
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
@@ -161,70 +147,6 @@ async Task TestHTTP()
     }
 }
 
-async Task TestKafkaAvro()
-{
-    mongoBroker.CleanDB();
-    var testId = Guid.NewGuid();
-    var testTopic = $"{KafkaTopic.LocalState}_{testId}";
-
-    var cts = new CancellationTokenSource();
-    var config = new KafkaConfig("test", true);
-    var admin = new KafkaAdministrator(config);
-
-    await admin.CreateTopic(KafkaTopic.Input);
-    await admin.CreateTopic(testTopic);
-
-    var producer = new KafkaProducer<Input>(config);
-    var consumer = new KafkaConsumer<LocalState>(config);
-
-    var count = 0;
-    var testCount = 1000;
-    var results = new List<long>();
-
-    var message = new Input()
-    {
-        PlayerId = testId,
-        PlayerLocation = new Coordinates() {X = 0, Y = 0},
-        KeyInput = new List<GameKey>() {GameKey.Right},
-        GameTime = 0.5
-    };
-
-    var stopwatch = new Stopwatch();
-    stopwatch.Start();
-
-    void ProcessMessage(string key, LocalState value)
-    {
-        stopwatch.Stop();
-        var elapsedTime = stopwatch.ElapsedMilliseconds;
-        //Console.WriteLine($"Kafka result in {elapsedTime} ms");
-
-        if (count > 0)
-        {
-            results.Add(elapsedTime);
-        }
-
-        if (count >= testCount)
-        {
-            Console.WriteLine(
-                $"Kafka results {results.Count}, avg {results.Average()} ms, min {results.Min()} ms, max {results.Max()} ms");
-            cts.Cancel();
-            return;
-        }
-
-        message.PlayerLocation = value.Avatars.First().Location;
-
-        count += 1;
-        stopwatch.Restart();
-        producer.Produce(KafkaTopic.Input, "a", message);
-    }
-
-    stopwatch.Restart();
-    producer.Produce(KafkaTopic.Input, "tester", message);
-
-    IConsumer<LocalState>.ProcessMessage action = ProcessMessage;
-    await Task.Run(() => consumer.Consume(testTopic, action, cts.Token), cts.Token);
-}
-
 async Task TestKafkaProto()
 {
     mongoBroker.CleanDB();
@@ -238,25 +160,25 @@ async Task TestKafkaProto()
     await admin.CreateTopic(KafkaTopic.Input);
     await admin.CreateTopic(testTopic);
 
-    var producer = new ProtoKafkaProducer<ClassLibrary.Messages.Protobuf.Input>(config);
-    var consumer = new ProtoKafkaConsumer<ClassLibrary.Messages.Protobuf.LocalState>(config);
+    var producer = new KafkaProducer<Input_M>(config);
+    var consumer = new KafkaConsumer<LocalState_M>(config);
 
     var count = 0;
     var testCount = 1000;
     var results = new List<long>();
 
-    var message = new ClassLibrary.Messages.Protobuf.Input()
+    var message = new Input_M
     {
         AgentId = testId.ToString(),
-        AgentLocation = new ClassLibrary.Messages.Protobuf.Coordinates() {X = 0, Y = 0},
+        AgentLocation = new Coordinates_M {X = 0, Y = 0},
         GameTime = 0.5
     };
-    message.KeyInput.Add(ClassLibrary.Messages.Protobuf.GameKey.Right);
+    message.KeyInput.Add(GameKey.Right);
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
 
-    void ProcessMessage(string key, ClassLibrary.Messages.Protobuf.LocalState value)
+    void ProcessMessage(string key, LocalState_M value)
     {
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
@@ -286,6 +208,6 @@ async Task TestKafkaProto()
     stopwatch.Restart();
     producer.Produce(KafkaTopic.Input, "init", message);
 
-    IProtoConsumer<ClassLibrary.Messages.Protobuf.LocalState>.ProcessMessage action = ProcessMessage;
+    IProtoConsumer<LocalState_M>.ProcessMessage action = ProcessMessage;
     await Task.Run(() => consumer.Consume(testTopic, action, cts.Token), cts.Token);
 }

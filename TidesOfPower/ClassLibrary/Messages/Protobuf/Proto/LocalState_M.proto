@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+package ClassLibrary.Messages.Protobuf;
+
+import "Classes.proto";
+
+option csharp_namespace = "ClassLibrary.Messages.Protobuf";
+
+message LocalState_M {
+  Sync Sync = 1;
+  repeated ClassLibrary.Messages.Protobuf.Agent_M Agents = 2;
+  repeated ClassLibrary.Messages.Protobuf.Projectile_M Projectiles = 3;
+  repeated ClassLibrary.Messages.Protobuf.Treasure_M Treasures = 4;
+  string EventId = 5;
+}
+
+enum Sync {
+  Full = 0;
+  Delta = 1;
+  Delete = 2;
+}

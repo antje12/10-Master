@@ -25,22 +25,26 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg1DbGFzc2VzLnByb3RvEh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9i",
-            "dWYiIwoLQ29vcmRpbmF0ZXMSCQoBWBgBIAEoAhIJCgFZGAIgASgCIpsBCgVB",
-            "Z2VudBIKCgJJZBgBIAEoCRI9CghMb2NhdGlvbhgCIAEoCzIrLkNsYXNzTGli",
-            "cmFyeS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlcxIMCgROYW1lGAMg",
-            "ASgJEhQKDFdhbGtpbmdTcGVlZBgEIAEoBRIQCghMaWZlUG9vbBgFIAEoBRIR",
-            "CglJbnZlbnRvcnkYBiABKAUiuAEKClByb2plY3RpbGUSCgoCSWQYASABKAkS",
-            "PQoITG9jYXRpb24YAiABKAsyKy5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJv",
-            "dG9idWYuQ29vcmRpbmF0ZXMSPgoJRGlyZWN0aW9uGAMgASgLMisuQ2xhc3NM",
-            "aWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzEhIKCkxhc3RV",
-            "cGRhdGUYBCABKAESCwoDVFRMGAUgASgBQiGqAh5DbGFzc0xpYnJhcnkuTWVz",
-            "c2FnZXMuUHJvdG9idWZiBnByb3RvMw=="));
+            "dWYiJQoNQ29vcmRpbmF0ZXNfTRIJCgFYGAEgASgCEgkKAVkYAiABKAIimwEK",
+            "B0FnZW50X00SCgoCSWQYASABKAkSPwoITG9jYXRpb24YAiABKAsyLS5DbGFz",
+            "c0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXNfTRIMCgRO",
+            "YW1lGAMgASgJEhQKDFdhbGtpbmdTcGVlZBgEIAEoBRIQCghMaWZlUG9vbBgF",
+            "IAEoBRINCgVTY29yZRgGIAEoBSK+AQoMUHJvamVjdGlsZV9NEgoKAklkGAEg",
+            "ASgJEj8KCExvY2F0aW9uGAIgASgLMi0uQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
+            "LlByb3RvYnVmLkNvb3JkaW5hdGVzX00SQAoJRGlyZWN0aW9uGAMgASgLMi0u",
+            "Q2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3JkaW5hdGVzX00S",
+            "EgoKTGFzdFVwZGF0ZRgEIAEoARILCgNUVEwYBSABKAEiaAoKVHJlYXN1cmVf",
+            "TRIKCgJJZBgBIAEoCRI/CghMb2NhdGlvbhgCIAEoCzItLkNsYXNzTGlicmFy",
+            "eS5NZXNzYWdlcy5Qcm90b2J1Zi5Db29yZGluYXRlc19NEg0KBVZhbHVlGAMg",
+            "ASgFQiGqAh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWZiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Coordinates), global::ClassLibrary.Messages.Protobuf.Coordinates.Parser, new[]{ "X", "Y" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Agent), global::ClassLibrary.Messages.Protobuf.Agent.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Inventory" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile), global::ClassLibrary.Messages.Protobuf.Projectile.Parser, new[]{ "Id", "Location", "Direction", "LastUpdate", "TTL" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Coordinates_M), global::ClassLibrary.Messages.Protobuf.Coordinates_M.Parser, new[]{ "X", "Y" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Agent_M), global::ClassLibrary.Messages.Protobuf.Agent_M.Parser, new[]{ "Id", "Location", "Name", "WalkingSpeed", "LifePool", "Score" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Projectile_M), global::ClassLibrary.Messages.Protobuf.Projectile_M.Parser, new[]{ "Id", "Location", "Direction", "LastUpdate", "TTL" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.Treasure_M), global::ClassLibrary.Messages.Protobuf.Treasure_M.Parser, new[]{ "Id", "Location", "Value" }, null, null, null, null)
           }));
     }
     #endregion
@@ -48,16 +52,16 @@ namespace ClassLibrary.Messages.Protobuf {
   }
   #region Messages
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Coordinates : pb::IMessage<Coordinates>
+  public sealed partial class Coordinates_M : pb::IMessage<Coordinates_M>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<Coordinates> _parser = new pb::MessageParser<Coordinates>(() => new Coordinates());
+    private static readonly pb::MessageParser<Coordinates_M> _parser = new pb::MessageParser<Coordinates_M>(() => new Coordinates_M());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Coordinates> Parser { get { return _parser; } }
+    public static pb::MessageParser<Coordinates_M> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -73,7 +77,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Coordinates() {
+    public Coordinates_M() {
       OnConstruction();
     }
 
@@ -81,7 +85,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Coordinates(Coordinates other) : this() {
+    public Coordinates_M(Coordinates_M other) : this() {
       x_ = other.x_;
       y_ = other.y_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -89,8 +93,8 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Coordinates Clone() {
-      return new Coordinates(this);
+    public Coordinates_M Clone() {
+      return new Coordinates_M(this);
     }
 
     /// <summary>Field number for the "X" field.</summary>
@@ -120,12 +124,12 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as Coordinates);
+      return Equals(other as Coordinates_M);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Coordinates other) {
+    public bool Equals(Coordinates_M other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -211,7 +215,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Coordinates other) {
+    public void MergeFrom(Coordinates_M other) {
       if (other == null) {
         return;
       }
@@ -275,16 +279,16 @@ namespace ClassLibrary.Messages.Protobuf {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Agent : pb::IMessage<Agent>
+  public sealed partial class Agent_M : pb::IMessage<Agent_M>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<Agent> _parser = new pb::MessageParser<Agent>(() => new Agent());
+    private static readonly pb::MessageParser<Agent_M> _parser = new pb::MessageParser<Agent_M>(() => new Agent_M());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Agent> Parser { get { return _parser; } }
+    public static pb::MessageParser<Agent_M> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -300,7 +304,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Agent() {
+    public Agent_M() {
       OnConstruction();
     }
 
@@ -308,20 +312,20 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Agent(Agent other) : this() {
+    public Agent_M(Agent_M other) : this() {
       id_ = other.id_;
       location_ = other.location_ != null ? other.location_.Clone() : null;
       name_ = other.name_;
       walkingSpeed_ = other.walkingSpeed_;
       lifePool_ = other.lifePool_;
-      inventory_ = other.inventory_;
+      score_ = other.score_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Agent Clone() {
-      return new Agent(this);
+    public Agent_M Clone() {
+      return new Agent_M(this);
     }
 
     /// <summary>Field number for the "Id" field.</summary>
@@ -338,10 +342,10 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "Location" field.</summary>
     public const int LocationFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates location_;
+    private global::ClassLibrary.Messages.Protobuf.Coordinates_M location_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Location {
+    public global::ClassLibrary.Messages.Protobuf.Coordinates_M Location {
       get { return location_; }
       set {
         location_ = value;
@@ -384,27 +388,27 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "Inventory" field.</summary>
-    public const int InventoryFieldNumber = 6;
-    private int inventory_;
+    /// <summary>Field number for the "Score" field.</summary>
+    public const int ScoreFieldNumber = 6;
+    private int score_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int Inventory {
-      get { return inventory_; }
+    public int Score {
+      get { return score_; }
       set {
-        inventory_ = value;
+        score_ = value;
       }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as Agent);
+      return Equals(other as Agent_M);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Agent other) {
+    public bool Equals(Agent_M other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -416,7 +420,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Name != other.Name) return false;
       if (WalkingSpeed != other.WalkingSpeed) return false;
       if (LifePool != other.LifePool) return false;
-      if (Inventory != other.Inventory) return false;
+      if (Score != other.Score) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -429,7 +433,7 @@ namespace ClassLibrary.Messages.Protobuf {
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (WalkingSpeed != 0) hash ^= WalkingSpeed.GetHashCode();
       if (LifePool != 0) hash ^= LifePool.GetHashCode();
-      if (Inventory != 0) hash ^= Inventory.GetHashCode();
+      if (Score != 0) hash ^= Score.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -468,9 +472,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(40);
         output.WriteInt32(LifePool);
       }
-      if (Inventory != 0) {
+      if (Score != 0) {
         output.WriteRawTag(48);
-        output.WriteInt32(Inventory);
+        output.WriteInt32(Score);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -502,9 +506,9 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(40);
         output.WriteInt32(LifePool);
       }
-      if (Inventory != 0) {
+      if (Score != 0) {
         output.WriteRawTag(48);
-        output.WriteInt32(Inventory);
+        output.WriteInt32(Score);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -531,8 +535,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (LifePool != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(LifePool);
       }
-      if (Inventory != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Inventory);
+      if (Score != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Score);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -542,7 +546,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Agent other) {
+    public void MergeFrom(Agent_M other) {
       if (other == null) {
         return;
       }
@@ -551,7 +555,7 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (other.location_ != null) {
         if (location_ == null) {
-          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
         }
         Location.MergeFrom(other.Location);
       }
@@ -564,8 +568,8 @@ namespace ClassLibrary.Messages.Protobuf {
       if (other.LifePool != 0) {
         LifePool = other.LifePool;
       }
-      if (other.Inventory != 0) {
-        Inventory = other.Inventory;
+      if (other.Score != 0) {
+        Score = other.Score;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -588,7 +592,7 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 18: {
             if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Location);
             break;
@@ -606,7 +610,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 48: {
-            Inventory = input.ReadInt32();
+            Score = input.ReadInt32();
             break;
           }
         }
@@ -630,7 +634,7 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 18: {
             if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Location);
             break;
@@ -648,7 +652,7 @@ namespace ClassLibrary.Messages.Protobuf {
             break;
           }
           case 48: {
-            Inventory = input.ReadInt32();
+            Score = input.ReadInt32();
             break;
           }
         }
@@ -659,16 +663,16 @@ namespace ClassLibrary.Messages.Protobuf {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Projectile : pb::IMessage<Projectile>
+  public sealed partial class Projectile_M : pb::IMessage<Projectile_M>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<Projectile> _parser = new pb::MessageParser<Projectile>(() => new Projectile());
+    private static readonly pb::MessageParser<Projectile_M> _parser = new pb::MessageParser<Projectile_M>(() => new Projectile_M());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Projectile> Parser { get { return _parser; } }
+    public static pb::MessageParser<Projectile_M> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -684,7 +688,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Projectile() {
+    public Projectile_M() {
       OnConstruction();
     }
 
@@ -692,7 +696,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Projectile(Projectile other) : this() {
+    public Projectile_M(Projectile_M other) : this() {
       id_ = other.id_;
       location_ = other.location_ != null ? other.location_.Clone() : null;
       direction_ = other.direction_ != null ? other.direction_.Clone() : null;
@@ -703,8 +707,8 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Projectile Clone() {
-      return new Projectile(this);
+    public Projectile_M Clone() {
+      return new Projectile_M(this);
     }
 
     /// <summary>Field number for the "Id" field.</summary>
@@ -721,10 +725,10 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "Location" field.</summary>
     public const int LocationFieldNumber = 2;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates location_;
+    private global::ClassLibrary.Messages.Protobuf.Coordinates_M location_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Location {
+    public global::ClassLibrary.Messages.Protobuf.Coordinates_M Location {
       get { return location_; }
       set {
         location_ = value;
@@ -733,10 +737,10 @@ namespace ClassLibrary.Messages.Protobuf {
 
     /// <summary>Field number for the "Direction" field.</summary>
     public const int DirectionFieldNumber = 3;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates direction_;
+    private global::ClassLibrary.Messages.Protobuf.Coordinates_M direction_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Direction {
+    public global::ClassLibrary.Messages.Protobuf.Coordinates_M Direction {
       get { return direction_; }
       set {
         direction_ = value;
@@ -770,12 +774,12 @@ namespace ClassLibrary.Messages.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as Projectile);
+      return Equals(other as Projectile_M);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Projectile other) {
+    public bool Equals(Projectile_M other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -900,7 +904,7 @@ namespace ClassLibrary.Messages.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Projectile other) {
+    public void MergeFrom(Projectile_M other) {
       if (other == null) {
         return;
       }
@@ -909,13 +913,13 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (other.location_ != null) {
         if (location_ == null) {
-          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
         }
         Location.MergeFrom(other.Location);
       }
       if (other.direction_ != null) {
         if (direction_ == null) {
-          Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+          Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
         }
         Direction.MergeFrom(other.Direction);
       }
@@ -946,14 +950,14 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 18: {
             if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Location);
             break;
           }
           case 26: {
             if (direction_ == null) {
-              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Direction);
             break;
@@ -987,14 +991,14 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 18: {
             if (location_ == null) {
-              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Location);
             break;
           }
           case 26: {
             if (direction_ == null) {
-              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
+              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
             }
             input.ReadMessage(Direction);
             break;
@@ -1005,6 +1009,279 @@ namespace ClassLibrary.Messages.Protobuf {
           }
           case 41: {
             TTL = input.ReadDouble();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class Treasure_M : pb::IMessage<Treasure_M>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Treasure_M> _parser = new pb::MessageParser<Treasure_M>(() => new Treasure_M());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<Treasure_M> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Treasure_M() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Treasure_M(Treasure_M other) : this() {
+      id_ = other.id_;
+      location_ = other.location_ != null ? other.location_.Clone() : null;
+      value_ = other.value_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Treasure_M Clone() {
+      return new Treasure_M(this);
+    }
+
+    /// <summary>Field number for the "Id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private string id_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Id {
+      get { return id_; }
+      set {
+        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Location" field.</summary>
+    public const int LocationFieldNumber = 2;
+    private global::ClassLibrary.Messages.Protobuf.Coordinates_M location_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::ClassLibrary.Messages.Protobuf.Coordinates_M Location {
+      get { return location_; }
+      set {
+        location_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Value" field.</summary>
+    public const int ValueFieldNumber = 3;
+    private int value_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int Value {
+      get { return value_; }
+      set {
+        value_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as Treasure_M);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(Treasure_M other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if (!object.Equals(Location, other.Location)) return false;
+      if (Value != other.Value) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (location_ != null) hash ^= Location.GetHashCode();
+      if (Value != 0) hash ^= Value.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (location_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Location);
+      }
+      if (Value != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Value);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (location_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Location);
+      }
+      if (Value != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Value);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      }
+      if (location_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Location);
+      }
+      if (Value != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Value);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(Treasure_M other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id.Length != 0) {
+        Id = other.Id;
+      }
+      if (other.location_ != null) {
+        if (location_ == null) {
+          Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
+        }
+        Location.MergeFrom(other.Location);
+      }
+      if (other.Value != 0) {
+        Value = other.Value;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (location_ == null) {
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
+            }
+            input.ReadMessage(Location);
+            break;
+          }
+          case 24: {
+            Value = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (location_ == null) {
+              Location = new global::ClassLibrary.Messages.Protobuf.Coordinates_M();
+            }
+            input.ReadMessage(Location);
+            break;
+          }
+          case 24: {
+            Value = input.ReadInt32();
             break;
           }
         }

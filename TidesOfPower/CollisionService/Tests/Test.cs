@@ -45,8 +45,8 @@ public class Test
             It.IsAny<string>(),
             It.IsAny<Ai_M>()));
 
-        redis = new Mock<RedisBroker>(false);
-        redis.Setup(x => x.Connect());
+        redis = new Mock<RedisBroker>();
+        redis.Setup(x => x.Connect(false));
         redis.Setup(x => x.GetCloseEntities(
                 It.IsAny<float>(),
                 It.IsAny<float>()))
@@ -81,7 +81,7 @@ public class Test
     }
 
     [Test]
-    public void TestPlayerCollision()
+    public void TestPlayerCollisions()
     {
         var key = "test";
         var value = new Collision_M()
@@ -90,7 +90,7 @@ public class Test
             EntityType = EntityType.Player,
             FromLocation = new() {X = 0, Y = 0},
             ToLocation = new() {X = 10, Y = 10},
-            LastUpdate = 0,
+            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks,
             EventId = key
         };
         
@@ -140,7 +140,7 @@ public class Test
     }
 
     [Test]
-    public void TestAiCollision()
+    public void TestAiCollisions()
     {
         var key = "test";
         var value = new Collision_M()
@@ -149,7 +149,7 @@ public class Test
             EntityType = EntityType.Ai,
             FromLocation = new() {X = 0, Y = 0},
             ToLocation = new() {X = 10, Y = 10},
-            LastUpdate = 0,
+            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks,
             EventId = key
         };
         
@@ -207,7 +207,7 @@ public class Test
     }
 
     [Test]
-    public void TestProjectileCollision()
+    public void TestProjectileCollisions()
     {
         var key = "test";
         var value = new Collision_M()
@@ -217,7 +217,7 @@ public class Test
             FromLocation = new() {X = 0, Y = 0},
             ToLocation = new() {X = 10, Y = 10},
             Direction = new() {X = 10, Y = 10},
-            LastUpdate = 0,
+            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks,
             EventId = key,
             TTL = 100
         };

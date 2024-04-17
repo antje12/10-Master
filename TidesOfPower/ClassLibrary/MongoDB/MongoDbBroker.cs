@@ -5,9 +5,9 @@ namespace ClassLibrary.MongoDB;
 
 public class MongoDbBroker
 {
-    private readonly MongoDbContext _mongoDbContext;
-
-    public MongoDbBroker(bool isClient = false)
+    private MongoDbContext _mongoDbContext;
+    
+    public virtual void Connect(bool isClient = false)
     {
         _mongoDbContext = new MongoDbContext(isClient);
     }

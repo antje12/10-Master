@@ -35,7 +35,7 @@ public class CollisionService : BackgroundService, IConsumerService
         ProducerW = new KafkaProducer<World_M>(config);
         ProducerA = new KafkaProducer<Ai_M>(config);
         Consumer = new KafkaConsumer<Collision_M>(config);
-        RedisBroker = new RedisBroker(localTest);
+        RedisBroker = new RedisBroker();
     }
 
     internal async Task ExecuteAsync()
@@ -48,7 +48,7 @@ public class CollisionService : BackgroundService, IConsumerService
     {
         await Task.Yield();
         IsRunning = true;
-        RedisBroker.Connect();
+        RedisBroker.Connect(localTest);
         Console.WriteLine("CollisionService started");
         await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<Collision_M>.ProcessMessage action = ProcessMessage;

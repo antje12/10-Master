@@ -38,8 +38,8 @@ public class WorldService : BackgroundService, IConsumerService
         ProducerP = new KafkaProducer<Projectile_M>(config);
         ProducerA = new KafkaProducer<Ai_M>(config);
         Consumer = new KafkaConsumer<World_M>(config);
-        MongoBroker = new MongoDbBroker(localTest);
-        RedisBroker = new RedisBroker(localTest);
+        MongoBroker = new MongoDbBroker();
+        RedisBroker = new RedisBroker();
     }
 
     internal async Task ExecuteAsync()
@@ -52,7 +52,8 @@ public class WorldService : BackgroundService, IConsumerService
     {
         await Task.Yield();
         IsRunning = true;
-        RedisBroker.Connect();
+        RedisBroker.Connect(localTest);
+        MongoBroker.Connect(localTest);
         Console.WriteLine("WorldService started");
         await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<World_M>.ProcessMessage action = ProcessMessage;
@@ -114,7 +115,7 @@ public class WorldService : BackgroundService, IConsumerService
         };
         agent.Score += value.Value;
         RedisBroker.UpsertAgentLocation(new Player(
-            "",
+            agent.Name,
             agent.Score,
             Guid.Parse(agent.Id),
             new Coordinates(agent.Location.X, agent.Location.Y),

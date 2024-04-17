@@ -18,7 +18,7 @@ public class AIService : BackgroundService, IConsumerService
     internal IProtoProducer<Input_M> Producer;
     internal IProtoConsumer<Ai_M> Consumer;
 
-    private RedisBroker _redisBroker;
+    internal RedisBroker RedisBroker;
 
     public bool IsRunning { get; private set; }
     private bool localTest = true;
@@ -30,7 +30,7 @@ public class AIService : BackgroundService, IConsumerService
         Admin = new KafkaAdministrator(config);
         Producer = new KafkaProducer<Input_M>(config);
         Consumer = new KafkaConsumer<Ai_M>(config);
-        _redisBroker = new RedisBroker(localTest);
+        RedisBroker = new RedisBroker();
     }
 
     internal async Task ExecuteAsync()
@@ -43,6 +43,7 @@ public class AIService : BackgroundService, IConsumerService
     {
         await Task.Yield();
         IsRunning = true;
+        RedisBroker.Connect();
         Console.WriteLine("AIService started");
         await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<Ai_M>.ProcessMessage action = ProcessMessage;
@@ -63,10 +64,10 @@ public class AIService : BackgroundService, IConsumerService
 
     private void Process(Ai_M agent)
     {
-        if (_redisBroker.Get(Guid.Parse(agent.Id)) == null)
+        if (RedisBroker.Get(Guid.Parse(agent.Id)) == null)
             return;
         
-        var entities = _redisBroker
+        var entities = RedisBroker
             .GetEntities(agent.Location.X, agent.Location.Y)
             .Where(x => x.Id.ToString() != agent.Id).ToList();
         var targets = entities
@@ -111,15 +112,17 @@ public class AIService : BackgroundService, IConsumerService
             };
             output.KeyInput.Add(GameKey.Attack);
         }
-        
-        if (nextStep.X < start.X)
-            output.KeyInput.Add(GameKey.Left);
-        if (start.X < nextStep.X)
-            output.KeyInput.Add(GameKey.Right);
-        if (nextStep.Y < start.Y)
-            output.KeyInput.Add(GameKey.Up);
-        if (start.Y < nextStep.Y)
-            output.KeyInput.Add(GameKey.Down);
+        else
+        {
+            if (nextStep.X < start.X)
+                output.KeyInput.Add(GameKey.Left);
+            if (start.X < nextStep.X)
+                output.KeyInput.Add(GameKey.Right);
+            if (nextStep.Y < start.Y)
+                output.KeyInput.Add(GameKey.Up);
+            if (start.Y < nextStep.Y)
+                output.KeyInput.Add(GameKey.Down);
+        }
 
         if (!output.KeyInput.Any())
         {

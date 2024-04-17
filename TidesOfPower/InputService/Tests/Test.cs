@@ -72,7 +72,7 @@ public class Test : Services.InputService
     [TestCase(GameKey.Up, GameKey.Left)]
     [TestCase(GameKey.Down, GameKey.Right)]
     [TestCase(GameKey.Down, GameKey.Left)]
-    public void TestMove(params GameKey[] keys)
+    public void TestMoves(params GameKey[] keys)
     {
         var key = "test";
         var value = new Input_M
@@ -160,7 +160,7 @@ public class Test : Services.InputService
 
     [Test]
     [TestCase(GameKey.Attack)]
-    public async Task TestAttackTwice(params GameKey[] keys)
+    public async Task TestAttacks(params GameKey[] keys)
     {
         var key = "test";
         var value = new Input_M

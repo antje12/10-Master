@@ -11,14 +11,16 @@ using TestConsole.Tests;
 using EntityType = ClassLibrary.Domain.EntityType;
 
 Console.WriteLine("Hello, World!");
-RedisBroker redisBroker = new RedisBroker(true);
+RedisBroker redisBroker = new RedisBroker();
+redisBroker.Connect(true);
 redisBroker.Clean();
 
 var latency = new Latency();
 await latency.Test();
 return;
 
-MongoDbBroker mongoBroker = new MongoDbBroker(true);
+MongoDbBroker mongoBroker = new MongoDbBroker();
+mongoBroker.Connect(true);
 
 redisBroker.InitEntity();
 var agent = new Agent(

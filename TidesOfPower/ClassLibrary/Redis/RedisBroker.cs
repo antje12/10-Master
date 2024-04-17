@@ -19,16 +19,12 @@ public class RedisBroker
     private SearchCommands _ft;
     private JsonCommands _json;
 
-    public RedisBroker(bool isClient = false)
+    public virtual void Connect(bool isClient = false)
     {
         if (isClient)
         {
             nodes = "localhost";
         }
-    }
-
-    public virtual void Connect()
-    {
         _redis = ConnectionMultiplexer.Connect(nodes);
         _database = _redis.GetDatabase();
         _ft = _database.FT();
@@ -87,17 +83,17 @@ public class RedisBroker
         }
     }
     
-    public void Insert(Entity entity)
+    public virtual void Insert(Entity entity)
     {
         _json.Set($@"entity:{entity.Id}", "$", entity);
     }
 
-    public void DeleteEntity(Guid id)
+    public virtual void DeleteEntity(Guid id)
     {
         _json.Del($@"entity:{id}");
     }
 
-    public Entity? Get(Guid id)
+    public virtual Entity? Get(Guid id)
     {
         var get = _json.Get($@"entity:{id}");
         var result = get.IsNull ? null : JsonConvert.DeserializeObject<Entity>(get.ToString());
@@ -163,7 +159,7 @@ public class RedisBroker
         return GetEntities(xFrom, xTo, yFrom, yTo);
     }
 
-    public List<Entity> GetEntities(float x, float y)
+    public virtual List<Entity> GetEntities(float x, float y)
     {
         var xFrom = (x - 400).ToString(CultureInfo.InvariantCulture);
         var xTo = (x + 400).ToString(CultureInfo.InvariantCulture);
@@ -215,7 +211,7 @@ public class RedisBroker
         _json.Set($@"entity:{entity.Id}", ".Location.Y", entity.Location.Y);
     }
 
-    public void UpsertAgentLocation(Agent entity)
+    public virtual void UpsertAgentLocation(Agent entity)
     {        
         _json.Set($@"entity:{entity.Id}", "$", entity);
     }

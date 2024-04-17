@@ -23,10 +23,16 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Install dependencies
         run: dotnet restore
+        with:
+          context: ./TidesOfPower
       - name: Build
         run: dotnet build --configuration Release --no-restore
+        with:
+          context: ./TidesOfPower
       - name: Test
         run: dotnet test --nologo --no-restore --verbosity quiet
+        with:
+          context: ./TidesOfPower
 
   build-input-service-image:
     runs-on: ubuntu-latest

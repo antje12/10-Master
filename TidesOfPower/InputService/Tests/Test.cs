@@ -53,7 +53,7 @@ public class Test
     {
         var executeTask =  service.ExecuteAsync();
         await Task.Delay(100);
-        Assert.That(service.IsRunning, Is.False);
+        Assert.That(service.IsRunning, Is.True);
         await executeTask;
 
         admin.Verify(x => x.CreateTopic(KafkaTopic.Input));

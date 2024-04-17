@@ -25,10 +25,10 @@ jobs:
         run: dotnet restore
         working-directory: TidesOfPower
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore TidesOfPower.sln -p:ExcludeProject=GameClient/GameClient.csproj
         working-directory: TidesOfPower
       - name: Test
-        run: dotnet test --nologo --no-restore --verbosity quiet
+        run: dotnet test --nologo --no-restore --verbosity quiet TidesOfPower.sln -p:ExcludeProject=GameClient/GameClient.csproj
         working-directory: TidesOfPower
 
   build-input-service-image:

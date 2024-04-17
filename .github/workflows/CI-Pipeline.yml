@@ -21,8 +21,9 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '8.0.x'
+
       - name: Remove GameClient from solution
-        run: sed -i '/GameClient\/GameClient.csproj/d' TidesOfPower/TidesOfPower.sln
+        run: sed -i '/GameClient\/GameClient.csproj/d' TidesOfPower.sln
         working-directory: TidesOfPower
       - name: Install dependencies
         run: dotnet restore

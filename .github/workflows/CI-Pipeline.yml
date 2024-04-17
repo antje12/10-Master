@@ -21,13 +21,6 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '8.0.x'
-
-      - name: Install Arial Font
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ttf-mscorefonts-installer
-          sudo fc-cache -f -v
-
       - name: Install dependencies
         run: dotnet restore
         working-directory: TidesOfPower

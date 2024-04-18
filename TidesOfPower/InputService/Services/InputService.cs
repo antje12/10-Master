@@ -25,7 +25,7 @@ public class InputService : BackgroundService, IConsumerService
     private Dictionary<string, DateTime> ClientAttacks = new();
     
     public bool IsRunning { get; private set; }
-    private bool localTest = true;
+    private bool localTest = false;
 
     public InputService()
     {

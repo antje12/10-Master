@@ -18,7 +18,7 @@ public class ProjectileService : BackgroundService, IConsumerService
     internal IProtoConsumer<Projectile_M> Consumer;
 
     public bool IsRunning { get; private set; }
-    private bool localTest = true;
+    private bool localTest = false;
 
     public ProjectileService()
     {

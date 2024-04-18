@@ -21,7 +21,7 @@ public class AIService : BackgroundService, IConsumerService
     internal RedisBroker RedisBroker;
 
     public bool IsRunning { get; private set; }
-    private bool localTest = true;
+    private bool localTest = false;
 
     public AIService()
     {

@@ -8,7 +8,7 @@ on:
 env:
   PROJECT_ID: central-point-420213  # Cloud project
   GKE_CLUSTER: cluster-1            # Cluster name
-  GKE_ZONE: europe-west10           # Cluster zone
+  GKE_ZONE: europe-west10-a         # Cluster zone
 
 jobs:
 

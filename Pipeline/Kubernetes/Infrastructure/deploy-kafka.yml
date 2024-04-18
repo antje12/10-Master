@@ -12,7 +12,7 @@ spec:
       targetPort: 9092
   selector:
     app: kafka-service
-  type: ClusterIP
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -50,4 +50,4 @@ spec:
             - name: KAFKA_LISTENERS
               value: "INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "INTERNAL://kafka-service:9092,EXTERNAL://localhost:19092"
+              value: "INTERNAL://kafka-service:9092,EXTERNAL://4.245.165.31:19092"

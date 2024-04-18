@@ -8,7 +8,7 @@ spec:
       targetPort: 8080
   selector:
     app: kowl-service
-  type: ClusterIP
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -29,10 +29,17 @@ spec:
           image: quay.io/cloudhut/kowl:master
           ports:
             - containerPort: 8080
-          env:
-            - name: KAFKA_BROKERS
-              value: "kafka-service:9092"
-            - name: KAFKA_SCHEMAREGISTRY_ENABLED
-              value: "true"
-            - name: KAFKA_SCHEMAREGISTRY_URLS
-              value: "http://schema-registry-service:8081"
+          resources:
+            requests:
+              cpu: "100m"     # Request 50 millicpu (1/20 CPU core)
+              memory: "100Mi" # Request 50 MB of memory
+            limits:
+              cpu: "100m"     # Request 50 millicpu (1/20 CPU core)
+              memory: "100Mi" # Limit to 50 MB of memory
+          env: 
+            - name: KAFKA_BROKERS 
+              value: "kafka-service:9092" 
+            - name: KAFKA_SCHEMAREGISTRY_ENABLED 
+              value: "true" 
+            - name: KAFKA_SCHEMAREGISTRY_URLS 
+              value: "http://schema-registry-service:8081" 

@@ -22,7 +22,6 @@ rbac:
 
 # Kafka Security parameters
 listeners:
-  advertisedListeners: 127.0.0.1:9092
   client:
     protocol: PLAINTEXT
   controller:
@@ -31,10 +30,12 @@ listeners:
     protocol: PLAINTEXT
   external:
     protocol: PLAINTEXT
+    enabled: true
+    type: LoadBalancer
 
 # Kafka Controller parameters
 controller:
-  replicaCount: 3 #3
+  replicaCount: 1 #3
   persistence:
     size: 1Gi
   automountServiceAccountToken: true
@@ -42,6 +43,13 @@ controller:
 # Kafka Broker parameters
 broker:
   automountServiceAccountToken: true
+  resources:
+    requests:
+      cpu: "100m"     # Request 100 millicpu (1/10 CPU core)
+      memory: "100Mi" # Request 100 MB of memory
+    limits:
+      cpu: "200m"     # Limit to 200 millicpu (1/10 CPU core)
+      memory: "200Mi" # Limit to 200 MB of memory
 #broker:
 #  replicaCount: 3
 #  persistence:

@@ -72,3 +72,49 @@ spec:
         lagThreshold: "50" # when to scale up
         offsetResetPolicy: latest
   minReplicaCount: 1
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: kafka-scaled-ai
+  namespace: default
+  labels:
+    deploymentName: ai-service
+spec:
+  scaleTargetRef:
+    name: ai-service
+  pollingInterval: 30 # seconds
+  cooldownPeriod: 30 # seconds
+  triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka-service:9092
+        consumerGroup: ai-group
+        topic: ai
+        # Optional
+        lagThreshold: "50" # when to scale up
+        offsetResetPolicy: latest
+  minReplicaCount: 1
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: kafka-scaled-projectile
+  namespace: default
+  labels:
+    deploymentName: projectile-service
+spec:
+  scaleTargetRef:
+    name: projectile-service
+  pollingInterval: 30 # seconds
+  cooldownPeriod: 30 # seconds
+  triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka-service:9092
+        consumerGroup: projectile-group
+        topic: projectile
+        # Optional
+        lagThreshold: "50" # when to scale up
+        offsetResetPolicy: latest
+  minReplicaCount: 1

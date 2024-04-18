@@ -5,7 +5,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 8085
+      port: 8084
       protocol: TCP
       targetPort: 8080
   selector:

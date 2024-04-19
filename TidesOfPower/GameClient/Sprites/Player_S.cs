@@ -92,7 +92,7 @@ public class Player_S : Player, Sprite
         
         var timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         _game.EventTimes.Add(msgOut.EventId, timeStamp);
-        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        string timestampWithMs = DateTimeOffset.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
         Console.WriteLine($"Send {msgOut.EventId} at {timestampWithMs}");
         _producer.Produce(_game.OutputTopic, Id.ToString(), msgOut);
         _lastLocation = msgOut.AgentLocation;

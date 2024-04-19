@@ -11,7 +11,6 @@ env:
   GKE_ZONE: europe-west10-a         # Cluster zone
 
 jobs:
-
   unit-test-job:
     runs-on: ubuntu-latest
     steps:
@@ -157,20 +156,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
       # Setup gcloud CLI
       - uses: google-github-actions/setup-gcloud@v0.2.0
         with:
           service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
           project_id: ${{ env.PROJECT_ID }}
-      
       # Get the GKE credentials so we can deploy to the cluster
       - uses: google-github-actions/get-gke-credentials@v0.2.1
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
           credentials: ${{ secrets.SERVICE_ACCOUNT_KEY }}
-
       # Use new tags
       - name: Change input service deploy file tags
         run: sed -i "s+{IMG_TAG}+GA-${{ github.sha }}+g" Pipeline/Kubernetes/Services/deploy-input-service.yml
@@ -182,7 +178,6 @@ jobs:
         run: sed -i "s+{IMG_TAG}+GA-${{ github.sha }}+g" Pipeline/Kubernetes/Services/deploy-projectile-service.yml
       - name: Change ai service deploy file tags
         run: sed -i "s+{IMG_TAG}+GA-${{ github.sha }}+g" Pipeline/Kubernetes/Services/deploy-ai-service.yml
-      
       # Deploy the Docker image to the GKE cluster
       - name: Deploy Kubernetes
         run: |

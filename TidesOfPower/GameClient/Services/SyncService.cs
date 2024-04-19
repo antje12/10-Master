@@ -62,11 +62,11 @@ public class SyncService : BackgroundService
 
     private void GetLatency(LocalState_M value)
     {
+        var endTime = DateTimeOffset.Now;
         var startTime = _game.EventTimes[value.EventId];
         _game.EventTimes.Remove(value.EventId);
-        var endTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        var timeDiff = endTime - startTime;
-        string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        var timeDiff = endTime.ToUnixTimeMilliseconds() - startTime;
+        string timestampWithMs = endTime.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
         _latency.Add(timeDiff);
         _game.Latency = _latency.GetAverage();
         Console.WriteLine($"Got {value.EventId} Latency = {timeDiff} ms - stamp: {timestampWithMs}");

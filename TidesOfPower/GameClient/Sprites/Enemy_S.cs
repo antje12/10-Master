@@ -28,14 +28,14 @@ public class Enemy_S : Enemy, Sprite
         _anims.AddAnimation(GameKey.Down, new(texture, 3, 4, 0.2f, 3));
         _anims.AddAnimation(GameKey.Left, new(texture,3, 4, 0.2f, 4));
         LastLocation = Location;
-        LastUpdate = DateTimeOffset.Now;
+        LastUpdate = DateTimeOffset.UtcNow;
     }
 
     public void SetLocation(Coordinates newLocation)
     {
         LastLocation = Location;
         Location = newLocation;
-        LastUpdate = DateTimeOffset.Now;
+        LastUpdate = DateTimeOffset.UtcNow;
     }
     
     public void Update(GameTime gameTime)
@@ -49,7 +49,7 @@ public class Enemy_S : Enemy, Sprite
         else if (Location.Y > LastLocation.Y)
             _anims.Update(gameTime, GameKey.Down);
 
-        TimeSpan timeSpan = DateTimeOffset.Now - LastUpdate;
+        TimeSpan timeSpan = DateTimeOffset.UtcNow - LastUpdate;
         if (timeSpan.Milliseconds > 100)
             _anims.Update(gameTime, new()); // reset animation
     }

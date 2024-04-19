@@ -82,7 +82,7 @@ public class Test
         {
             Id = key,
             Location = new Coordinates_M {X = 0, Y = 0},
-            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks
+            LastUpdate = DateTimeOffset.UtcNow.AddSeconds(-1).Ticks
         };
 
         Input_M? state = null;

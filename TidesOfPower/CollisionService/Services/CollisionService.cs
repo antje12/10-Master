@@ -71,7 +71,7 @@ public class CollisionService : BackgroundService, IConsumerService
     {
         if (!string.IsNullOrEmpty(value.EventId))
         {
-            string timestampWithMs = DateTimeOffset.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
             Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
         }
         
@@ -113,7 +113,7 @@ public class CollisionService : BackgroundService, IConsumerService
         
         if (!string.IsNullOrEmpty(value.EventId))
         {
-            string timestampWithMs = DateTimeOffset.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
             Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
         }
     }

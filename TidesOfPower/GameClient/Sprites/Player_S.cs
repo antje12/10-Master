@@ -90,9 +90,9 @@ public class Player_S : Player, Sprite
         var newInput = !_lastKeyInput.OrderBy(x => x).SequenceEqual(keyInput.OrderBy(x => x));
         if (!newLocation && !newInput) return;
         
-        var timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        var timeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         _game.EventTimes.Add(msgOut.EventId, timeStamp);
-        string timestampWithMs = DateTimeOffset.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
         Console.WriteLine($"Send {msgOut.EventId} at {timestampWithMs}");
         _producer.Produce(_game.OutputTopic, Id.ToString(), msgOut);
         _lastLocation = msgOut.AgentLocation;

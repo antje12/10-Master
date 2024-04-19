@@ -70,11 +70,11 @@ public class InputService : BackgroundService, IConsumerService
     {
         if (!string.IsNullOrEmpty(value.EventId))
         {
-            string timestampWithMs = DateTimeOffset.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
             Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
         }
         
-        var oldKeys = ClientAttacks.Where(x => x.Value < DateTimeOffset.Now)
+        var oldKeys = ClientAttacks.Where(x => x.Value < DateTimeOffset.UtcNow)
             .Select(x => x.Key);
         foreach (var oldKey in oldKeys)
         {
@@ -113,7 +113,7 @@ public class InputService : BackgroundService, IConsumerService
         
         if (!string.IsNullOrEmpty(value.EventId))
         {
-            string timestampWithMs = DateTimeOffset.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
             Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
         }
     }
@@ -123,7 +123,7 @@ public class InputService : BackgroundService, IConsumerService
         if (ClientAttacks.ContainsKey(key))
             return;
         
-        ClientAttacks.Add(key, DateTimeOffset.Now.AddSeconds(1));
+        ClientAttacks.Add(key, DateTimeOffset.UtcNow.AddSeconds(1));
         
         var x = value.MouseLocation.X - value.AgentLocation.X;
         var y = value.MouseLocation.Y - value.AgentLocation.Y;

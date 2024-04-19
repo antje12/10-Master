@@ -90,7 +90,7 @@ public class Test
             EntityType = EntityType.Player,
             FromLocation = new() {X = 0, Y = 0},
             ToLocation = new() {X = 10, Y = 10},
-            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks,
+            LastUpdate = DateTimeOffset.UtcNow.AddSeconds(-1).Ticks,
             EventId = key
         };
         
@@ -149,7 +149,7 @@ public class Test
             EntityType = EntityType.Ai,
             FromLocation = new() {X = 0, Y = 0},
             ToLocation = new() {X = 10, Y = 10},
-            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks,
+            LastUpdate = DateTimeOffset.UtcNow.AddSeconds(-1).Ticks,
             EventId = key
         };
         
@@ -217,7 +217,7 @@ public class Test
             FromLocation = new() {X = 0, Y = 0},
             ToLocation = new() {X = 10, Y = 10},
             Direction = new() {X = 10, Y = 10},
-            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks,
+            LastUpdate = DateTimeOffset.UtcNow.AddSeconds(-1).Ticks,
             EventId = key,
             TTL = 100
         };

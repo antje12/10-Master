@@ -64,7 +64,7 @@ public class Test
             Id = key,
             Location = new Coordinates_M {X = 0, Y = 0},
             Direction = new Coordinates_M {X = 10, Y = 10},
-            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks,
+            LastUpdate = DateTimeOffset.UtcNow.AddSeconds(-1).Ticks,
             TTL = 100
         };
         Collision_M? state = null;

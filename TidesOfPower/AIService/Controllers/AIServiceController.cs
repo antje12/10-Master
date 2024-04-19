@@ -8,22 +8,25 @@ namespace AIService.Controllers;
 public class AIServiceController : ControllerBase
 {
     private string _apiVersion = "1.00";
-    private readonly IConsumerService _consumerService;
+    private readonly IConsumerService _service;
 
-    public AIServiceController(IConsumerService consumerService)
+    public AIServiceController(IConsumerService service)
     {
-        _consumerService = consumerService;
+        _service = service;
     }
 
     [HttpGet("Version")]
-    public object Version()
+    public IActionResult Version()
     {
-        return $"Service version = {_apiVersion}";
+        return Ok($"Service version = {_apiVersion}");
     }
 
     [HttpGet("Status")]
-    public object Status()
+    public IActionResult  Status()
     {
-        return $"Service running = {_consumerService?.IsRunning ?? false}";
+        return _service?.IsRunning == true ? 
+            Ok("Service running = true") :
+            // Service Unavailable
+            StatusCode(503, "Service running = false");
     }
 }

@@ -9,22 +9,25 @@ public class InputServiceController : ControllerBase
 {
     //https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/examples/AvroSpecific/Program.cs
     private string _apiVersion = "1.00";
-    private readonly IConsumerService _inputService;
+    private readonly IConsumerService _service;
 
-    public InputServiceController(IConsumerService inputService)
+    public InputServiceController(IConsumerService service)
     {
-        _inputService = inputService;
+        _service = service;
     }
 
     [HttpGet("Version")]
-    public object Version()
+    public IActionResult Version()
     {
-        return $"Service version = {_apiVersion}";
+        return Ok($"Service version = {_apiVersion}");
     }
 
     [HttpGet("Status")]
-    public object Status()
+    public IActionResult  Status()
     {
-        return $"Service running = {_inputService?.IsRunning ?? false}";
+        return _service?.IsRunning == true ? 
+            Ok("Service running = true") :
+            // Service Unavailable
+            StatusCode(503, "Service running = false");
     }
 }

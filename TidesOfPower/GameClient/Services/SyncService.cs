@@ -62,12 +62,12 @@ public class SyncService : BackgroundService
 
     private void GetLatency(LocalState_M value)
     {
-        var endTime = DateTimeOffset.UtcNow;
+        var endTime = DateTime.UtcNow;
         var startTime = _game.EventTimes[value.EventId];
         _game.EventTimes.Remove(value.EventId);
-        var timeDiff = endTime.ToUnixTimeMilliseconds() - startTime;
+        var timeDiff = endTime - startTime;
         string timestampWithMs = endTime.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-        _latency.Add(timeDiff);
+        _latency.Add(timeDiff.TotalMilliseconds);
         _game.Latency = _latency.GetAverage();
         Console.WriteLine($"Got {value.EventId} Latency = {timeDiff} ms - stamp: {timestampWithMs}");
     }
@@ -97,7 +97,7 @@ public class SyncService : BackgroundService
         //    {
         //        _game.LocalState.RemoveAll(x => x is Enemy_S y && !onlineAgentIds.Contains(y.Id.ToString()));
         //        //game.LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
-        //        string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        //        string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
         //        Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
         //    }
         //}
@@ -119,7 +119,7 @@ public class SyncService : BackgroundService
                 {
                     _game.LocalState.Add(
                         new Enemy_S(_game.EnemyTexture, new Enemy(Guid.Parse(agent.Id), new Coordinates(agent.Location.X, agent.Location.Y), 100, 100)));
-                    string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                    string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
                     Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }
             }
@@ -147,7 +147,7 @@ public class SyncService : BackgroundService
                     _game.LocalState.Add(
                         new Projectile_S(_game.ProjectileTexture,
                             new Projectile(new Coordinates(projectile.Direction.X, projectile.Direction.Y), 100, 100, 100,  Guid.Parse(projectile.Id), new Coordinates(projectile.Location.X, projectile.Location.Y))));
-                    string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                    string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
                     Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }
             }
@@ -191,7 +191,7 @@ public class SyncService : BackgroundService
                 _game.LocalState.RemoveAll(x => x is Enemy_S y && deleteAgentIds.Contains(y.Id.ToString()));
                 _game.LocalState.RemoveAll(x => x is Projectile_S y && deleteProjectileIds.Contains(y.Id.ToString()));
                 _game.LocalState.RemoveAll(x => x is Treasure_S y && deleteTreasureIds.Contains(y.Id.ToString()));
-                string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
                 Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
             }
         }
@@ -202,7 +202,7 @@ public class SyncService : BackgroundService
             lock (_game.LockObject)
             {
                 _game.LocalState.RemoveAll(x => x is Enemy_S or Projectile_S or Treasure_S);
-                string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+                string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
                 Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
             }
         }

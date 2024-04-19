@@ -22,7 +22,7 @@ public class InputService : BackgroundService, IConsumerService
     internal IProtoProducer<World_M> ProducerW;
     internal IProtoConsumer<Input_M> Consumer;
 
-    private Dictionary<string, DateTimeOffset> ClientAttacks = new();
+    private Dictionary<string, DateTime> ClientAttacks = new();
     
     public bool IsRunning { get; private set; }
     private bool localTest = false;
@@ -70,11 +70,11 @@ public class InputService : BackgroundService, IConsumerService
     {
         if (!string.IsNullOrEmpty(value.EventId))
         {
-            string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
             Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
         }
         
-        var oldKeys = ClientAttacks.Where(x => x.Value < DateTimeOffset.UtcNow)
+        var oldKeys = ClientAttacks.Where(x => x.Value < DateTime.UtcNow)
             .Select(x => x.Key);
         foreach (var oldKey in oldKeys)
         {
@@ -113,7 +113,7 @@ public class InputService : BackgroundService, IConsumerService
         
         if (!string.IsNullOrEmpty(value.EventId))
         {
-            string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
             Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
         }
     }
@@ -123,7 +123,7 @@ public class InputService : BackgroundService, IConsumerService
         if (ClientAttacks.ContainsKey(key))
             return;
         
-        ClientAttacks.Add(key, DateTimeOffset.UtcNow.AddSeconds(1));
+        ClientAttacks.Add(key, DateTime.UtcNow.AddSeconds(1));
         
         var x = value.MouseLocation.X - value.AgentLocation.X;
         var y = value.MouseLocation.Y - value.AgentLocation.Y;

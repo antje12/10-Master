@@ -43,7 +43,7 @@ public class MyGame : Game
     public Player_S Player;
     public List<Sprite> LocalState = new();
     public readonly object LockObject = new();
-    public Dictionary<string, long> EventTimes = new();
+    public Dictionary<string, DateTime> EventTimes = new();
     
     private Ship_S _shipS;
 

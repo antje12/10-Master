@@ -156,7 +156,7 @@ public class Test
             EntityId = key,
             Location = new Coordinates_M {X = 0, Y = 0},
             Change = Change.MoveAi,
-            LastUpdate = DateTimeOffset.UtcNow.AddSeconds(-1).Ticks
+            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks
         };
         
         Enemy? enemy = null;
@@ -209,7 +209,7 @@ public class Test
             Location = new Coordinates_M {X = 0, Y = 0},
             Direction = new Coordinates_M {X = 10, Y = 10},
             Change = Change.MoveBullet,
-            LastUpdate = DateTimeOffset.UtcNow.AddSeconds(-1).Ticks,
+            LastUpdate = DateTime.UtcNow.AddSeconds(-1).Ticks,
             TTL = 100
         };
         

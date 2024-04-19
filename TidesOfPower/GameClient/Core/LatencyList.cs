@@ -5,7 +5,7 @@ namespace GameClient.Core;
 
 public class LatencyList
 {
-    private readonly List<long> _values = new();
+    private readonly List<double> _values = new();
     private int _maxSize;
 
     public LatencyList(int maxSize)
@@ -13,7 +13,7 @@ public class LatencyList
         _maxSize = maxSize;
     }
 
-    public void Add(long value)
+    public void Add(double value)
     {
         if (_values.Count >= _maxSize)
         {

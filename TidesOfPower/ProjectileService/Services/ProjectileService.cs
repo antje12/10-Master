@@ -74,7 +74,7 @@ public class ProjectileService : BackgroundService, IConsumerService
         };
 
         var from = (long) output.LastUpdate;
-        var to = DateTimeOffset.UtcNow.Ticks;
+        var to = DateTime.UtcNow.Ticks;
         var difference = TimeSpan.FromTicks(to - from);
         var deltaTime = difference.TotalSeconds;
 

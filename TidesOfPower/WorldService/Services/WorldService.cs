@@ -76,7 +76,7 @@ public class WorldService : BackgroundService, IConsumerService
     {
         if (!string.IsNullOrEmpty(value.EventId))
         {
-            string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
             Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
         }
         
@@ -186,7 +186,7 @@ public class WorldService : BackgroundService, IConsumerService
         
         if (!string.IsNullOrEmpty(value.EventId))
         {
-            string timestampWithMs = DateTimeOffset.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
             Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
         }
     }
@@ -280,7 +280,7 @@ public class WorldService : BackgroundService, IConsumerService
         {
             Id = Guid.NewGuid().ToString(),
             Location = new Coordinates_M {X = value.Location.X, Y = value.Location.Y},
-            LastUpdate = DateTimeOffset.UtcNow.Ticks,
+            LastUpdate = DateTime.UtcNow.Ticks,
         };
         RedisBroker.UpsertAgentLocation(new Enemy(
             Guid.Parse(msgOut.Id),
@@ -312,7 +312,7 @@ public class WorldService : BackgroundService, IConsumerService
             Id = value.EntityId,
             Location = value.Location,
             Direction = value.Direction,
-            LastUpdate = DateTimeOffset.UtcNow.Ticks,
+            LastUpdate = DateTime.UtcNow.Ticks,
             TTL = 100
         };
         ProducerP.Produce(_outputTopicP, msgOut.Id, msgOut);

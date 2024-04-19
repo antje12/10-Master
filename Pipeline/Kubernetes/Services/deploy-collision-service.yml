@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: collision-service
-          image: ghcr.io/antje12/10-master/collision-service:latest
+          image: ghcr.io/antje12/10-master/collision-service:{IMG_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

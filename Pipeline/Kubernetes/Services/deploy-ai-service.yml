@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: ai-service
-          image: ghcr.io/antje12/10-master/ai-service:latest
+          image: ghcr.io/antje12/10-master/ai-service:{IMG_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

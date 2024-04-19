@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: projectile-service
-          image: ghcr.io/antje12/10-master/projectile-service:latest
+          image: ghcr.io/antje12/10-master/projectile-service:{IMG_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

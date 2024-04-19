@@ -98,7 +98,7 @@ public class Player_S : Player, Sprite
         _lastLocation = msgOut.AgentLocation;
         _lastKeyInput = msgOut.KeyInput.ToList();
         
-        //LocalMovement(keyInput, msgOut.GameTime);
+        LocalMovement(keyInput, msgOut.GameTime);
     }
 
     private void LocalMovement(List<GameKey> keyInput, double gameTime)

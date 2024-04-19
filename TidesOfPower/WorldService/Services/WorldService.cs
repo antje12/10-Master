@@ -74,6 +74,12 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void Process(string key, World_M value)
     {
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        }
+        
         switch (value.Change)
         {
             case Change.MovePlayer:
@@ -177,6 +183,12 @@ public class WorldService : BackgroundService, IConsumerService
         msgOut.Projectiles.AddRange(projectiles);
         msgOut.Treasures.AddRange(treasures);
         ProducerLS.Produce($"{_outputTopicLS}_{value.EntityId}", key, msgOut);
+        
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
+        }
     }
 
     private void DeltaSync(

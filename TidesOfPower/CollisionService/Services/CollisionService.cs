@@ -69,6 +69,12 @@ public class CollisionService : BackgroundService, IConsumerService
 
     private void Process(string key, Collision_M value)
     {
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        }
+        
         var entities = RedisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
         var stopFlow = HandleCollisions(value, entities, out var treasure);
 
@@ -104,6 +110,12 @@ public class CollisionService : BackgroundService, IConsumerService
         }
 
         ProducerW.Produce(_outputTopicW, key, msgOut);
+        
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
+        }
     }
 
     internal bool HandleCollisions(Collision_M value, List<Entity> entities, out int treasure)

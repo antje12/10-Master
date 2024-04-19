@@ -43,8 +43,8 @@ kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-zookeeper.yml
 kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-kafka.yml
 kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-schema-registry.yml
 kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-kowl.yml
-kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-mongodb.yml
 kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-redis.yml
+kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-mongodb.yml
 ```
 
 Setup the game services:
@@ -53,6 +53,7 @@ kubectl apply -f Pipeline/Kubernetes/Services/deploy-input-service.yml
 kubectl apply -f Pipeline/Kubernetes/Services/deploy-collision-service.yml
 kubectl apply -f Pipeline/Kubernetes/Services/deploy-world-service.yml
 kubectl apply -f Pipeline/Kubernetes/Services/deploy-projectile-service.yml
+kubectl apply -f Pipeline/Kubernetes/Services/deploy-ai-service.yml
 ```
 
 Setup KEDA:

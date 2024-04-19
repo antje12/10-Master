@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: world-service
-          image: ghcr.io/antje12/10-master/world-service:latest
+          image: ghcr.io/antje12/10-master/world-service:{IMG_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

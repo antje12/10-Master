@@ -111,6 +111,10 @@ public class AIService : BackgroundService, IConsumerService
                 Y = target.Location.Y
             };
             output.KeyInput.Add(GameKey.Attack);
+            output.KeyInput.Add(GameKey.Left);
+            output.KeyInput.Add(GameKey.Right);
+            output.KeyInput.Add(GameKey.Up);
+            output.KeyInput.Add(GameKey.Down);
         }
         else
         {

@@ -170,3 +170,25 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
           credentials: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+
+      # Use new tags
+      - name: Change input service deploy file tags
+        run: sed -i "s+{IMG_TAG}+GA-${{ github.sha }}+g" Pipeline/Kubernetes/Services/deploy-input-service.yml
+      - name: Change collision service deploy file tags
+        run: sed -i "s+{IMG_TAG}+GA-${{ github.sha }}+g" Pipeline/Kubernetes/Services/deploy-collision-service.yml
+      - name: Change world service deploy file tags
+        run: sed -i "s+{IMG_TAG}+GA-${{ github.sha }}+g" Pipeline/Kubernetes/Services/deploy-world-service.yml
+      - name: Change projectile service deploy file tags
+        run: sed -i "s+{IMG_TAG}+GA-${{ github.sha }}+g" Pipeline/Kubernetes/Services/deploy-projectile-service.yml
+      - name: Change ai service deploy file tags
+        run: sed -i "s+{IMG_TAG}+GA-${{ github.sha }}+g" Pipeline/Kubernetes/Services/deploy-ai-service.yml
+      
+      # Deploy the Docker image to the GKE cluster
+      - name: Deploy Kubernetes
+        run: |
+          kubectl apply \
+            -f Pipeline/Kubernetes/Services/deploy-input-service.yml \
+            -f Pipeline/Kubernetes/Services/deploy-collision-service.yml \
+            -f Pipeline/Kubernetes/Services/deploy-world-service.yml \
+            -f Pipeline/Kubernetes/Services/deploy-projectile-service.yml \
+            -f Pipeline/Kubernetes/Services/deploy-ai-service.yml \

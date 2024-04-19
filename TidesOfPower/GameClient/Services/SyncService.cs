@@ -78,9 +78,9 @@ public class SyncService : BackgroundService
         if (player != null)
         {
             _game.Player.Score = player.Score;
-            //var xDiff = Math.Abs(_game.Player.Location.X - player.Location.X);
-            //var yDiff = Math.Abs(_game.Player.Location.Y - player.Location.Y);
-            //if (xDiff > 50 || yDiff > 50)
+            var xDiff = Math.Abs(_game.Player.Location.X - player.Location.X);
+            var yDiff = Math.Abs(_game.Player.Location.Y - player.Location.Y);
+            if (xDiff > 50 || yDiff > 50)
                 _game.Player.Location = new Coordinates(player.Location.X, player.Location.Y);
             value.Agents.Remove(player);
         }

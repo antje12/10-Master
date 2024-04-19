@@ -68,6 +68,12 @@ public class InputService : BackgroundService, IConsumerService
 
     private void Process(string key, Input_M value)
     {
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
+        }
+        
         var oldKeys = ClientAttacks.Where(x => x.Value < DateTime.Now)
             .Select(x => x.Key);
         foreach (var oldKey in oldKeys)
@@ -104,6 +110,12 @@ public class InputService : BackgroundService, IConsumerService
             EventId = value.EventId
         };
         ProducerC.Produce(_outputTopicC, key, msgOut);
+        
+        if (!string.IsNullOrEmpty(value.EventId))
+        {
+            string timestampWithMs = DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+            Console.WriteLine($"Sent {value.EventId} at {timestampWithMs}");
+        }
     }
 
     private void Attack(string key, Input_M value)

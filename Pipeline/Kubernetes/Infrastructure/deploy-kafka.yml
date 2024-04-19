@@ -7,12 +7,13 @@ spec:
     - name: external
       port: 19092
       targetPort: 19092
+      nodePort: 30001
     - name: internal
       port: 9092
       targetPort: 9092
   selector:
     app: kafka-service
-  type: LoadBalancer
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -50,4 +51,4 @@ spec:
             - name: KAFKA_LISTENERS
               value: "INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "INTERNAL://kafka-service:9092,EXTERNAL://4.245.165.31:19092"
+              value: "INTERNAL://kafka-service:9092,EXTERNAL://34.32.47.73:30001"

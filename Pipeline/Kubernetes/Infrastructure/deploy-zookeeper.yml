@@ -29,13 +29,6 @@ spec:
           image: confluentinc/cp-zookeeper:7.2.1
           ports:
             - containerPort: 2181
-          resources:
-            requests:
-              cpu: "200m"     # Request 50 millicpu (1/20 CPU core)
-              memory: "200Mi" # Request 50 MB of memory
-            limits:
-              cpu: "200m"     # Request 50 millicpu (1/20 CPU core)
-              memory: "200Mi" # Limit to 50 MB of memory
           env:
             - name: ZOOKEEPER_SERVER_ID
               value: "1"
@@ -43,3 +36,10 @@ spec:
               value: "2181"
             - name: ZOOKEEPER_SERVERS
               value: "zookeeper-service:2888:3888"
+          #resources: 
+          #  requests: 
+          #    cpu: "50m"     # Request 50 millicpu (1/20 CPU core) 
+          #    memory: "50Mi" # Request 50 MB of memory 
+          #  limits: 
+          #    cpu: "50m"     # Request 50 millicpu (1/20 CPU core) 
+          #    memory: "50Mi" # Limit to 50 MB of memory

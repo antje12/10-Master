@@ -6,9 +6,10 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
+      nodePort: 30000
   selector:
     app: kowl-service
-  type: LoadBalancer
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -29,13 +30,6 @@ spec:
           image: quay.io/cloudhut/kowl:master
           ports:
             - containerPort: 8080
-          resources:
-            requests:
-              cpu: "100m"     # Request 50 millicpu (1/20 CPU core)
-              memory: "100Mi" # Request 50 MB of memory
-            limits:
-              cpu: "100m"     # Request 50 millicpu (1/20 CPU core)
-              memory: "100Mi" # Limit to 50 MB of memory
           env: 
             - name: KAFKA_BROKERS 
               value: "kafka-service:9092" 

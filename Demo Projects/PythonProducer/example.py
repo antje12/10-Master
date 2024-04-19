@@ -1,7 +1,7 @@
 from kafka import KafkaProducer
 from datetime import datetime
 
-producer = KafkaProducer(bootstrap_servers=['4.245.165.31:19092'])
+producer = KafkaProducer(bootstrap_servers=['34.32.47.73:30001'])
 
 while (True):
     # input

@@ -6,9 +6,10 @@ spec:
   ports:
     - port: 8081
       targetPort: 8081
+      nodePort: 30004
   selector:
     app: schema-registry-service
-  type: ClusterIP
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -29,13 +30,6 @@ spec:
           image: confluentinc/cp-schema-registry:latest
           ports:
             - containerPort: 8081
-          resources:
-            requests:
-              cpu: "100m"     # Request 50 millicpu (1/20 CPU core)
-              memory: "100Mi" # Request 50 MB of memory
-            limits:
-              cpu: "100m"     # Request 50 millicpu (1/20 CPU core)
-              memory: "100Mi" # Limit to 50 MB of memory
           env:
             - name: SCHEMA_REGISTRY_HOST_NAME
               value: "schema-registry-service"

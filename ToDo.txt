@@ -1,0 +1,13 @@
+1000 requests to REST api
+1000 messages to Kafka and back
+1000 messages to RabbitMQ and back
+
+1000 messages to Kafka in json
+1000 messages to Kafka in avro
+1000 messages to Kafka in protobuf
+
+Size comparison of message in json, avro, and protobuf
+
+Baseline latency test
+Scalability test (linear)
+CI/CD test - no downtime + ttm

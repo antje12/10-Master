@@ -30,6 +30,7 @@ class Program
         var producerConfig = new ProducerConfig
         {
             BootstrapServers = _kafkaServers,
+            AllowAutoCreateTopics = false,
             Acks = Acks.None,
             LingerMs = 0,
             BatchSize = 1
@@ -37,8 +38,11 @@ class Program
         var consumerConfig = new ConsumerConfig
         {
             BootstrapServers = _kafkaServers,
+            AllowAutoCreateTopics = false,
             GroupId = _groupId,
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            AutoOffsetReset = AutoOffsetReset.Earliest,
+            SessionTimeoutMs = 6000,
+            ConsumeResultFields = "none"
         };
 
         _cts = new CancellationTokenSource();

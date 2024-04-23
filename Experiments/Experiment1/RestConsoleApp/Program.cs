@@ -4,9 +4,13 @@ namespace RestConsoleApp;
 
 class Program
 {
+    private static List<long> _results;
+    
     static async Task Main()
     {
-        string uri = "http://localhost:8080/RestService/Version";
+        _results = new List<long>();
+        Console.WriteLine("Rest test started!");
+        string uri = "http://localhost:8080/RestService/Test";
 
         HttpClientHandler clientHandler = new HttpClientHandler();
         clientHandler.ServerCertificateCustomValidationCallback =
@@ -19,14 +23,18 @@ class Program
         var stopwatch = new Stopwatch();
         using (StreamWriter sw = File.AppendText(path))
         {
-            for (int i = 0; i < 1010; i++)
+            for (int i = 0; i <= 1000; i++)
             {
-                await Test(client, uri, stopwatch, sw);
+                Guid newGuid = Guid.NewGuid();
+                string requestUri = $"{uri}/{newGuid}";
+                await Test(client, requestUri, stopwatch, sw, i);
             }
         }
+        Console.WriteLine("Rest test done!");                
+        Console.WriteLine($"avg: {_results.Average()}, min: {_results.Min()}, max: {_results.Max()}");
     }
 
-    private static async Task Test(HttpClient client, string uri, Stopwatch stopwatch, StreamWriter sw)
+    private static async Task Test(HttpClient client, string uri, Stopwatch stopwatch, StreamWriter sw, int index)
     {
         stopwatch.Restart();
         using var httpResponse = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
@@ -35,9 +43,13 @@ class Program
         {
             var result = httpResponse.Content.ReadAsStringAsync().Result;
             stopwatch.Stop();
-            var elapsed_time = stopwatch.ElapsedMilliseconds;
+            var elapsedTime = stopwatch.ElapsedMilliseconds;
             //Console.WriteLine($"HTTP result in {elapsed_time} ms");
-            sw.WriteLine(elapsed_time);
+            if (index > 0)
+            {
+                _results.Add(elapsedTime);
+                sw.WriteLine(elapsedTime);
+            }
         }
         catch
         {

@@ -1,4 +1,5 @@
-﻿using ClassLibrary.Interfaces;
+﻿using System.Diagnostics;
+using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.RabbitMQ;
 using Confluent.Kafka;
@@ -8,6 +9,7 @@ namespace ProducerApp;
 class Program
 {
     private const string _kafkaServers = "localhost:19092";
+    private const string _rabbitMqServers = "localhost";
     private const string _groupId = "msg-group";
 
     private static CancellationTokenSource _cts;
@@ -19,12 +21,16 @@ class Program
     private static RabbitProducer _rp;
     private static RabbitConsumer _rc;
 
+    private static List<long> _results;
+    private static Guid _last;
+    
     private static void Setup()
     {
         var adminConfig = new AdminClientConfig {BootstrapServers = _kafkaServers};
         var producerConfig = new ProducerConfig
         {
             BootstrapServers = _kafkaServers,
+            AllowAutoCreateTopics = false,
             Acks = Acks.None,
             LingerMs = 0,
             BatchSize = 1
@@ -32,6 +38,7 @@ class Program
         var consumerConfig = new ConsumerConfig
         {
             BootstrapServers = _kafkaServers,
+            AllowAutoCreateTopics = false,
             GroupId = _groupId,
             AutoOffsetReset = AutoOffsetReset.Earliest,
             SessionTimeoutMs = 6000,
@@ -44,22 +51,8 @@ class Program
         _p = new KafkaProducer(producerConfig);
         _c = new KafkaConsumer(consumerConfig);
 
-        _rp = new RabbitProducer("localhost", "input");
-        _rc = new RabbitConsumer("localhost", "output");
-    }
-
-    private class Timer
-    {
-        public DateTime From { get; set; }
-        public DateTime To { get; set; }
-    }
-
-    private static Dictionary<int, Timer> _results;
-
-    private static void TakeTime(string key, string value)
-    {
-        // update list
-        _results[int.Parse(value)].To = DateTime.Now;
+        _rp = new RabbitProducer(_rabbitMqServers, "input");
+        _rc = new RabbitConsumer(_rabbitMqServers, "output");
     }
 
     static async Task Main()
@@ -68,58 +61,120 @@ class Program
         await _a.CreateTopic("input");
         await _a.CreateTopic("output");
 
-        _results = new Dictionary<int, Timer>();
-        await KafkaRun(100);
-        //await RabbitRun(100);
-        Thread.Sleep(1000);
-
-        _results = new Dictionary<int, Timer>();
+        _results = new List<long>();
+        
         await KafkaRun(1000);
         //await RabbitRun(1000);
     }
 
     private static async Task KafkaRun(int runs)
     {
-        Console.WriteLine("Kafka Producer Started");
-        IConsumer.ProcessMessage action = TakeTime;
-        Task.Factory.StartNew(() => _c.Consume("output", action, _cts.Token));
-
-        for (var i = 0; i < runs; i++)
+        Console.WriteLine("Kafka test started!");
+        string path = @"D:\Git\10-Master\Experiments\Experiment1_Results\Kafka.txt";
+        File.Delete(path);
+        
+        var index = 0;
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        
+        void ProcessMessage(string key, string value)
         {
-            // save in list
-            _results.Add(i, new Timer()
+            stopwatch.Stop();
+            var val = Guid.Parse(value);
+            if (_last != val)
+                throw new Exception();
+            var elapsedTime = stopwatch.ElapsedMilliseconds;
+            
+            if (index > 0)
             {
-                From = DateTime.Now
-            });
-            _p.Produce("input", "key", "" + i);
-            Console.WriteLine("KafkaRun - " + (_results[i].To - _results[i].From).TotalMilliseconds + " ms");
-            Thread.Sleep(100);
+                _results.Add(elapsedTime);
+                //Console.WriteLine($"Kafka result in {elapsedTime} ms");
+                using (StreamWriter sw = File.AppendText(path))
+                {
+                    sw.WriteLine(elapsedTime);
+                }
+            }
+
+            if (index >= runs)
+            {
+                Console.WriteLine($"Kafka test done!");
+                Console.WriteLine($"avg: {_results.Average()}, min: {_results.Min()}, max: {_results.Max()}");
+                
+                _cts.Cancel();
+                return;
+            }
+
+            index += 1;
+            _last = Guid.NewGuid();
+            stopwatch.Restart();
+            _p.Produce("input", "key", "" + _last);
         }
 
-        // calculate average
-        var average = _results.Select(x => (x.Value.To - x.Value.From).TotalMilliseconds).Average();
-        Console.WriteLine("KafkaRun Average: " + average);
+        _last = Guid.NewGuid();
+        stopwatch.Restart();
+        _p.Produce("input", "key", "" + _last);
+        
+        IConsumer.ProcessMessage action = ProcessMessage;
+        try
+        {
+            await Task.Run(() => _c.Consume("output", action, _cts.Token), _cts.Token);
+        }
+        catch (TaskCanceledException)
+        {
+            Console.WriteLine("The task was cancelled.");
+        }
     }
 
     private static async Task RabbitRun(int runs)
     {
-        Console.WriteLine("RabbitMQ Producer Started");
-        IConsumer.ProcessMessage action = TakeTime;
-        Task.Factory.StartNew(() => _rc.Consume("output", action, _cts.Token));
-
-        for (var i = 0; i < runs; i++)
+        Console.WriteLine("RabbitMQ test started!");
+        string path = @"D:\Git\10-Master\Experiments\Experiment1_Results\RabbitMQ.txt";
+        File.Delete(path);
+        
+        var index = 0;
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        
+        void ProcessMessage(string key, string value)
         {
-            // save in list
-            _results.Add(i, new Timer()
+            stopwatch.Stop();
+            var elapsedTime = stopwatch.ElapsedMilliseconds;
+            
+            if (index > 0)
             {
-                From = DateTime.Now
-            });
-            _rp.Produce("input", "key", "" + i);
-            Thread.Sleep(100);
+                _results.Add(elapsedTime);
+                //Console.WriteLine($"RabbitMQ result in {elapsedTime} ms");
+                using (StreamWriter sw = File.AppendText(path))
+                {
+                    sw.WriteLine(elapsedTime);
+                }
+            }
+
+            if (index >= runs)
+            {
+                Console.WriteLine($"RabbitMQ test done!");
+                Console.WriteLine($"avg: {_results.Average()}, min: {_results.Min()}, max: {_results.Max()}");
+                
+                _cts.Cancel();
+                return;
+            }
+
+            index += 1;
+            stopwatch.Restart();
+            _rp.Produce("input", "key", "" + index);
         }
 
-        // calculate average
-        var average = _results.Select(x => (x.Value.To - x.Value.From).TotalMilliseconds).Average();
-        Console.WriteLine("RabbitRun Average: " + average);
+        stopwatch.Restart();
+        _rp.Produce("input", "key", "" + index);
+        
+        IConsumer.ProcessMessage action = ProcessMessage;
+        try
+        {
+            await Task.Run(() => _rc.Consume("output", action, _cts.Token), _cts.Token);
+        }
+        catch (TaskCanceledException)
+        {
+            Console.WriteLine("The task was cancelled.");
+        }
     }
 }

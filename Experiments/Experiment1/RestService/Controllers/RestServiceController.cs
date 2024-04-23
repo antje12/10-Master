@@ -13,4 +13,10 @@ public class RestServiceController : ControllerBase
     {
         return $"Service version = {_apiVersion}";
     }
+
+    [HttpGet("Test/{id:guid}")]
+    public object Test(Guid id)
+    {
+        return Ok(id);
+    }
 }

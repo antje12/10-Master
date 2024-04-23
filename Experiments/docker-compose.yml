@@ -43,12 +43,23 @@ services:
     restart: unless-stopped
     networks:
       sharednetwork:
+  
+  rest-service:
+    container_name: rest-service
+    build:
+      context: ./Experiment1
+      dockerfile: RestService/Dockerfile
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    networks:
+      sharednetwork:
 
   kafka-consumer-service:
     container_name: kafka-consumer-service
     build:
       context: ./Experiment1
-      dockerfile: ConsumerApp/Dockerfile
+      dockerfile: KafkaConsumerApp/Dockerfile
     ports:
       - 81:80
     restart: unless-stopped
@@ -61,23 +72,12 @@ services:
     container_name: rabbit-consumer-service
     build:
       context: ./Experiment1
-      dockerfile: ConsumerApp/Dockerfile
+      dockerfile: RabbitConsumerApp/Dockerfile
     ports:
       - 82:80
     restart: unless-stopped
     depends_on:
       - rabbit-service
-    networks:
-      sharednetwork:
-  
-  rest-service:
-    container_name: rest-service
-    build:
-      context: ./Experiment1
-      dockerfile: RestService/Dockerfile
-    ports:
-      - 83:80
-    restart: unless-stopped
     networks:
       sharednetwork:
 

@@ -7,7 +7,7 @@ namespace ProducerApp;
 
 class Program
 {
-    private const string _kafkaServers = "localhost:9092";
+    private const string _kafkaServers = "localhost:19092";
     private const string _groupId = "msg-group";
 
     private static CancellationTokenSource _cts;
@@ -33,17 +33,19 @@ class Program
         {
             BootstrapServers = _kafkaServers,
             GroupId = _groupId,
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            AutoOffsetReset = AutoOffsetReset.Earliest,
+            SessionTimeoutMs = 6000,
+            ConsumeResultFields = "none"
         };
 
         _cts = new CancellationTokenSource();
 
         _a = new KafkaAdministrator(adminConfig);
         _p = new KafkaProducer(producerConfig);
-        _c = new KafkaConsumer(consumerConfig, _cts);
+        _c = new KafkaConsumer(consumerConfig);
 
-        _rp = new RabbitProducer("input");
-        _rc = new RabbitConsumer("output", _cts);
+        _rp = new RabbitProducer("localhost", "input");
+        _rc = new RabbitConsumer("localhost", "output");
     }
 
     private class Timer
@@ -68,19 +70,19 @@ class Program
 
         _results = new Dictionary<int, Timer>();
         await KafkaRun(100);
-        await RabbitRun(100);
+        //await RabbitRun(100);
         Thread.Sleep(1000);
 
         _results = new Dictionary<int, Timer>();
         await KafkaRun(1000);
-        await RabbitRun(1000);
+        //await RabbitRun(1000);
     }
 
     private static async Task KafkaRun(int runs)
     {
         Console.WriteLine("Kafka Producer Started");
         IConsumer.ProcessMessage action = TakeTime;
-        Task.Factory.StartNew(() => _c.StartConsumer("output", action));
+        Task.Factory.StartNew(() => _c.Consume("output", action, _cts.Token));
 
         for (var i = 0; i < runs; i++)
         {
@@ -90,6 +92,7 @@ class Program
                 From = DateTime.Now
             });
             _p.Produce("input", "key", "" + i);
+            Console.WriteLine("KafkaRun - " + (_results[i].To - _results[i].From).TotalMilliseconds + " ms");
             Thread.Sleep(100);
         }
 
@@ -102,7 +105,7 @@ class Program
     {
         Console.WriteLine("RabbitMQ Producer Started");
         IConsumer.ProcessMessage action = TakeTime;
-        Task.Factory.StartNew(() => _rc.StartConsumer("output", action));
+        Task.Factory.StartNew(() => _rc.Consume("output", action, _cts.Token));
 
         for (var i = 0; i < runs; i++)
         {

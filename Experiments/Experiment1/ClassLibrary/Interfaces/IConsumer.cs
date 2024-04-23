@@ -4,5 +4,5 @@ public interface IConsumer
 {
     delegate void ProcessMessage(string key, string value);
 
-    Task StartConsumer(string topic, ProcessMessage action);
+    Task Consume(string topic, ProcessMessage action, CancellationToken ct);
 }

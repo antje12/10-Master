@@ -1,13 +1,12 @@
 ﻿using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
-using ClassLibrary.RabbitMQ;
 using Confluent.Kafka;
 
-namespace ConsumerApp;
+namespace KafkaConsumerApp;
 
 class Program
 {
-    private const string _kafkaServers = "localhost:9092";
+    private const string _kafkaServers = "kafka-service:9092";
     private const string _groupId = "msg-group";
 
     private static CancellationTokenSource _cts;
@@ -16,9 +15,6 @@ class Program
     private static KafkaProducer _p;
     private static KafkaConsumer _c;
 
-    private static RabbitProducer _rp;
-    private static RabbitConsumer _rc;
-
     static async Task Main()
     {
         Setup();
@@ -26,7 +22,6 @@ class Program
         await _a.CreateTopic("output");
 
         await KafkaRun();
-        await RabbitRun();
     }
 
     private static void Setup()
@@ -50,33 +45,18 @@ class Program
 
         _a = new KafkaAdministrator(adminConfig);
         _p = new KafkaProducer(producerConfig);
-        _c = new KafkaConsumer(consumerConfig, _cts);
-
-        _rp = new RabbitProducer("output");
-        _rc = new RabbitConsumer("input", _cts);
+        _c = new KafkaConsumer(consumerConfig);
     }
 
     private static async Task KafkaRun()
     {
         Console.WriteLine("Kafka Consumer Started");
         IConsumer.ProcessMessage action = SendKafkaResponse;
-        await _c.StartConsumer("input", action);
+        await _c.Consume("input", action, _cts.Token);
     }
 
     private static void SendKafkaResponse(string key, string value)
     {
         _p.Produce("output", key, value);
-    }
-
-    private static async Task RabbitRun()
-    {
-        Console.WriteLine("RabbitMQ Consumer Started");
-        IConsumer.ProcessMessage action = SendRabbitResponse;
-        await _rc.StartConsumer("input", action);
-    }
-
-    private static void SendRabbitResponse(string key, string value)
-    {
-        _rp.Produce("output", key, value);
     }
 }

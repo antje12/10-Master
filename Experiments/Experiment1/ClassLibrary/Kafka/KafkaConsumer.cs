@@ -5,40 +5,24 @@ namespace ClassLibrary.Kafka;
 
 public class KafkaConsumer : IConsumer
 {
-    private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly IConsumer<string, string> _consumer;
 
-    public KafkaConsumer(
-        ConsumerConfig consumerConfig,
-        CancellationTokenSource cancellationTokenSource)
+    public KafkaConsumer(ConsumerConfig consumerConfig)
     {
-        _cancellationTokenSource = cancellationTokenSource;
         _consumer = new ConsumerBuilder<string, string>(consumerConfig).Build();
     }
 
-    public Task StartConsumer(string topic, IConsumer.ProcessMessage action)
-    {
-        return Task.Run(() => ConsumeLoop(topic, action), _cancellationTokenSource.Token);
-    }
-
-    private Task ConsumeLoop(string topic, IConsumer.ProcessMessage onMessage)
+    public Task Consume(string topic, IConsumer.ProcessMessage action, CancellationToken ct)
     {
         _consumer.Subscribe(topic);
-        while (true)
+        while (!ct.IsCancellationRequested)
         {
-            var consumeResult = _consumer.Consume();
+            var consumeResult = _consumer.Consume(ct);
             var result = consumeResult.Message;
-            Console.WriteLine(
-                $"{result.Key} = {result.Value} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
-            onMessage(result.Key, result.Value);
+            //Console.WriteLine($"{result.Key} = {result.Value} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
+            action(result.Key, result.Value);
         }
-
         _consumer.Close();
         return Task.CompletedTask;
-    }
-
-    public void StopConsumer()
-    {
-        _cancellationTokenSource.Cancel();
     }
 }

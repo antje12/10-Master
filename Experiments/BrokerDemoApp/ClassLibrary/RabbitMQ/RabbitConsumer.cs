@@ -9,11 +9,11 @@ public class RabbitConsumer : IConsumer
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly IChannel _channel;
-    
+
     public RabbitConsumer(string topic, CancellationTokenSource cancellationTokenSource)
     {
         _cancellationTokenSource = cancellationTokenSource;
-        var factory = new ConnectionFactory { HostName = "localhost" };
+        var factory = new ConnectionFactory {HostName = "localhost"};
         var connection = factory.CreateConnection();
         _channel = connection.CreateChannel();
         _channel.QueueDeclare(queue: topic,
@@ -34,7 +34,8 @@ public class RabbitConsumer : IConsumer
         consumer.Received += (model, ea) =>
         {
             var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);Console.WriteLine(
+            var message = Encoding.UTF8.GetString(body);
+            Console.WriteLine(
                 $"{topic} = {message} consumed - {DateTime.Now.ToString("dd/MM/yyyy HH.mm.ss.fff")}");
             onMessage(topic, message);
         };
@@ -45,7 +46,7 @@ public class RabbitConsumer : IConsumer
         while (true)
         {
         }
-        
+
         return Task.CompletedTask;
     }
 }

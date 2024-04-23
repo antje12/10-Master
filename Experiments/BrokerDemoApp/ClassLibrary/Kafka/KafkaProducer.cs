@@ -1,26 +1,14 @@
 ﻿using ClassLibrary.Interfaces;
 using Confluent.Kafka;
-using Confluent.SchemaRegistry;
-using Confluent.SchemaRegistry.Serdes;
 
 namespace ClassLibrary.Kafka;
 
 public class KafkaProducer : IProducer
 {
-    private readonly AvroSerializerConfig _avroSerializerConfig;
-    private readonly CachedSchemaRegistryClient _schemaRegistry;
     private readonly IProducer<string, string> _producer;
 
-    public KafkaProducer(
-        ProducerConfig producerConfig,
-        SchemaRegistryConfig schemaRegistryConfig,
-        AvroSerializerConfig avroSerializerConfig)
+    public KafkaProducer(ProducerConfig producerConfig)
     {
-        _avroSerializerConfig = avroSerializerConfig;
-        _schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
-        //_producer = new ProducerBuilder<string, PlayerPos>(_producerConfig)
-        //    .SetValueSerializer(new AvroSerializer<PlayerPos>(_schemaRegistry, _avroSerializerConfig))
-        //    .Build();
         _producer = new ProducerBuilder<string, string>(producerConfig).Build();
     }
 

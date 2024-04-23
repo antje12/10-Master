@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ProfileService.Controllers;
+namespace RestService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ProfileServiceController : ControllerBase
+public class RestServiceController : ControllerBase
 {
     private string _apiVersion = "1.00";
 

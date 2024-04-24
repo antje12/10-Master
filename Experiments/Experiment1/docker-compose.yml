@@ -47,7 +47,7 @@ services:
   rest-service:
     container_name: rest-service
     build:
-      context: ./Experiment1
+      context: ./
       dockerfile: RestService/Dockerfile
     ports:
       - 8080:8080
@@ -58,7 +58,7 @@ services:
   kafka-consumer-service:
     container_name: kafka-consumer-service
     build:
-      context: ./Experiment1
+      context: ./
       dockerfile: KafkaConsumerApp/Dockerfile
     ports:
       - 81:80
@@ -71,7 +71,7 @@ services:
   rabbit-consumer-service:
     container_name: rabbit-consumer-service
     build:
-      context: ./Experiment1
+      context: ./
       dockerfile: RabbitConsumerApp/Dockerfile
     ports:
       - 82:80

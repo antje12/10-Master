@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.RabbitMQ;
@@ -64,8 +64,8 @@ class Program
 
         _results = new List<long>();
         
-        //await KafkaRun(100);
-        await RabbitRun(100);
+        //await KafkaRun(110);
+        await RabbitRun(110);
     }
 
     private static async Task KafkaRun(int runs)
@@ -86,7 +86,7 @@ class Program
                 throw new Exception();
             var elapsedTime = stopwatch.ElapsedMilliseconds;
             
-            if (index > 0)
+            if (index > 10)
             {
                 _results.Add(elapsedTime);
                 //Console.WriteLine($"Kafka result in {elapsedTime} ms");
@@ -144,7 +144,7 @@ class Program
                 throw new Exception();
             var elapsedTime = stopwatch.ElapsedMilliseconds;
             
-            if (index > 0)
+            if (index > 10)
             {
                 _results.Add(elapsedTime);
                 //Console.WriteLine($"RabbitMQ result in {elapsedTime} ms");

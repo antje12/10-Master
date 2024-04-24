@@ -63,8 +63,11 @@ class Program
         await _a.CreateTopic("output");
 
         _results = new List<long>();
+        _cts = new CancellationTokenSource();
+        await KafkaRun(110);
         
-        //await KafkaRun(110);
+        _results = new List<long>();
+        _cts = new CancellationTokenSource();
         await RabbitRun(110);
     }
 

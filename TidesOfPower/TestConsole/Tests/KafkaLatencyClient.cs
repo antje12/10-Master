@@ -5,7 +5,7 @@ using ClassLibrary.Messages.Protobuf;
 
 namespace TestConsole.Tests;
 
-public class LatencyClient
+public class KafkaLatencyClient
 {
     private string _groupId = "output-group";
     private KafkaTopic _outputTopic = KafkaTopic.Input;
@@ -30,7 +30,7 @@ public class LatencyClient
 
     private Input_M _msg;
 
-    public LatencyClient(int index)
+    public KafkaLatencyClient(int index)
     {
         _config = new KafkaConfig(_groupId, true);
         _admin = new KafkaAdministrator(_config);

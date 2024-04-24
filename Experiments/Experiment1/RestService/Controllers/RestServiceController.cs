@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClassLibrary;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RestService.Controllers;
 
@@ -14,9 +15,9 @@ public class RestServiceController : ControllerBase
         return $"Service version = {_apiVersion}";
     }
 
-    [HttpGet("Test/{id:guid}")]
-    public object Test(Guid id)
+    [HttpPost("Test")]
+    public ActionResult<MessageData> Test([FromBody] MessageData messageData)
     {
-        return Ok(id);
+        return Ok(messageData);
     }
 }

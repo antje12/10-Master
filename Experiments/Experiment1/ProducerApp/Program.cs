@@ -8,6 +8,7 @@ namespace ProducerApp;
 
 class Program
 {
+    //http://34.32.47.73:30080/InputService/Version
     private const string _kafkaServers = "localhost:19092";
     private const string _rabbitMqServers = "localhost";
     private const string _groupId = "msg-group";
@@ -63,8 +64,8 @@ class Program
 
         _results = new List<long>();
         
-        await KafkaRun(1000);
-        //await RabbitRun(1000);
+        //await KafkaRun(100);
+        await RabbitRun(100);
     }
 
     private static async Task KafkaRun(int runs)
@@ -128,7 +129,7 @@ class Program
     private static async Task RabbitRun(int runs)
     {
         Console.WriteLine("RabbitMQ test started!");
-        string path = @"D:\Git\10-Master\Experiments\Experiment1_Results\RabbitMQ.txt";
+        string path = @"D:\Git\10-Master\Experiments\Experiment1_Results\Rabbit.txt";
         File.Delete(path);
         
         var index = 0;
@@ -138,6 +139,9 @@ class Program
         void ProcessMessage(string key, string value)
         {
             stopwatch.Stop();
+            var val = Guid.Parse(value);
+            if (_last != val)
+                throw new Exception();
             var elapsedTime = stopwatch.ElapsedMilliseconds;
             
             if (index > 0)
@@ -160,12 +164,14 @@ class Program
             }
 
             index += 1;
+            _last = Guid.NewGuid();
             stopwatch.Restart();
-            _rp.Produce("input", "key", "" + index);
+            _rp.Produce("input", "key", "" + _last);
         }
 
+        _last = Guid.NewGuid();
         stopwatch.Restart();
-        _rp.Produce("input", "key", "" + index);
+        _rp.Produce("input", "key", "" + _last);
         
         IConsumer.ProcessMessage action = ProcessMessage;
         try

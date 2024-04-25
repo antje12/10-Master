@@ -8,22 +8,14 @@ using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
 using TestConsole.Tests;
-using EntityType = ClassLibrary.Domain.EntityType;
 
 Console.WriteLine("Hello, World!");
 RedisBroker redisBroker = new RedisBroker();
-//redisBroker.Connect(true);
-//redisBroker.Clean();
+redisBroker.Connect(true);
+redisBroker.Clean();
 
-//var latency = new Latency();
-//await latency.Test();
-
-//await TestKafkaProto();
-await TestHTTP();
-await TestHTTP();
-await TestHTTP();
-await TestHTTP();
-await TestHTTP();
+var latency = new Latency();
+await latency.Test();
 return;
 
 

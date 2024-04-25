@@ -71,7 +71,7 @@ services:
   input-service:
     container_name: input-service
     build:
-      context: ./TidesOfPower
+      context: ./
       dockerfile: InputService/Dockerfile
     ports:
       - 81:80

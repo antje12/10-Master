@@ -78,6 +78,7 @@ Port forward Kafka for local client:
 kubectl port-forward services/kowl-service 8080:8080
 kubectl port-forward services/kafka-service 19092:19092
 kubectl port-forward services/schema-registry-service 8081:8081
+kubectl port-forward services/redis-stack 8001:8001
 ```
 
 run the game client

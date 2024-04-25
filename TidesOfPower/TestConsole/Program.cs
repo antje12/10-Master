@@ -1,5 +1,3 @@
-// See https://aka.ms/new-console-template for more information
-
 using System.Diagnostics;
 using ClassLibrary.Domain;
 using ClassLibrary.Interfaces;
@@ -131,7 +129,7 @@ async Task TestHTTP()
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
-    
+
     await HttpTest(client, uri, stopwatch);
 }
 
@@ -204,7 +202,7 @@ async Task TestKafkaProto()
         }
 
         message.AgentLocation = value.ToLocation;
-            //.First(x => x.Id == testId.ToString()).Location;
+        //.First(x => x.Id == testId.ToString()).Location;
 
         count += 1;
         stopwatch.Restart();

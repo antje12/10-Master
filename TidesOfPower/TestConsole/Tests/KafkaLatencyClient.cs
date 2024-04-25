@@ -21,17 +21,18 @@ public class KafkaLatencyClient
     private List<long> _results;
     private CancellationTokenSource _cts;
 
-    private int _counter = 0;
-    private int _padding = 10;
-    private int _testCount = 100;
+    private int _counter;
+    private int _testCount;
+    private int _padding = 100;
 
     private Guid _testId;
     private string _testTopic;
 
     private Input_M _msg;
 
-    public KafkaLatencyClient(int index)
+    public KafkaLatencyClient(int index, int testCount)
     {
+        _testCount = testCount;
         _config = new KafkaConfig(_groupId, true);
         _admin = new KafkaAdministrator(_config);
         _producer = new KafkaProducer<Input_M>(_config);
@@ -87,7 +88,7 @@ public class KafkaLatencyClient
             Console.WriteLine(
                 $"Client{_index} results {_results.Count}, avg {_results.Average()} ms, min {_results.Min()} ms, max {_results.Max()} ms");
             File.WriteAllLines(
-                $"D:\\Git\\10-Master\\TestResults\\Client{_index}_results.txt",
+                $"D:\\Git\\10-Master\\Experiments\\Experiment3_Results\\Client{_index}_results.txt",
                 _results.Select(r => r.ToString()));
             _cts.Cancel();
             return;

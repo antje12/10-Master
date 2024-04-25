@@ -8,9 +8,10 @@ spec:
       port: 8082
       protocol: TCP
       targetPort: 8080
+      nodePort: 30080
   selector:
     app: input-service
-  type: ClusterIP
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment

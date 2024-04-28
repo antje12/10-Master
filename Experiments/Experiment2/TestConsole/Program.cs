@@ -11,8 +11,8 @@ using CollisionCheck = ClassLibrary.Messages.Avro.CollisionCheck;
 Console.WriteLine("Hello, World!");
 
 //await TestKafkaJson();
-await TestKafkaAvro();
-//await TestKafkaProto();
+//await TestKafkaAvro();
+await TestKafkaProto();
 
 async Task TestKafkaJson()
 {
@@ -61,7 +61,7 @@ async Task TestKafkaJson()
                 results.Select(x => x.ToString()));
             Console.WriteLine(
                 $"Kafka results {results.Count}, avg {results.Average()} ms, min {results.Min()} ms, max {results.Max()} ms");
-            //avg 54,028 ms, min 42 ms, max 88 ms
+            //avg 53,777 ms, min 43 ms, max 110 ms
             //message size = 157 B
             cts.Cancel();
             return;

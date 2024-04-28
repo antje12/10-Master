@@ -25,20 +25,19 @@ namespace ClassLibrary.Messages.Protobuf {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChRDb2xsaXNpb25DaGVjay5wcm90bxIeQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2Vz",
-            "LlByb3RvYnVmGg1DbGFzc2VzLnByb3RvIrUCCg5Db2xsaXNpb25DaGVjaxIQ",
+            "LlByb3RvYnVmGg1DbGFzc2VzLnByb3RvIvUBCg5Db2xsaXNpb25DaGVjaxIQ",
             "CghFbnRpdHlJZBgBIAEoCRI+CgpFbnRpdHlUeXBlGAIgASgOMiouQ2xhc3NM",
             "aWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkVudGl0eVR5cGUSQQoMRnJvbUxv",
             "Y2F0aW9uGAMgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVm",
             "LkNvb3JkaW5hdGVzEj8KClRvTG9jYXRpb24YBCABKAsyKy5DbGFzc0xpYnJh",
-            "cnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXMSPgoJRGlyZWN0aW9u",
-            "GAUgASgLMisuQ2xhc3NMaWJyYXJ5Lk1lc3NhZ2VzLlByb3RvYnVmLkNvb3Jk",
-            "aW5hdGVzEg0KBVRpbWVyGAYgASgBKiwKCkVudGl0eVR5cGUSCgoGUGxheWVy",
-            "EAASBgoCQWkQARIKCgZCdWxsZXQQAkIhqgIeQ2xhc3NMaWJyYXJ5Lk1lc3Nh",
-            "Z2VzLlByb3RvYnVmYgZwcm90bzM="));
+            "cnkuTWVzc2FnZXMuUHJvdG9idWYuQ29vcmRpbmF0ZXMSDQoFVGltZXIYBSAB",
+            "KAEqLAoKRW50aXR5VHlwZRIKCgZQbGF5ZXIQABIKCgZCdWxsZXQQARIGCgJB",
+            "aRACQiGqAh5DbGFzc0xpYnJhcnkuTWVzc2FnZXMuUHJvdG9idWZiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::ClassLibrary.Messages.Protobuf.ClassesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ClassLibrary.Messages.Protobuf.EntityType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.CollisionCheck), global::ClassLibrary.Messages.Protobuf.CollisionCheck.Parser, new[]{ "EntityId", "EntityType", "FromLocation", "ToLocation", "Direction", "Timer" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClassLibrary.Messages.Protobuf.CollisionCheck), global::ClassLibrary.Messages.Protobuf.CollisionCheck.Parser, new[]{ "EntityId", "EntityType", "FromLocation", "ToLocation", "Timer" }, null, null, null, null)
           }));
     }
     #endregion
@@ -47,8 +46,8 @@ namespace ClassLibrary.Messages.Protobuf {
   #region Enums
   public enum EntityType {
     [pbr::OriginalName("Player")] Player = 0,
-    [pbr::OriginalName("Ai")] Ai = 1,
-    [pbr::OriginalName("Bullet")] Bullet = 2,
+    [pbr::OriginalName("Bullet")] Bullet = 1,
+    [pbr::OriginalName("Ai")] Ai = 2,
   }
 
   #endregion
@@ -93,7 +92,6 @@ namespace ClassLibrary.Messages.Protobuf {
       entityType_ = other.entityType_;
       fromLocation_ = other.fromLocation_ != null ? other.fromLocation_.Clone() : null;
       toLocation_ = other.toLocation_ != null ? other.toLocation_.Clone() : null;
-      direction_ = other.direction_ != null ? other.direction_.Clone() : null;
       timer_ = other.timer_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -155,20 +153,8 @@ namespace ClassLibrary.Messages.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "Direction" field.</summary>
-    public const int DirectionFieldNumber = 5;
-    private global::ClassLibrary.Messages.Protobuf.Coordinates direction_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::ClassLibrary.Messages.Protobuf.Coordinates Direction {
-      get { return direction_; }
-      set {
-        direction_ = value;
-      }
-    }
-
     /// <summary>Field number for the "Timer" field.</summary>
-    public const int TimerFieldNumber = 6;
+    public const int TimerFieldNumber = 5;
     private double timer_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -198,7 +184,6 @@ namespace ClassLibrary.Messages.Protobuf {
       if (EntityType != other.EntityType) return false;
       if (!object.Equals(FromLocation, other.FromLocation)) return false;
       if (!object.Equals(ToLocation, other.ToLocation)) return false;
-      if (!object.Equals(Direction, other.Direction)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Timer, other.Timer)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -211,7 +196,6 @@ namespace ClassLibrary.Messages.Protobuf {
       if (EntityType != global::ClassLibrary.Messages.Protobuf.EntityType.Player) hash ^= EntityType.GetHashCode();
       if (fromLocation_ != null) hash ^= FromLocation.GetHashCode();
       if (toLocation_ != null) hash ^= ToLocation.GetHashCode();
-      if (direction_ != null) hash ^= Direction.GetHashCode();
       if (Timer != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Timer);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -247,12 +231,8 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(34);
         output.WriteMessage(ToLocation);
       }
-      if (direction_ != null) {
-        output.WriteRawTag(42);
-        output.WriteMessage(Direction);
-      }
       if (Timer != 0D) {
-        output.WriteRawTag(49);
+        output.WriteRawTag(41);
         output.WriteDouble(Timer);
       }
       if (_unknownFields != null) {
@@ -281,12 +261,8 @@ namespace ClassLibrary.Messages.Protobuf {
         output.WriteRawTag(34);
         output.WriteMessage(ToLocation);
       }
-      if (direction_ != null) {
-        output.WriteRawTag(42);
-        output.WriteMessage(Direction);
-      }
       if (Timer != 0D) {
-        output.WriteRawTag(49);
+        output.WriteRawTag(41);
         output.WriteDouble(Timer);
       }
       if (_unknownFields != null) {
@@ -310,9 +286,6 @@ namespace ClassLibrary.Messages.Protobuf {
       }
       if (toLocation_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(ToLocation);
-      }
-      if (direction_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Direction);
       }
       if (Timer != 0D) {
         size += 1 + 8;
@@ -346,12 +319,6 @@ namespace ClassLibrary.Messages.Protobuf {
           ToLocation = new global::ClassLibrary.Messages.Protobuf.Coordinates();
         }
         ToLocation.MergeFrom(other.ToLocation);
-      }
-      if (other.direction_ != null) {
-        if (direction_ == null) {
-          Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-        }
-        Direction.MergeFrom(other.Direction);
       }
       if (other.Timer != 0D) {
         Timer = other.Timer;
@@ -393,14 +360,7 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(ToLocation);
             break;
           }
-          case 42: {
-            if (direction_ == null) {
-              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-            }
-            input.ReadMessage(Direction);
-            break;
-          }
-          case 49: {
+          case 41: {
             Timer = input.ReadDouble();
             break;
           }
@@ -441,14 +401,7 @@ namespace ClassLibrary.Messages.Protobuf {
             input.ReadMessage(ToLocation);
             break;
           }
-          case 42: {
-            if (direction_ == null) {
-              Direction = new global::ClassLibrary.Messages.Protobuf.Coordinates();
-            }
-            input.ReadMessage(Direction);
-            break;
-          }
-          case 49: {
+          case 41: {
             Timer = input.ReadDouble();
             break;
           }

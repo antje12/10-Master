@@ -7,12 +7,12 @@ using Confluent.SchemaRegistry.Serdes;
 
 namespace ClassLibrary.Kafka;
 
-public class KafkaConsumer<T> : IConsumer<T> where T : ISpecificRecord
+public class AvroKafkaConsumer<T> : IConsumer<T> where T : ISpecificRecord
 {
     private CachedSchemaRegistryClient _schemaRegistry;
     private IConsumer<string, T> _consumer;
 
-    public KafkaConsumer(KafkaConfig config)
+    public AvroKafkaConsumer(KafkaConfig config)
     {
         _schemaRegistry = new CachedSchemaRegistryClient(config.SchemaRegistryConfig);
         _consumer = new ConsumerBuilder<string, T>(config.ConsumerConfig)

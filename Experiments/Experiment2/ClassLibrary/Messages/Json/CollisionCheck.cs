@@ -13,8 +13,8 @@ public class CollisionCheck
     public Coordinates FromLocation { get; set; }
     [JsonProperty("toLocation")]
     public Coordinates ToLocation { get; set; }
-    [JsonProperty("lastUpdate")]
-    public double LastUpdate { get; set; }
+    [JsonProperty("timer")]
+    public double Timer { get; set; }
 
     public CollisionCheck()
     {

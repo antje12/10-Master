@@ -2,6 +2,7 @@
 
 public enum EntityType
 {
-    Avatar,
-    Projectile
+    Player,
+    Bullet,
+    Ai,
 }

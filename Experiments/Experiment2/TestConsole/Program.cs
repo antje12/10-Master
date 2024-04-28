@@ -10,9 +10,9 @@ using CollisionCheck = ClassLibrary.Messages.Avro.CollisionCheck;
 
 Console.WriteLine("Hello, World!");
 
-//await TestKafkaJson();
+await TestKafkaJson();
 //await TestKafkaAvro();
-await TestKafkaProto();
+//await TestKafkaProto();
 
 async Task TestKafkaJson()
 {
@@ -89,8 +89,8 @@ async Task TestKafkaAvro()
     await admin.CreateTopic(KafkaTopic.Input);
     await admin.CreateTopic(testTopic);
 
-    var producer = new KafkaProducer<Input>(config);
-    var consumer = new KafkaConsumer<CollisionCheck>(config);
+    var producer = new AvroKafkaProducer<Input>(config);
+    var consumer = new AvroKafkaConsumer<CollisionCheck>(config);
 
     var count = 0;
     var testCount = 1000;

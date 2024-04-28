@@ -11,7 +11,6 @@ public class Avatar : Entity, ISpecificRecord
     [BsonElement("walking-speed")] public int WalkingSpeed { get; set; }
     [BsonElement("life-pool")] public int LifePool { get; set; }
     [BsonElement("inventory")] public int Inventory { get; set; }
-    public List<Weapon> Weapons { get; set; }
     
     public Schema Schema => StatSchema;
     public static Schema StatSchema => Schema.Parse($@"

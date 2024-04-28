@@ -32,16 +32,4 @@ public static class Move
             }
         }
     }
-
-    public static void Projectile(
-        float x, float y, float dirX, float dirY, double gameTime, 
-        out double time, out float toX, out float toY)
-    {
-        toX = x;
-        toY = y;
-        
-        time = gameTime * _projectileSpeed;
-        toX += dirX * _projectileSpeed * (float) gameTime;
-        toY += dirY * _projectileSpeed * (float) gameTime;
-    }
 }

@@ -12,13 +12,12 @@ message CollisionCheck {
   
   ClassLibrary.Messages.Protobuf.Coordinates FromLocation = 3;
   ClassLibrary.Messages.Protobuf.Coordinates ToLocation = 4;
-  ClassLibrary.Messages.Protobuf.Coordinates Direction = 5;
   
-  double Timer = 6;
+  double Timer = 5;
 }
 
 enum EntityType {
   Player = 0;
-  Ai = 1;
-  Bullet = 2;
+  Bullet = 1;
+  Ai = 2;
 }

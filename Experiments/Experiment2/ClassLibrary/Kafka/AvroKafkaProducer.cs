@@ -6,12 +6,12 @@ using Confluent.SchemaRegistry.Serdes;
 
 namespace ClassLibrary.Kafka;
 
-public class KafkaProducer<T> : IProducer<T> where T : ISpecificRecord
+public class AvroKafkaProducer<T> : IProducer<T> where T : ISpecificRecord
 {
     private CachedSchemaRegistryClient _schemaRegistry;
     private IProducer<string, T> _producer;
 
-    public KafkaProducer(KafkaConfig config)
+    public AvroKafkaProducer(KafkaConfig config)
     {
         _schemaRegistry = new CachedSchemaRegistryClient(config.SchemaRegistryConfig);
         _producer = new ProducerBuilder<string, T>(config.ProducerConfig)

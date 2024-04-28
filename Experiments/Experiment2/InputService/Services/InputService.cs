@@ -3,8 +3,8 @@ using ClassLibrary.Interfaces;
 using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Protobuf;
 using InputService.Interfaces;
-using CollisionCheck = ClassLibrary.Messages.Avro.CollisionCheck;
-using Input = ClassLibrary.Messages.Avro.Input;
+using CollisionCheck = ClassLibrary.Messages.Protobuf.CollisionCheck;
+using Input = ClassLibrary.Messages.Protobuf.Input;
 
 namespace InputService.Services;
 
@@ -17,8 +17,8 @@ public class InputService : BackgroundService, IConsumerService
     private KafkaTopic _outputTopicC = KafkaTopic.Collision;
 
     private KafkaAdministrator _admin;
-    private AvroKafkaProducer<CollisionCheck> _avroProducer;
-    private AvroKafkaConsumer<Input> _avroConsumer;
+    private ProtoKafkaProducer<CollisionCheck> _avroProducer;
+    private ProtoKafkaConsumer<Input> _avroConsumer;
 
     private Dictionary<string, DateTime> ClientAttacks = new();
     
@@ -30,8 +30,8 @@ public class InputService : BackgroundService, IConsumerService
         Console.WriteLine("InputService created");
         var config = new KafkaConfig(_groupId, localTest);
         _admin = new KafkaAdministrator(config);
-        _avroProducer = new AvroKafkaProducer<CollisionCheck>(config);
-        _avroConsumer = new AvroKafkaConsumer<Input>(config);
+        _avroProducer = new ProtoKafkaProducer<CollisionCheck>(config);
+        _avroConsumer = new ProtoKafkaConsumer<Input>(config);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -41,7 +41,7 @@ public class InputService : BackgroundService, IConsumerService
         IsRunning = true;
         Console.WriteLine("InputService started");
         await _admin.CreateTopic(_inputTopic);
-        IAvroConsumer<Input>.ProcessMessage action = ProcessMessage;
+        IProtoConsumer<Input>.ProcessMessage action = ProcessMessage;
         await _avroConsumer.Consume(_inputTopic, action, ct);
         IsRunning = false;
         Console.WriteLine("InputService stopped");

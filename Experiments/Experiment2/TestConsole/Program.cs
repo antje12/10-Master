@@ -10,8 +10,8 @@ using CollisionCheck = ClassLibrary.Messages.Avro.CollisionCheck;
 
 Console.WriteLine("Hello, World!");
 
-await TestKafkaJson();
-//await TestKafkaAvro();
+//await TestKafkaJson();
+await TestKafkaAvro();
 //await TestKafkaProto();
 
 async Task TestKafkaJson()
@@ -57,8 +57,12 @@ async Task TestKafkaJson()
 
         if (count >= testCount)
         {
+            File.WriteAllLines(@$"D:\Git\10-Master\Experiments\Experiment2_Results\Json_results.txt",
+                results.Select(x => x.ToString()));
             Console.WriteLine(
                 $"Kafka results {results.Count}, avg {results.Average()} ms, min {results.Min()} ms, max {results.Max()} ms");
+            //avg 54,028 ms, min 42 ms, max 88 ms
+            //message size = 157 B
             cts.Cancel();
             return;
         }
@@ -120,8 +124,12 @@ async Task TestKafkaAvro()
 
         if (count >= testCount)
         {
+            File.WriteAllLines(@$"D:\Git\10-Master\Experiments\Experiment2_Results\Avro_results.txt",
+                results.Select(x => x.ToString()));
             Console.WriteLine(
                 $"Kafka results {results.Count}, avg {results.Average()} ms, min {results.Min()} ms, max {results.Max()} ms");
+            //avg 53,538 ms, min 7 ms, max 86 ms
+            //message size = 69 B
             cts.Cancel();
             return;
         }
@@ -183,8 +191,12 @@ async Task TestKafkaProto()
 
         if (count >= testCount)
         {
+            File.WriteAllLines(@$"D:\Git\10-Master\Experiments\Experiment2_Results\Protobuf_results.txt",
+                results.Select(x => x.ToString()));
             Console.WriteLine(
                 $"Kafka results {results.Count}, avg {results.Average()} ms, min {results.Min()} ms, max {results.Max()} ms");
+            //avg  ms, min  ms, max  ms
+            //message size =  B
             cts.Cancel();
             return;
         }

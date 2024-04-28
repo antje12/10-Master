@@ -23,8 +23,8 @@ public class KafkaConfig
     {
         if (isClient)
         {
-            _kafkaServers = "localhost:19092";
-            _schemaRegistry = "localhost:8081";
+            _kafkaServers = "192.168.1.106:19092";
+            _schemaRegistry = "192.168.1.106:8081";
         }
         SchemaRegistryConfig = new()
         {

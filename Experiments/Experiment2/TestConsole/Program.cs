@@ -136,7 +136,7 @@ async Task TestKafkaAvro()
     stopwatch.Restart();
     producer.Produce(KafkaTopic.Input, "tester", message);
 
-    IConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
+    IAvroConsumer<CollisionCheck>.ProcessMessage action = ProcessMessage;
     await Task.Run(() => consumer.Consume(testTopic, action, cts.Token), cts.Token);
 }
 

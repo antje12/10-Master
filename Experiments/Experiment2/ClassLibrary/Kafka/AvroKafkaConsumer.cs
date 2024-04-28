@@ -7,7 +7,7 @@ using Confluent.SchemaRegistry.Serdes;
 
 namespace ClassLibrary.Kafka;
 
-public class AvroKafkaConsumer<T> : IConsumer<T> where T : ISpecificRecord
+public class AvroKafkaConsumer<T> : IAvroConsumer<T> where T : ISpecificRecord
 {
     private CachedSchemaRegistryClient _schemaRegistry;
     private IConsumer<string, T> _consumer;
@@ -22,12 +22,12 @@ public class AvroKafkaConsumer<T> : IConsumer<T> where T : ISpecificRecord
         //_consumer = new ConsumerBuilder<string, T>(consumerConfig).Build();
     }
 
-    public async Task Consume(KafkaTopic topic, IConsumer<T>.ProcessMessage action, CancellationToken ct)
+    public async Task Consume(KafkaTopic topic, IAvroConsumer<T>.ProcessMessage action, CancellationToken ct)
     {
         await Consume(topic.ToString(), action, ct);
     }
 
-    public Task Consume(string topic, IConsumer<T>.ProcessMessage action, CancellationToken ct)
+    public Task Consume(string topic, IAvroConsumer<T>.ProcessMessage action, CancellationToken ct)
     {
         _consumer.Subscribe(topic);
         //Console.WriteLine("Consumption started");

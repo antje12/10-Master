@@ -6,7 +6,7 @@ using Confluent.SchemaRegistry.Serdes;
 
 namespace ClassLibrary.Kafka;
 
-public class AvroKafkaProducer<T> : IProducer<T> where T : ISpecificRecord
+public class AvroKafkaProducer<T> : IAvroProducer<T> where T : ISpecificRecord
 {
     private CachedSchemaRegistryClient _schemaRegistry;
     private IProducer<string, T> _producer;

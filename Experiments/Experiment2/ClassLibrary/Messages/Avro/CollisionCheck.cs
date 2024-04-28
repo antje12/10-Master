@@ -17,7 +17,7 @@ public class CollisionCheck : ISpecificRecord
         FromLocation = new Coordinates();
         ToLocation = new Coordinates();
     }
-
+    
     public Schema Schema => StatSchema;
     public static Schema StatSchema => Schema.Parse($@"
     {{
@@ -31,7 +31,7 @@ public class CollisionCheck : ISpecificRecord
                 ""type"": {{
                     ""type"": ""enum"",
                     ""name"": ""EntityType"",
-                    ""symbols"": [""Avatar"", ""Projectile""]
+                    ""symbols"": [""Player"", ""Bullet"", ""Ai""]
                 }}
             }},
             {{ ""name"": ""FromLocation"", ""type"": {Coordinates.StatSchema()} }},

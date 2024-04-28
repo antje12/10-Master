@@ -195,7 +195,7 @@ async Task TestKafkaProto()
                 results.Select(x => x.ToString()));
             Console.WriteLine(
                 $"Kafka results {results.Count}, avg {results.Average()} ms, min {results.Min()} ms, max {results.Max()} ms");
-            //avg 52,214 ms, min 6 ms, max 100 ms
+            //avg 52,237 ms, min 6 ms, max 84 ms
             //message size = 63 B
             cts.Cancel();
             return;

@@ -1,12 +1,12 @@
-1000 requests to REST api
-1000 messages to Kafka and back
-1000 messages to RabbitMQ and back
+n/a - 1000 requests to REST api
+n/a - 1000 messages to Kafka and back
+n/a - 1000 messages to RabbitMQ and back
 
-1000 messages to Kafka in json
-1000 messages to Kafka in avro
-1000 messages to Kafka in protobuf
+done - 1000 messages to Kafka in json
+done - 1000 messages to Kafka in avro
+done - 1000 messages to Kafka in protobuf
 
-Size comparison of message in json, avro, and protobuf
+done - Size comparison of message in json, avro, and protobuf
 
 Baseline latency test
 Scalability test (linear)

@@ -28,14 +28,25 @@ public class KafkaConsumer<T> : IProtoConsumer<T> where T : class, IMessage<T>, 
 
     public Task Consume(string topic, IProtoConsumer<T>.ProcessMessage action, CancellationToken ct)
     {
-        _consumer.Subscribe(topic);
-        while (!ct.IsCancellationRequested)
+        try
         {
-            var consumeResult = _consumer.Consume(ct);
-            var result = consumeResult.Message;
-            action(result.Key, result.Value);
+            _consumer.Subscribe(topic);
+            while (!ct.IsCancellationRequested)
+            {
+                var consumeResult = _consumer.Consume(ct);
+                var result = consumeResult.Message;
+                action(result.Key, result.Value);
+            }
         }
-        _consumer.Close();
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Consumption cancelled");
+        }
+        finally
+        {
+            _consumer.Close();
+        }
+
         return Task.CompletedTask;
     }
 }

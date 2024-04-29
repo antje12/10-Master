@@ -44,3 +44,7 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 3
+          lifecycle:
+            preStop:
+              exec:
+                command: ["curl", "-X", "GET", "http://localhost:8080/inputservice/stop"]

@@ -17,6 +17,7 @@ public class ProjectileService : BackgroundService, IConsumerService
     internal IProtoProducer<Collision_M> Producer;
     internal IProtoConsumer<Projectile_M> Consumer;
 
+    private CancellationTokenSource _cts = new();
     public bool IsRunning { get; private set; }
     private bool localTest = false;
 
@@ -29,6 +30,16 @@ public class ProjectileService : BackgroundService, IConsumerService
         Consumer = new KafkaConsumer<Projectile_M>(config);
     }
 
+    public void StopService()
+    {
+        _cts.Cancel();
+    }
+
+    internal async Task ExecuteAsync()
+    {
+        await ExecuteAsync(_cts.Token);
+    }
+
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         await Task.Yield();
@@ -36,15 +47,10 @@ public class ProjectileService : BackgroundService, IConsumerService
         Console.WriteLine("ProjectileService started");
         await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<Projectile_M>.ProcessMessage action = ProcessMessage;
-        await Consumer.Consume(_inputTopic, action, ct);
+        var linkedSource = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+        await Consumer.Consume(_inputTopic, action, linkedSource.Token);
         IsRunning = false;
         Console.WriteLine("ProjectileService stopped");
-    }
-
-    internal async Task ExecuteAsync()
-    {
-        var cts = new CancellationTokenSource();
-        await ExecuteAsync(cts.Token);
     }
 
     internal void ProcessMessage(string key, Projectile_M value)

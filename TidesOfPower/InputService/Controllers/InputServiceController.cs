@@ -25,9 +25,20 @@ public class InputServiceController : ControllerBase
     [HttpGet("Status")]
     public IActionResult  Status()
     {
-        return _service?.IsRunning == true ? 
+        return _service.IsRunning ? 
             Ok("Service running = true") :
             // Service Unavailable
             StatusCode(503, "Service running = false");
+    }
+
+    [HttpGet("Stop")]
+    public IActionResult Stop()
+    {
+        _service.StopService();
+        while (_service.IsRunning)
+        {
+            Thread.Sleep(100);
+        }
+        return Ok($"Service running = false");
     }
 }

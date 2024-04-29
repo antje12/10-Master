@@ -12,4 +12,4 @@ Baseline latency test
 Scalability test (linear)
 CI/CD test - no downtime + ttm
 
-test: 4
+test: 5

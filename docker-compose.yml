@@ -53,31 +53,31 @@ services:
       SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: "*"
       SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: "GET,POST,PUT,OPTIONS"
   
-  kowl-service:
-    container_name: kowl-service
-    image: quay.io/cloudhut/kowl:master 
-    ports:
-      - 8080:8080
-    restart: unless-stopped
-    depends_on:
-      - schema-registry-service
-    environment:
-      KAFKA_BROKERS: kafka-service:9092
-      KAFKA_SCHEMAREGISTRY_ENABLED: true
-      KAFKA_SCHEMAREGISTRY_URLS: http://schema-registry-service:8081
-    networks:
-      sharednetwork:
+  #kowl-service:
+  #  container_name: kowl-service
+  #  image: quay.io/cloudhut/kowl:master 
+  #  ports:
+  #    - 8080:8080
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - schema-registry-service
+  #  environment:
+  #    KAFKA_BROKERS: kafka-service:9092
+  #    KAFKA_SCHEMAREGISTRY_ENABLED: true
+  #    KAFKA_SCHEMAREGISTRY_URLS: http://schema-registry-service:8081
+  #  networks:
+  #    sharednetwork:
   
-  mongodb-service:
-    container_name: mongodb-service
-    image: mongo:latest
-    ports:
-      - 27017:27017
-    restart: unless-stopped
-    #volumes:
-    #  - mongodb-service.vol:/data/db
-    networks:
-      sharednetwork:
+  #mongodb-service:
+  #  container_name: mongodb-service
+  #  image: mongo:latest
+  #  ports:
+  #    - 27017:27017
+  #  restart: unless-stopped
+  #  #volumes:
+  #  #  - mongodb-service.vol:/data/db
+  #  networks:
+  #    sharednetwork:
 
   redis-stack:
     container_name: redis-stack
@@ -89,20 +89,20 @@ services:
     networks:
       sharednetwork:
   
-  #input-service:
-  #  container_name: input-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: InputService/Dockerfile
-  #  ports:
-  #    - 81:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #    - mongodb-service
-  #  networks:
-  #    sharednetwork:
-  #
+  input-service:
+    container_name: input-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: InputService/Dockerfile
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      #- mongodb-service
+    networks:
+      sharednetwork:
+  
   #collision-service:
   #  container_name: collision-service
   #  build:

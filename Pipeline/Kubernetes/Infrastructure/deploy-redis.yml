@@ -7,6 +7,7 @@ spec:
     - name: redis-server
       port: 6379
       targetPort: 6379
+      nodePort: 30006
     - name: redis-insight
       port: 8001
       targetPort: 8001

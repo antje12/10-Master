@@ -4,7 +4,7 @@ namespace ProfileService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class WorldServiceController : ControllerBase
+public class ProfileServiceController : ControllerBase
 {
     private string _apiVersion = "1.00";
 

@@ -6,11 +6,12 @@ public class Latency
     {
         var tasks = new List<Task>();
         var numberOfClients = 10;
+        var numberOfSteps = 100;
 
         for (int i = 0; i < numberOfClients; i++)
         {
-            var client = new LatencyClient(i);
-            tasks.Add(Task.Run(() => client.RunLatencyTest()));
+            var client = new KafkaLatencyClient(i, numberOfSteps);
+            tasks.Add(Task.Run(() => client.Test()));
         }
 
         await Task.WhenAll(tasks);

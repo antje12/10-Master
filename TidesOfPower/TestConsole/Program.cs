@@ -1,5 +1,3 @@
-// See https://aka.ms/new-console-template for more information
-
 using System.Diagnostics;
 using ClassLibrary.Domain;
 using ClassLibrary.Interfaces;
@@ -8,27 +6,29 @@ using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
 using TestConsole.Tests;
-using EntityType = ClassLibrary.Domain.EntityType;
 
 Console.WriteLine("Hello, World!");
 RedisBroker redisBroker = new RedisBroker();
 redisBroker.Connect(true);
 redisBroker.Clean();
 
+//var uptime = new Uptime();
+//await uptime.Test();
 var latency = new Latency();
 await latency.Test();
 return;
 
+
 MongoDbBroker mongoBroker = new MongoDbBroker();
 mongoBroker.Connect(true);
 
-redisBroker.InitEntity();
-var agent = new Agent(
-    Guid.NewGuid(),
-    new Coordinates(50.123f, 100.456f),
-    EntityType.Player, 100, 100);
-redisBroker.Insert(agent);
-redisBroker.GetEntities(agent.Location.X, agent.Location.Y);
+//redisBroker.InitEntity();
+//var agent = new Agent(
+//    Guid.NewGuid(),
+//    new Coordinates(50.123f, 100.456f),
+//    EntityType.Player, 100, 100);
+//redisBroker.Insert(agent);
+//redisBroker.GetEntities(agent.Location.X, agent.Location.Y);
 
 //redisBroker.InitProfile();
 //TestRedis();
@@ -53,7 +53,7 @@ void TestMongoDB()
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
-    mongoBroker.Insert(profile);
+    //mongoBroker.Insert(profile);
     stopwatch.Stop();
     var elapsed_time = stopwatch.ElapsedMilliseconds;
     Console.WriteLine($"Create called in {elapsed_time} ms");
@@ -122,7 +122,7 @@ void TestRedis()
 
 async Task TestHTTP()
 {
-    string uri = "http://localhost:5051/InputService/Version";
+    string uri = "http://localhost:8080/RestService/Version";
 
     HttpClientHandler clientHandler = new HttpClientHandler();
     clientHandler.ServerCertificateCustomValidationCallback =
@@ -131,8 +131,14 @@ async Task TestHTTP()
 
     var stopwatch = new Stopwatch();
     stopwatch.Start();
-    using var httpResponse = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
 
+    await HttpTest(client, uri, stopwatch);
+}
+
+async Task HttpTest(HttpClient httpClient, string s, Stopwatch stopwatch)
+{
+    stopwatch.Restart();
+    using var httpResponse = await httpClient.GetAsync(s, HttpCompletionOption.ResponseHeadersRead);
     httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
     try
     {
@@ -149,9 +155,9 @@ async Task TestHTTP()
 
 async Task TestKafkaProto()
 {
-    mongoBroker.CleanDB();
+    //redisBroker.Clean();
     var testId = Guid.NewGuid();
-    var testTopic = $"{KafkaTopic.LocalState}_{testId}";
+    var testTopic = KafkaTopic.Collision; //$"{KafkaTopic.LocalState}_{testId}";
 
     var cts = new CancellationTokenSource();
     var config = new KafkaConfig("test", true);
@@ -161,10 +167,10 @@ async Task TestKafkaProto()
     await admin.CreateTopic(testTopic);
 
     var producer = new KafkaProducer<Input_M>(config);
-    var consumer = new KafkaConsumer<LocalState_M>(config);
+    var consumer = new KafkaConsumer<Collision_M>(config);
 
     var count = 0;
-    var testCount = 1000;
+    var testCount = 100;
     var results = new List<long>();
 
     var message = new Input_M
@@ -178,7 +184,7 @@ async Task TestKafkaProto()
     var stopwatch = new Stopwatch();
     stopwatch.Start();
 
-    void ProcessMessage(string key, LocalState_M value)
+    void ProcessMessage(string key, Collision_M value)
     {
         stopwatch.Stop();
         var elapsedTime = stopwatch.ElapsedMilliseconds;
@@ -197,8 +203,8 @@ async Task TestKafkaProto()
             return;
         }
 
-        message.AgentLocation = value.Agents
-            .First(x => x.Id == testId.ToString()).Location;
+        message.AgentLocation = value.ToLocation;
+        //.First(x => x.Id == testId.ToString()).Location;
 
         count += 1;
         stopwatch.Restart();
@@ -208,6 +214,6 @@ async Task TestKafkaProto()
     stopwatch.Restart();
     producer.Produce(KafkaTopic.Input, "init", message);
 
-    IProtoConsumer<LocalState_M>.ProcessMessage action = ProcessMessage;
+    IProtoConsumer<Collision_M>.ProcessMessage action = ProcessMessage;
     await Task.Run(() => consumer.Consume(testTopic, action, cts.Token), cts.Token);
 }

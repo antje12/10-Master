@@ -1,0 +1,31 @@
+﻿syntax = "proto3";
+
+package ClassLibrary.Messages.Protobuf;
+
+option csharp_namespace = "ClassLibrary.Messages.Protobuf";
+
+message Coordinates {
+  float X = 1;
+  float Y = 2;
+}
+
+message Agent {
+  string Id = 1;
+  
+  ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
+  
+  string Name = 3;
+  int32 WalkingSpeed = 4;
+  int32 LifePool = 5;
+  int32 Inventory = 6;
+}
+
+message Projectile {
+  string Id = 1;
+  
+  ClassLibrary.Messages.Protobuf.Coordinates Location = 2;
+  ClassLibrary.Messages.Protobuf.Coordinates Direction = 3;
+  
+  double LastUpdate = 4;
+  double TTL = 5;
+}

@@ -8,8 +8,8 @@ done - 1000 messages to Kafka in protobuf
 
 done - Size comparison of message in json, avro, and protobuf
 
-Baseline latency test
-Scalability test (linear)
-CI/CD test - no downtime + ttm
+done - CI/CD test - no downtime + ttm
 
-test: 5
+Baseline latency test
+
+Scalability test (linear)

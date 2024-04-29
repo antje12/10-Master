@@ -95,7 +95,7 @@ services:
       context: ./TidesOfPower
       dockerfile: InputService/Dockerfile
     ports:
-      - 80:80
+      - 8080:8080
     restart: unless-stopped
     depends_on:
       - schema-registry-service

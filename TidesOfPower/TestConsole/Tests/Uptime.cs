@@ -73,7 +73,7 @@ public class Uptime
         var timestamp = DateTime.UtcNow;
         using (StreamWriter file = File.AppendText(_path))
         {
-            file.WriteLine($"{timestamp:o},{elapsedTime}"); // Using "o" format for ISO 8601 format
+            file.WriteLine($"{timestamp:o};{elapsedTime}"); // Using "o" format for ISO 8601 format
         }
 
         _msg.AgentLocation = value.Agents

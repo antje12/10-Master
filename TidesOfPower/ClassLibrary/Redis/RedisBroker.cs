@@ -23,7 +23,7 @@ public class RedisBroker
     {
         if (isClient)
         {
-            nodes = "localhost";
+            nodes = "34.32.47.73:30006";
         }
         _redis = ConnectionMultiplexer.Connect(nodes);
         _database = _redis.GetDatabase();

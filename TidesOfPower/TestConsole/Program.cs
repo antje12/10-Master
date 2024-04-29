@@ -12,8 +12,10 @@ RedisBroker redisBroker = new RedisBroker();
 redisBroker.Connect(true);
 redisBroker.Clean();
 
-var latency = new Latency();
-await latency.Test();
+var uptime = new Uptime();
+await uptime.Test();
+//var latency = new Latency();
+//await latency.Test();
 return;
 
 

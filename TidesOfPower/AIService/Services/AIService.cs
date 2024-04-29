@@ -20,6 +20,8 @@ public class AIService : BackgroundService, IConsumerService
 
     internal RedisBroker RedisBroker;
 
+    
+    private CancellationTokenSource _cts = new();
     public bool IsRunning { get; private set; }
     private bool localTest = false;
 
@@ -33,10 +35,14 @@ public class AIService : BackgroundService, IConsumerService
         RedisBroker = new RedisBroker();
     }
 
+    public void StopService()
+    {
+        _cts.Cancel();
+    }
+
     internal async Task ExecuteAsync()
     {
-        var cts = new CancellationTokenSource();
-        await ExecuteAsync(cts.Token);
+        await ExecuteAsync(_cts.Token);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -47,7 +53,8 @@ public class AIService : BackgroundService, IConsumerService
         Console.WriteLine("AIService started");
         await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<Ai_M>.ProcessMessage action = ProcessMessage;
-        await Consumer.Consume(_inputTopic, action, ct);
+        var linkedSource = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+        await Consumer.Consume(_inputTopic, action, linkedSource.Token);
         IsRunning = false;
         Console.WriteLine("AIService stopped");
     }

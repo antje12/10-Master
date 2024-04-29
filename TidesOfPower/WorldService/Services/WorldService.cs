@@ -26,6 +26,7 @@ public class WorldService : BackgroundService, IConsumerService
     internal MongoDbBroker MongoBroker;
     internal RedisBroker RedisBroker;
 
+    private CancellationTokenSource _cts = new();
     public bool IsRunning { get; private set; }
     private bool localTest = false;
 
@@ -42,10 +43,14 @@ public class WorldService : BackgroundService, IConsumerService
         RedisBroker = new RedisBroker();
     }
 
+    public void StopService()
+    {
+        _cts.Cancel();
+    }
+
     internal async Task ExecuteAsync()
     {
-        var cts = new CancellationTokenSource();
-        await ExecuteAsync(cts.Token);
+        await ExecuteAsync(_cts.Token);
     }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -57,7 +62,8 @@ public class WorldService : BackgroundService, IConsumerService
         Console.WriteLine("WorldService started");
         await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<World_M>.ProcessMessage action = ProcessMessage;
-        await Consumer.Consume(_inputTopic, action, ct);
+        var linkedSource = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+        await Consumer.Consume(_inputTopic, action, linkedSource.Token);
         IsRunning = false;
         Console.WriteLine("WorldService stopped");
     }

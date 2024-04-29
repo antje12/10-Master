@@ -9,7 +9,7 @@ namespace ProducerApp;
 class Program
 {
     //http://34.32.47.73:30080/InputService/Version
-    private const string _kafkaServers = "localhost:19092";
+    private const string _kafkaServers = "34.32.47.73:30001,34.32.47.73:30002,34.32.47.73:30003";
     private const string _rabbitMqServers = "localhost";
     private const string _groupId = "msg-group";
 
@@ -52,8 +52,8 @@ class Program
         _p = new KafkaProducer(producerConfig);
         _c = new KafkaConsumer(consumerConfig);
 
-        _rp = new RabbitProducer(_rabbitMqServers, "input");
-        _rc = new RabbitConsumer(_rabbitMqServers, "output");
+        //_rp = new RabbitProducer(_rabbitMqServers, "input");
+        //_rc = new RabbitConsumer(_rabbitMqServers, "output");
     }
 
     static async Task Main()
@@ -66,9 +66,9 @@ class Program
         _cts = new CancellationTokenSource();
         await KafkaRun(110);
         
-        _results = new List<long>();
-        _cts = new CancellationTokenSource();
-        await RabbitRun(110);
+        //_results = new List<long>();
+        //_cts = new CancellationTokenSource();
+        //await RabbitRun(110);
     }
 
     private static async Task KafkaRun(int runs)

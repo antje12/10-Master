@@ -9,7 +9,7 @@ public class KafkaConfig
     //client:           "localhost:19092"
     //kubernetes:       "kafka-service:9092"
     //google:           "34.32.47.73:30001"
-    private string _kafkaServers = "kafka-service:9092";
+    private string _kafkaServers = "kafka-service-1:9092,kafka-service-2:9092,kafka-service-3:9092";
     //client:           "localhost:8081"
     //kubernetes:       "schema-registry-service:8081"
     //google:           "34.32.47.73:30004"
@@ -25,7 +25,7 @@ public class KafkaConfig
     {
         if (isClient)
         {
-            _kafkaServers = "34.32.47.73:30001";
+            _kafkaServers = "34.32.47.73:30001,34.32.47.73:30002,34.32.47.73:30003";
             _schemaRegistry = "34.32.47.73:30004";
         }
         SchemaRegistryConfig = new()

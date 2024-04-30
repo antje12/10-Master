@@ -58,4 +58,4 @@ spec:
               memory: "200Mi" # Request xxx MB of memory
             limits:
               #cpu: "200m"     # Request xxx millicpu (CPU core)
-              memory: "400Mi" # Limit to xxx MB of memory
+              memory: "500Mi" # Limit to xxx MB of memory

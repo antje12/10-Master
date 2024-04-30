@@ -10,7 +10,9 @@ done - Size comparison of message in json, avro, and protobuf
 
 done - CI/CD test - no downtime + ttm
 
-Baseline latency test
+done - Baseline latency test (single)
+
+Baseline latency test (multiple)
 
 Scalability test (linear)
   

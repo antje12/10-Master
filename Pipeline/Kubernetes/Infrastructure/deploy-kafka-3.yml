@@ -54,8 +54,8 @@ spec:
               value: "INTERNAL://kafka-service-3:9092,EXTERNAL://34.32.47.73:30003"
           resources:
             requests:
-              cpu: "100m"     # Request xxx millicpu (CPU core)
+              #cpu: "100m"     # Request xxx millicpu (CPU core)
               memory: "200Mi" # Request xxx MB of memory
             limits:
-              cpu: "200m"     # Request xxx millicpu (CPU core)
+              #cpu: "200m"     # Request xxx millicpu (CPU core)
               memory: "400Mi" # Limit to xxx MB of memory

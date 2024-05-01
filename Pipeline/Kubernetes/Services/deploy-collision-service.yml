@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: collision-service
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: collision-service

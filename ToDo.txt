@@ -13,7 +13,7 @@ done - CI/CD test - no downtime + ttm
 done - Baseline latency test (single)
 
 Baseline latency test (multiple)
-- test 1 instance max clients
+done - test 1 instance max clients
 - test 2 instances max clients
 
 Scalability test (linear)

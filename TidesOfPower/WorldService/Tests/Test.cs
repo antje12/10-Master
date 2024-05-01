@@ -81,7 +81,7 @@ public class Test
         service.ProducerP = producerP.Object;
         service.ProducerA = producerA.Object;
         service.RedisBroker = redis.Object;
-        service.MongoBroker = mongo.Object;
+        //service.MongoBroker = mongo.Object;
     }
 
     [Test]

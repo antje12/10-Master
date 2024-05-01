@@ -23,7 +23,7 @@ public class WorldService : BackgroundService, IConsumerService
     internal IProtoProducer<Ai_M> ProducerA;
     internal IProtoConsumer<World_M> Consumer;
 
-    internal MongoDbBroker MongoBroker;
+    //internal MongoDbBroker MongoBroker;
     internal RedisBroker RedisBroker;
 
     private CancellationTokenSource _cts = new();
@@ -39,7 +39,7 @@ public class WorldService : BackgroundService, IConsumerService
         ProducerP = new KafkaProducer<Projectile_M>(config);
         ProducerA = new KafkaProducer<Ai_M>(config);
         Consumer = new KafkaConsumer<World_M>(config);
-        MongoBroker = new MongoDbBroker();
+        //MongoBroker = new MongoDbBroker();
         RedisBroker = new RedisBroker();
     }
 
@@ -58,7 +58,7 @@ public class WorldService : BackgroundService, IConsumerService
         await Task.Yield();
         IsRunning = true;
         RedisBroker.Connect(localTest);
-        MongoBroker.Connect(localTest);
+        //MongoBroker.Connect(localTest);
         Console.WriteLine("WorldService started");
         await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<World_M>.ProcessMessage action = ProcessMessage;

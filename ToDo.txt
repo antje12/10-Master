@@ -1,7 +1,3 @@
-n/a - 1000 requests to REST api
-n/a - 1000 messages to Kafka and back
-n/a - 1000 messages to RabbitMQ and back
-
 done - 1000 messages to Kafka in json
 done - 1000 messages to Kafka in avro
 done - 1000 messages to Kafka in protobuf
@@ -14,7 +10,10 @@ done - Baseline latency test (single)
 
 Baseline latency test (multiple)
 done - test 1 instance max clients
-- test 2 instances max clients
+done - test 2 instances max clients
+???? - test 3 instances max clients
 
 Scalability test (linear)
 - test auto scaling instances
+
+Crash test (fault tolerance)

@@ -19,7 +19,7 @@ public class Latency
             var timestamp = DateTime.UtcNow;
             using (StreamWriter file = File.AppendText(_path))
             {
-                file.WriteLine($"{timestamp:o} - Added 10 - {tasks.Count} clients running");
+                file.WriteLine($"{timestamp:o}");
             }
 
             Console.WriteLine($"Added 10 - {tasks.Count} clients running");

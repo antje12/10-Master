@@ -31,41 +31,6 @@ public class RedisBroker
         _json = _database.JSON();
         InitEntity();
     }
-
-    public void InitProfile()
-    {
-        var indexes = _ft._List();
-        if (indexes.All(x => x.ToString() != "idx:profiles"))
-        {
-            var schema = new Schema() // search-able fields
-                .AddTextField(new FieldName("$.Id", "Id"))
-                .AddTextField(new FieldName("$.Email", "Email"))
-                .AddTextField(new FieldName("$.Password", "Password"));
-            _ft.Create(
-                "idx:profiles",
-                new FTCreateParams().On(IndexDataType.JSON).Prefix("profile:"),
-                schema);
-        }
-    }
-    
-    public void Insert(Profile profile)
-    {
-        _json.Set($@"profile:{profile.Id}", "$", profile);
-    }
-
-    public Profile? GetProfile(Guid profileId)
-    {
-        var result = _json.Get($"profile:{profileId}");
-        return result.IsNull ? null : JsonConvert.DeserializeObject<Profile>(result.ToString());
-    }
-    
-    public Profile? GetProfiles(Guid profileId)
-    {
-        var src = _ft.Search("idx:profiles", new Query("*").Limit(0, 10000)); // 10000 max
-        var json = src.ToJson();
-        var res = json.Select(x => JsonConvert.DeserializeObject<Profile>(x));
-        return res.FirstOrDefault(x => x.Id == profileId);
-    }
     
     public void InitEntity()
     {

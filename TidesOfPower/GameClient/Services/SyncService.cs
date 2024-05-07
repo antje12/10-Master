@@ -86,21 +86,6 @@ public class SyncService : BackgroundService
         }
         
         DeltaSync(value);
-
-        //var onlineAgentIds = value.Agents.Select(x => x.Id).ToList();
-        ////var onlineProjectileIds = value.Projectiles.Select(x => x.Id).ToList();
-        //
-        //if (_game.LocalState.OfType<Enemy_S>().Any(x => !onlineAgentIds.Contains(x.Id.ToString()))) //||
-        //    //game.LocalState.OfType<Projectile>().Any(x => !onlineProjectileIds.Contains(x._id.ToString())))
-        //{
-        //    lock (_game.LockObject)
-        //    {
-        //        _game.LocalState.RemoveAll(x => x is Enemy_S y && !onlineAgentIds.Contains(y.Id.ToString()));
-        //        //game.LocalState.RemoveAll(x => x is Projectile y && !onlineProjectileIds.Contains(y._id.ToString()));
-        //        string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
-        //        Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
-        //    }
-        //}
     }
 
     private void DeltaSync(LocalState_M value)

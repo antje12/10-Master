@@ -39,21 +39,21 @@ kind create cluster
 
 Setup the infrastructure services:
 ```
-kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-zookeeper.yml
-kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-kafka.yml
-kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-schema-registry.yml
-kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-kowl.yml
-kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-redis.yml
-kubectl apply -f Pipeline/Kubernetes/Infrastructure/deploy-mongodb.yml
+kubectl apply -f Pipeline/Infrastructure/deploy-zookeeper.yml
+kubectl apply -f Pipeline/Infrastructure/deploy-kafka.yml
+kubectl apply -f Pipeline/Infrastructure/deploy-schema-registry.yml
+kubectl apply -f Pipeline/Infrastructure/deploy-kowl.yml
+kubectl apply -f Pipeline/Infrastructure/deploy-redis.yml
+kubectl apply -f Pipeline/Infrastructure/deploy-mongodb.yml
 ```
 
 Setup the game services:
 ```
-kubectl apply -f Pipeline/Kubernetes/Services/deploy-input-service.yml
-kubectl apply -f Pipeline/Kubernetes/Services/deploy-collision-service.yml
-kubectl apply -f Pipeline/Kubernetes/Services/deploy-world-service.yml
-kubectl apply -f Pipeline/Kubernetes/Services/deploy-projectile-service.yml
-kubectl apply -f Pipeline/Kubernetes/Services/deploy-ai-service.yml
+kubectl apply -f Pipeline/Services/deploy-input-service.yml
+kubectl apply -f Pipeline/Services/deploy-collision-service.yml
+kubectl apply -f Pipeline/Services/deploy-world-service.yml
+kubectl apply -f Pipeline/Services/deploy-projectile-service.yml
+kubectl apply -f Pipeline/Services/deploy-ai-service.yml
 ```
 
 Setup KEDA:
@@ -61,7 +61,7 @@ Setup KEDA:
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo update
 helm install keda kedacore/keda
-kubectl apply -f Pipeline/Kubernetes/Scaling/deploy-keda-scalers.yml
+kubectl apply -f Pipeline/Scaling/deploy-keda-scalers.yml
 ```
 
 Setup sharding in the database:
@@ -96,7 +96,7 @@ Setup sharded MongoDB via helm:
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install mongodb-sharded bitnami/mongodb-sharded -f Pipeline/Kubernetes/Helm/mongodb-values.yml
+helm install mongodb-sharded bitnami/mongodb-sharded -f Pipeline/Helm/mongodb-values.yml
 ```
 
 Setup distributed Kafka via helm:

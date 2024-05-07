@@ -19,11 +19,11 @@ spec:
   triggers:
     - type: kafka
       metadata:
-        bootstrapServers: kafka-service:9092
+        bootstrapServers: kafka-service-1:9092,kafka-service-2:9092,kafka-service-3:9092
         consumerGroup: input-group
         topic: Input
         # Optional
-        lagThreshold: "50" # when to scale up
+        lagThreshold: "100" # when to scale up
         offsetResetPolicy: latest
   minReplicaCount: 1
 ---
@@ -42,11 +42,11 @@ spec:
   triggers:
     - type: kafka
       metadata:
-        bootstrapServers: kafka-service:9092
+        bootstrapServers: kafka-service-1:9092,kafka-service-2:9092,kafka-service-3:9092
         consumerGroup: collision-group
         topic: Collision
         # Optional
-        lagThreshold: "50" # when to scale up
+        lagThreshold: "100" # when to scale up
         offsetResetPolicy: latest
   minReplicaCount: 1
 ---
@@ -65,11 +65,11 @@ spec:
   triggers:
     - type: kafka
       metadata:
-        bootstrapServers: kafka-service:9092
+        bootstrapServers: kafka-service-1:9092,kafka-service-2:9092,kafka-service-3:9092
         consumerGroup: world-group
         topic: World
         # Optional
-        lagThreshold: "50" # when to scale up
+        lagThreshold: "100" # when to scale up
         offsetResetPolicy: latest
   minReplicaCount: 1
 ---
@@ -88,11 +88,11 @@ spec:
   triggers:
     - type: kafka
       metadata:
-        bootstrapServers: kafka-service:9092
+        bootstrapServers: kafka-service-1:9092,kafka-service-2:9092,kafka-service-3:9092
         consumerGroup: ai-group
         topic: ai
         # Optional
-        lagThreshold: "50" # when to scale up
+        lagThreshold: "100" # when to scale up
         offsetResetPolicy: latest
   minReplicaCount: 1
 ---
@@ -111,10 +111,10 @@ spec:
   triggers:
     - type: kafka
       metadata:
-        bootstrapServers: kafka-service:9092
+        bootstrapServers: kafka-service-1:9092,kafka-service-2:9092,kafka-service-3:9092
         consumerGroup: projectile-group
         topic: projectile
         # Optional
-        lagThreshold: "50" # when to scale up
+        lagThreshold: "100" # when to scale up
         offsetResetPolicy: latest
   minReplicaCount: 1

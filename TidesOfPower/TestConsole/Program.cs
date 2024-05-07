@@ -82,43 +82,43 @@ void TestMongoDB()
     Console.WriteLine($"Mongo test result {res}");
 }
 
-void TestRedis()
-{
-    var profile = new Profile(
-        Guid.NewGuid(),
-        "mail@live.dk",
-        "secret");
-
-    var stopwatch = new Stopwatch();
-    stopwatch.Start();
-    redisBroker.Insert(profile);
-    stopwatch.Stop();
-    var elapsed_time = stopwatch.ElapsedMilliseconds;
-    Console.WriteLine($"Create called in {elapsed_time} ms");
-
-    stopwatch.Restart();
-    var test = redisBroker.GetProfiles(profile.Id);
-    stopwatch.Stop();
-    elapsed_time = stopwatch.ElapsedMilliseconds;
-    Console.WriteLine($"Read called in {elapsed_time} ms");
-
-    profile.Id = Guid.NewGuid();
-
-    stopwatch.Restart();
-    redisBroker.Insert(profile);
-    stopwatch.Stop();
-    elapsed_time = stopwatch.ElapsedMilliseconds;
-    Console.WriteLine($"Create called in {elapsed_time} ms");
-
-    stopwatch.Restart();
-    test = redisBroker.GetProfiles(profile.Id);
-    stopwatch.Stop();
-    elapsed_time = stopwatch.ElapsedMilliseconds;
-    Console.WriteLine($"Read called in {elapsed_time} ms");
-
-    var res = profile.Id == test.Id && profile.Email == test.Email && profile.Password == test.Password;
-    Console.WriteLine($"Redis test result {res}");
-}
+//void TestRedis()
+//{
+//    var profile = new Profile(
+//        Guid.NewGuid(),
+//        "mail@live.dk",
+//        "secret");
+//
+//    var stopwatch = new Stopwatch();
+//    stopwatch.Start();
+//    redisBroker.Insert(profile);
+//    stopwatch.Stop();
+//    var elapsed_time = stopwatch.ElapsedMilliseconds;
+//    Console.WriteLine($"Create called in {elapsed_time} ms");
+//
+//    stopwatch.Restart();
+//    var test = redisBroker.GetProfiles(profile.Id);
+//    stopwatch.Stop();
+//    elapsed_time = stopwatch.ElapsedMilliseconds;
+//    Console.WriteLine($"Read called in {elapsed_time} ms");
+//
+//    profile.Id = Guid.NewGuid();
+//
+//    stopwatch.Restart();
+//    redisBroker.Insert(profile);
+//    stopwatch.Stop();
+//    elapsed_time = stopwatch.ElapsedMilliseconds;
+//    Console.WriteLine($"Create called in {elapsed_time} ms");
+//
+//    stopwatch.Restart();
+//    test = redisBroker.GetProfiles(profile.Id);
+//    stopwatch.Stop();
+//    elapsed_time = stopwatch.ElapsedMilliseconds;
+//    Console.WriteLine($"Read called in {elapsed_time} ms");
+//
+//    var res = profile.Id == test.Id && profile.Email == test.Email && profile.Password == test.Password;
+//    Console.WriteLine($"Redis test result {res}");
+//}
 
 async Task TestHTTP()
 {

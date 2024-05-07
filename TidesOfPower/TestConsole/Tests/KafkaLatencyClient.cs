@@ -19,20 +19,17 @@ public class KafkaLatencyClient
     private int _index;
     private string _path;
     private Stopwatch _timer;
-    private List<long> _results;
     private CancellationTokenSource _cts;
 
     private int _counter;
-    private int _testCount;
     private int _padding = 100;
 
     private Guid _testId;
     private string _testTopic;
     private Input_M _msg;
 
-    public KafkaLatencyClient(int index, int testCount)
+    public KafkaLatencyClient(int index)
     {
-        _testCount = testCount;
         _config = new KafkaConfig(_groupId, true);
         _admin = new KafkaAdministrator(_config);
         _producer = new KafkaProducer<Input_M>(_config);
@@ -40,7 +37,6 @@ public class KafkaLatencyClient
 
         _index = index;
         _timer = new Stopwatch();
-        _results = new List<long>();
         _cts = new CancellationTokenSource();
 
         _testId = Guid.NewGuid();

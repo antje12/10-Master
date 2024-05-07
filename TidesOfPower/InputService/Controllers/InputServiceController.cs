@@ -41,4 +41,10 @@ public class InputServiceController : ControllerBase
         }
         return Ok($"Service running = false");
     }
+
+    [HttpGet("Crash")]
+    public IActionResult Crash()
+    {
+        throw new Exception("Major crash!");
+    }
 }

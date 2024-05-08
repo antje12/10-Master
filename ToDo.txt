@@ -1,12 +1,12 @@
 done - 1000 messages to Kafka in json
 done - 1000 messages to Kafka in avro
 done - 1000 messages to Kafka in protobuf
-
 done - Size comparison of message in json, avro, and protobuf
 
-done - CI/CD test - no downtime + ttm
 
 done - Baseline latency test (single)
+done - CI/CD test - no downtime + ttm
+
 
 Baseline latency test (multiple)
 done - test 1 instance max clients

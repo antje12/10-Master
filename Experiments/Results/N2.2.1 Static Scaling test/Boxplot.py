@@ -38,6 +38,7 @@ print("1st Quartile:", np.percentile(latency, 25))
 print("Median:", np.median(latency))
 print("Mean:", np.mean(latency))
 print("3rd Quartile:", np.percentile(latency, 75))
+print("90% Quartile:", np.percentile(latency, 90))
 print("Max:", np.max(latency))
 
 #plt.boxplot([latency], labels=["Client"])

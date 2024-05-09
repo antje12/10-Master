@@ -2,13 +2,13 @@
 
 public class Latency
 {
-    public async Task Test()
+    public async Task Test(int numberOfClients)
     {
         var _path = @"D:\Git\10-Master\Experiments\Scalability.txt";
         File.Delete(_path);
 
         var tasks = new List<Task>();
-        var numberOfClients = 10;
+        //var numberOfClients = 10;
         var index = 0;
         
         //while (true)

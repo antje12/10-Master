@@ -17,3 +17,10 @@ Scalability test (linear)
 - test auto scaling instances
 
 Crash test (fault tolerance)
+
+Show kowl images of partitions being divided among consumers etc.
+
+kubectl scale deployment input-service --replicas=2
+kubectl scale deployment collision-service --replicas=2
+kubectl scale deployment world-service --replicas=2
+kubectl delete pods --all

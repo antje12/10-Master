@@ -16,8 +16,8 @@ df_resampled.interpolate(method='linear', inplace=True)
 df_resampled.reset_index(inplace=True)
 
 plt.figure(figsize=(10, 5))
-plt.plot(df_resampled['timestamp'], df_resampled['latency'], label='Average Latency per Millisecond')
-plt.title('Average Latency Evolution Over Time by Millisecond')
+plt.plot(df_resampled['timestamp'], df_resampled['latency'], label='Average Latency per Second')
+plt.title('Average Latency Evolution Over Time by Second')
 plt.xlabel('Time')
 plt.ylabel('Latency (ms)')
 plt.grid(True)
@@ -25,6 +25,19 @@ plt.xticks(rotation=45)
 
 # Add a horizontal line at 150 ms
 plt.axhline(y=150, color='blue', linestyle='--', label='Threshold at 150 ms')
+
+# Add a vertical line at each event
+specific_time = pd.Timestamp('2024-05-10T10:32:30.0000000')
+plt.axvline(x=specific_time, color='red', linestyle='--', label='Code deployed')
+
+specific_time = pd.Timestamp('2024-05-10T10:36:10.0000000')
+plt.axvline(x=specific_time, color='red', linestyle='--', label='Image push to Google Cloud')
+
+specific_time = pd.Timestamp('2024-05-10T10:36:15.0000000')
+plt.axvline(x=specific_time, color='red', linestyle='--', label='Creating new instances')
+
+specific_time = pd.Timestamp('2024-05-10T10:36:40.0000000')
+plt.axvline(x=specific_time, color='red', linestyle='--', label='New instances running')
 
 plt.legend()
 plt.tight_layout()

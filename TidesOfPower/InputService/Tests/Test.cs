@@ -51,16 +51,18 @@ public class Test
     [Test]
     public async Task TestExecuteAsync()
     {
-        //var executeTask =  service.ExecuteAsync();
-        //await Task.Delay(100);
-        //Assert.That(service.IsRunning, Is.True);
-        //await executeTask;
-        //
-        //admin.Verify(x => x.CreateTopic(KafkaTopic.Input));
-        //consumer.Verify(x => x.Consume(
-        //    KafkaTopic.Input,
-        //    It.IsAny<IProtoConsumer<Input_M>.ProcessMessage>(),
-        //    It.IsAny<CancellationToken>()));
+        //Assert.That(1, Is.EqualTo(0));
+        
+        var executeTask =  service.ExecuteAsync();
+        await Task.Delay(100);
+        Assert.That(service.IsRunning, Is.True);
+        await executeTask;
+        
+        admin.Verify(x => x.CreateTopic(KafkaTopic.Input));
+        consumer.Verify(x => x.Consume(
+            KafkaTopic.Input,
+            It.IsAny<IProtoConsumer<Input_M>.ProcessMessage>(),
+            It.IsAny<CancellationToken>()));
     }
 
     [Test]

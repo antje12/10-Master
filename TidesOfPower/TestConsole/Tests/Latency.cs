@@ -26,14 +26,21 @@ public class Latency
         //    Thread.Sleep(30000);
         //}
 
-        AddBatch(index, numberOfClients, tasks);
+        await AddBatch(index, numberOfClients, tasks);
         await Task.WhenAll(tasks);
     }
 
-    private static void AddBatch(int index, int numberOfClients, List<Task> tasks)
+    private static async Task AddBatch(int index, int numberOfClients, List<Task> tasks)
     {
         for (int i = index; i < index + numberOfClients; i++)
         {
+            // Check if the current iteration is the tenth (1-based)
+            if ((i - index + 1) % 5 == 0)
+            {
+                // Wait for 1 second
+                await Task.Delay(1000);
+            }
+            
             var client = new KafkaLatencyClient(i);
             tasks.Add(Task.Run(() => client.Test()));
         }

@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-directory = '5 Instances/80 Clients'
+directory = '5 Instances/70 Clients 3'
 
 # Initialize an empty DataFrame to hold all the data
 all_data = pd.DataFrame()

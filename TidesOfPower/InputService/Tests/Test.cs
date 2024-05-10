@@ -51,7 +51,7 @@ public class Test
     [Test]
     public async Task TestExecuteAsync()
     {
-        //Assert.That(1, Is.EqualTo(0));
+        Assert.That(1, Is.EqualTo(0));
         
         var executeTask =  service.ExecuteAsync();
         await Task.Delay(100);

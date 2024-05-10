@@ -50,6 +50,8 @@ public class InputService : BackgroundService, IConsumerService
     
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
+        Environment.Exit(1);
+        
         //https://github.com/dotnet/runtime/issues/36063
         await Task.Yield();
         IsRunning = true;

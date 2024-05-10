@@ -34,10 +34,8 @@ public class Latency
     {
         for (int i = index; i < index + numberOfClients; i++)
         {
-            // Check if the current iteration is the tenth (1-based)
             if ((i - index + 1) % 5 == 0)
             {
-                // Wait for 1 second
                 await Task.Delay(1000);
             }
             

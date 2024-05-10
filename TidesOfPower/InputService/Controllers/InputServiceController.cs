@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using InputService.Interfaces;
 
 namespace InputService.Controllers;
@@ -45,6 +45,8 @@ public class InputServiceController : ControllerBase
     [HttpGet("Crash")]
     public IActionResult Crash()
     {
-        throw new Exception("Major crash!");
+        Console.WriteLine("Intentional crash to simulate failure.");
+        Environment.Exit(1);
+        return StatusCode(500);
     }
 }

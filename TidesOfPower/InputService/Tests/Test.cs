@@ -160,7 +160,7 @@ public class Test
 
     [Test]
     [TestCase(GameKey.Attack)]
-    public async Task TestAttacks(params GameKey[] keys)
+    public async Task TestMultiAttacks(params GameKey[] keys)
     {
         var key = "test";
         var value = new Input_M

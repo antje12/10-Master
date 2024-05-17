@@ -22,7 +22,7 @@ public class CollisionService : BackgroundService, IConsumerService
     internal IProtoProducer<Ai_M> ProducerA;
     internal IProtoConsumer<Collision_M> Consumer;
 
-    internal RedisBroker RedisBroker;
+    //internal RedisBroker RedisBroker;
 
     private CancellationTokenSource _cts = new();
     public bool IsRunning { get; private set; }
@@ -36,7 +36,7 @@ public class CollisionService : BackgroundService, IConsumerService
         ProducerW = new KafkaProducer<World_M>(config);
         ProducerA = new KafkaProducer<Ai_M>(config);
         Consumer = new KafkaConsumer<Collision_M>(config);
-        RedisBroker = new RedisBroker();
+        //RedisBroker = new RedisBroker();
     }
 
     public void StopService()
@@ -53,7 +53,7 @@ public class CollisionService : BackgroundService, IConsumerService
     {
         await Task.Yield();
         IsRunning = true;
-        RedisBroker.Connect(localTest);
+        //RedisBroker.Connect(localTest);
         Console.WriteLine("CollisionService started");
         await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<Collision_M>.ProcessMessage action = ProcessMessage;
@@ -81,8 +81,8 @@ public class CollisionService : BackgroundService, IConsumerService
             Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
         }
         
-        var entities = RedisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
-        var stopFlow = HandleCollisions(value, entities, out var treasure);
+        //var entities = RedisBroker.GetCloseEntities(value.ToLocation.X, value.ToLocation.Y);
+        var stopFlow = HandleCollisions(value, out var treasure);
 
         if (stopFlow)
         {
@@ -124,37 +124,13 @@ public class CollisionService : BackgroundService, IConsumerService
         }
     }
 
-    internal bool HandleCollisions(Collision_M value, List<Entity> entities, out int treasure)
+    internal bool HandleCollisions(Collision_M value, out int treasure)
     {
         treasure = 0;
         var stopFlow = false;
         var valueRadius =
             value.EntityType is EntityType.Bullet ? Projectile.TypeRadius :
             value.EntityType is EntityType.Player or EntityType.Ai ? Agent.TypeRadius : 0;
-
-        foreach (var entity in entities)
-        {
-            if (value.EntityId == entity.Id.ToString())
-                continue;
-
-            if (Collide.Circle(
-                    value.ToLocation.X, value.ToLocation.Y, valueRadius,
-                    entity.Location.X, entity.Location.Y, entity.Radius))
-            {
-                switch (value.EntityType)
-                {
-                    case EntityType.Player:
-                        stopFlow |= PlayerCollision(entity, out treasure);
-                        break;
-                    case EntityType.Ai:
-                        stopFlow |= AICollision(entity);
-                        break;
-                    case EntityType.Bullet:
-                        stopFlow |= ProjectileCollision(entity);
-                        break;
-                }
-            }
-        }
 
         return stopFlow;
     }

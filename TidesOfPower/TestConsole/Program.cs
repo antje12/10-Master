@@ -12,12 +12,14 @@ RedisBroker redisBroker = new RedisBroker();
 redisBroker.Connect(true);
 redisBroker.Clean();
 
-//var uptime = new Uptime();
-//await uptime.Test();
-
-var latency = new Latency();
-await latency.Test();
-return;
+//var uptime = new Uptime(); 
+//await uptime.Test(); 
+ 
+Console.WriteLine("How many clients?"); 
+var numberOfClients = Convert.ToInt32(Console.ReadLine()); 
+var latency = new Latency(); 
+await latency.Test(numberOfClients); 
+return; 
 
 
 MongoDbBroker mongoBroker = new MongoDbBroker();

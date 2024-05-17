@@ -62,7 +62,7 @@ public class Test
         service.Consumer = consumer.Object;
         service.ProducerW = producerW.Object;
         service.ProducerA = producerA.Object;
-        service.RedisBroker = redis.Object;
+        //service.RedisBroker = redis.Object;
     }
 
     [Test]

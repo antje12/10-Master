@@ -19,6 +19,9 @@ print("Mean:", np.mean(latency))
 print("3rd Quartile:", np.percentile(latency, 75))
 print("Max:", np.max(latency))
 
+# Add a horizontal line at 150 ms
+plt.axhline(y=150, color='blue', linestyle='--', label='Threshold at 150 ms')
+
 plt.boxplot([latency], labels=["Client"])
 #plt.title("Latency")
 #plt.xlabel("Data Sets")

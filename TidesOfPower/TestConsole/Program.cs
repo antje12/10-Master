@@ -15,10 +15,8 @@ redisBroker.Clean();
 //var uptime = new Uptime();
 //await uptime.Test();
 
-Console.WriteLine("How many clients?");
-var numberOfClients = Convert.ToInt32(Console.ReadLine());
 var latency = new Latency();
-await latency.Test(numberOfClients);
+await latency.Test();
 return;
 
 

@@ -4,8 +4,8 @@
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>380</x>
-      <y>370</y>
+      <x>260</x>
+      <y>330</y>
       <w>130</w>
       <h>40</h>
     </coordinates>
@@ -15,8 +15,8 @@
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>250</x>
-      <y>370</y>
+      <x>130</x>
+      <y>330</y>
       <w>130</w>
       <h>40</h>
     </coordinates>
@@ -26,8 +26,8 @@
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>250</x>
-      <y>410</y>
+      <x>130</x>
+      <y>370</y>
       <w>260</w>
       <h>40</h>
     </coordinates>
@@ -37,8 +37,8 @@
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>510</x>
-      <y>370</y>
+      <x>390</x>
+      <y>330</y>
       <w>130</w>
       <h>40</h>
     </coordinates>
@@ -48,8 +48,8 @@
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>380</x>
-      <y>330</y>
+      <x>260</x>
+      <y>290</y>
       <w>260</w>
       <h>40</h>
     </coordinates>
@@ -59,8 +59,8 @@
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>380</x>
-      <y>290</y>
+      <x>260</x>
+      <y>250</y>
       <w>260</w>
       <h>40</h>
     </coordinates>
@@ -70,8 +70,8 @@
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>250</x>
-      <y>260</y>
+      <x>130</x>
+      <y>220</y>
       <w>130</w>
       <h>190</h>
     </coordinates>
@@ -82,8 +82,8 @@ bg=green</panel_attributes>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>380</x>
-      <y>260</y>
+      <x>260</x>
+      <y>220</y>
       <w>260</w>
       <h>190</h>
     </coordinates>

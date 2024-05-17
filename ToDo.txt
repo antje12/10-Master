@@ -18,9 +18,7 @@ kubectl delete -f Pipeline/Services/deploy-projectile-service.yml
 kubectl delete -f Pipeline/Services/deploy-ai-service.yml
 kubectl delete -f Pipeline/Infrastructure/deploy-mongodb.yml
 
-kubectl scale deployment input-service --replicas=1
-kubectl scale deployment collision-service --replicas=1
-kubectl scale deployment world-service --replicas=1
-kubectl scale deployment ai-service --replicas=1
-kubectl scale deployment projectile-service --replicas=1
+kubectl scale deployment input-service --replicas=5
+kubectl scale deployment collision-service --replicas=5
+kubectl scale deployment world-service --replicas=5
 kubectl delete pods --all

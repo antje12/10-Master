@@ -81,25 +81,9 @@ public class KafkaLatencyClient
             file.WriteLine($"{timestamp:o};{elapsedTime}"); // Using "o" format for ISO 8601 format
         }
 
-        //if (_counter > _padding)
-        //{
-        //    _results.Add(elapsedTime);
-        //}
-        //
-        //if (_counter >= _testCount + _padding)
-        //{
-        //    Console.WriteLine(
-        //        $"Client{_index} results {_results.Count}, avg {_results.Average()} ms, min {_results.Min()} ms, max {_results.Max()} ms");
-        //    File.WriteAllLines($@"D:\Git\10-Master\Experiments\Experiment3_Results\Client{_index}_results.txt",
-        //        _results.Select(r => r.ToString()));
-        //    _cts.Cancel();
-        //    return;
-        //}
-
         _msg.AgentLocation = value.Agents
             .First(x => x.Id == _testId.ToString()).Location;
 
-        //_counter += 1;
         _timer.Restart();
         _producer.Produce(KafkaTopic.Input, _testId.ToString(), _msg);
     }

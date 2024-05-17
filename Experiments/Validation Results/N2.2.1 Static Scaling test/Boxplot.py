@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-directory = '5 Instances/70 Clients 3'
+directory = '1 Instances/52 Clients'
 
 # Initialize an empty DataFrame to hold all the data
 all_data = pd.DataFrame()
@@ -28,9 +28,9 @@ for filename in os.listdir(directory):
         all_data = pd.concat([all_data, df_filtered])
 
 # Set timestamp as index
-df.set_index('timestamp', inplace=True)
+all_data.set_index('timestamp', inplace=True)
 
-latency = df['latency']  # Extract the 'latency' column
+latency = all_data['latency']  # Extract the 'latency' column
 
 print("Summary statistics for Latency:")
 print("Min:", np.min(latency))

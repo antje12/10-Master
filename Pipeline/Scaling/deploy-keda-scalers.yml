@@ -16,6 +16,7 @@ spec:
   #    stabilizationWindowSeconds: 30 # seconds
   pollingInterval: 30 # seconds
   cooldownPeriod: 30 # seconds
+  maxReplicaCount: 10
   triggers:
     - type: kafka
       metadata:
@@ -39,6 +40,7 @@ spec:
     name: collision-service
   pollingInterval: 30 # seconds
   cooldownPeriod: 30 # seconds
+  maxReplicaCount: 10
   triggers:
     - type: kafka
       metadata:
@@ -62,6 +64,7 @@ spec:
     name: world-service
   pollingInterval: 30 # seconds
   cooldownPeriod: 30 # seconds
+  maxReplicaCount: 10
   triggers:
     - type: kafka
       metadata:
@@ -85,6 +88,7 @@ spec:
     name: ai-service
   pollingInterval: 30 # seconds
   cooldownPeriod: 30 # seconds
+  maxReplicaCount: 10
   triggers:
     - type: kafka
       metadata:
@@ -108,6 +112,7 @@ spec:
     name: projectile-service
   pollingInterval: 30 # seconds
   cooldownPeriod: 30 # seconds
+  maxReplicaCount: 10
   triggers:
     - type: kafka
       metadata:

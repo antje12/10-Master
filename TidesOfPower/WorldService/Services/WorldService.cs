@@ -108,6 +108,7 @@ public class WorldService : BackgroundService, IConsumerService
             Score = 0
         };
         agent.Score += value.Value;
+        FullSync(key, value, agent);
     }
 
     private void FullSync(string key, World_M value, Agent_M agent)

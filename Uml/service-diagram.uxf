@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>310</x>
-      <y>220</y>
+      <x>340</x>
+      <y>190</y>
       <w>60</w>
       <h>80</h>
     </coordinates>
@@ -20,8 +20,8 @@ bg=light_gray</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>330</x>
-      <y>180</y>
+      <x>360</x>
+      <y>150</y>
       <w>30</w>
       <h>60</h>
     </coordinates>
@@ -31,8 +31,8 @@ bg=light_gray</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>340</x>
-      <y>330</y>
+      <x>370</x>
+      <y>300</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -44,8 +44,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>280</x>
-      <y>150</y>
+      <x>310</x>
+      <y>120</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -57,8 +57,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>420</x>
-      <y>220</y>
+      <x>450</x>
+      <y>190</y>
       <w>120</w>
       <h>60</h>
     </coordinates>
@@ -72,8 +72,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>340</x>
-      <y>400</y>
+      <x>370</x>
+      <y>370</y>
       <w>120</w>
       <h>50</h>
     </coordinates>
@@ -86,8 +86,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>170</x>
-      <y>400</y>
+      <x>200</x>
+      <y>370</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -99,8 +99,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>170</x>
-      <y>500</y>
+      <x>200</x>
+      <y>470</y>
       <w>120</w>
       <h>50</h>
     </coordinates>
@@ -113,8 +113,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>420</x>
-      <y>500</y>
+      <x>450</x>
+      <y>470</y>
       <w>120</w>
       <h>110</h>
     </coordinates>
@@ -131,8 +131,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>350</x>
-      <y>290</y>
+      <x>380</x>
+      <y>260</y>
       <w>30</w>
       <h>60</h>
     </coordinates>
@@ -142,8 +142,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>430</x>
-      <y>270</y>
+      <x>460</x>
+      <y>240</y>
       <w>30</w>
       <h>80</h>
     </coordinates>
@@ -153,8 +153,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>260</x>
-      <y>360</y>
+      <x>290</x>
+      <y>330</y>
       <w>110</w>
       <h>60</h>
     </coordinates>
@@ -164,8 +164,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>510</x>
-      <y>270</y>
+      <x>540</x>
+      <y>240</y>
       <w>30</w>
       <h>250</h>
     </coordinates>
@@ -175,8 +175,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>260</x>
-      <y>430</y>
+      <x>290</x>
+      <y>400</y>
       <w>190</w>
       <h>90</h>
     </coordinates>
@@ -186,8 +186,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>450</x>
-      <y>330</y>
+      <x>480</x>
+      <y>300</y>
       <w>50</w>
       <h>190</h>
     </coordinates>
@@ -197,8 +197,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>500</y>
+      <x>310</x>
+      <y>470</y>
       <w>160</w>
       <h>30</h>
     </coordinates>
@@ -208,8 +208,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>170</x>
-      <y>430</y>
+      <x>200</x>
+      <y>400</y>
       <w>30</w>
       <h>90</h>
     </coordinates>
@@ -219,8 +219,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>130</x>
-      <y>220</y>
+      <x>160</x>
+      <y>190</y>
       <w>310</w>
       <h>360</h>
     </coordinates>
@@ -230,8 +230,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>440</x>
-      <y>440</y>
+      <x>470</x>
+      <y>410</y>
       <w>30</w>
       <h>80</h>
     </coordinates>
@@ -241,8 +241,8 @@ bg=cyan</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>400</y>
+      <x>310</x>
+      <y>370</y>
       <w>80</w>
       <h>30</h>
     </coordinates>

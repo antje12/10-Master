@@ -36,6 +36,6 @@ print("Max:", np.max(proto))
 
 plt.boxplot([json, avro, proto], labels=["Json", "Avro", "Protobuf"])
 plt.title("Latency of Json, Avro, and Protobuf packages")
-plt.xlabel("Data Sets")
-plt.ylabel("Values")
+plt.xlabel("Data Format")
+plt.ylabel("Latency")
 plt.show()

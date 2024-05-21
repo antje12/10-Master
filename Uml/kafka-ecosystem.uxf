@@ -159,10 +159,11 @@ key=123</panel_attributes>
     <coordinates>
       <x>530</x>
       <y>310</y>
-      <w>30</w>
+      <w>90</w>
       <h>50</h>
     </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
+    <panel_attributes>lt=&lt;-
+ key=123</panel_attributes>
     <additional_attributes>10.0;30.0;10.0;10.0</additional_attributes>
   </element>
   <element>
@@ -170,10 +171,11 @@ key=123</panel_attributes>
     <coordinates>
       <x>530</x>
       <y>370</y>
-      <w>30</w>
+      <w>90</w>
       <h>50</h>
     </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
+    <panel_attributes>lt=&lt;-
+ key=123</panel_attributes>
     <additional_attributes>10.0;30.0;10.0;10.0</additional_attributes>
   </element>
   <element>

@@ -27,8 +27,8 @@ plt.plot(x, y_pred, label='Fit line: y={:.2f}x+{:.2f}'.format(model.coef_[0], mo
 
 # Add title and labels
 plt.title('System scalability')
-plt.xlabel('Service instances')
-plt.ylabel('Max concurrent clients')
+plt.xlabel('Service Instances')
+plt.ylabel('Max Concurrent Clients')
 plt.legend()
 plt.grid(True)
 plt.xticks(x)  # Set x-ticks to be exactly as your x data

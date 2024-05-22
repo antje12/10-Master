@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 file_path = 'Latency.csv'
 df = pd.read_csv(file_path, sep=';', header=None, names=['timestamp', 'latency'])
@@ -23,6 +24,11 @@ plt.title('Latency Evolution Over Time')
 plt.xlabel('Time')
 plt.ylabel('Latency (ms)')
 plt.grid(True)
+
+# Set the format for the x-axis to show time only
+time_format = mdates.DateFormatter('%H:%M:%S')
+plt.gca().xaxis.set_major_formatter(time_format)
+
 plt.xticks(rotation=45)
 
 # Add a horizontal line at 150 ms

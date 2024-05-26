@@ -111,8 +111,7 @@ public class Test
     }
     
     [Test]
-    [TestCase(GameKey.Up)]
-    public void TestMoveLogic(params GameKey[] keys)
+    public void TestMoveLogic()
     {
         ClassLibrary.GameLogic.Move.Agent(
             0, 0, new List<GameKey>() {GameKey.Up},
@@ -124,8 +123,7 @@ public class Test
     }
 
     [Test]
-    [TestCase(GameKey.Attack)]
-    public void TestAttack(params GameKey[] keys)
+    public void TestSingleAttack()
     {
         var key = "test";
         var value = new Input_M
@@ -137,7 +135,7 @@ public class Test
             EventId = key,
             Source = Source.Player
         };
-        value.KeyInput.AddRange(keys);
+        value.KeyInput.Add(GameKey.Attack);
         
         World_M? msgOut = null;
         producerW.Setup(x => 
@@ -159,8 +157,7 @@ public class Test
     }
 
     [Test]
-    [TestCase(GameKey.Attack)]
-    public async Task TestAttacks(params GameKey[] keys)
+    public async Task TestMultipleAttacks()
     {
         var key = "test";
         var value = new Input_M
@@ -172,7 +169,7 @@ public class Test
             EventId = key,
             Source = Source.Player
         };
-        value.KeyInput.AddRange(keys);
+        value.KeyInput.Add(GameKey.Attack);
         
         service.ProcessMessage(key, value);
         service.ProcessMessage(key, value);
@@ -190,8 +187,7 @@ public class Test
     }
 
     [Test]
-    [TestCase(GameKey.Interact)]
-    public void TestInteract(params GameKey[] keys)
+    public void TestInteract()
     {
         var key = "test";
         var value = new Input_M

@@ -89,7 +89,7 @@ coordinates</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>430</x>
-      <y>430</y>
+      <y>360</y>
       <w>90</w>
       <h>100</h>
     </coordinates>
@@ -174,30 +174,30 @@ m2=0..1
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>370</x>
+      <x>340</x>
       <y>190</y>
-      <w>100</w>
+      <w>130</w>
       <h>100</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=*
 m2=*
 &lt; collects</panel_attributes>
-    <additional_attributes>80.0;10.0;80.0;50.0;10.0;50.0;10.0;80.0</additional_attributes>
+    <additional_attributes>110.0;10.0;110.0;50.0;10.0;50.0;10.0;80.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>370</x>
+      <x>340</x>
       <y>320</y>
-      <w>100</w>
-      <h>130</h>
+      <w>120</w>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=*
-m2=*
+m2=1
 &lt; drops</panel_attributes>
-    <additional_attributes>70.0;110.0;70.0;40.0;10.0;40.0;10.0;10.0</additional_attributes>
+    <additional_attributes>100.0;40.0;100.0;30.0;10.0;30.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -205,13 +205,13 @@ m2=*
       <x>470</x>
       <y>190</y>
       <w>70</w>
-      <h>260</h>
+      <h>190</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=*
 m2=*
 chases</panel_attributes>
-    <additional_attributes>10.0;240.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>

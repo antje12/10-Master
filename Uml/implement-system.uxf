@@ -68,7 +68,7 @@
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLPackage</id>
+    <id>UMLFrame</id>
     <coordinates>
       <x>130</x>
       <y>220</y>
@@ -80,7 +80,7 @@ bg=green</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLPackage</id>
+    <id>UMLFrame</id>
     <coordinates>
       <x>260</x>
       <y>220</y>

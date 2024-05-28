@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
+      <PackageReference Include="Confluent.SchemaRegistry" Version="2.3.0" />
+      <PackageReference Include="Confluent.SchemaRegistry.Serdes.Avro" Version="2.3.0" />
+      <PackageReference Include="Confluent.SchemaRegistry.Serdes.Json" Version="2.3.0" />
+      <PackageReference Include="Confluent.SchemaRegistry.Serdes.Protobuf" Version="2.3.0" />
+      <PackageReference Include="Google.Protobuf" Version="3.26.0-rc3" />
+      <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
+      <PackageReference Include="NRedisStack" Version="0.11.0" />
+    </ItemGroup>
+
+</Project>

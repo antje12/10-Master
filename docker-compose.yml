@@ -53,31 +53,31 @@ services:
       SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: "*"
       SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: "GET,POST,PUT,OPTIONS"
   
-  #kowl-service:
-  #  container_name: kowl-service
-  #  image: quay.io/cloudhut/kowl:master 
-  #  ports:
-  #    - 8080:8080
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #  environment:
-  #    KAFKA_BROKERS: kafka-service:9092
-  #    KAFKA_SCHEMAREGISTRY_ENABLED: true
-  #    KAFKA_SCHEMAREGISTRY_URLS: http://schema-registry-service:8081
-  #  networks:
-  #    sharednetwork:
+  kowl-service:
+    container_name: kowl-service
+    image: quay.io/cloudhut/kowl:master 
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+    environment:
+      KAFKA_BROKERS: kafka-service:9092
+      KAFKA_SCHEMAREGISTRY_ENABLED: true
+      KAFKA_SCHEMAREGISTRY_URLS: http://schema-registry-service:8081
+    networks:
+      sharednetwork:
   
-  #mongodb-service:
-  #  container_name: mongodb-service
-  #  image: mongo:latest
-  #  ports:
-  #    - 27017:27017
-  #  restart: unless-stopped
-  #  #volumes:
-  #  #  - mongodb-service.vol:/data/db
-  #  networks:
-  #    sharednetwork:
+  mongodb-service:
+    container_name: mongodb-service
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    volumes:
+      - mongodb-service.vol:/data/db
+    networks:
+      sharednetwork:
 
   redis-stack:
     container_name: redis-stack
@@ -99,69 +99,74 @@ services:
     restart: unless-stopped
     depends_on:
       - schema-registry-service
-      #- mongodb-service
+      - redis-stack
+      - mongodb-service
     networks:
       sharednetwork:
   
-  #collision-service:
-  #  container_name: collision-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: CollisionService/Dockerfile
-  #  ports:
-  #    - 82:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #    - mongodb-service
-  #  networks:
-  #    sharednetwork:
-  #
-  #world-service:
-  #  container_name: world-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: WorldService/Dockerfile
-  #  ports:
-  #    - 83:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #    - mongodb-service
-  #  networks:
-  #    sharednetwork:
-  #
-  #projectile-service:
-  #  container_name: projectile-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: ProjectileService/Dockerfile
-  #  ports:
-  #    - 84:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #    - mongodb-service
-  #  networks:
-  #    sharednetwork:
-  #
-  #ai-service:
-  #  container_name: ai-service
-  #  build:
-  #    context: ./TidesOfPower
-  #    dockerfile: AIService/Dockerfile
-  #  ports:
-  #    - 85:80
-  #  restart: unless-stopped
-  #  depends_on:
-  #    - schema-registry-service
-  #    - mongodb-service
-  #  networks:
-  #    sharednetwork:
+  collision-service:
+    container_name: collision-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: CollisionService/Dockerfile
+    ports:
+      - 82:80
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      - redis-stack
+      - mongodb-service
+    networks:
+      sharednetwork:
+  
+  world-service:
+    container_name: world-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: WorldService/Dockerfile
+    ports:
+      - 83:80
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      - redis-stack
+      - mongodb-service
+    networks:
+      sharednetwork:
+  
+  projectile-service:
+    container_name: projectile-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: ProjectileService/Dockerfile
+    ports:
+      - 84:80
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      - redis-stack
+      - mongodb-service
+    networks:
+      sharednetwork:
+  
+  ai-service:
+    container_name: ai-service
+    build:
+      context: ./TidesOfPower
+      dockerfile: AIService/Dockerfile
+    ports:
+      - 85:80
+    restart: unless-stopped
+    depends_on:
+      - schema-registry-service
+      - redis-stack
+      - mongodb-service
+    networks:
+      sharednetwork:
 
-#volumes:
-#  mongodb-service.vol:
-#    name: "mongodb-service.vol"
+volumes:
+  mongodb-service.vol:
+    name: "mongodb-service.vol"
 
 networks:
   sharednetwork:

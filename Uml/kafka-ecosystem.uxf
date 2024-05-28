@@ -179,29 +179,6 @@ key=123</panel_attributes>
     <additional_attributes>10.0;30.0;10.0;10.0</additional_attributes>
   </element>
   <element>
-    <id>UMLPackage</id>
-    <coordinates>
-      <x>220</x>
-      <y>260</y>
-      <w>170</w>
-      <h>160</h>
-    </coordinates>
-    <panel_attributes>Kafka Brokers
-bg=cyan</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLPackage</id>
-    <coordinates>
-      <x>480</x>
-      <y>250</y>
-      <w>120</w>
-      <h>200</h>
-    </coordinates>
-    <panel_attributes>Services</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <id>UMLGeneric</id>
     <coordinates>
       <x>310</x>
@@ -219,10 +196,10 @@ bg=green</panel_attributes>
       <x>320</x>
       <y>220</y>
       <w>30</w>
-      <h>80</h>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -230,9 +207,32 @@ bg=green</panel_attributes>
       <x>360</x>
       <y>220</y>
       <w>30</w>
-      <h>80</h>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>220</x>
+      <y>260</y>
+      <w>170</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>Kafka Brokers
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>480</x>
+      <y>250</y>
+      <w>120</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>Services</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>

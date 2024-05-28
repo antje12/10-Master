@@ -1,0 +1,23 @@
+﻿syntax = "proto3";
+
+package ClassLibrary.Messages.Protobuf;
+
+import "Classes.proto";
+
+option csharp_namespace = "ClassLibrary.Messages.Protobuf";
+
+message CollisionCheck {
+  string EntityId = 1; // UUIDs are represented as strings in Protobuf
+  EntityType EntityType = 2;
+  
+  ClassLibrary.Messages.Protobuf.Coordinates FromLocation = 3;
+  ClassLibrary.Messages.Protobuf.Coordinates ToLocation = 4;
+  
+  double Timer = 5;
+}
+
+enum EntityType {
+  Player = 0;
+  Bullet = 1;
+  Ai = 2;
+}

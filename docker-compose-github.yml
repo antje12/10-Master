@@ -97,6 +97,7 @@ services:
     restart: unless-stopped
     depends_on:
       - schema-registry-service
+      - redis-stack
       - mongodb-service
     networks:
       sharednetwork:
@@ -109,6 +110,7 @@ services:
     restart: unless-stopped
     depends_on:
       - schema-registry-service
+      - redis-stack
       - mongodb-service
     networks:
       sharednetwork:
@@ -121,6 +123,7 @@ services:
     restart: unless-stopped
     depends_on:
       - schema-registry-service
+      - redis-stack
       - mongodb-service
     networks:
       sharednetwork:
@@ -133,6 +136,7 @@ services:
     restart: unless-stopped
     depends_on:
       - schema-registry-service
+      - redis-stack
       - mongodb-service
     networks:
       sharednetwork:
@@ -145,6 +149,7 @@ services:
     restart: unless-stopped
     depends_on:
       - schema-registry-service
+      - redis-stack
       - mongodb-service
     networks:
       sharednetwork:

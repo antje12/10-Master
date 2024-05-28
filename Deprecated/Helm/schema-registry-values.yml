@@ -1,5 +1,0 @@
-# Kafka Controller parameters
-kafka:
-  enabled: false
-externalKafka:
-  brokers: ["PLAINTEXT://kafka:9092"]

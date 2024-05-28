@@ -5,21 +5,21 @@
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>130</x>
-      <y>280</y>
+      <x>220</x>
+      <y>390</y>
       <w>70</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>Build &amp;
 Unit test
-bg=gray</panel_attributes>
+bg=light_gray</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>290</x>
-      <y>180</y>
+      <x>380</x>
+      <y>290</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -29,8 +29,8 @@ bg=gray</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>290</x>
-      <y>230</y>
+      <x>380</x>
+      <y>340</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -40,8 +40,8 @@ bg=gray</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>290</x>
-      <y>280</y>
+      <x>380</x>
+      <y>390</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -51,8 +51,8 @@ bg=gray</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>290</x>
-      <y>330</y>
+      <x>380</x>
+      <y>440</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -62,8 +62,8 @@ bg=gray</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>290</x>
-      <y>380</y>
+      <x>380</x>
+      <y>490</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -73,8 +73,8 @@ bg=gray</panel_attributes>
   <element>
     <id>UMLActor</id>
     <coordinates>
-      <x>0</x>
-      <y>260</y>
+      <x>90</x>
+      <y>370</y>
       <w>80</w>
       <h>110</h>
     </coordinates>
@@ -84,21 +84,21 @@ bg=gray</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>490</x>
-      <y>280</y>
+      <x>580</x>
+      <y>390</y>
       <w>60</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>Cloud
 Deploy
-bg=gray</panel_attributes>
+bg=light_gray</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>180</y>
+      <x>300</x>
+      <y>290</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -109,8 +109,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>240</y>
+      <x>300</x>
+      <y>350</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -120,8 +120,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>190</x>
-      <y>290</y>
+      <x>280</x>
+      <y>400</y>
       <w>120</w>
       <h>30</h>
     </coordinates>
@@ -131,8 +131,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>340</y>
+      <x>300</x>
+      <y>450</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -142,8 +142,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>390</y>
+      <x>300</x>
+      <y>500</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -153,8 +153,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>190</y>
+      <x>300</x>
+      <y>300</y>
       <w>30</w>
       <h>230</h>
     </coordinates>
@@ -164,8 +164,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>400</x>
-      <y>180</y>
+      <x>490</x>
+      <y>290</y>
       <w>80</w>
       <h>40</h>
     </coordinates>
@@ -176,8 +176,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>400</x>
-      <y>240</y>
+      <x>490</x>
+      <y>350</y>
       <w>80</w>
       <h>30</h>
     </coordinates>
@@ -187,8 +187,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>400</x>
-      <y>290</y>
+      <x>490</x>
+      <y>400</y>
       <w>110</w>
       <h>30</h>
     </coordinates>
@@ -198,8 +198,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>400</x>
-      <y>340</y>
+      <x>490</x>
+      <y>450</y>
       <w>80</w>
       <h>30</h>
     </coordinates>
@@ -209,8 +209,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>400</x>
-      <y>390</y>
+      <x>490</x>
+      <y>500</y>
       <w>80</w>
       <h>30</h>
     </coordinates>
@@ -220,8 +220,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>450</x>
-      <y>190</y>
+      <x>540</x>
+      <y>300</y>
       <w>30</w>
       <h>230</h>
     </coordinates>
@@ -231,8 +231,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>40</x>
-      <y>280</y>
+      <x>130</x>
+      <y>390</y>
       <w>110</w>
       <h>40</h>
     </coordinates>
@@ -243,32 +243,20 @@ Commit</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>210</x>
-      <y>150</y>
+      <x>300</x>
+      <y>260</y>
       <w>260</w>
       <h>280</h>
     </coordinates>
     <panel_attributes>Create Docker images
-bg=gray</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>560</x>
-      <y>150</y>
-      <w>280</w>
-      <h>280</h>
-    </coordinates>
-    <panel_attributes>Replace Kubernetes Instances
-bg=gray</panel_attributes>
+bg=light_gray</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>560</x>
-      <y>180</y>
+      <x>650</x>
+      <y>290</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -279,8 +267,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>560</x>
-      <y>240</y>
+      <x>650</x>
+      <y>350</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -290,8 +278,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>540</x>
-      <y>290</y>
+      <x>630</x>
+      <y>400</y>
       <w>120</w>
       <h>30</h>
     </coordinates>
@@ -301,8 +289,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>560</x>
-      <y>340</y>
+      <x>650</x>
+      <y>450</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -312,8 +300,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>560</x>
-      <y>390</y>
+      <x>650</x>
+      <y>500</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -323,8 +311,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>560</x>
-      <y>190</y>
+      <x>650</x>
+      <y>300</y>
       <w>30</w>
       <h>230</h>
     </coordinates>
@@ -334,8 +322,8 @@ Trigger</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>640</x>
-      <y>180</y>
+      <x>730</x>
+      <y>290</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -345,8 +333,8 @@ Trigger</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>640</x>
-      <y>230</y>
+      <x>730</x>
+      <y>340</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -356,8 +344,8 @@ Trigger</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>640</x>
-      <y>280</y>
+      <x>730</x>
+      <y>390</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -367,8 +355,8 @@ Trigger</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>640</x>
-      <y>330</y>
+      <x>730</x>
+      <y>440</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -378,8 +366,8 @@ Trigger</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>640</x>
-      <y>380</y>
+      <x>730</x>
+      <y>490</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -389,8 +377,8 @@ Trigger</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>750</x>
-      <y>180</y>
+      <x>840</x>
+      <y>290</y>
       <w>100</w>
       <h>50</h>
     </coordinates>
@@ -402,8 +390,8 @@ replace</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>750</x>
-      <y>230</y>
+      <x>840</x>
+      <y>340</y>
       <w>50</w>
       <h>50</h>
     </coordinates>
@@ -413,8 +401,8 @@ replace</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>750</x>
-      <y>330</y>
+      <x>840</x>
+      <y>440</y>
       <w>50</w>
       <h>50</h>
     </coordinates>
@@ -424,8 +412,8 @@ replace</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>750</x>
-      <y>280</y>
+      <x>840</x>
+      <y>390</y>
       <w>50</w>
       <h>50</h>
     </coordinates>
@@ -435,12 +423,24 @@ replace</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>750</x>
-      <y>380</y>
+      <x>840</x>
+      <y>490</y>
       <w>50</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;30.0;30.0;30.0;30.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>650</x>
+      <y>260</y>
+      <w>280</w>
+      <h>280</h>
+    </coordinates>
+    <panel_attributes>Replace Kubernetes Instances
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>

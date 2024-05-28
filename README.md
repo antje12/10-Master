@@ -28,7 +28,7 @@ run the game client
 
 --------------------------------------------------
 
-## Local Kubernetes Run With External Images
+## Local Kubernetes Run With External Images (Deprecated)
 Install Docker Desktop + Kind + Helm
 
 Setup environment:
@@ -56,23 +56,6 @@ kubectl apply -f Pipeline/Services/deploy-projectile-service.yml
 kubectl apply -f Pipeline/Services/deploy-ai-service.yml
 ```
 
-Setup KEDA:
-```
-helm repo add kedacore https://kedacore.github.io/charts
-helm repo update
-helm install keda kedacore/keda
-kubectl apply -f Pipeline/Scaling/deploy-keda-scalers.yml
-```
-
-Setup sharding in the database:
-```
-kubectl port-forward services/mongodb-service 27017:27017
-mongosh -u root -p password
-sh.status()
-sh.enableSharding("TidesOfPower")
-sh.shardCollection("TidesOfPower.Entities", { "location.x" : 1, "location.y" : 1} )
-```
-
 Port forward Kafka for local client:
 ```
 kubectl port-forward services/kowl-service 8080:8080
@@ -91,16 +74,47 @@ kind delete cluster
 
 --------------------------------------------------
 
+## GKE With External Images
+
+Setup the infrastructure services:
+```
+run "1. Cloud-Setup.cmd"
+```
+
+Setup the game services:
+```
+git commit to Main and let the CI/CD pipeline do it
+```
+
+Setup sharding in the database:
+```
+kubectl exec -it <pod-name> -- /bin/bash
+mongosh -u root -p password
+sh.status()
+sh.enableSharding("TidesOfPower")
+sh.shardCollection("TidesOfPower.Entities", { "location.x" : 1, "location.y" : 1} )
+use TidesOfPower
+db.Entities.getShardDistribution()
+```
+
+Setup KEDA:
+```
+run "2. Cloud-Scale-Auto.cmd"
+```
+
+run the game client
+
+Cleanup the cluster:
+```
+run "3. Cloud-Cleanup.cmd"
+```
+
+--------------------------------------------------
+
 ### Extra
 Setup sharded MongoDB via helm:
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install mongodb-sharded bitnami/mongodb-sharded -f Pipeline/Helm/mongodb-values.yml
+helm install mongodb-sharded bitnami/mongodb-sharded -f Pipeline/Infrastructure/mongodb-values.yml
 ```
-
-Setup distributed Kafka via helm:
-
-~~helm install kafka-service bitnami/kafka -f Pipeline\Kubernetes\Helm\kafka-values.yml~~
-
-~~helm install schema-registry-service bitnami/schema-registry -f Pipeline\Kubernetes\Helm\schema-registry-values.yml~~

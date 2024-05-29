@@ -20,29 +20,15 @@ public class MongoDbContext
     {
         if (isClient)
         {
-            _mongos = "mongodb://localhost:27017/";
+            _mongos = "mongodb://34.32.33.189:30007/";
         }
         MongoClient client = new(_mongos);
         _database = client.GetDatabase("TidesOfPower");
         BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
     }
-
-    public IMongoCollection<Profile> Profiles =>
-        _database.GetCollection<Profile>("Profiles",
-            new MongoCollectionSettings
-            {
-                ReadPreference = ReadPreference.SecondaryPreferred
-            }); // Always read from a secondary, read from the primary if no secondary is available (https://severalnines.com/blog/become-mongodb-dba-how-scale-reads)
-
+    
     public IMongoCollection<Agent> Agents =>
         _database.GetCollection<Agent>("Agents",
-            new MongoCollectionSettings
-            {
-                ReadPreference = ReadPreference.SecondaryPreferred
-            });
-
-    public IMongoCollection<Entity> Entities =>
-        _database.GetCollection<Entity>("Entities",
             new MongoCollectionSettings
             {
                 ReadPreference = ReadPreference.SecondaryPreferred

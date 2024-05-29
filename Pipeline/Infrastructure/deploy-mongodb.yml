@@ -6,9 +6,10 @@ spec:
   ports:
     - port: 27017
       targetPort: 27017
+      nodePort: 30007
   selector:
     app: mongodb-service
-  type: ClusterIP
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment

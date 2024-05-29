@@ -88,7 +88,7 @@ git commit to Main and let the CI/CD pipeline do it
 
 Setup sharding in the database:
 ```
-kubectl exec -it <pod-name> -- /bin/bash
+kubectl exec -it <mongos-pod-name> -- /bin/bash
 mongosh -u root -p password
 sh.enableSharding("TidesOfPower")
 sh.shardCollection("TidesOfPower.Agents", { "location.x" : 1, "location.y" : 1} )

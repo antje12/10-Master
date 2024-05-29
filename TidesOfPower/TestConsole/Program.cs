@@ -8,9 +8,9 @@ RedisBroker redisBroker = new RedisBroker();
 redisBroker.Connect(true);
 redisBroker.Clean();
 
-MongoDbBroker mongoBroker = new MongoDbBroker();
-mongoBroker.Connect(true);
-mongoBroker.CleanDB();
+//MongoDbBroker mongoBroker = new MongoDbBroker();
+//mongoBroker.Connect(true);
+//mongoBroker.CleanDB();
 
 //var uptime = new Uptime();
 //await uptime.Test();

@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollisionService", "Collisi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldService", "WorldService\WorldService.csproj", "{378AC6DC-8A0B-4B6D-B4C7-926A69BC56E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfileService", "ProfileService\ProfileService.csproj", "{630824E3-B1C1-4EA1-B626-428143C80D48}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIService", "AIService\AIService.csproj", "{892859D0-802E-4BB1-8367-674D06EDF871}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameClient", "GameClient\GameClient.csproj", "{0E617549-2A94-4243-B6F9-881D75CA665C}"
@@ -40,10 +38,6 @@ Global
 		{378AC6DC-8A0B-4B6D-B4C7-926A69BC56E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{378AC6DC-8A0B-4B6D-B4C7-926A69BC56E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{378AC6DC-8A0B-4B6D-B4C7-926A69BC56E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{630824E3-B1C1-4EA1-B626-428143C80D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{630824E3-B1C1-4EA1-B626-428143C80D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{630824E3-B1C1-4EA1-B626-428143C80D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{630824E3-B1C1-4EA1-B626-428143C80D48}.Release|Any CPU.Build.0 = Release|Any CPU
 		{892859D0-802E-4BB1-8367-674D06EDF871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{892859D0-802E-4BB1-8367-674D06EDF871}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{892859D0-802E-4BB1-8367-674D06EDF871}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -67,6 +67,8 @@ public class SyncService : BackgroundService
         _game.EventTimes.Remove(value.EventId);
         var timeDiff = endTime - startTime;
         string timestampWithMs = endTime.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
+        if (_latency.GetAverage() == 0 && timeDiff.TotalMilliseconds > 500)
+            return;
         _latency.Add(timeDiff.TotalMilliseconds);
         _game.Latency = _latency.GetAverage();
         Console.WriteLine($"Got {value.EventId} Latency = {timeDiff} ms - stamp: {timestampWithMs}");

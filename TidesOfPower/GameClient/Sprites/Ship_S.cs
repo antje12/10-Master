@@ -10,8 +10,8 @@ public class Ship_S : Ship, Sprite
 {
     public Texture2D Texture { get; set; }
     private float rotation;
-    private int Width { get; set; }
-    private int Height { get; set; }
+    private int Width;
+    private int Height;
 
     public Ship_S(Texture2D texture, Ship s) 
         : base(s.LifePool, s.Id, s.Location)

@@ -15,8 +15,13 @@ namespace GameClient.Sprites;
 public class Player_S : Player, Sprite
 {
     public Texture2D Texture { get; set; }
-    private int Width { get; set; }
-    private int Height { get; set; }
+    private int Width;
+    private int Height;
+
+    private Texture2D s_texture;
+    private float s_rotation;
+    private int s_width;
+    private int s_height;
     
     private MyGame _game;
     private Camera _camera;
@@ -29,12 +34,17 @@ public class Player_S : Player, Sprite
     private bool _attacking;
     private bool _interacting;
 
-    public Player_S(MyGame game, Texture2D texture, Camera camera, KafkaProducer<Input_M> producer, Player p) 
+    public Player_S(MyGame game, Texture2D texture, Texture2D texture2, Camera camera, KafkaProducer<Input_M> producer, Player p) 
         : base(p.Name, p.Score, p.Id, p.Location, p.LifePool, p.WalkingSpeed)
     {
         Texture = texture;
         Width = texture.Width / 3;
         Height = texture.Height / 4;
+        
+        s_texture = texture2;
+        s_rotation = 0f;
+        s_width = s_texture.Width / 1;
+        s_height = s_texture.Height / 1;
         
         _game = game;
         _camera = camera;
@@ -70,16 +80,8 @@ public class Player_S : Player, Sprite
         var msgOut = new Input_M
         {
             AgentId = Id.ToString(),
-            AgentLocation = new Coordinates_M
-            {
-                X = Location.X,
-                Y = Location.Y
-            },
-            MouseLocation = new Coordinates_M
-            {
-                X = _mouseLocation.X,
-                Y = _mouseLocation.Y
-            },
+            AgentLocation = new Coordinates_M { X = Location.X, Y = Location.Y },
+            MouseLocation = new Coordinates_M { X = _mouseLocation.X, Y = _mouseLocation.Y },
             GameTime = gameTime.ElapsedGameTime.TotalSeconds,
             EventId = Guid.NewGuid().ToString(),
             Source = Source.Player
@@ -99,6 +101,28 @@ public class Player_S : Player, Sprite
         _lastKeyInput = msgOut.KeyInput.ToList();
         
         LocalMovement(keyInput, msgOut.GameTime);
+        UpdateRotation();
+    }
+
+    private void UpdateRotation()
+    {
+        var kState = Keyboard.GetState();
+        if (kState.IsKeyDown(Keys.W) && kState.IsKeyDown(Keys.D))
+            s_rotation = 5 * MathHelper.PiOver4;
+        else if (kState.IsKeyDown(Keys.W) && kState.IsKeyDown(Keys.A))
+            s_rotation = 3 * MathHelper.PiOver4;
+        else if (kState.IsKeyDown(Keys.S) && kState.IsKeyDown(Keys.D))
+            s_rotation = 7 * MathHelper.PiOver4;
+        else if (kState.IsKeyDown(Keys.S) && kState.IsKeyDown(Keys.A))
+            s_rotation = 1 * MathHelper.PiOver4;
+        else if (kState.IsKeyDown(Keys.W))
+            s_rotation = 4 * MathHelper.PiOver4;
+        else if (kState.IsKeyDown(Keys.S))
+            s_rotation = 8 * MathHelper.PiOver4;
+        else if (kState.IsKeyDown(Keys.A))
+            s_rotation = 2 * MathHelper.PiOver4;
+        else if (kState.IsKeyDown(Keys.D))
+            s_rotation = 6 * MathHelper.PiOver4;
     }
 
     private void LocalMovement(List<GameKey> keyInput, double gameTime)
@@ -117,16 +141,10 @@ public class Player_S : Player, Sprite
             var entity = (Entity) sprite;
             var r1 = Radius;
             var r2 = entity.Radius;
-                //entity is Projectile_S ? 5 :
-                //entity is Enemy_S ? 25 : 0;
 
-            if (Collide.Circle(to.X, to.Y, r1, 
-                    entity.Location.X, entity.Location.Y, r2))
+            if (Collide.Circle(to.X, to.Y, r1, entity.Location.X, entity.Location.Y, r2))
             {
-                if (entity is Enemy_S)
-                {
-                    return false;
-                }
+                if (entity is Enemy_S) return false;
             }
         }
 
@@ -184,7 +202,17 @@ public class Player_S : Player, Sprite
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        var offset = new Vector2(Location.X - Width / 2, Location.Y - Height / 2);
-        _anims.Draw(spriteBatch, offset);
+        var isOnIsland = _game.LocalState.OfType<Island_S>().Any(island => island.IsOn(Location));
+        if (isOnIsland)
+        {
+            var offset = new Vector2(Location.X - Width / 2, Location.Y - Height / 2);
+            _anims.Draw(spriteBatch, offset);
+        }
+        else
+        {
+            Vector2 origin = new Vector2(s_width / 2, s_height / 2);
+            spriteBatch.Draw(s_texture, new Vector2(Location.X, Location.Y),
+                null, Color.White, s_rotation, origin, 1.0f, SpriteEffects.None, 0f);
+        }
     }
 }

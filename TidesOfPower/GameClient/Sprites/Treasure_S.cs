@@ -9,8 +9,8 @@ public class Treasure_S : Treasure, Sprite
 {
     public Texture2D Texture { get; set; }
     private Animation _anim { get; set; }
-    private int Width { get; set; }
-    private int Height { get; set; }
+    private int Width;
+    private int Height;
 
     public Treasure_S(Texture2D texture, int framesX, Treasure t) 
         : base(t.Value, t.Id, t.Location)

@@ -29,6 +29,7 @@ public class MyGame : Game
     public Texture2D CoinTexture;
 
     public Texture2D ShipTexture;
+    public Texture2D ShipTexture2;
 
     public Texture2D ProjectileTexture;
 
@@ -45,8 +46,6 @@ public class MyGame : Game
     public readonly object LockObject = new();
     public Dictionary<string, DateTime> EventTimes = new();
     
-    private Ship_S _shipS;
-
     public int Latency = 0;
     
     public MyGame()
@@ -73,6 +72,7 @@ public class MyGame : Game
         CoinTexture = Content.Load<Texture2D>("treasure/gold_coin");
         TreasureTexture = Content.Load<Texture2D>("treasure/gold_chest");
         ShipTexture = Content.Load<Texture2D>("ships/ship_1");
+        ShipTexture2 = Content.Load<Texture2D>("ships/ship_2");
     }
 
     protected override void Initialize()
@@ -83,21 +83,23 @@ public class MyGame : Game
 
         _camera = new Camera(this);
         var playerLocation = new Coordinates(ScreenWidth / 2, ScreenHeight / 2);
-        Player = new Player_S(this, PlayerTexture, _camera, _producer, new Player("Player", 0, Guid.NewGuid(), playerLocation, 100, 100));
+        Player = new Player_S(this, PlayerTexture, ShipTexture, _camera, _producer, new Player("Player", 0, Guid.NewGuid(), playerLocation, 100, 100));
         _ui = new UI(_font, _camera, this);
         
-        _shipS = new Ship_S(ShipTexture, new Ship(100, Guid.NewGuid(), new Coordinates(200, 200)));
+        LocalState.Add(new Ocean_S(this, OceanTexture, new Ocean()));
+        LocalState.Add(GetIsland(64, 64));
+        LocalState.Add(GetIsland(64, 448));
+        LocalState.Add(GetIsland(448, 64));
+        LocalState.Add(GetIsland(448, 448));
+    }
 
-        var ocean = new Ocean_S(this, OceanTexture, null);
-        
-        int fromX = 64;
-        var toX = 64 + (64 * 5);
-        var fromY = 64;
-        var toY = 64 + (64 * 5);
-        var island = new Island_S(IslandTexture, new Island(fromX, toX, fromY, toY));
-
-        LocalState.Add(ocean);
-        LocalState.Add(island);
+    private Island_S GetIsland(int x , int y)
+    {
+        int fromX = x;
+        var toX = fromX + 320;
+        var fromY = y;
+        var toY = fromY + 320;
+        return new Island_S(IslandTexture, new Island(fromX, toX, fromY, toY));
     }
 
     protected override void Update(GameTime gameTime)
@@ -119,7 +121,6 @@ public class MyGame : Game
         }
 
         Player.Update(gameTime);
-        _shipS.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -152,7 +153,6 @@ public class MyGame : Game
         }
 
         Player.Draw(_spriteBatch);
-        _shipS.Draw(_spriteBatch);
         _ui.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);

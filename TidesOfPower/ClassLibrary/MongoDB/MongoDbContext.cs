@@ -12,7 +12,7 @@ public class MongoDbContext
     private const string _password = "password";
     //client:           "mongodb://localhost:27017/"
     //kubernetes:       "mongodb://mongodb-service:27017/"
-    //kubernetes(shard):"mongodb://{_username}:{_password}@mongodb-sharded:27017/"
+    //kubernetes(shard):"mongodb://{_username}:{_password}@mongodb-service:27017/"
     private string _mongos = "mongodb://mongodb-service:27017/"; // Routers
     private readonly IMongoDatabase _database;
 

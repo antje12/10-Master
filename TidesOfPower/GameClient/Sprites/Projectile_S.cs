@@ -9,8 +9,8 @@ namespace GameClient.Sprites;
 public class Projectile_S : Projectile, Sprite
 {
     public Texture2D Texture { get; set; }
-    private int Width { get; set; }
-    private int Height { get; set; }
+    private int Width;
+    private int Height;
 
     public Projectile_S(Texture2D texture, Projectile p)
         : base(p.Direction, p.FlyingSpeed, p.TimeToLive, p.Damage, p.Id, p.Location)

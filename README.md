@@ -116,5 +116,5 @@ Setup sharded MongoDB via helm:
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install mongodb-sharded bitnami/mongodb-sharded -f Pipeline/Infrastructure/mongodb-values.yml
+helm install mongodb-service bitnami/mongodb-sharded -f Pipeline/Infrastructure/mongodb-values.yml
 ```

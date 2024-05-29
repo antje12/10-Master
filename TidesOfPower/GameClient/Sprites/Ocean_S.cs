@@ -9,8 +9,8 @@ public class Ocean_S : Ocean, Sprite
 {
     public Coordinates Location { get; set; } // Not used
     public Texture2D Texture { get; set; }
-    private int Width { get; set; }
-    private int Height { get; set; }
+    private int Width;
+    private int Height;
     
     private MyGame _game;
 

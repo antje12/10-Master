@@ -105,7 +105,7 @@ public class SyncService : BackgroundService
                 lock (_game.LockObject)
                 {
                     _game.LocalState.Add(
-                        new Enemy_S(_game.EnemyTexture, new Enemy(Guid.Parse(agent.Id), new Coordinates(agent.Location.X, agent.Location.Y), 100, 100)));
+                        new Enemy_S(_game, _game.EnemyTexture, _game.ShipTexture2, new Enemy(Guid.Parse(agent.Id), new Coordinates(agent.Location.X, agent.Location.Y), 100, 100)));
                     string timestampWithMs = DateTime.UtcNow.ToString("dd/MM/yyyy HH.mm.ss.ffffff");
                     Console.WriteLine($"LocalState count {_game.LocalState.Count} at {timestampWithMs}");
                 }

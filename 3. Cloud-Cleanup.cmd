@@ -9,6 +9,8 @@ kubectl delete -f Pipeline/Infrastructure/deploy-kowl.yml
 kubectl delete -f Pipeline/Infrastructure/deploy-redis.yml
 kubectl delete -f Pipeline/Infrastructure/deploy-mongodb.yml
 
+helm delete mongodb-sharded
+
 kubectl delete -f Pipeline/Services/deploy-input-service.yml
 kubectl delete -f Pipeline/Services/deploy-collision-service.yml
 kubectl delete -f Pipeline/Services/deploy-world-service.yml

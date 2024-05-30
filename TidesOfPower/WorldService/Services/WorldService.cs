@@ -146,6 +146,11 @@ public class WorldService : BackgroundService, IConsumerService
             red = mongo;
         }
         
+        var xDiff = Math.Abs(value.Location.X - red.Location.X);
+        var yDiff = Math.Abs(value.Location.Y - red.Location.Y);
+        if (xDiff > 50 || yDiff > 50)
+            value.Location = new Coordinates_M(){X=red.Location.X,Y=red.Location.Y};
+        
         var agent = new Agent_M
         {
             Id = value.EntityId,
@@ -388,6 +393,9 @@ public class WorldService : BackgroundService, IConsumerService
             .GetEntities(value.Location.X, value.Location.Y)
             .OfType<Player>().ToList();
         RedisBroker.DeleteEntity(Guid.Parse(msgOut.Id));
+        MongoBroker.UpdatePlayer(new Player("Player", 0, Guid.Parse(msgOut.Id), 
+            new Coordinates(0,0), 100, 100));
+        ClientUpdates.Remove(key);
         DeltaSync(players, new List<Agent_M>(){msgOut}, new List<Projectile_M>(), new List<Treasure_M>(), Sync.Delete);
     }
     

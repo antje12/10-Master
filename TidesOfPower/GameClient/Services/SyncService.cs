@@ -186,6 +186,7 @@ public class SyncService : BackgroundService
         if (deleteAgentIds.Contains(_game.Player.Id.ToString()))
         {
             Console.WriteLine("Player Died!");
+            _game.Player.Location = new Coordinates(0, 0);
             lock (_game.LockObject)
             {
                 _game.LocalState.RemoveAll(x => x is Enemy_S or Projectile_S or Treasure_S);

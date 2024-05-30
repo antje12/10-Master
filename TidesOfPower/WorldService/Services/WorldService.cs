@@ -137,7 +137,7 @@ public class WorldService : BackgroundService, IConsumerService
                     100,
                     100);
                 MongoBroker.Insert(mongo);
-                ClientUpdates[key] = DateTime.UtcNow.AddMinutes(3);
+                ClientUpdates[key] = DateTime.UtcNow.AddMinutes(1);
             }
             else
             {
@@ -173,7 +173,7 @@ public class WorldService : BackgroundService, IConsumerService
         if (!ClientUpdates.ContainsKey(key))
         {
             MongoBroker.UpdatePlayer(data);
-            ClientUpdates[key] = DateTime.UtcNow.AddMinutes(3);
+            ClientUpdates[key] = DateTime.UtcNow.AddMinutes(1);
         }
         
         var entities = RedisBroker.GetEntities(agent.Location.X, agent.Location.Y);

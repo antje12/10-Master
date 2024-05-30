@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using NRedisStack;
 using NRedisStack.RedisStackCommands;
 using NRedisStack.Search;
-using NRedisStack.Search.Aggregation;
 using NRedisStack.Search.Literals.Enums;
 using StackExchange.Redis;
 
@@ -51,6 +50,7 @@ public class RedisBroker
     public virtual void Insert(Entity entity)
     {
         _json.Set($@"entity:{entity.Id}", "$", entity);
+        _database.KeyExpire($@"entity:{entity.Id}", new TimeSpan(0, 0, 1, 0));
     }
 
     public virtual void DeleteEntity(Guid id)
@@ -79,40 +79,6 @@ public class RedisBroker
             }
         }
         return result;
-    }
-    
-    public List<Entity> GetEntities()
-    {
-        var src = _ft.Search("idx:entities", new Query("*").Limit(0, 10000)); // 10000 max
-        var json = src.ToJson();
-
-        var results = new List<Entity>();
-        foreach (var j in json)
-        {
-            var result = JsonConvert.DeserializeObject<Entity>(j);
-            if (result == null) continue;
-            switch (result.Type)
-            {
-                case EntityType.Player:
-                    result = JsonConvert.DeserializeObject<Player>(j);
-                    break;
-                case EntityType.Enemy:
-                    result = JsonConvert.DeserializeObject<Enemy>(j);
-                    break;
-                case EntityType.Projectile:
-                    result = JsonConvert.DeserializeObject<Projectile>(j);
-                    break;
-                case EntityType.Ship:
-                    result = JsonConvert.DeserializeObject<Ship>(j);
-                    break;
-                case EntityType.Treasure:
-                    result = JsonConvert.DeserializeObject<Treasure>(j);
-                    break;
-            }
-            if (result == null) continue;
-            results.Add(result);
-        }
-        return results;
     }
 
     public virtual List<Entity> GetCloseEntities(float x, float y)
@@ -169,16 +135,10 @@ public class RedisBroker
         return results;
     }
 
-    public void UpdateProjectile(Projectile entity)
-    {
-        _json.Set($@"entity:{entity.Id}", ".TimeToLive", entity.TimeToLive);
-        _json.Set($@"entity:{entity.Id}", ".Location.X", entity.Location.X);
-        _json.Set($@"entity:{entity.Id}", ".Location.Y", entity.Location.Y);
-    }
-
     public virtual void UpsertAgentLocation(Agent entity)
     {        
         _json.Set($@"entity:{entity.Id}", "$", entity);
+        _database.KeyExpire($@"entity:{entity.Id}", new TimeSpan(0, 0, 1, 0));
     }
     public void Clean()
     {

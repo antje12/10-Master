@@ -25,7 +25,9 @@ public class WorldService : BackgroundService, IConsumerService
 
     internal MongoDbBroker MongoBroker;
     internal RedisBroker RedisBroker;
-
+    
+    private Dictionary<string, DateTime> ClientUpdates = new();
+    
     private CancellationTokenSource _cts = new();
     public bool IsRunning { get; private set; }
     private bool localTest = false;
@@ -86,6 +88,13 @@ public class WorldService : BackgroundService, IConsumerService
             Console.WriteLine($"Got {value.EventId} at {timestampWithMs}");
         }
         
+        var oldKeys = ClientUpdates.Where(x => x.Value < DateTime.UtcNow)
+            .Select(x => x.Key);
+        foreach (var oldKey in oldKeys)
+        {
+            ClientUpdates.Remove(oldKey);
+        }
+        
         switch (value.Change)
         {
             case Change.MovePlayer:
@@ -128,6 +137,7 @@ public class WorldService : BackgroundService, IConsumerService
                     100,
                     100);
                 MongoBroker.Insert(mongo);
+                ClientUpdates[key] = DateTime.UtcNow.AddMinutes(3);
             }
             else
             {
@@ -146,14 +156,21 @@ public class WorldService : BackgroundService, IConsumerService
             Score = red is Player p4 ? p4.Score : 0
         };
         agent.Score += value.Value;
-        RedisBroker.UpsertAgentLocation(new Player(
+        var data = new Player(
             agent.Name,
             agent.Score,
             Guid.Parse(agent.Id),
             new Coordinates(agent.Location.X, agent.Location.Y),
             100,
-            100));
+            100);
+        RedisBroker.UpsertAgentLocation(data);
 
+        if (!ClientUpdates.ContainsKey(key))
+        {
+            MongoBroker.UpdatePlayer(data);
+            ClientUpdates[key] = DateTime.UtcNow.AddMinutes(3);
+        }
+        
         var entities = RedisBroker.GetEntities(agent.Location.X, agent.Location.Y);
         FullSync(key, value, entities);
 

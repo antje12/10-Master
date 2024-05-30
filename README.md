@@ -91,10 +91,11 @@ Setup sharding in the database:
 kubectl exec -it <mongos-pod-name> -- /bin/bash
 mongosh -u root -p password
 sh.enableSharding("TidesOfPower")
-sh.shardCollection("TidesOfPower.Agents", { "location.x" : 1, "location.y" : 1} )
+sh.shardCollection("TidesOfPower.Players", { "location.x" : 1, "location.y" : 1} )
 sh.status()
 use TidesOfPower
-db.Agents.getShardDistribution()
+db.Players.find()
+db.Players.getShardDistribution()
 ```
 
 Setup KEDA:

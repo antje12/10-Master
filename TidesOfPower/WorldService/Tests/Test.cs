@@ -73,6 +73,9 @@ public class Test
         
         mongo = new Mock<MongoDbBroker>();       
         mongo.Setup(x => x.Connect(false));
+        mongo.Setup(x => x.Insert(It.IsAny<Player>()));
+        mongo.Setup(x => x.GetPlayer(It.IsAny<Guid>())).Returns(new Player("Player", 0, Guid.NewGuid(), new Coordinates(10, 10), 100, 100));
+        mongo.Setup(x => x.UpdatePlayer(It.IsAny<Player>()));
         
         service = new Services.WorldService();
         service.Admin = admin.Object;
@@ -81,7 +84,7 @@ public class Test
         service.ProducerP = producerP.Object;
         service.ProducerA = producerA.Object;
         service.RedisBroker = redis.Object;
-        //service.MongoBroker = mongo.Object;
+        service.MongoBroker = mongo.Object;
     }
 
     [Test]

@@ -12,7 +12,7 @@ public class MongoDbBroker
         _mongoDbContext = new MongoDbContext(isClient);
     }
 
-    public void Insert(Player player)
+    public virtual void Insert(Player player)
     {
         _mongoDbContext.Players.InsertOneAsync(player).GetAwaiter().GetResult();
     }
@@ -28,7 +28,7 @@ public class MongoDbBroker
         }
     }
 
-    public Player? GetPlayer(Guid playerId)
+    public virtual Player? GetPlayer(Guid playerId)
     {
         var filterBuilder = Builders<Player>.Filter;
         var filter = filterBuilder.Eq(x => x.Id, playerId);
@@ -37,7 +37,7 @@ public class MongoDbBroker
         return player;
     }
 
-    public void UpdatePlayer(Player player)
+    public virtual void UpdatePlayer(Player player)
     {
         var filter = Builders<Player>.Filter.Eq(x => x.Id, player.Id);
         var update = Builders<Player>.Update

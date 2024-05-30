@@ -86,6 +86,8 @@ public class MyGame : Game
         Player = new Player_S(this, PlayerTexture, ShipTexture, _camera, _producer, new Player("Player", 0, Guid.NewGuid(), playerLocation, 100, 100));
         _ui = new UI(_font, _camera, this);
         
+        Player.Id = Guid.Parse("93e2fab7-0856-4560-b53b-e6aeca1656c9");
+        
         LocalState.Add(new Ocean_S(this, OceanTexture, new Ocean()));
         LocalState.Add(GetIsland(64, 64));
         LocalState.Add(GetIsland(64, 448));

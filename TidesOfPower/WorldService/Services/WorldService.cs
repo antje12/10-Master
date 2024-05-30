@@ -23,7 +23,7 @@ public class WorldService : BackgroundService, IConsumerService
     internal IProtoProducer<Ai_M> ProducerA;
     internal IProtoConsumer<World_M> Consumer;
 
-    //internal MongoDbBroker MongoBroker;
+    internal MongoDbBroker MongoBroker;
     internal RedisBroker RedisBroker;
 
     private CancellationTokenSource _cts = new();
@@ -39,7 +39,7 @@ public class WorldService : BackgroundService, IConsumerService
         ProducerP = new KafkaProducer<Projectile_M>(config);
         ProducerA = new KafkaProducer<Ai_M>(config);
         Consumer = new KafkaConsumer<World_M>(config);
-        //MongoBroker = new MongoDbBroker();
+        MongoBroker = new MongoDbBroker();
         RedisBroker = new RedisBroker();
     }
 
@@ -58,7 +58,7 @@ public class WorldService : BackgroundService, IConsumerService
         await Task.Yield();
         IsRunning = true;
         RedisBroker.Connect(localTest);
-        //MongoBroker.Connect(localTest);
+        MongoBroker.Connect(localTest);
         Console.WriteLine("WorldService started");
         await Admin.CreateTopic(_inputTopic);
         IProtoConsumer<World_M>.ProcessMessage action = ProcessMessage;
@@ -114,16 +114,36 @@ public class WorldService : BackgroundService, IConsumerService
 
     private void MovePlayer(string key, World_M value)
     {
-        var db = RedisBroker.Get(Guid.Parse(value.EntityId));
+        var red = RedisBroker.Get(Guid.Parse(value.EntityId));
+        if (red == null)
+        {
+            var mongo = MongoBroker.GetPlayer(Guid.Parse(value.EntityId));
+            if (mongo == null)
+            {
+                mongo = new Player(
+                    "Player",
+                    0,
+                    Guid.Parse(value.EntityId),
+                    new Coordinates(value.Location.X, value.Location.Y),
+                    100,
+                    100);
+                MongoBroker.Insert(mongo);
+            }
+            else
+            {
+                value.Location = new Coordinates_M(){X=mongo.Location.X,Y=mongo.Location.Y};
+            }
+            red = mongo;
+        }
         
         var agent = new Agent_M
         {
             Id = value.EntityId,
             Location = value.Location,
-            Name = db is Player p ? p.Name : "Player",
-            WalkingSpeed = db is Player p2 ? p2.WalkingSpeed : 0,
-            LifePool = db is Player p3 ? p3.LifePool : 0,
-            Score = db is Player p4 ? p4.Score : 0
+            Name = red is Player p ? p.Name : "Player",
+            WalkingSpeed = red is Player p2 ? p2.WalkingSpeed : 0,
+            LifePool = red is Player p3 ? p3.LifePool : 0,
+            Score = red is Player p4 ? p4.Score : 0
         };
         agent.Score += value.Value;
         RedisBroker.UpsertAgentLocation(new Player(

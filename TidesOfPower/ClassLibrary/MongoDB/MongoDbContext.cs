@@ -27,8 +27,8 @@ public class MongoDbContext
         BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
     }
     
-    public IMongoCollection<Agent> Agents =>
-        _database.GetCollection<Agent>("Agents",
+    public IMongoCollection<Player> Players =>
+        _database.GetCollection<Player>("Players",
             new MongoCollectionSettings
             {
                 ReadPreference = ReadPreference.SecondaryPreferred

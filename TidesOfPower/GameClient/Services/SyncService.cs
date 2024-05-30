@@ -63,6 +63,8 @@ public class SyncService : BackgroundService
     private void GetLatency(LocalState_M value)
     {
         var endTime = DateTime.UtcNow;
+        if (!_game.EventTimes.ContainsKey(value.EventId))
+            return;
         var startTime = _game.EventTimes[value.EventId];
         _game.EventTimes.Remove(value.EventId);
         var timeDiff = endTime - startTime;

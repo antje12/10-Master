@@ -50,7 +50,7 @@ public class RedisBroker
     public virtual void Insert(Entity entity)
     {
         _json.Set($@"entity:{entity.Id}", "$", entity);
-        _database.KeyExpire($@"entity:{entity.Id}", new TimeSpan(0, 0, 1, 0));
+        _database.KeyExpire($@"entity:{entity.Id}", new TimeSpan(0, 0, 5, 0));
     }
 
     public virtual void DeleteEntity(Guid id)
@@ -138,7 +138,7 @@ public class RedisBroker
     public virtual void UpsertAgentLocation(Agent entity)
     {        
         _json.Set($@"entity:{entity.Id}", "$", entity);
-        _database.KeyExpire($@"entity:{entity.Id}", new TimeSpan(0, 0, 1, 0));
+        _database.KeyExpire($@"entity:{entity.Id}", new TimeSpan(0, 0, 5, 0));
     }
     public void Clean()
     {

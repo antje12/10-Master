@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ClassLibrary.Domain;
 using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Protobuf;
+using ClassLibrary.Redis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -48,6 +49,8 @@ public class MyGame : Game
     
     public int Latency = 0;
     
+    internal RedisBroker RedisBroker;
+    
     public MyGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -56,6 +59,8 @@ public class MyGame : Game
 
         _config = new KafkaConfig(_groupId, true);
         _producer = new KafkaProducer<Input_M>(_config);
+        
+        RedisBroker = new RedisBroker();
     }
 
     protected override void LoadContent()
@@ -93,8 +98,10 @@ public class MyGame : Game
         LocalState.Add(GetIsland(64, 448));
         LocalState.Add(GetIsland(448, 64));
         LocalState.Add(GetIsland(448, 448));
+        
+        RedisBroker.Connect(true);
     }
-
+    
     private Island_S GetIsland(int x , int y)
     {
         int fromX = x;
@@ -158,5 +165,12 @@ public class MyGame : Game
         _ui.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
+    }
+    
+    protected override void OnExiting(Object sender, EventArgs args)
+    {
+        base.OnExiting(sender, args);
+        RedisBroker.DeleteEntity(Player.Id);
+        Environment.Exit(1);
     }
 }

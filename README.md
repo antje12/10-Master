@@ -74,7 +74,7 @@ kind delete cluster
 
 --------------------------------------------------
 
-## GKE With External Images
+## External GKE Run With External Images
 
 Setup the infrastructure services:
 ```
@@ -84,6 +84,25 @@ run "1. Cloud-Setup.cmd"
 Setup the game services:
 ```
 git commit to Main and let the CI/CD pipeline do it
+```
+
+Setup KEDA:
+```
+run "2. Cloud-Scale-Auto.cmd"
+```
+
+### Using Non-sharded MongoDB
+Setup non-sharded MongoDB:
+```
+kubectl apply -f Pipeline/Infrastructure/deploy-mongodb.yml
+```
+
+### Using Sharded MongoDB
+Setup sharded MongoDB via helm:
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install mongodb-service bitnami/mongodb-sharded -f Pipeline/Infrastructure/mongodb-values.yml
 ```
 
 Setup sharding in the database:
@@ -98,24 +117,9 @@ db.Players.find()
 db.Players.getShardDistribution()
 ```
 
-Setup KEDA:
-```
-run "2. Cloud-Scale-Auto.cmd"
-```
-
 run the game client
 
 Cleanup the cluster:
 ```
 run "3. Cloud-Cleanup.cmd"
-```
-
---------------------------------------------------
-
-### Extra
-Setup sharded MongoDB via helm:
-```
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-helm install mongodb-service bitnami/mongodb-sharded -f Pipeline/Infrastructure/mongodb-values.yml
 ```

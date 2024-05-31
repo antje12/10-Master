@@ -7,4 +7,3 @@ kubectl apply -f Pipeline/Infrastructure/deploy-kafka-3.yml
 kubectl apply -f Pipeline/Infrastructure/deploy-schema-registry.yml
 kubectl apply -f Pipeline/Infrastructure/deploy-kowl.yml
 kubectl apply -f Pipeline/Infrastructure/deploy-redis.yml
-kubectl apply -f Pipeline/Infrastructure/deploy-mongodb.yml

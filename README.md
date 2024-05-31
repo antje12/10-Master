@@ -1,9 +1,10 @@
 # 10-Master
 Master Thesis Project
+There are 4 ways of running this project, as described below:
 
 --------------------------------------------------
 
-## Local Docker Run With Local Images
+## 1. Local Docker Run With Local Images
 Install Docker Desktop
 
 Setup environment:
@@ -16,7 +17,7 @@ run the game client
 
 --------------------------------------------------
 
-## Local Docker Run With External Images
+## 2. Local Docker Run With External Images
 Install Docker Desktop
 
 Setup environment:
@@ -28,7 +29,7 @@ run the game client
 
 --------------------------------------------------
 
-## Local Kubernetes Run With External Images (Deprecated)
+## 3. Local Kubernetes Run With External Images (Deprecated)
 Install Docker Desktop + Kind + Helm
 
 Setup environment:
@@ -74,7 +75,7 @@ kind delete cluster
 
 --------------------------------------------------
 
-## External GKE Run With External Images
+## 4. External GKE Run With External Images
 
 Setup the infrastructure services:
 ```

@@ -1,6 +1,7 @@
 # 10-Master
-Master Thesis Project
-There are 4 ways of running this project, as described below:
+Master Thesis Project by Anton Toft Jensen
+
+There are currently 4 ways of running this project, as described below:
 
 --------------------------------------------------
 

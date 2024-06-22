@@ -5,6 +5,7 @@ using ClassLibrary.Kafka;
 using ClassLibrary.Messages.Protobuf;
 using ClassLibrary.MongoDB;
 using ClassLibrary.Redis;
+using MongoDB.Driver.Linq;
 using WorldService.Interfaces;
 
 namespace WorldService.Services;
@@ -137,7 +138,7 @@ public class WorldService : BackgroundService, IConsumerService
                     100,
                     100);
                 MongoBroker.Insert(mongo);
-                ClientUpdates[key] = DateTime.UtcNow.AddMinutes(1);
+                ClientUpdates[key] = DateTime.UtcNow.AddSeconds(10);
             }
             else
             {
@@ -173,7 +174,7 @@ public class WorldService : BackgroundService, IConsumerService
         if (!ClientUpdates.ContainsKey(key))
         {
             MongoBroker.UpdatePlayer(data);
-            ClientUpdates[key] = DateTime.UtcNow.AddMinutes(1);
+            ClientUpdates[key] = DateTime.UtcNow.AddSeconds(10);
         }
         
         var entities = RedisBroker.GetEntities(agent.Location.X, agent.Location.Y);
